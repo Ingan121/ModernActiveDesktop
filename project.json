@@ -1,0 +1,226 @@
+{
+	"contentrating" : "Everyone",
+	"description" : "Wallpaper for imitating the Windows 98 desktop experience\r\n\r\nThis wallpaper includes Windows 98's Channel Bar and the startup sound.\r\n\r\nSome channel items won't show properly because of the limitations of the iframe security restrictions.\r\n\r\nPowered by https://jdan.github.io/98.css/\r\n\r\nRight click this wallpaper and click 'Open in Explorer' to view the source code and the license (MIT.)\r\n\r\nVisit https://winclassic.boards.net to learn how to get the classic theme on Windows 8+ or Windows 7 with Aero enabled.\r\n\r\nSource code download: https://www.romanhue.xyz/walls/compressed/ModernActiveDesktop.zip",
+	"file" : "index.html",
+	"general" : 
+	{
+		"properties" : 
+		{
+			"additem" : 
+			{
+				"condition" : "additem.value = false; true",
+				"index" : 3,
+				"order" : 103,
+				"text" : "Add a new ActiveDesktop item",
+				"type" : "bool",
+				"value" : false
+			},
+			"bgcolor" : 
+			{
+				"index" : 0,
+				"order" : 100,
+				"text" : "Background color",
+				"type" : "color",
+				"value" : "0 0.5019607843137255 0.5019607843137255"
+			},
+			"bgimg" : 
+			{
+				"index" : 1,
+				"order" : 101,
+				"text" : "BG image",
+				"type" : "file",
+				"value" : ""
+			},
+			"bgimgmode" : 
+			{
+				"condition" : "bgimg.value",
+				"index" : 2,
+				"options" : 
+				[
+					{
+						"label" : "Center",
+						"value" : "center"
+					},
+					{
+						"label" : "Tile",
+						"value" : "grid"
+					},
+					{
+						"label" : "Fit horizontally",
+						"value" : "horizfit"
+					},
+					{
+						"label" : "Fit vertically",
+						"value" : "vertfit"
+					},
+					{
+						"label" : "Stretch",
+						"value" : "scale"
+					}
+				],
+				"order" : 102,
+				"text" : "BG image style",
+				"type" : "combo",
+				"value" : "center"
+			},
+			"colorscheme" : 
+			{
+				"condition" : "sysplugintegration.value",
+				"index" : 10,
+				"options" : 
+				[
+					{
+						"label" : "Windows 98",
+						"value" : "98"
+					},
+					{
+						"label" : "Windows 2000",
+						"value" : "2k"
+					},
+					{
+						"label" : "Windows XP",
+						"value" : "xp"
+					},
+					{
+						"label" : "Brick",
+						"value" : "brick"
+					},
+					{
+						"label" : "Marine",
+						"value" : "marine"
+					},
+					{
+						"label" : "System",
+						"value" : "sys"
+					}
+				],
+				"order" : 110,
+				"text" : "Color scheme",
+				"type" : "combo",
+				"value" : "98"
+			},
+			"colorscheme2" : 
+			{
+				"condition" : "!sysplugintegration.value",
+				"index" : 11,
+				"options" : 
+				[
+					{
+						"label" : "Windows 98",
+						"value" : "98"
+					},
+					{
+						"label" : "Windows 2000",
+						"value" : "2k"
+					},
+					{
+						"label" : "Windows XP",
+						"value" : "xp"
+					},
+					{
+						"label" : "Brick",
+						"value" : "brick"
+					},
+					{
+						"label" : "Marine",
+						"value" : "marine"
+					}
+				],
+				"order" : 111,
+				"text" : "Color scheme",
+				"type" : "combo",
+				"value" : "98"
+			},
+			"leftmargin" : 
+			{
+				"condition" : "",
+				"index" : 5,
+				"order" : 105,
+				"text" : "Left icon area",
+				"type" : "textinput",
+				"value" : "75px"
+			},
+			"nonadstyle" : 
+			{
+				"index" : 4,
+				"order" : 104,
+				"text" : "Use non-ActiveDesktop style windows",
+				"type" : "bool",
+				"value" : false
+			},
+			"openwith" : 
+			{
+				"condition" : "sysplugintegration.value",
+				"index" : 9,
+				"options" : 
+				[
+					{
+						"label" : "ChannelViewer",
+						"value" : "0"
+					},
+					{
+						"label" : "ChannelViewer (FullScrn)",
+						"value" : "1"
+					},
+					{
+						"label" : "Default browser",
+						"value" : "2"
+					}
+				],
+				"order" : 109,
+				"text" : "Open page with...",
+				"type" : "combo",
+				"value" : "0"
+			},
+			"playstartsnd" : 
+			{
+				"index" : 7,
+				"order" : 107,
+				"text" : "Play startup sound",
+				"type" : "bool",
+				"value" : true
+			},
+			"reset" : 
+			{
+				"condition" : "reset.value = false; true",
+				"index" : 12,
+				"order" : 112,
+				"text" : "Reset completely",
+				"type" : "bool",
+				"value" : false
+			},
+			"rightmargin" : 
+			{
+				"condition" : "",
+				"index" : 6,
+				"order" : 106,
+				"text" : "Right icon area",
+				"type" : "textinput",
+				"value" : "0px"
+			},
+			"schemecolor" : 
+			{
+				"order" : 0,
+				"text" : "ui_browse_properties_scheme_color",
+				"type" : "color",
+				"value" : "0 0.5019607843137255 0.5019607843137255"
+			},
+			"sysplugintegration" : 
+			{
+				"index" : 8,
+				"order" : 108,
+				"text" : "System plugin integration",
+				"type" : "bool",
+				"value" : false
+			}
+		}
+	},
+	"preview" : "preview.jpg",
+	"tags" : [ "Retro" ],
+	"title" : "ModernActiveDesktop (Windows 98 Desktop Experience)",
+	"type" : "Web",
+	"version" : 6,
+	"visibility" : "public",
+	"workshopid" : "2278898637",
+	"workshopurl" : "steam://url/CommunityFilePage/2278898637"
+}

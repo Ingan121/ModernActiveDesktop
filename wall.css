@@ -1,0 +1,133 @@
+html,body {
+    height: 100%;
+    user-select: none;
+    margin: 0;
+    overflow: hidden;
+    background-color: var(--background);
+}
+
+.ActiveChannelItem {
+    display: block;
+    margin-top: 1px;
+    margin-bottom: -3px;
+    margin-left: 1px;
+    margin-right: 1px;
+    border: none;
+    width: 80px;
+    float: left;
+}
+
+.ActiveChannelItemImage, .windowBtn {
+    margin: 1px;
+    border: none;
+    padding: 0;
+}
+
+.ActiveChannelItemImage:hover, .windowBtn:hover {
+    margin: 0;
+    border-top: solid 1px white;
+    border-left: solid 1px white;
+    border-bottom: solid 1px rgb(128, 128, 128);
+    border-right: solid 1px rgb(128, 128, 128);
+}
+
+.ActiveChannelItemImage:hover:active, .windowBtn:hover:active {
+    margin: 0;
+    border-bottom: solid 1px white;
+    border-right: solid 1px white;
+    border-top: solid 1px rgb(128, 128, 128);
+    border-left: solid 1px rgb(128, 128, 128);
+}
+
+.windowBtn:hover {
+    margin: 0;
+    border-top: solid 1px var(--button-hilight);
+    border-left: solid 1px var(--button-highlight);
+    border-bottom: solid 1px var(--button-shadow);
+    border-right: solid 1px var(--button-shadow);
+}
+
+.windowBtn:hover:active {
+    margin: 0;
+    border-bottom: solid 1px var(--button-highlight);
+    border-right: solid 1px var(--button-highlight);
+    border-top: solid 1px var(--button-shadow);
+    border-left: solid 1px var(--button-shadow);
+}
+
+.windowContainer {
+    background-color: transparent;
+    padding: 3px;
+    padding-top: 18px;
+    position: absolute;
+    height: 471px;
+    left: 1736px;
+    top: 200px;
+    width: 84px;
+}
+
+.windowTitlebar {
+    background-color: var(--button-face);
+    padding: 0;
+    position: absolute;
+    height: 15px;
+    top: 6px;
+    left: 0;
+    width: 90px;
+}
+
+.windowFrame {
+    height: 471px;
+    width: 86px;
+    position: absolute;
+    top: 21px;
+    left: 0;
+    border: solid 2px transparent;
+    border-bottom-width: 4px;
+}
+
+.windowElement {
+    position: absolute;
+    background-color: transparent;
+    border: solid 1px transparent;
+}
+
+.windowBtn {
+    width: 12px;
+    height: 10px;
+    position: absolute;
+    top: 4px;
+}
+
+.windowBtnText {
+    margin: 0;
+    color: var(--window-text);
+    font-size: 8px;
+    text-align: center;
+    margin-top: -2px;
+    margin-left: -2px;
+}
+
+.contextMenuItem {
+    width: 98px;
+    height: 17px;
+    font-size: 11px;
+    padding-left: 2px;
+    pointer-events: auto !important;
+}
+
+.contextMenuItem:hover {
+    background-color: var(--hilight);
+    color: var(--hilight-text);
+}
+
+.bgHtml {
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    border: none;
+}
+
+.debug {
+    display: none;
+}

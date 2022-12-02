@@ -1,0 +1,122 @@
+html,body {
+    height: 100%;
+    user-select: none;
+    margin: 0;
+    overflow: hidden;
+    background-color: white;
+}
+
+* {
+    font-family: "Malgun Gothic"
+}
+
+#windowBtnContainer {
+    width: 55px;
+    height: 26px;
+    margin-left: 5px;
+    display: none;
+}
+
+:fullscreen #windowBtnContainer {
+    display: block;
+}
+
+.windowBtn {
+    width: 15px;
+    height: 13px;
+    position: absolute;
+    top: 2px;
+    border: solid 1px transparent;
+}
+
+.windowBtn > p {
+    font-size: 12px;
+    text-align: center;
+    margin-top: -3px;
+}
+
+.windowBtn:hover > p {
+    color: var(--accent);
+}
+
+.windowBtn:hover:active > p {
+    color: var(--accent-dark);
+}
+
+.toolbarButton {
+    height: 26px;
+    float: left;
+    margin: 0;
+    padding: 0;
+    margin-left: 3px;
+    margin-right: 3px;
+}
+
+.toolbarButtonImage {
+    font-size: 15px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    margin-left: 5px;
+    margin-right: 5px;
+    padding: 0;
+}
+
+.toolbarButton:hover:not([data-disabled='true']) > i {
+    color: var(--accent);
+}
+
+.toolbarButton:hover:active:not([data-disabled='true']) > i {
+    color: var(--accent-dark);
+}
+
+.toolbarButton[data-disabled='true'] > i {
+    color: lightgray;
+}
+
+#container {
+    height: 100%;
+    position: absolute;
+    width: -moz-available;
+    width: -webkit-fill-available;
+}
+
+#toolbar {
+    height: 26px;
+    display: flex;
+    background-color: white;
+}
+
+#progress-bar {
+    display: none;
+    width: 300px;
+    margin-top: 5px;
+    margin-left: 0;
+    margin-right: 10px;
+}
+
+:fullscreen #progress-bar {
+    margin-right: 0;
+}
+
+.rightalign {
+    display: flex;
+    margin-left: auto;
+}
+
+#urlbar {
+    width: 500px !important;
+    margin-top: -1px;
+    margin-left: 3px;
+    border: none;
+}
+
+#urlbar:focus {
+    outline: none;
+    margin-top: 0;
+    border-bottom: solid 1px var(--accent);
+}
+
+::selection {
+    color: white;
+    background-color: var(--accent);
+}

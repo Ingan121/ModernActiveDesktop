@@ -1,0 +1,35 @@
+:root {
+     --active-border: #88C0B8;
+     --active-title: #000080;
+     --app-workspace: #4B8D84;
+     --background: #2C4E47;
+     --button-alternate-face: #88C0B8;
+     --button-dk-shadow: #000000;
+     --button-face: #88C0B8;
+     --button-hilight: #C8E0D8;
+     --button-light: #88C0B8;
+     --button-shadow: #489088;
+     --button-text: #000000;
+     --gradient-active-title: #18B4C0;
+     --gradient-inactive-title: #78CCD8;
+     --gray-text: #489088;
+     --hilight: #000080;
+     --hilight-text: #FFFFFF;
+     --hot-tracking-color: #0067C0;
+     --inactive-border: #88C0B8;
+     --inactive-title: #489088;
+     --inactive-title-text: #C0C0C0;
+     --info-text: #000000;
+     --info-window: #C8E0D8;
+     --menu: #88C0B8;
+     --menu-bar: #F0F0F0;
+     --menu-highlight: #0078D4;
+     --menu-text: #000000;
+     --scrollbar: #C8E0D8;
+     --title-text: #FFFFFF;
+     --window: #C8E0D8;
+     --window-frame: #000000;
+     --window-text: #000000;
+     --accent: #006fc4e3;
+     --accent-dark: #005108;
+}

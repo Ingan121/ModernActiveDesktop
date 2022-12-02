@@ -1,0 +1,106 @@
+a:link {
+    font: 8pt/10pt verdana;
+    color: #FF6633
+}
+
+a:visited {
+    font: 8pt/10pt verdana;
+    color: #0099FF
+}
+
+a:active {
+    font: 8pt/10pt verdana;
+    color: white
+}
+
+body {
+    margin: 0;
+    background-color: black;
+    overflow-x: hidden;
+}
+
+#heading {
+    position: absolute;
+    width: 100%;
+    height: 80px;
+    background: URL(res/cdfview.dll/ccbiz.gif) no-repeat;
+}
+
+hr {
+    position: absolute;
+    top: 34px;
+    left: 65px;
+    width: 100%;
+    border: solid 1px #808080;
+}
+
+#panel {
+    position: absolute;
+    top: 80px;
+    width: 200px;
+    background: black;
+    overflow: auto;
+}
+
+#FileList {
+    position: absolute;
+    left: 200px;
+    top: 80px;
+}
+
+@media (max-width: 400px) {
+    #panel {
+        visibility: hidden;
+    }
+
+    #FileList {
+        left: 0;
+    }
+}
+
+@media (max-height: 160px) {
+    #heading {
+        visibility: hidden;
+    }
+
+    #panel {
+        top: 0;
+    }
+
+    #FileList {
+        top: 0;
+    }
+}
+
+.ActiveChannelItem {
+    display: block;
+    margin-top: 1px;
+    margin-bottom: -3px;
+    margin-left: 1px;
+    margin-right: 1px;
+    border: none;
+    width: 80px;
+    float: left;
+}
+
+.ActiveChannelItemImage {
+    margin: 1px;
+    border: none;
+    padding: 0;
+}
+
+.ActiveChannelItemImage:hover {
+    margin: 0;
+    border-top: solid 1px white;
+    border-left: solid 1px white;
+    border-bottom: solid 1px rgb(128, 128, 128);
+    border-right: solid 1px rgb(128, 128, 128);
+}
+
+.ActiveChannelItemImage:hover:active {
+    margin: 0;
+    border-bottom: solid 1px white;
+    border-right: solid 1px white;
+    border-top: solid 1px rgb(128, 128, 128);
+    border-left: solid 1px rgb(128, 128, 128);
+}

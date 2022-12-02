@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>ModernActiveDesktop</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="wall.css">
+	<link rel="stylesheet" href="98.css">
+	<link id="scheme" rel="stylesheet" href="data:text/css,">
+</head>
+<body style="background-attachment: fixed; background-position: center center; background-repeat: no-repeat; border: none;">
+	<div id="bgHtmlContainer" class="bgHtml">
+		<iframe id="bgHtmlView" class="bgHtml" src="bghtml/index.html"></iframe>
+	</div>
+	<div class="windowContainer">
+		<div class="windowTitlebar" style="display: none;">
+			<div class="windowMenuBtn windowBtn" style="left: 3px;">
+				<p class="windowBtnText">⏷</p>
+			</div>
+			<div class="windowCloseBtn windowBtn" style="right: 3px;">
+				<p class="windowBtnText">🗙</p>
+			</div>
+		</div>
+		<div class="windowFrame" style="border-color: transparent;">
+			<iframe class="windowElement" name="DeskMovrW" src="ChannelBar.html" width="84px" height="471px" style="border-color: transparent;"></iframe>
+		</div>
+		<div class="contextMenuBg window" style="display: none; width: 100px; height: 0px; position: absolute; top: 24px; overflow: hidden;">
+			<div class="contextMenu window-body" style="height: 51px; position: absolute; top: -68px; margin: 0; margin-top: 3px; margin-right: 3px;">
+				<div class="contextMenuItem debug" onmouseover="this.getElementsByTagName('u')[0].style.borderBottomColor = 'var(--hilight-text)';" onmouseout="this.getElementsByTagName('u')[0].style.borderBottomColor = 'var(--window-text)';"><p style="margin: 0; padding-left: 15px; padding-top: 2px;"><u>D</u>ebug</p></div>
+				<div class="contextMenuItem" onmouseover="this.getElementsByTagName('u')[0].style.borderBottomColor = 'var(--hilight-text)';" onmouseout="this.getElementsByTagName('u')[0].style.borderBottomColor = 'var(--window-text)';"><p style="margin: 0; padding-left: 15px; padding-top: 2px;">C<u>o</u>nfigure</p></div>
+				<div class="contextMenuItem" onmouseover="this.getElementsByTagName('u')[0].style.borderBottomColor = 'var(--hilight-text)';" onmouseout="this.getElementsByTagName('u')[0].style.borderBottomColor = 'var(--window-text)';"><p style="margin: 0; padding-left: 15px; padding-top: 2px;">R<u>e</u>set</p></div>
+				<div class="contextMenuItem" onmouseover="this.getElementsByTagName('u')[0].style.borderBottomColor = 'var(--hilight-text)';" onmouseout="this.getElementsByTagName('u')[0].style.borderBottomColor = 'var(--window-text)';"><p style="margin: 0; padding-left: 15px; padding-top: 2px;"><u>R</u>eload</p></div>
+				<div class="contextMenuItem" onmouseover="this.getElementsByTagName('u')[0].style.borderBottomColor = 'var(--hilight-text)';" onmouseout="this.getElementsByTagName('u')[0].style.borderBottomColor = 'var(--window-text)';"><b>🗙 <u>C</u>lose</b></div>
+			</div>
+		</div>
+	</div>
+	<a class="debug" href="javascript:localStorage.clear();location.reload(true);" style="position: absolute; right: 0; top: 0;">설정값 초기화</a>
+	<a class="debug" href="javascript:location.reload(true);" style="position: absolute; right: 0; top: 15px;">새로고침</a>
+	<script src="DeskMover.js"></script>
+	<script src="DeskSettings.js"></script>
+</body>
+</html>
