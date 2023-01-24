@@ -12,11 +12,16 @@ const NO_SYSPLUG_ALERT = "System plugin is not running. Please make sure you hav
 
 let lastZIndex = 0;
 
+let scaleFactor = 1;
+let vWidth = window.innerWidth;
+let vHeight = window.innerHeight;
+
 // Load configs
 if (localStorage.madesktopBgColor) document.body.style.backgroundColor = localStorage.madesktopBgColor;
 if (localStorage.madesktopBgImg) document.body.style.backgroundImage = "url('" + localStorage.madesktopBgImg + "')";
 changeBgImgMode(localStorage.madesktopBgImgMode ? localStorage.madesktopBgImgMode : "center");
 if (localStorage.madesktopColorScheme) changeColorScheme(localStorage.madesktopColorScheme, false);
+changeScale(localStorage.madesktopScaleFactor);
 
 initDeskMover(0);
 
@@ -28,14 +33,20 @@ if (localStorage.madesktopItemCount) {
     localStorage.madesktopItemCount = 1;
 }
 
-if (localStorage.madesktopLastVer != "2.0") { // First run or update
+if (localStorage.madesktopLastVer == "2.0") { // Update from 2.0
+    createNewDeskItem("Updated.md");
+    localStorage.madesktopItemCount++;
+} else if (localStorage.madesktopLastVer != "2.1") { // First run or update from 1.x
     createNewDeskItem("README.md");
     localStorage.madesktopItemCount++;
-    localStorage.madesktopLastVer = "2.0";
 }
+localStorage.madesktopLastVer = "2.1";
 
 if (localStorage.madesktopItemVisible == "false") windowContainers[0].style.display = "none";
 
+bgHtmlView.addEventListener('load', function () {
+    this.contentDocument.body.style.zoom = scaleFactor;
+});
 
 // Detect WE config change
 window.wallpaperPropertyListener = {
@@ -91,16 +102,16 @@ window.wallpaperPropertyListener = {
                 startup.currentTime = 0;
             }
         }
-		if (properties.sysplugintegration) {
+        if (properties.sysplugintegration) {
             if (!properties.bgcolor) { // Ignore if this is a startup event
                 if (properties.sysplugintegration.value) {
-	    			localStorage.sysplugIntegration = true;
+                    localStorage.sysplugIntegration = true;
 
                     fetch("http://localhost:3031/connecttest")
                     .then(response => response.text())
                     .then(responseText => {
                         if (responseText != "OK") {
-                            alert("An error occured!\nSystem plugin response: " + responseText);
+                            alert("An error occurred!\nSystem plugin response: " + responseText);
                         }
                     })
                     .catch(error => {
@@ -108,7 +119,7 @@ window.wallpaperPropertyListener = {
                         createNewDeskItem("SysplugSetupGuide.md", true);
                         localStorage.madesktopItemCount++;
                     })
-		    	} else {
+                } else {
                     localStorage.removeItem("sysplugIntegration");
                     if (localStorage.madesktopColorScheme == "sys") localStorage.removeItem("madesktopColorScheme");
                 }
@@ -121,7 +132,7 @@ window.wallpaperPropertyListener = {
                         .then(response => response.text())
                         .then(responseText => {
                             if (responseText != "OK") {
-                                alert("An error occured!\nSystem plugin response: " + responseText);
+                                alert("An error occurred!\nSystem plugin response: " + responseText);
                             }
                         })
                         .catch(error => {
@@ -138,6 +149,20 @@ window.wallpaperPropertyListener = {
             changeColorScheme(value);
             if (!properties.leftmargin) changeBgColor("var(--background)"); // Don't change the background color if this is a startup event
             localStorage.madesktopColorScheme = value;
+        }
+        if (properties.scale) {
+            if (!properties.bgcolor) { // Ignore if this is a startup event
+                const value = properties.scale.value;
+                changeScale(value == "custom" ? localStorage.madesktopLastCustomScale : properties.scale.value);
+                localStorage.madesktopScaleFactor = scaleFactor;
+            }
+        }
+        if (properties.customscale) {
+            if (!properties.bgcolor) { // Ignore if this is a startup event
+                changeScale(properties.customscale.value / 100);
+                localStorage.madesktopScaleFactor = scaleFactor;
+                localStorage.madesktopLastCustomScale = scaleFactor;
+            }
         }
         if (properties.reset) {
             if (!properties.bgcolor) { // Ignore if this is a startup event
@@ -208,6 +233,17 @@ function changeColorScheme(scheme) {
     }
 }
 
+// Change the scaling factor
+function changeScale(scale) {
+    scaleFactor = scale || 1;
+    vWidth = window.innerWidth / scaleFactor;
+    vHeight = window.innerHeight / scaleFactor;
+    document.body.style.zoom = scaleFactor;
+    updateIframeScale();
+    document.dispatchEvent(new Event("mouseup")); // Move all deskitems inside the visible area
+    console.log({scaleFactor, vWidth, vHeight, dpi: 96 * scaleFactor});
+}
+
 // Find the cursor position inside an element
 function findPos(elem) {
     let curleft = 0, curtop = 0;
@@ -262,6 +298,32 @@ function createNewDeskItem(openDoc, temp) {
     initDeskMover(windowContainers.length - 1, openDoc, temp);
 }
 
+// Required as mouse movements over iframes are not detectable in the parent document
+function iframeClickEventCtrl(clickable) {
+    const value = clickable ? "auto" : "none";
+    bgHtmlView.style.pointerEvents = value;
+    for (let i = 0; i < windowContainers.length; i++)
+        windowContainers[i].style.pointerEvents = value;
+}
+
+// Change the scaleFactor of all iframes
+function updateIframeScale() {
+    try {
+        bgHtmlView.contentDocument.body.style.zoom = scaleFactor;
+    } catch {
+        // page did not load yet
+    }
+    for (let i = 0; i < windowContainers.length; i++) {
+        try {
+            windowContainers[i].getElementsByClassName("windowElement")[0].contentDocument.body.style.zoom = scaleFactor;
+        } catch {
+            // attempting to do this on destroyed deskitems
+            // or page did not load yet
+            // it works on external webpages thanks to the new WE iframe policy
+        }
+    }
+}
+
 // Just for debugging
 function debug() {
     eval(prompt("실행할 자바스크립트 코드를 입력하십시오. (디버깅용)"));
@@ -274,3 +336,6 @@ function debug() {
         };
     }
 }
+
+// Initialization complete
+document.getElementById("errorWnd").style.display = "none";

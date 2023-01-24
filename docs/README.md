@@ -1,5 +1,5 @@
 # Welcome to ModernActiveDesktop!
-* ModernActiveDesktop, formerly known as Windows 98 Desktop Experience, aims to improve the Classic Theme experience on modern Windows, while upgrading the old ActiveX/OLE-based Active Desktop codes to modern HTML5 ones.
+* ModernActiveDesktop, also known as Windows 98 Desktop Experience, aims to improve the Classic Theme experience on modern Windows, while upgrading the old ActiveX/OLE-based Active Desktop codes to modern HTML5 ones.
 * Designed for Wallpaper Engine.
 <br><br><img src="screenshot.png" width="480px" height="270px" title="Screenshot">
 
@@ -11,6 +11,14 @@
 * To reset one window, click its ⏷ button, choose Reset, and its position, size, and URL will be reset. To completely reset, go to the Wallpaper Engine properties panel, click the big red Reset button first, then click the 'Reset completely' button. Everything will go back to the initial state.
 
 ## Changelog
+
+### 2.1
+* Added a scaling feature for high DPI displays
+    * Configurable in the properties panel
+<br><img src="MADScale.webp" width="360px" height="384px" title="Scaling screenshot">
+* Added error handling
+* Code improvements
+
 ### 2.0
 * Added a system plugin for better usability
     * Open pages with ChannelViewer in a new window or with your default browser
@@ -20,5 +28,5 @@
 * Support multiple Active Desktop item windows
 * Show a documentation window on first run
 
-Copyright (c) 2022 RomanHue  
+Copyright (c) 2023 Ingan121/RomanHue  
 [Licensed under the MIT license](?src=../license.txt&showbackbtn=1)

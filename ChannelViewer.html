@@ -31,7 +31,8 @@
             const iframe = document.getElementById("iframe");
             const container = document.getElementById("container");
             const schemeElement = document.getElementById("scheme");
-
+            let scaleFactor = 1;
+            
             //설정값 불러오기
             if (localStorage.madesktopBgColor) document.body.style.backgroundColor = localStorage.madesktopBgColor;
             if (localStorage.madesktopBgImg) document.body.style.backgroundImage = "url('" + localStorage.madesktopBgImg + "')";
@@ -39,6 +40,7 @@
             if (localStorage.madesktopColorScheme) changeColorScheme(localStorage.madesktopColorScheme, false);
             if (localStorage.madesktopChanViewLeftMargin) container.style.marginLeft = localStorage.madesktopChanViewLeftMargin;
             if (localStorage.madesktopChanViewRightMargin) container.style.marginRight = localStorage.madesktopChanViewRightMargin;
+            changeScale(localStorage.madesktopScaleFactor);
 
             //월페이퍼 엔진 속성값 변경 감지
             window.wallpaperPropertyListener = {
@@ -125,6 +127,20 @@
                         if (!properties.leftmargin) changeBgColor("var(--background)"); // Don't change the background color if this is a startup event
                         localStorage.madesktopColorScheme = value;
                     }
+                    if (properties.scale) {
+                        if (!properties.bgcolor) { // Ignore if this is a startup event
+                            const value = properties.scale.value;
+                            changeScale(value == "custom" ? localStorage.madesktopLastCustomScale : properties.scale.value);
+                            localStorage.madesktopScaleFactor = scaleFactor;
+                        }
+                    }
+                    if (properties.customscale) {
+                        if (!properties.bgcolor) { // Ignore if this is a startup event
+                            changeScale(properties.customscale.value / 100);
+                            localStorage.madesktopScaleFactor = scaleFactor;
+                            localStorage.madesktopLastCustomScale = scaleFactor;
+                        }
+                    }
                     if (properties.reset) {
                         if (!properties.bgcolor) { // Ignore if this is a startup event
                             if (confirm("If you want to reset all the configurations completely, please cancel now, click the big red Reset button below first, then click this button again and continue.")) {
@@ -193,6 +209,14 @@
                             // Ignore it as SysPlug startup is slower than high priority WE startup
                         })
                 }
+            }
+            
+            // Change the scaling factor
+            function changeScale(scale) {
+                scaleFactor = scale || 1;
+                document.body.style.zoom = scaleFactor;
+                iframe.contentDocument.body.style.zoom = scaleFactor;
+                console.log({scaleFactor, dpi: 96 * scaleFactor});
             }
 
             //페이드인 효과

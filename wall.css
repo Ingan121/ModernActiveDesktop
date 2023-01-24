@@ -74,6 +74,7 @@ html,body {
     top: 6px;
     left: 0;
     width: 90px;
+    z-index: 1;
 }
 
 .windowFrame {
@@ -84,6 +85,7 @@ html,body {
     left: 0;
     border: solid 2px transparent;
     border-bottom-width: 4px;
+    background-color: transparent;
 }
 
 .windowElement {
@@ -105,7 +107,7 @@ html,body {
     font-size: 8px;
     text-align: center;
     margin-top: -2px;
-    margin-left: -2px;
+    margin-left: -1px;
 }
 
 .contextMenuItem {
@@ -128,6 +130,45 @@ html,body {
     border: none;
 }
 
-.debug {
+@keyframes appear {
+    0% {
+        opacity: 0;
+    }
+    99% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+#errorWnd {
+    min-width: 300px;
+    max-width: 1000px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    padding-bottom: 6px;
+    animation: appear 5s;
+    z-index: 99999;
+}
+
+#errorWnd > p {
+    text-align: left;
+    margin-left: 16px;
+    margin-right: 16px;
+}
+
+#errorLog {
+    margin: 4px;
+    margin-top: 0;
+    padding: 4px;
+    text-align: left;
+    overflow-x: scroll;
+}
+
+.debsug {
     display: none;
 }

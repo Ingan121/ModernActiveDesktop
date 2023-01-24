@@ -1,6 +1,6 @@
 {
 	"contentrating" : "Everyone",
-	"description" : "Wallpaper for imitating the Windows 98 desktop experience\r\n\r\nThis wallpaper includes Windows 98's Channel Bar and the startup sound.\r\n\r\nSome channel items won't show properly because of the limitations of the iframe security restrictions.\r\n\r\nPowered by https://jdan.github.io/98.css/\r\n\r\nRight click this wallpaper and click 'Open in Explorer' to view the source code and the license (MIT.)\r\n\r\nVisit https://winclassic.boards.net to learn how to get the classic theme on Windows 8+ or Windows 7 with Aero enabled.\r\n\r\nSource code download: https://www.romanhue.xyz/walls/compressed/ModernActiveDesktop.zip",
+	"description" : "Wallpaper for imitating the Windows 98 desktop experience\r\n\r\nThis wallpaper includes Windows 98's Channel Bar and the startup sound.\r\n\r\nSome channel items won't show properly because of the limitations of the iframe security restrictions.\r\n\r\nPowered by https://jdan.github.io/98.css/\r\n\r\nRight click this wallpaper and click 'Open in Explorer' to view the source code and the license (MIT.)\r\n\r\nVisit https://winclassic.boards.net to learn how to get the classic theme on Windows 8+ or Windows 7 with Aero enabled.",
 	"file" : "index.html",
 	"general" : 
 	{
@@ -131,6 +131,15 @@
 				"type" : "combo",
 				"value" : "98"
 			},
+			"customscale" : 
+			{
+				"condition" : "scale.value == \"custom\"",
+				"index" : 13,
+				"order" : 113,
+				"text" : "Custom scale (%)",
+				"type" : "textinput",
+				"value" : "100"
+			},
 			"leftmargin" : 
 			{
 				"condition" : "",
@@ -183,8 +192,8 @@
 			"reset" : 
 			{
 				"condition" : "reset.value = false; true",
-				"index" : 12,
-				"order" : 112,
+				"index" : 14,
+				"order" : 114,
 				"text" : "Reset completely",
 				"type" : "bool",
 				"value" : false
@@ -197,6 +206,50 @@
 				"text" : "Right icon area",
 				"type" : "textinput",
 				"value" : "0px"
+			},
+			"scale" : 
+			{
+				"condition" : "",
+				"index" : 12,
+				"options" : 
+				[
+					{
+						"label" : "100%",
+						"value" : "1"
+					},
+					{
+						"label" : "125%",
+						"value" : "1.25"
+					},
+					{
+						"label" : "150%",
+						"value" : "1.5"
+					},
+					{
+						"label" : "175%",
+						"value" : "1.75"
+					},
+					{
+						"label" : "200%",
+						"value" : "2"
+					},
+					{
+						"label" : "225%",
+						"value" : "2.25"
+					},
+					{
+						"label" : "250%",
+						"value" : "2.5"
+					},
+					{
+						"label" : "Custom",
+						"value" : "custom"
+					}
+				],
+				"order" : 112,
+				"text" : "Scale",
+				"type" : "combo",
+				"value" : "1"
 			},
 			"schemecolor" : 
 			{
@@ -217,8 +270,8 @@
 	},
 	"preview" : "preview.jpg",
 	"tags" : [ "Retro" ],
-	"title" : "ModernActiveDesktop (Windows 98 Desktop Experience)",
-	"type" : "Web",
+	"title" : "Windows 98 Desktop Experience",
+	"type" : "web",
 	"version" : 6,
 	"visibility" : "public",
 	"workshopid" : "2278898637",
