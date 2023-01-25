@@ -142,8 +142,8 @@ function processNewWindow(childWindow, details) {
   if (url.includes(cvStr)) {
     childWindow.setSize(1280, 720);
     pageUrl = new URL(url).searchParams.get('page');
-	config = JSON.parse(fs.readFileSync(configPath));
-	if (config.openWith == 1) childWindow.webContents.executeJavaScript('document.body.requestFullscreen()', true);
+    config = JSON.parse(fs.readFileSync(configPath));
+    if (config.openWith == 1) childWindow.webContents.executeJavaScript('document.body.requestFullscreen()', true);
   } else {
     return;
     //pageUrl = url;
@@ -348,11 +348,11 @@ function onRequest(req, res) {
         });
 
         req.on('end', function () {
-		      config = JSON.parse(fs.readFileSync(configPath));
+          config = JSON.parse(fs.readFileSync(configPath));
           if (!body.startsWith('http')) body = url.pathToFileURL(path.normalize(`${__dirname}/../../../${body}`)).toString();
           
           if (config.openWith < 2) mainWindow.webContents.executeJavaScript(`openPage("${body}");`);
-		      else shell.openExternal(body);
+          else shell.openExternal(body);
           res.end('OK');
         });
       } else {
@@ -376,7 +376,7 @@ function onRequest(req, res) {
 
         req.on('end', function () {
           const reqParse = JSON.parse(body);
-		      config = JSON.parse(fs.readFileSync(configPath));
+          config = JSON.parse(fs.readFileSync(configPath));
           config.openWith = reqParse.openWith;
           fs.writeFileSync(configPath, JSON.stringify(config));
           res.end('OK');
@@ -388,20 +388,20 @@ function onRequest(req, res) {
       return;
 
     case '/bghtmlconfig':
-	    res.writeHead(200, {'Content-Type':'text/html'});
+      res.writeHead(200, {'Content-Type':'text/html'});
       res.end('OK');
-	    return;
+      return;
 
     case '/systemscheme':
-	    res.writeHead(200, {'Content-Type':'text/css'});
+      res.writeHead(200, {'Content-Type':'text/css'});
       generateCssScheme();
       res.end(schemeStyle);
-	    return;
-	  
-	  case '/connecttest':
-	    res.writeHead(200, {'Content-Type':'text/html'});
+      return;
+      
+    case '/connecttest':
+      res.writeHead(200, {'Content-Type':'text/html'});
       res.end('OK');
-	    return;
+      return;
 
     case '/debugger':
       res.writeHead(200, {'Content-Type':'text/html'});

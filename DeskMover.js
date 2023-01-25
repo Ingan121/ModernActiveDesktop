@@ -29,9 +29,7 @@ function initDeskMover(num, openDoc, temp) {
     // Add to destroyed list first for temp items
     // Will be destroyed on the next load
     if (temp) localStorage.madesktopDestroyedItems += `|${numStr}|`;
-
-    const useNonADStyle = localStorage.madesktopNonADStyle; // non-ActiveDesktop styling
-
+    
     if (useNonADStyle) {
         windowContainer.classList.add("window");
         windowTitlebar.style.display = "block";

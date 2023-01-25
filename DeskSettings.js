@@ -22,6 +22,7 @@ if (localStorage.madesktopBgImg) document.body.style.backgroundImage = "url('" +
 changeBgImgMode(localStorage.madesktopBgImgMode ? localStorage.madesktopBgImgMode : "center");
 if (localStorage.madesktopColorScheme) changeColorScheme(localStorage.madesktopColorScheme, false);
 changeScale(localStorage.madesktopScaleFactor);
+const useNonADStyle = localStorage.madesktopNonADStyle; // non-ActiveDesktop styling
 
 initDeskMover(0);
 
