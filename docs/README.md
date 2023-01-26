@@ -4,6 +4,7 @@
 <br><br><img src="screenshot.png" width="480px" height="270px" title="Screenshot">
 
 ## Basic Usage Guide
+* Place the mouse cursor at the top of a window to show its title bar and menus.
 * You can change MAD's settings within Wallpaper Engine. Open the Wallpaper Engine wallpaper selection window, then you'll see the properties panel on the right side.
 * In the properties panel, you can configure the background, change the color scheme, turn on or off the Windows 98 startup sound, change the Active Desktop item style, and so on. Try them out now!
 * To add a new Active Desktop item on your desktop, click the empty box next to the 'Add a new ActiveDesktop item', and a new window will appear. To load a website into it, move the cursor near its upper side, click the ⏷ button, choose Configure, then enter your desired address in the prompt window.
@@ -28,5 +29,5 @@
 * Support multiple Active Desktop item windows
 * Show a documentation window on first run
 
-Copyright (c) 2023 Ingan121/RomanHue
+Copyright (c) 2023 Ingan121/RomanHue  
 [Licensed under the MIT license](?src=../license.txt&showbackbtn=1)
