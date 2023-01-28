@@ -18,7 +18,10 @@ let vHeight = window.innerHeight;
 
 // Load configs
 if (localStorage.madesktopBgColor) document.body.style.backgroundColor = localStorage.madesktopBgColor;
-if (localStorage.madesktopBgImg) document.body.style.backgroundImage = "url('" + localStorage.madesktopBgImg + "')";
+if (localStorage.madesktopBgImg) {
+    if (localStorage.madesktopBgImg.startsWith("file:///")) document.body.style.backgroundImage = "url('" + localStorage.madesktopBgImg + "')"; // Set in WE
+    else document.body.style.backgroundImage = "url('data:image/png;base64," + localStorage.madesktopBgImg + "')"; // Set in config.html
+}
 changeBgImgMode(localStorage.madesktopBgImgMode ? localStorage.madesktopBgImgMode : "center");
 if (localStorage.madesktopColorScheme) changeColorScheme(localStorage.madesktopColorScheme, false);
 changeScale(localStorage.madesktopScaleFactor);
@@ -45,9 +48,15 @@ localStorage.madesktopLastVer = "2.1";
 
 if (localStorage.madesktopItemVisible == "false") windowContainers[0].style.display = "none";
 
+// Change the scale on load
 bgHtmlView.addEventListener('load', function () {
     this.contentDocument.body.style.zoom = scaleFactor;
 });
+
+if (typeof wallpaperOnVideoEnded !== "function") { // Check if not running in Wallpaper Engine
+    bgHtmlContainer.style.display = "none";
+    document.getElementById("newbtn").style.display = "block";
+}
 
 // Detect WE config change
 window.wallpaperPropertyListener = {
@@ -65,7 +74,7 @@ window.wallpaperPropertyListener = {
                 localStorage.madesktopBgImg = path;
             } else {
                 document.body.style.backgroundImage = 'none';
-                localStorage.removeItem('bgImg');
+                localStorage.removeItem('madesktopBgImg');
             }
         }
         if (properties.bgimgmode) {
@@ -187,31 +196,31 @@ function changeBgColor(str) {
 
 function changeBgImgMode(value) {
     switch (value) {
-        case "center": //가운데
+        case "center": // Center
             document.body.style.backgroundSize = "auto";
             document.body.style.backgroundRepeat = "no-repeat";
             document.body.style.backgroundPosition = "center center";
-        break;
-        case "grid": //바둑판식
+            break;
+        case "grid": // Tile
             document.body.style.backgroundSize = "auto";
             document.body.style.backgroundRepeat = "repeat";
             document.body.style.backgroundPosition = "left top";
-        break;
-        case "horizfit": //세로 맞춤
+            break;
+        case "horizfit": // Fit horizontally
             document.body.style.backgroundSize = "contain";
             document.body.style.backgroundRepeat = "no-repeat";
             document.body.style.backgroundPosition = "center center";
-        break;
-        case "vertfit": //가로 맞춤
+            break;
+        case "vertfit": // Fit vertically
             document.body.style.backgroundSize = "cover";
             document.body.style.backgroundRepeat = "no-repeat";
             document.body.style.backgroundPosition = "center center";
-        break;
-        case "scale": //늘이기
+            break;
+        case "scale": // Stretch
             document.body.style.backgroundSize = "100% 100%";
             document.body.style.backgroundRepeat = "no-repeat";
             document.body.style.backgroundPosition = "center center";
-        break;
+            break;
     }
 }
 

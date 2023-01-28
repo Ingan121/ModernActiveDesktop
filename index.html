@@ -39,6 +39,7 @@
         <noscript> Please enable JavaScript!</noscript>
         <button onclick="copyLog();">Copy log</button> <button onclick="location.reload(true);">Retry</button> <button onclick="errorWnd.style.display='none';">Ignore</button>
     </div>
+    <button id="newbtn" onclick="createNewDeskItem();localStorage.madesktopItemCount++;">+</button>
     <a class="debug" href="javascript:localStorage.clear();location.reload(true);" style="position: absolute; right: 0; top: 0;">Reset config</a>
     <a class="debug" href="javascript:location.reload(true);" style="position: absolute; right: 0; top: 15px;">Refresh</a>
     <script>

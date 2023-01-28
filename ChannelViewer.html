@@ -28,21 +28,35 @@
             <iframe id="iframe" src="data:text/plain,Loading..." onload="document.getElementById('loadingText').style.display = 'none';"></iframe>
         </div>
         <script>
+            const bgHtmlView = document.getElementById("bgHtml");
             const iframe = document.getElementById("iframe");
             const container = document.getElementById("container");
             const schemeElement = document.getElementById("scheme");
             let scaleFactor = 1;
             
-            //설정값 불러오기
+            // Load configs
             if (localStorage.madesktopBgColor) document.body.style.backgroundColor = localStorage.madesktopBgColor;
-            if (localStorage.madesktopBgImg) document.body.style.backgroundImage = "url('" + localStorage.madesktopBgImg + "')";
+            if (localStorage.madesktopBgImg) {
+                if (localStorage.madesktopBgImg.startsWith("file:///")) document.body.style.backgroundImage = "url('" + localStorage.madesktopBgImg + "')"; // Set in WE
+                else document.body.style.backgroundImage = "url('data:image/png;base64," + localStorage.madesktopBgImg + "')"; // Set in config.html
+            }
             changeBgImgMode(localStorage.madesktopBgImgMode ? localStorage.madesktopBgImgMode : "center");
             if (localStorage.madesktopColorScheme) changeColorScheme(localStorage.madesktopColorScheme, false);
             if (localStorage.madesktopChanViewLeftMargin) container.style.marginLeft = localStorage.madesktopChanViewLeftMargin;
             if (localStorage.madesktopChanViewRightMargin) container.style.marginRight = localStorage.madesktopChanViewRightMargin;
             changeScale(localStorage.madesktopScaleFactor);
+            
+            
+            // Change the scale on load
+            bgHtmlView.addEventListener('load', function () {
+                this.contentDocument.body.style.zoom = scaleFactor;
+            });
+            
+            iframe.addEventListener('load', function () {
+                this.contentDocument.body.style.zoom = scaleFactor;
+            });
 
-            //월페이퍼 엔진 속성값 변경 감지
+            // Detect WE config change
             window.wallpaperPropertyListener = {
                 applyUserProperties: function(properties) {
                     if (properties.bgcolor) {
@@ -50,12 +64,12 @@
                     }
                     if (properties.bgimg) {
                         if (properties.bgimg.value) {
-                            var path = "file:///" + properties.bgimg.value;
+                            const path = "file:///" + properties.bgimg.value;
                             document.body.style.backgroundImage = "url('" + path + "')";
                             localStorage.madesktopBgImg = path;
                         } else {
                             document.body.style.backgroundImage = 'none';
-                            localStorage.removeItem('bgImg');
+                            localStorage.removeItem('madesktopBgImg');
                         }
                     }
                     if (properties.bgimgmode) {
@@ -64,7 +78,7 @@
                     }
                     if (properties.additem) {
                         if (!properties.bgcolor) { // Ignore if this is a startup event
-                            alert("Please close the ChannelViewer first then try again.");
+                            alert("Please close ChannelViewer first then try again.");
                         }
                     }
                     if (properties.nonadstyle) {
@@ -72,12 +86,12 @@
                         else localStorage.removeItem("madesktopNonADStyle");
                     }
                     if (properties.leftmargin) {
-                        var str = isNaN(properties.leftmargin.value) ? properties.leftmargin.value : properties.leftmargin.value + 'px';
+                        const str = isNaN(properties.leftmargin.value) ? properties.leftmargin.value : properties.leftmargin.value + 'px';
                         container.style.marginLeft = str;
                         localStorage.madesktopChanViewLeftMargin = str;
                     }
                     if (properties.rightmargin) {
-                        var str = isNaN(properties.rightmargin.value) ? properties.rightmargin.value : properties.rightmargin.value + 'px';
+                        const str = isNaN(properties.rightmargin.value) ? properties.rightmargin.value : properties.rightmargin.value + 'px';
                         container.style.marginRight = str;
                         localStorage.madesktopChanViewRightMargin = str;
                     }
@@ -85,17 +99,7 @@
                         if (!properties.bgcolor) { // Ignore if this is a startup event
                             if (properties.sysplugintegration.value) {
                                 localStorage.sysplugIntegration = true;
-
-                                fetch("http://localhost:3031/connecttest")
-                                .then(response => response.text())
-                                .then(responseText => {
-                                    if (responseText != "OK") {
-                                        alert("An error occured!\nSystem plugin response: " + responseText);
-                                    }
-                                })
-                                .catch(error => {
-                                    alert("System plugin is not running. Please make sure you have installed it properly. If you don't want to use it, please disable the system plugin integration option.");
-                                })
+                                location.href = 'index.html';
                             } else {
                                 localStorage.removeItem("sysplugIntegration");
                                 if (localStorage.madesktopColorScheme == "sys") localStorage.removeItem("madesktopColorScheme");
@@ -104,22 +108,9 @@
                     }
                     if (properties.openwith) {
                         if (!properties.bgcolor) { // Ignore if this is a startup event
-                            if (localStorage.madesktopPrevOWConfigRequest != properties.openwith.value) {
-                                fetch("http://localhost:3031/config", { method: "POST", body: `{"openWith": ${properties.openwith.value}}` })
-                                    .then(response => response.text())
-                                    .then(responseText => {
-                                        if (responseText != "OK") {
-                                            alert("An error occured!\nSystem plugin response: " + responseText);
-                                        }
-                                    })
-                                    .catch(error => {
-                                        alert(NO_SYSPLUG_ALERT);
-                                        createNewDeskItem("SysplugSetupGuide.md", true);
-                                        localStorage.madesktopItemCount++;
-                                    });
-                            }
+                            // This should never happen
+                            location.href = 'index.html';
                         }
-                        localStorage.madesktopPrevOWConfigRequest = properties.openwith.value;
                     }
                     if (properties.colorscheme || properties.colorscheme2) {
                         const value = localStorage.sysplugIntegration ? properties.colorscheme.value : properties.colorscheme2.value;
@@ -155,40 +146,38 @@
                 }
             };
 
-            //색상 선택 버튼 및 배경색 설정값과 함께 배경색 변경
             function changeBgColor(str) {
                 document.body.style.backgroundColor = str;
                 localStorage.madesktopBgColor = str;
             }
 
-            //배경 이미지 채우기 모드 변경
             function changeBgImgMode(value) {
                 switch (value) {
-                    case "center": //가운데
+                    case "center": // Center
                         document.body.style.backgroundSize = "auto";
                         document.body.style.backgroundRepeat = "no-repeat";
                         document.body.style.backgroundPosition = "center center";
-                    break;
-                    case "grid": //바둑판식
+                        break;
+                    case "grid": // Tile
                         document.body.style.backgroundSize = "auto";
                         document.body.style.backgroundRepeat = "repeat";
                         document.body.style.backgroundPosition = "left top";
-                    break;
-                    case "horizfit": //세로 맞춤
+                        break;
+                    case "horizfit": // Fit horizontally
                         document.body.style.backgroundSize = "contain";
                         document.body.style.backgroundRepeat = "no-repeat";
                         document.body.style.backgroundPosition = "center center";
-                    break;
-                    case "vertfit": //가로 맞춤
+                        break;
+                    case "vertfit": // Fit vertically
                         document.body.style.backgroundSize = "cover";
                         document.body.style.backgroundRepeat = "no-repeat";
                         document.body.style.backgroundPosition = "center center";
-                    break;
-                    case "scale": //늘이기
+                        break;
+                    case "scale": // Stretch
                         document.body.style.backgroundSize = "100% 100%";
                         document.body.style.backgroundRepeat = "no-repeat";
                         document.body.style.backgroundPosition = "center center";
-                    break;
+                        break;
                 }
             }
 
@@ -215,88 +204,63 @@
             function changeScale(scale) {
                 scaleFactor = scale || 1;
                 document.body.style.zoom = scaleFactor;
-                iframe.contentDocument.body.style.zoom = scaleFactor;
+                updateIframeScale();
                 console.log({scaleFactor, dpi: 96 * scaleFactor});
             }
 
-            //페이드인 효과
-            function fadeIn(elem) {
-                var i = 0.1;
-                elem.style.opacity = i;
-                elem.style.filter = "alpha(opacity=" + i * 100 + ")";
-                elem.style.display = "block";
-                settingsWindow.style.marginTop = -(settingsWindow.getBoundingClientRect().height / 2) + 'px';
-                var interval = setInterval(function () {
-                    if (i >= 1){
-                        clearInterval(interval);
-                    }
-                    elem.style.opacity = i;
-                    elem.style.filter = "alpha(opacity=" + i * 100 + ")";
-                    i += i * 0.1;
-                }, 5);
-                setTimeout(function() {
-                    clearInterval(interval);
-                    elem.style.opacity = 1;
-                    elem.style.filter = "alpha(opacity=" + 100 + ")";
-                }, 500);
+            // Change the scaleFactor of all iframes
+            function updateIframeScale() {
+                try {
+                    bgHtmlView.contentDocument.body.style.zoom = scaleFactor;
+                } catch {
+                    // page did not load yet
+                }
+                try {
+                    iframe.contentDocument.body.style.zoom = scaleFactor;
+                } catch {
+                    // page did not load yet
+                    // it works on external webpages thanks to the new WE iframe policy
+                }
             }
 
-            //페이드아웃 효과
-            function fadeOut(elem) {
-                var i = 1; 
-                var interval = setInterval(function () {
-                    if (i <= 0.1){
-                        clearInterval(interval);
-                        elem.style.display = "none";
-                    }
-                    elem.style.opacity = i;
-                    elem.style.filter = "alpha(opacity=" + i * 100 + ")";
-                    i -= i * 0.1;
-                }, 5);
-                setTimeout(function() {
-                    clearInterval(interval);
-                    elem.style.display = "none";
-                }, 500);
-            }
-
-            //rgb(red, green, blue) 형식의 색상 코드를 #rrggbb 형식으로 변환
+            // Convert rgb(red, green, blue) to #rrggbb
             function rgbToHex(rgbType) {
-                var rgb = rgbType.replace(/[^%,.\d]/g, "").split(",");
-            
-                for (var x = 0; x < 3; x++) {
+                const rgb = rgbType.replace(/[^%,.\d]/g, "").split(",");
+
+                for (let x = 0; x < 3; x++) {
                     if (rgb[x].indexOf("%") > -1) rgb[x] = Math.round(parseFloat(rgb[x]) * 2.55); 
                 }
-            
-                var toHex = function(string) {
+
+                const toHex = function(string) {
                     string = parseInt(string, 10).toString(16);
                     string = (string.length === 1) ? "0" + string : string;
-                
+
                     return string;
                 };
-            
-                var r = toHex(rgb[0]);
-                var g = toHex(rgb[1]);
-                var b = toHex(rgb[2]);
-            
-                var hexType = "#" + r + g + b;
-            
+
+                const r = toHex(rgb[0]);
+                const g = toHex(rgb[1]);
+                const b = toHex(rgb[2]);
+
+                const hexType = "#" + r + g + b;
+
                 return hexType;
             }
 
-            //월페이퍼 엔진이 보내주는 색상값 형식을 #rrggbb 형식로 변환
+            // Convert WE color format to #rrggbb
             function parseWallEngColorProp(value) {
-                var customColor = value.split(' ');
+                let customColor = value.split(' ');
                 customColor = customColor.map(function(c) {
                     return Math.ceil(c * 255);
                 });
                 return rgbToHex('rgb(' + customColor + ')');
             }
 
-            //설정창에서 RomanHue 글자 누르면 뜨는 디버깅용 기능
+            // Just for debugging
             function debug() {
                 eval(prompt("실행할 자바스크립트 코드를 입력하십시오. (디버깅용)"));
-                function loadEruda() { //Eruda 개발자 도구 로드 (근데 월페이퍼 엔진 설정에서 CEF devtools 포트 설정해서 크롬 개발자도구 쓰는게 더 나음)
-                    var script = document.createElement('script');
+                function loadEruda() { // Load Eruda devtools (but Chrome DevTools is better)
+                    const script = document.createElement('script');
                     script.src="https://cdn.jsdelivr.net/npm/eruda";
                     document.body.appendChild(script);
                     script.onload = function () {
@@ -305,7 +269,7 @@
                 }
             }
 
-            var url = new URL(location.href);
+            const url = new URL(location.href);
             if (url.searchParams.get("sb") !== null) iframe.sandbox = "allow-modals allow-scripts";
             iframe.src = url.searchParams.get("page") || "data:text/plain,Nothing loaded!";
             iframe.contentWindow.onunload = function () {

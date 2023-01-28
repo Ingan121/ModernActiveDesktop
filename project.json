@@ -9,32 +9,42 @@
 			"additem" : 
 			{
 				"condition" : "additem.value = false; true",
-				"index" : 3,
-				"order" : 103,
+				"index" : 6,
+				"order" : 106,
 				"text" : "Add a new ActiveDesktop item",
 				"type" : "bool",
 				"value" : false
 			},
 			"bgcolor" : 
 			{
-				"index" : 0,
-				"order" : 100,
+				"index" : 1,
+				"order" : 101,
 				"text" : "Background color",
 				"type" : "color",
 				"value" : "0 0.5019607843137255 0.5019607843137255"
 			},
+			"bghtmlconfig" : 
+			{
+				"condition" : "bghtmlconfig.value = false; bgtype.value == \"web\"",
+				"index" : 5,
+				"order" : 105,
+				"text" : "Set BG HTML",
+				"type" : "bool",
+				"value" : false
+			},
 			"bgimg" : 
 			{
-				"index" : 1,
-				"order" : 101,
+				"condition" : "bgtype.value == \"image\"",
+				"index" : 2,
+				"order" : 102,
 				"text" : "BG image",
 				"type" : "file",
 				"value" : ""
 			},
 			"bgimgmode" : 
 			{
-				"condition" : "bgimg.value",
-				"index" : 2,
+				"condition" : "bgtype.value == \"image\" && bgimg.value",
+				"index" : 3,
 				"options" : 
 				[
 					{
@@ -58,15 +68,52 @@
 						"value" : "scale"
 					}
 				],
-				"order" : 102,
+				"order" : 103,
 				"text" : "BG image style",
 				"type" : "combo",
 				"value" : "center"
 			},
+			"bgtype" : 
+			{
+				"index" : 0,
+				"options" : 
+				[
+					{
+						"label" : "Color",
+						"value" : "color"
+					},
+					{
+						"label" : "Image",
+						"value" : "image"
+					},
+					{
+						"label" : "Video",
+						"value" : "video"
+					},
+					{
+						"label" : "Web",
+						"value" : "web"
+					}
+				],
+				"order" : 100,
+				"text" : "Background type",
+				"type" : "combo",
+				"value" : "color"
+			},
+			"bgvid" : 
+			{
+				"condition" : "bgtype.value == \"video\"",
+				"fileType" : "video",
+				"index" : 4,
+				"order" : 104,
+				"text" : "BG video",
+				"type" : "file",
+				"value" : ""
+			},
 			"colorscheme" : 
 			{
 				"condition" : "sysplugintegration.value",
-				"index" : 10,
+				"index" : 13,
 				"options" : 
 				[
 					{
@@ -94,7 +141,7 @@
 						"value" : "sys"
 					}
 				],
-				"order" : 110,
+				"order" : 113,
 				"text" : "Color scheme",
 				"type" : "combo",
 				"value" : "98"
@@ -102,7 +149,7 @@
 			"colorscheme2" : 
 			{
 				"condition" : "!sysplugintegration.value",
-				"index" : 11,
+				"index" : 14,
 				"options" : 
 				[
 					{
@@ -126,7 +173,7 @@
 						"value" : "marine"
 					}
 				],
-				"order" : 111,
+				"order" : 114,
 				"text" : "Color scheme",
 				"type" : "combo",
 				"value" : "98"
@@ -134,8 +181,8 @@
 			"customscale" : 
 			{
 				"condition" : "scale.value == \"custom\"",
-				"index" : 13,
-				"order" : 113,
+				"index" : 16,
+				"order" : 116,
 				"text" : "Custom scale (%)",
 				"type" : "textinput",
 				"value" : "100"
@@ -143,16 +190,16 @@
 			"leftmargin" : 
 			{
 				"condition" : "",
-				"index" : 5,
-				"order" : 105,
+				"index" : 8,
+				"order" : 108,
 				"text" : "Left icon area",
 				"type" : "textinput",
 				"value" : "75px"
 			},
 			"nonadstyle" : 
 			{
-				"index" : 4,
-				"order" : 104,
+				"index" : 7,
+				"order" : 107,
 				"text" : "Use non-ActiveDesktop style windows",
 				"type" : "bool",
 				"value" : false
@@ -160,7 +207,7 @@
 			"openwith" : 
 			{
 				"condition" : "sysplugintegration.value",
-				"index" : 9,
+				"index" : 12,
 				"options" : 
 				[
 					{
@@ -176,15 +223,15 @@
 						"value" : "2"
 					}
 				],
-				"order" : 109,
+				"order" : 112,
 				"text" : "Open page with...",
 				"type" : "combo",
 				"value" : "0"
 			},
 			"playstartsnd" : 
 			{
-				"index" : 7,
-				"order" : 107,
+				"index" : 10,
+				"order" : 110,
 				"text" : "Play startup sound",
 				"type" : "bool",
 				"value" : true
@@ -192,8 +239,8 @@
 			"reset" : 
 			{
 				"condition" : "reset.value = false; true",
-				"index" : 14,
-				"order" : 114,
+				"index" : 17,
+				"order" : 117,
 				"text" : "Reset completely",
 				"type" : "bool",
 				"value" : false
@@ -201,8 +248,8 @@
 			"rightmargin" : 
 			{
 				"condition" : "",
-				"index" : 6,
-				"order" : 106,
+				"index" : 9,
+				"order" : 109,
 				"text" : "Right icon area",
 				"type" : "textinput",
 				"value" : "0px"
@@ -210,7 +257,7 @@
 			"scale" : 
 			{
 				"condition" : "",
-				"index" : 12,
+				"index" : 15,
 				"options" : 
 				[
 					{
@@ -246,7 +293,7 @@
 						"value" : "custom"
 					}
 				],
-				"order" : 112,
+				"order" : 115,
 				"text" : "Scale",
 				"type" : "combo",
 				"value" : "1"
@@ -260,8 +307,8 @@
 			},
 			"sysplugintegration" : 
 			{
-				"index" : 8,
-				"order" : 108,
+				"index" : 11,
+				"order" : 111,
 				"text" : "System plugin integration",
 				"type" : "bool",
 				"value" : false
@@ -271,8 +318,8 @@
 	"preview" : "preview.jpg",
 	"tags" : [ "Retro" ],
 	"title" : "Windows 98 Desktop Experience",
-	"type" : "Web",
-	"version" : 8,
+	"type" : "web",
+	"version" : 9,
 	"visibility" : "public",
 	"workshopid" : "2278898637",
 	"workshopurl" : "steam://url/CommunityFilePage/2278898637"
