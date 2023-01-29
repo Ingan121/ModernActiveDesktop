@@ -1,7 +1,9 @@
 # Welcome to ModernActiveDesktop!
 * ModernActiveDesktop, also known as Windows 98 Desktop Experience, aims to improve the Classic Theme experience on modern Windows, while upgrading the old ActiveX/OLE-based Active Desktop codes to modern HTML5 ones.
 * Designed for Wallpaper Engine.
-<br><br><img src="docs/screenshot.png" width="480px" height="270px" title="Screenshot">
+<br><br><img src="docs/screenshot.png" width="480px" height="270px" title="Screenshot"><br>
+* [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2278898637)
+* [Try in your browser](https://www.ingan121.com/mad/)
 
 ## Basic Usage Guide
 * Place the mouse cursor at the top of a window to show its title bar and menus.
