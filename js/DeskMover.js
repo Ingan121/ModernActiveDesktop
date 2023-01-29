@@ -237,15 +237,10 @@ function initDeskMover(num, openDoc, temp) {
 
     windowMenuBtn.addEventListener('click', function () {
         contextMenuBg.style.display = "block";
-        var interval = setInterval(function () {
-            contextMenuBg.style.height = parseInt(contextMenuBg.style.height) + 1 + 'px';
-            contextMenu.style.top = parseInt(contextMenu.style.top) + 1 + 'px';
-            if (parseInt(contextMenuBg.style.height) >= 68 && parseInt(contextMenu.style.top) >= 0) {
-                clearInterval(interval);
-                bgHtmlContainer.addEventListener('click', closeContextMenu);
-                iframeClickEventCtrl(false);
-            }
-        }, 1);
+        setTimeout(function () {
+            document.addEventListener('click', closeContextMenu);
+            iframeClickEventCtrl(false);
+        }, 100);
     });
 
     contextMenu.addEventListener('mousedown', function (event) {
@@ -331,9 +326,7 @@ function initDeskMover(num, openDoc, temp) {
 
     function closeContextMenu() {
         contextMenuBg.style.display = "none";
-        contextMenuBg.style.height = '0px';
-        contextMenu.style.top = '-68px';
-        bgHtmlContainer.removeEventListener('click', closeContextMenu);
+        document.removeEventListener('click', closeContextMenu);
         iframeClickEventCtrl(true);
     }
 

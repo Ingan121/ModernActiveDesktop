@@ -3,17 +3,18 @@
 <head>
 	<title>ModernActiveDesktop Settings</title>
 	<meta charset="utf-8">
-    <link rel="stylesheet" href="98.css">
-    <link rel="stylesheet" href="config.css">
+    <link rel="stylesheet" href="css/98.css">
+    <link rel="stylesheet" href="css/config.css">
+    <link id="scheme" rel="stylesheet" href="data:text/css,">
 </head>
 <body>
-    <p class="Label MenuItem" style="font-size: 20px; font-weight: bold; width: 250px !important;">Settings</p>
+    <p class="Label MenuItem" style="font-size: 20px; font-weight: bold;">Settings</p>
     <div class="MenuItem">
         <label class="InlineBlock">
             <p class="Label InlineBlock">BG Color: </p>
-            <input id="colorPicker" type="color" class="InlineBlock" style="cursor: pointer;" onclick="alert('OK 버튼을 눌러 색상 선택창 표시\n(표시되지 않을 경우 색 버튼을 다시 누르세요.)\n키보드는 작동하지 않으니 키보드 입력 버튼을 사용하세요.')" value="#008080" onchange="parent.changeBgColor(this.value);">
+            <input id="colorPicker" type="color" class="InlineBlock" style="cursor: pointer;" value="#008080" onchange="parent.changeBgColor(this.value);">
         </label>
-        <p class="Label Button InlineBlock" onclick="const str = prompt('색상 코드 입력 (형식: #RRGGBB)', colorPickerBtn.value); if (str === null) return; parent.changeBgColor(str);">Keyboard Input</p>
+        <button onclick="const str = prompt('Enter color (format: #RRGGBB)', colorPickerBtn.value); if (str === null) return; parent.changeBgColor(str);">Change with keyboard</button>
     </div>
     <div class="MenuItem">
         <p class="Label InlineBlock">BG Image: </p>
@@ -23,19 +24,29 @@
         </label>
         | <p class="Label Button InlineBlock" onclick="parent.document.body.style.backgroundImage = 'none'; localStorage.removeItem('madesktopBgImg');">Remove</p>
         <form name="imgModeSelector" class="MenuItem">
-            <p class="Label InlineBlock">BG Fit: </p>
+            <p class="Label InlineBlock">BG Style: </p>
             <input id="radcenter" type="radio" name="imgMode" value="center" checked><label for="radcenter">Center</label>
-            <input id="radgrid" type="radio" name="imgMode" value="grid"><label for="radgrid">Tile</label><br>
+            <input id="radgrid" type="radio" name="imgMode" value="grid"><label for="radgrid">Tile</label>
             <input id="radhorizfit" type="radio" name="imgMode" value="horizfit"><label for="radhorizfit">Fit horizontally</label>
             <input id="radvertfit" type="radio" name="imgMode" value="vertfit"><label for="radvertfit">Fit vertically</label>
             <input id="radscale" type="radio" name="imgMode" value="scale"><label for="radscale">Stretch</label>
         </form>
     </div>
-    <p class="Label Button MenuItem" onclick="const value = prompt('Available values : 98 / 2k / xp / brick / marine / sys'); parent.changeColorScheme(value); localStorage.madesktopColorScheme = value;">Change color scheme</p>
-    <p class="Label Button MenuItem" onclick="const value = prompt('Enter scale (%) :') / 100; parent.changeScale(value); localStorage.madesktopScaleFactor = value;">Change scale</p>
-    <p class="Label Button InlineBlock" onclick="if (!confirm('정말로 모든 설정값을 초기화하시겠습니까?')) return; localStorage.clear(); parent.location.reload(true);">Reset config</p><span class="DuplicateInWE"> |</span>
-    <p class="Label Button InlineBlock" onclick="parent.location.reload(true);">Refresh</p>
+    <div class="MenuItem">
+        <form name="colorSchemeSelector" class="MenuItem">
+            <p class="Label InlineBlock">Color scheme: </p>
+            <input id="rad98" type="radio" name="colorScheme" value="98" checked><label for="rad98">98</label>
+            <input id="rad2k" type="radio" name="colorScheme" value="2k"><label for="rad2k">2000</label>
+            <input id="radxp" type="radio" name="colorScheme" value="xp"><label for="radxp">XP</label>
+            <input id="radbrick" type="radio" name="colorScheme" value="brick"><label for="radbrick">Brick</label>
+            <input id="radmarine" type="radio" name="colorScheme" value="marine"><label for="radmarine">Marine</label>
+        </form>
+    </div>
+    <input id="nonadstyle" type="checkbox" onchange="if (this.checked) localStorage.madesktopNonADStyle = true; else localStorage.removeItem('madesktopNonADStyle'); parent.location.reload();"><label for="nonadstyle">Use non-ActiveDesktop style windows</label><br>
+    <button style="margin-top: 3px;" onclick="const value = prompt('Enter scale (%) :') / 100; parent.changeScale(value); localStorage.madesktopScaleFactor = value;">Change scale</button>
+    <button onclick="if (!confirm('This will remove every configuration changes of ModernActiveDesktop you made. Are you sure you want to continue?')) return; localStorage.clear(); parent.location.reload(true);">Reset config</button>
+    <button onclick="parent.location.reload(true);">Refresh</button>
     <p class="Label" style="color: gray; font-size: 12px; position: absolute; left: 2px; bottom: 1px" onclick="parent.debug();">Ingan121/RomanHue</p>
-    <script src="config.js"></script>
+    <script src="js/config.js"></script>
 </body>
 </html>

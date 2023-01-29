@@ -5,7 +5,7 @@ channels-en/*
 !channels-en/ChannelList.css
 !channels-en/ProxyRemover.js
 channels-ko
-ChannelViewer/*.png
+images
 sounds
 systemplugin/resources/app/images
 

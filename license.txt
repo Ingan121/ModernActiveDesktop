@@ -1,35 +1,4 @@
-The below license applies to the following files:
-
-    ModernActiveDesktop
-    │  ChannelBar-ko.html
-    │  ChannelBar.html
-    │  ChannelBar.js
-    │  ChannelViewer.html
-    │  DeskMover.js
-    │  DeskSettings.js
-    │  index.html
-    │  license.txt
-    │  preview.jpg
-    │  project.json
-    │  readme.txt
-    │  wall.css
-    │
-    ├─bghtml
-    │      readme.txt
-    │
-    ├─channels-en
-    │      ChannelList.css
-    │      ProxyRemover.js
-    │
-    ├─ChannelViewer
-    │      ChannelViewer.css
-    │
-    ├─docs
-    │      Everything
-    │
-    └─systemplugin\resources\app
-           Everything except .\images\*
-           
+The below license does NOT apply to the files excluded by .gitignore:
 
 ------------------------------------------------
 

@@ -1,6 +1,7 @@
 let windowContainers = document.getElementsByClassName("windowContainer");
 const bgHtmlContainer = document.getElementById("bgHtmlContainer");
 const bgHtmlView = document.getElementById("bgHtmlView");
+const bgVideoView = document.getElementById("bgVideo");
 const schemeElement = document.getElementById("scheme");
 
 const chord = new Audio("sounds/chord.wav");
@@ -18,12 +19,11 @@ let vHeight = window.innerHeight;
 
 // Load configs
 if (localStorage.madesktopBgColor) document.body.style.backgroundColor = localStorage.madesktopBgColor;
-if (localStorage.madesktopBgImg) {
-    if (localStorage.madesktopBgImg.startsWith("file:///")) document.body.style.backgroundImage = "url('" + localStorage.madesktopBgImg + "')"; // Set in WE
-    else document.body.style.backgroundImage = "url('data:image/png;base64," + localStorage.madesktopBgImg + "')"; // Set in config.html
-}
-changeBgImgMode(localStorage.madesktopBgImgMode ? localStorage.madesktopBgImgMode : "center");
-if (localStorage.madesktopColorScheme) changeColorScheme(localStorage.madesktopColorScheme, false);
+changeBgType(localStorage.madesktopBgType || "color");
+changeBgImgMode(localStorage.madesktopBgImgMode || "center");
+if (localStorage.madesktopBgVideoMuted) bgVideoView.muted = true;
+if (localStorage.madesktopBgHtmlSrc) bgHtmlView.src = localStorage.madesktopBgHtmlSrc;
+if (localStorage.madesktopColorScheme) changeColorScheme(localStorage.madesktopColorScheme);
 changeScale(localStorage.madesktopScaleFactor);
 const useNonADStyle = localStorage.madesktopNonADStyle; // non-ActiveDesktop styling
 
@@ -62,24 +62,63 @@ if (typeof wallpaperOnVideoEnded !== "function") { // Check if not running in Wa
 window.wallpaperPropertyListener = {
     applyUserProperties: function(properties) {
         console.log(properties);
+        if (properties.bgtype) {
+            if (!properties.leftmargin) { // Ignore if this is a startup event
+                changeBgType(properties.bgtype.value);
+                localStorage.madesktopBgType = properties.bgtype.value;
+            }
+        }
         if (properties.bgcolor) {
             if (!properties.leftmargin) { // Ignore if this is a startup event
                 changeBgColor(parseWallEngColorProp(properties.bgcolor.value));
             }
         }
         if (properties.bgimg) {
-            if (properties.bgimg.value) {
-                const path = "file:///" + properties.bgimg.value;
-                document.body.style.backgroundImage = "url('" + path + "')";
-                localStorage.madesktopBgImg = path;
-            } else {
-                document.body.style.backgroundImage = 'none';
-                localStorage.removeItem('madesktopBgImg');
+            if (!properties.leftmargin) { // Ignore if this is a startup event
+                if (properties.bgimg.value) {
+                    const path = "file:///" + properties.bgimg.value;
+                    document.body.style.backgroundImage = "url('" + path + "')";
+                    localStorage.madesktopBgImg = path;
+                } else {
+                    document.body.style.backgroundImage = 'none';
+                    localStorage.removeItem('madesktopBgImg');
+                }
             }
         }
         if (properties.bgimgmode) {
             changeBgImgMode(properties.bgimgmode.value);
             localStorage.madesktopBgImgMode = properties.bgimgmode.value;
+        }
+        if (properties.bgvideo) {
+            if (!properties.leftmargin) { // Ignore if this is a startup event
+                if (properties.bgvideo.value) {
+                    const path = "file:///" + properties.bgvideo.value;
+                    bgVideoView.src = path;
+                    localStorage.madesktopBgVideo = path;
+                } else {
+                    bgVideoView.src = "";
+                    localStorage.removeItem('madesktopBgVideo');
+                }
+            }
+        }
+        if (properties.bgvideomute) {
+            if (!properties.leftmargin) { // Ignore if this is a startup event
+                if (properties.bgvideomute.value) {
+                    bgVideoView.muted = true;
+                    localStorage.madesktopBgVideoMuted = true;
+                } else {
+                    bgVideoView.muted = false;
+                    localStorage.removeItem('madesktopBgVideoMuted');
+                }
+            }
+        }
+        if (properties.bghtmlurl) {
+            if (!properties.leftmargin) { // Ignore if this is a startup event
+                const url = properties.bghtmlurl.value || "bghtml/index.html";
+                if (url == "index.html") return; // This could cause untended behaviors
+                bgHtmlView.src = url;
+                localStorage.madesktopBgHtmlSrc = url;
+            }
         }
         if (properties.additem) {
             if (!properties.bgcolor) { // Ignore if this is a startup event
@@ -188,10 +227,46 @@ window.wallpaperPropertyListener = {
     }
 };
 
+function changeBgType(type) {
+    switch(type) {
+        case 'color':
+            document.body.style.backgroundImage = "none";
+            bgHtmlContainer.style.display = "none";
+            bgVideoView.style.display = "none";
+            bgVideoView.src = "";
+            break;
+        case 'image':
+            loadBgImgConf();
+            bgHtmlContainer.style.display = "none";
+            bgVideoView.style.display = "none";
+            bgVideoView.src = "";
+            break;
+        case 'video':
+            document.body.style.backgroundImage = "none";
+            bgHtmlContainer.style.display = "none";
+            bgVideoView.style.display = "block";
+            bgVideoView.src = localStorage.madesktopBgVideo;
+            break;
+        case 'web':
+            document.body.style.backgroundImage = "none";
+            bgHtmlContainer.style.display = "block";
+            bgVideoView.style.display = "none";
+            bgVideoView.src = "";
+            break;
+    }
+}
+
 function changeBgColor(str) {
     console.log(str);
     document.body.style.backgroundColor = str;
     localStorage.madesktopBgColor = str;
+}
+
+function loadBgImgConf() {
+    if (localStorage.madesktopBgImg) {
+        if (localStorage.madesktopBgImg.startsWith("file:///")) document.body.style.backgroundImage = "url('" + localStorage.madesktopBgImg + "')"; // Set in WE
+        else document.body.style.backgroundImage = "url('data:image/png;base64," + localStorage.madesktopBgImg + "')"; // Set in config.html
+    }
 }
 
 function changeBgImgMode(value) {
@@ -336,7 +411,7 @@ function updateIframeScale() {
 
 // Just for debugging
 function debug() {
-    eval(prompt("실행할 자바스크립트 코드를 입력하십시오. (디버깅용)"));
+    eval(prompt("Enter JavaScript code to run. (for debugging)"));
     function loadEruda() { // Load Eruda devtools (but Chrome DevTools is better)
         const script = document.createElement('script');
         script.src="https://cdn.jsdelivr.net/npm/eruda";

@@ -3,14 +3,15 @@
 <head>
     <title>ModernActiveDesktop</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="wall.css">
-    <link rel="stylesheet" href="98.css">
+    <link rel="stylesheet" href="css/wall.css">
+    <link rel="stylesheet" href="css/98.css">
     <link id="scheme" rel="stylesheet" href="data:text/css,">
 </head>
 <body style="background-attachment: fixed; background-position: center center; background-repeat: no-repeat; border: none;">
-    <div id="bgHtmlContainer" class="bgHtml">
+    <div id="bgHtmlContainer" class="bgHtml" style="display: none;">
         <iframe id="bgHtmlView" class="bgHtml" src="bghtml/index.html"></iframe>
     </div>
+    <video id="bgVideo" src="" autoplay></video>
     <div class="windowContainer">
         <div class="windowTitlebar" style="display: none;">
             <div class="windowMenuBtn windowBtn" style="left: 3px;">
@@ -23,20 +24,28 @@
         <div class="windowFrame" style="border-color: transparent;">
             <iframe class="windowElement" name="DeskMovrW" src="ChannelBar.html" width="84px" height="471px" style="border-color: transparent;"></iframe>
         </div>
-        <div class="contextMenuBg window" style="display: none; width: 100px; height: 0px; position: absolute; top: 24px; overflow: hidden;">
-            <div class="contextMenu window-body" style="height: 51px; position: absolute; top: -68px; margin: 0; margin-top: 3px; margin-right: 3px;">
-                <div class="contextMenuItem debug"><p style="margin: 0; padding-left: 15px; padding-top: 2px;"><u>D</u>ebug</p></div>
-                <div class="contextMenuItem"><p style="margin: 0; padding-left: 15px; padding-top: 2px;">C<u>o</u>nfigure</p></div>
-                <div class="contextMenuItem"><p style="margin: 0; padding-left: 15px; padding-top: 2px;">R<u>e</u>set</p></div>
-                <div class="contextMenuItem"><p style="margin: 0; padding-left: 15px; padding-top: 2px;"><u>R</u>eload</p></div>
-                <div class="contextMenuItem"><b>🗙 <u>C</u>lose</b></div>
+        <div class="contextMenuBg window">
+            <div class="contextMenu window-body">
+                <div class="contextMenuItem debug"><p><u>D</u>ebug</p></div>
+                <div class="contextMenuItem"><p>C<u>o</u>nfigure</p></div>
+                <div class="contextMenuItem"><p>R<u>e</u>set</p></div>
+                <div class="contextMenuItem"><p><u>R</u>eload</p></div>
+                <div class="contextMenuItem hasIcon"><b>🗙 <u>C</u>lose</b></div>
+            </div>
+        </div>
+        <div class="confMenuBg window">
+            <div class="confMenu window-body">
+                <div class="contextMenuItem"><p><u>A</u>ctive Desktop</p></div>
+                <div class="contextMenuItem"><p><u>N</u>on-ActiveDesktop Channel Bar</p></div>
+                <hr>
+                <div class="contextMenuItem"><p><u>S</u>et URL</div>
             </div>
         </div>
     </div>
     <div id="errorWnd" class="window">
         <p>ModernActiveDesktop failed to initialize because of an unknown error. Please consult the log below and report this to the author.</p>
         <pre id="errorLog"></pre>
-        <noscript> Please enable JavaScript!</noscript>
+        <noscript>Please enable JavaScript!</noscript>
         <button onclick="copyLog();">Copy log</button> <button onclick="location.reload(true);">Retry</button> <button onclick="errorWnd.style.display='none';">Ignore</button>
     </div>
     <button id="newbtn" onclick="createNewDeskItem();localStorage.madesktopItemCount++;">+</button>
@@ -60,7 +69,7 @@
             document.body.removeChild(tmp);
         }
     </script>
-    <script src="DeskMover.js"></script>
-    <script src="DeskSettings.js"></script>
+    <script src="js/DeskMover.js"></script>
+    <script src="js/DeskSettings.js"></script>
 </body>
 </html>

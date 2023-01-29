@@ -1,4 +1,34 @@
-html,body {
+@keyframes appear {
+    0% {
+        opacity: 0;
+    }
+    99% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes cmDropdownBg {
+    0% {
+        height: 0;
+    }
+    100% {
+        height: 68px;
+    }
+}
+
+@keyframes cmDropdown {
+    0% {
+        top: -68px;
+    }
+    100% {
+        top: 0;
+    }
+}
+
+html, body {
     height: 100%;
     user-select: none;
     margin: 0;
@@ -110,17 +140,68 @@ html,body {
     margin-left: -1px;
 }
 
-.contextMenuItem {
+.contextMenuBg {
+    display: none;
+    width: 100px;
+    height: 68px;
+    position: absolute;
+    top: 24px;
+    overflow: hidden;
+    animation: cmDropdownBg 0.25s;
+    animation-timing-function: linear;
+}
+
+.contextMenu {
     width: 98px;
+    position: absolute;
+    top: 0;
+    margin: 0 !important;
+    margin-top: 3px !important;
+    margin-right: 3px;
+    animation: cmDropdown 0.25s;
+    animation-timing-function: linear;
+}
+
+.contextMenuItem {
+    width: 100%;
     height: 17px;
     font-size: 11px;
     padding-left: 2px;
     pointer-events: auto !important;
 }
 
+.contextMenuItem:not(.hasIcon) > p {
+    margin: 0;
+    padding-left: 15px;
+    padding-top: 2px;
+}
+
 .contextMenuItem:hover {
     background-color: var(--hilight);
     color: var(--hilight-text);
+}
+
+.confMenuBg {
+    display: none;
+    width: 180px;
+    height: 64px;
+    position: absolute;
+    top: 24px;
+    left: 103px;
+    overflow: hidden;
+    animation: cmDropdownBg 0.25s;
+    animation-timing-function: linear;
+}
+
+.confMenu {
+    width: 178px;
+    position: absolute;
+    top: 0;
+    margin: 0 !important;
+    margin-top: 3px !important;
+    margin-right: 3px;
+    animation: cmDropdown 0.25s;
+    animation-timing-function: linear;
 }
 
 .bgHtml {
@@ -130,16 +211,10 @@ html,body {
     border: none;
 }
 
-@keyframes appear {
-    0% {
-        opacity: 0;
-    }
-    99% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
+#bgVideo {
+    width: 100%;
+    height: 100%;
+    display: none;
 }
 
 #errorWnd {
@@ -151,7 +226,7 @@ html,body {
     transform: translate(-50%, -50%);
     text-align: center;
     padding-bottom: 6px;
-    animation: appear 5s;
+    animation: appear 4s;
     z-index: 99999;
 }
 
