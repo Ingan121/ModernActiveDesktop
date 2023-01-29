@@ -23,7 +23,7 @@ body {
     position: absolute;
     width: 100%;
     height: 80px;
-    background: URL(res/cdfview.dll/ccbiz.gif) no-repeat;
+    background-repeat: no-repeat;
 }
 
 hr {

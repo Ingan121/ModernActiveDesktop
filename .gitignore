@@ -1,9 +1,7 @@
 # nonfree
 bghtml/*
 !bghtml/readme.txt
-channels-en/*
-!channels-en/ChannelList.css
-!channels-en/ProxyRemover.js
+channels-en
 channels-ko
 images
 sounds
