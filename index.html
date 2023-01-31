@@ -27,7 +27,7 @@
         <div class="contextMenuBg window">
             <div class="contextMenu window-body">
                 <div class="contextMenuItem debug"><p><u>D</u>ebug</p></div>
-                <div class="contextMenuItem"><p>C<u>o</u>nfigure</p></div>
+                <div class="contextMenuItem"><p>C<u>o</u>nfigure</p><p class="submenuMark">⏵</p></div>
                 <div class="contextMenuItem"><p>R<u>e</u>set</p></div>
                 <div class="contextMenuItem"><p><u>R</u>eload</p></div>
                 <div class="contextMenuItem hasIcon"><b>🗙 <u>C</u>lose</b></div>
@@ -38,7 +38,7 @@
                 <div class="contextMenuItem"><p><u>A</u>ctive Desktop</p></div>
                 <div class="contextMenuItem"><p><u>N</u>on-ActiveDesktop Channel Bar</p></div>
                 <hr>
-                <div class="contextMenuItem"><p><u>S</u>et URL</div>
+                <div class="contextMenuItem"><p><u>C</u>hange URL</div>
             </div>
         </div>
     </div>
@@ -57,7 +57,6 @@
         window.onerror = function(msg, url, linenum) {
             console.log({msg, url, linenum});
             errorLog.textContent += `${msg} (${url}:${linenum})\n`;
-            debugger;
         }
         
         function copyLog() {

@@ -25,7 +25,8 @@ if (localStorage.madesktopBgVideoMuted) bgVideoView.muted = true;
 if (localStorage.madesktopBgHtmlSrc) bgHtmlView.src = localStorage.madesktopBgHtmlSrc;
 if (localStorage.madesktopColorScheme) changeColorScheme(localStorage.madesktopColorScheme);
 changeScale(localStorage.madesktopScaleFactor);
-const useNonADStyle = localStorage.madesktopNonADStyle; // non-ActiveDesktop styling
+//const useNonADStyle = localStorage.madesktopNonADStyle;
+// TODO: migrate this
 
 initDeskMover(0);
 
@@ -54,7 +55,7 @@ bgHtmlView.addEventListener('load', function () {
 });
 
 if (typeof wallpaperOnVideoEnded !== "function") { // Check if not running in Wallpaper Engine
-    bgHtmlContainer.style.display = "none";
+    changeBgType("image");
     document.getElementById("newbtn").style.display = "block";
 }
 
