@@ -1,4 +1,4 @@
-function initDeskMover(num, openDoc, temp) {
+function initDeskMover(num, openDoc, temp, width, height) {
     const windowContainer = windowContainers[num];
     const windowTitlebar = windowContainer.getElementsByClassName("windowTitlebar")[0];
     const windowFrame = windowContainer.getElementsByClassName("windowFrame")[0];
@@ -15,7 +15,7 @@ function initDeskMover(num, openDoc, temp) {
     let mousePosition, posInWindow, posInContainer;
     let offset = [0, 0];
     let isDown = false, resizingMode = "none", mouseOverWndBtns = false;
-    let timeout;
+    let timeout, timeout2;
     let prevOffsetRight, prevOffsetBottom;
     
     // Check if the deskitem we're trying to initialize is destroyed or not
@@ -33,14 +33,8 @@ function initDeskMover(num, openDoc, temp) {
     // Will be destroyed on the next load
     if (temp) localStorage.madesktopDestroyedItems += `|${numStr}|`;
     
-    let useNonADStyle = localStorage.getItem("madesktopItemStyle" + numStr) == "nonad"; // non-ActiveDesktop styling
-    
-    if (useNonADStyle) {
-        windowContainer.classList.add("window");
-        windowTitlebar.style.display = "block";
-        contextMenuBg.style.top = "21px";
-        confMenuBg.style.top = "21px";
-    }
+    let useNonADStyle = false; // non-ActiveDesktop styling
+    changeWndStyle(localStorage.getItem("madesktopItemStyle" + numStr));
     
     windowContainer.addEventListener('mousedown', function (event) {
         windowContainer.style.zIndex = ++lastZIndex; // bring to top
@@ -248,47 +242,23 @@ function initDeskMover(num, openDoc, temp) {
             document.addEventListener('click', closeContextMenu);
             iframeClickEventCtrl(false);
         }, 100);
-    });
-
-    contextMenuBg.addEventListener('click', function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-    });
-
-    contextMenuBg.addEventListener('mousedown', function (event) {
-        event.preventDefault();
-        event.stopPropagation();
+        isContextMenuOpen = true;
     });
     
-    contextMenuBg.addEventListener('mouseup', function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-    });
-
-    contextMenuBg.addEventListener('mousemove', function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-    });
+    // Prevent unintended menu closing when clicking the menu items
+    contextMenuBg.addEventListener('click', preventDefault);
+    contextMenuBg.addEventListener('mousedown', preventDefault);
+    contextMenuBg.addEventListener('mouseup', preventDefault);
+    contextMenuBg.addEventListener('mousemove', preventDefault);
+    confMenuBg.addEventListener('click', preventDefault);
+    confMenuBg.addEventListener('mousedown', preventDefault);
+    confMenuBg.addEventListener('mouseup', preventDefault);
+    confMenuBg.addEventListener('mousemove', preventDefault);
     
-    confMenuBg.addEventListener('click', function (event) {
+    function preventDefault(event) {
         event.preventDefault();
         event.stopPropagation();
-    });
-
-    confMenuBg.addEventListener('mousedown', function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-    });
-    
-    confMenuBg.addEventListener('mouseup', function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-    });
-
-    confMenuBg.addEventListener('mousemove', function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-    });
+    }
     
     for (let i = 0; i < contextMenuItems.length; i++) {
         const elem = contextMenuItems[i];
@@ -310,17 +280,20 @@ function initDeskMover(num, openDoc, temp) {
         }
     }
 
-    contextMenuItems[0].addEventListener('click', debug); // Debug button (hidden with wall.css by default)
-
-    contextMenuItems[1].addEventListener('click', function () { // Configure button
-        confMenuBg.style.display = "block";
-        setTimeout(function () {
-            document.addEventListener('click', closeConfMenu);
-            iframeClickEventCtrl(false);
-        }, 100);
+    // Context menu button listeners
+    contextMenuItems[0].addEventListener('click', openConfMenu); // Configure button
+    
+    contextMenuItems[0].addEventListener('mouseover', function() { // Configure button mouseover
+        timeout2 = setTimeout(function () {
+            openConfMenu();
+        }, 300);
+    });
+    
+    contextMenuItems[0].addEventListener('mouseleave', function() { // Configure button mouseleave
+        clearTimeout(timeout2);
     });
 
-    contextMenuItems[2].addEventListener('click', function () { // Reset button
+    contextMenuItems[1].addEventListener('click', function () { // Reset button
         closeContextMenu();
         if (temp) {
             ding.play();
@@ -341,15 +314,33 @@ function initDeskMover(num, openDoc, temp) {
             };
         }, 100);
     });
+    
+    contextMenuItems[1].addEventListener('mouseover', function() { // Reset button mouseover
+        timeout2 = setTimeout(function () {
+            closeConfMenu();
+        }, 300);
+    });
 
-    contextMenuItems[3].addEventListener('click', function () { // Reload button
+    contextMenuItems[2].addEventListener('click', function () { // Reload button
         closeContextMenu();
         location.reload();
     });
+    
+    contextMenuItems[2].addEventListener('mouseover', function() { // Reload button mouseover
+        timeout2 = setTimeout(function () {
+            closeConfMenu();
+        }, 300);
+    });
 
-    contextMenuItems[4].addEventListener('click', function () { // Close button
+    contextMenuItems[3].addEventListener('click', function () { // Close button
         closeContextMenu();
         windowCloseBtn.click();
+    });
+    
+    contextMenuItems[3].addEventListener('mouseover', function() { // Close button mouseover
+        timeout2 = setTimeout(function () {
+            closeConfMenu();
+        }, 300);
     });
     
     confMenuItems[0].addEventListener('click', function () { // Active Desktop style button
@@ -395,12 +386,19 @@ function initDeskMover(num, openDoc, temp) {
         contextMenuBg.style.display = "none";
         document.removeEventListener('click', closeContextMenu);
         closeConfMenu();
+        iframeClickEventCtrl(true);
+        isContextMenuOpen = false;
+    }
+    
+    function openConfMenu() {
+        confMenuBg.style.display = "block";
+        setTimeout(function () {
+            iframeClickEventCtrl(false);
+        }, 100);
     }
     
     function closeConfMenu() {
         confMenuBg.style.display = "none";
-        document.removeEventListener('click', closeConfMenu);
-        iframeClickEventCtrl(true);
     }
 
     windowMenuBtn.addEventListener('mouseover', function () {
@@ -440,21 +438,21 @@ function initDeskMover(num, openDoc, temp) {
         windowElement.src = localStorage.getItem("madesktopItemSrc" + numStr);
     } else {
         if (num != 0) {
-            if (openDoc) {
-                windowElement.width = '800px';
-                windowElement.height = '600px';
-                windowContainer.style.height = parseInt(windowElement.height) + 21 + 'px';
-                windowContainer.style.width = windowElement.offsetWidth - 2 + 'px';
-                windowContainer.style.left = (localStorage.madesktopChanViewLeftMargin ? parseInt(localStorage.madesktopChanViewLeftMargin) : 75) + 250 + 'px';
+            let url = WINDOW_PLACEHOLDER;
+            if (typeof openDoc === "string" || openDoc instanceof String) {
+                windowElement.width = width || '800px';
+                windowElement.height = height || '600px';
+                windowContainer.style.left = parseInt(localStorage.madesktopChanViewLeftMargin) || 75 + 250 + 'px';
                 windowContainer.style.top = '150px';
+                url = openDoc.endsWith(".html") ? openDoc : `docs/index.html?src=${openDoc}`;
             } else {
-                windowElement.width = '250px';
-                windowElement.height = '150px';
-                windowContainer.style.height = parseInt(windowElement.height) + 21 + 'px';
-                windowContainer.style.width = windowElement.offsetWidth - 2 + 'px';
-                windowContainer.style.left = vWidth - windowContainer.offsetWidth - parseInt(localStorage.madesktopChanViewRightMargin) - 200 + 'px';
+                windowElement.width = width || '250px';
+                windowElement.height = height || '150px';
+                windowContainer.style.left = vWidth - windowContainer.offsetWidth - (parseInt(localStorage.madesktopChanViewRightMargin) || 0) - 200 + 'px';
                 windowContainer.style.top = '200px';
             }
+            windowContainer.style.height = parseInt(windowElement.height) + 21 + 'px';
+            windowContainer.style.width = windowElement.offsetWidth - 2 + 'px';
             windowFrame.style.height = windowElement.height;
             windowFrame.style.width = windowElement.offsetWidth + 'px';
             windowTitlebar.style.width = windowElement.offsetWidth + (useNonADStyle ? 0 : 4) + 'px';
@@ -468,8 +466,7 @@ function initDeskMover(num, openDoc, temp) {
             localStorage.setItem("madesktopItemHeight" + numStr, windowElement.height);
             localStorage.setItem("madesktopItemXPos" + numStr, windowContainer.style.left);
             localStorage.setItem("madesktopItemYPos" + numStr, windowContainer.style.top);
-
-            const url = openDoc ? `docs/index.html?src=${openDoc}` : WINDOW_PLACEHOLDER;
+            
             windowElement.src = url;
             localStorage.setItem("madesktopItemSrc" + numStr, url);
         } else {

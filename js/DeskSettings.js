@@ -3,6 +3,10 @@ const bgHtmlContainer = document.getElementById("bgHtmlContainer");
 const bgHtmlView = document.getElementById("bgHtmlView");
 const bgVideoView = document.getElementById("bgVideo");
 const schemeElement = document.getElementById("scheme");
+const errorWnd = document.getElementById("errorWnd");
+const mainMenuBg = document.getElementById("mainMenuBg");
+const mainMenu = document.getElementById("mainMenu");
+const mainMenuItems = mainMenu.getElementsByClassName("contextMenuItem");
 
 const chord = new Audio("sounds/chord.wav");
 const ding = new Audio("sounds/ding.wav");
@@ -12,6 +16,7 @@ const WINDOW_PLACEHOLDER = "data:text/html,<body style='background-color: white'
 const NO_SYSPLUG_ALERT = "System plugin is not running. Please make sure you have installed it properly. If you don't want to use it, please disable the system plugin integration option.";
 
 let lastZIndex = 0;
+let isContextMenuOpen = false;
 
 let scaleFactor = 1;
 let vWidth = window.innerWidth;
@@ -25,10 +30,15 @@ if (localStorage.madesktopBgVideoMuted) bgVideoView.muted = true;
 if (localStorage.madesktopBgHtmlSrc) bgHtmlView.src = localStorage.madesktopBgHtmlSrc;
 if (localStorage.madesktopColorScheme) changeColorScheme(localStorage.madesktopColorScheme);
 changeScale(localStorage.madesktopScaleFactor);
-//const useNonADStyle = localStorage.madesktopNonADStyle;
-// TODO: migrate this
 
 initDeskMover(0);
+
+// Migrate old config
+if (localStorage.madesktopNonADStyle) {
+    for (let i = 0; i < parseInt(localStorage.madesktopItemCount); i++) localStorage.setItem("madesktopItemStyle" + (i || ""), "nonad");
+    localStorage.removeItem("madesktopNonADStyle");
+    location.reload();
+}
 
 if (localStorage.madesktopItemCount) {
     if (localStorage.madesktopItemCount > 1) {
@@ -39,11 +49,9 @@ if (localStorage.madesktopItemCount) {
 }
 
 if (localStorage.madesktopLastVer == "2.0") { // Update from 2.0
-    createNewDeskItem("Updated.md");
-    localStorage.madesktopItemCount++;
+    openWindow("Updated.md");
 } else if (localStorage.madesktopLastVer != "2.1") { // First run or update from 1.x
-    createNewDeskItem("README.md");
-    localStorage.madesktopItemCount++;
+    openWindow("README.md");
 }
 localStorage.madesktopLastVer = "2.1";
 
@@ -56,8 +64,37 @@ bgHtmlView.addEventListener('load', function () {
 
 if (typeof wallpaperOnVideoEnded !== "function") { // Check if not running in Wallpaper Engine
     changeBgType("image");
-    document.getElementById("newbtn").style.display = "block";
 }
+
+// Main context menu things (only for non-WE uses)
+window.addEventListener('contextmenu', function (event) {
+    if (isContextMenuOpen) return;
+    mainMenuBg.style.left = event.clientX + "px";
+    mainMenuBg.style.top = event.clientY + "px";
+    mainMenuBg.style.display = "block";
+    setTimeout(function () {
+        document.addEventListener('click', closeMainMenu);
+        iframeClickEventCtrl(false);
+    }, 100);
+    isContextMenuOpen = true;
+    event.preventDefault();
+}, false);
+
+for (let i = 0; i < mainMenuItems.length; i++) {
+        const elem = mainMenuItems[i];
+        elem.onmouseover = function () {
+            elem.getElementsByTagName('u')[0].style.borderBottomColor = 'var(--hilight-text)';
+        }
+        elem.onmouseout = function () {
+            elem.getElementsByTagName('u')[0].style.borderBottomColor = 'var(--window-text)';
+        }
+    }
+
+mainMenuItems[0].addEventListener('click', openWindow); // New button
+
+mainMenuItems[1].addEventListener('click', function() { // Properties button
+    openWindow("config.html", false, "388px", "188px");
+});
 
 // Detect WE config change
 window.wallpaperPropertyListener = {
@@ -127,8 +164,7 @@ window.wallpaperPropertyListener = {
                     windowContainers[0].style.display = "block";
                     localStorage.removeItem("madesktopItemVisible");
                 } else {
-                    createNewDeskItem();
-                    localStorage.madesktopItemCount++;
+                    openWindow();
                 }
             }
         }
@@ -166,8 +202,7 @@ window.wallpaperPropertyListener = {
                     })
                     .catch(error => {
                         alert(NO_SYSPLUG_ALERT);
-                        createNewDeskItem("SysplugSetupGuide.md", true);
-                        localStorage.madesktopItemCount++;
+                        openWindow("SysplugSetupGuide.md", true);
                     })
                 } else {
                     localStorage.removeItem("sysplugIntegration");
@@ -187,8 +222,7 @@ window.wallpaperPropertyListener = {
                         })
                         .catch(error => {
                             alert(NO_SYSPLUG_ALERT);
-                            createNewDeskItem("SysplugSetupGuide.md", true);
-                            localStorage.madesktopItemCount++;
+                            openWindow("SysplugSetupGuide.md", true);
                         });
                 }
             }
@@ -377,11 +411,23 @@ function parseWallEngColorProp(value) {
 }
 
 // Create a new ActiveDesktop item and initialize it
-function createNewDeskItem(openDoc, temp) {
+function createNewDeskItem(openDoc, temp, width, height) {
     const newContainer = windowContainers[0].cloneNode(true);
     document.body.appendChild(newContainer);
     windowContainers = document.getElementsByClassName("windowContainer");
-    initDeskMover(windowContainers.length - 1, openDoc, temp);
+    initDeskMover(windowContainers.length - 1, openDoc, temp, width, height);
+}
+
+// Create a new AD item, initialize, and increase the saved window count
+function openWindow(openDoc, temp, width, height) {
+    createNewDeskItem(openDoc, temp, width, height);
+    localStorage.madesktopItemCount++;
+}
+
+function closeMainMenu() {
+    mainMenuBg.style.display = "none";
+    document.removeEventListener('click', closeMainMenu);
+    isContextMenuOpen = false;
 }
 
 // Required as mouse movements over iframes are not detectable in the parent document
@@ -423,5 +469,13 @@ function debug() {
     }
 }
 
+function showErrors() {
+    document.getElementById("errorMsg").style.display = "none";
+    errorWnd.style.animation = "none";
+    errorWnd.style.paddingTop = "6px";
+    errorWnd.style.display = "block";
+}
+
 // Initialization complete
-document.getElementById("errorWnd").style.display = "none";
+document.getElementById("location").innerText = location.href;
+errorWnd.style.display = "none";

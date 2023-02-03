@@ -10,27 +10,15 @@
     }
 }
 
-@keyframes cmDropdownBg {
+@keyframes cmDropdown {
     0% {
         height: 0;
     }
 }
 
-@keyframes cmDropdown {
-    0% {
-        top: -68px;
-    }
-}
-
-@keyframes cmDroprightBg {
-    0% {
-        width: 0;
-    }
-}
-
 @keyframes cmDropright {
     0% {
-        left: -177px;
+        width: 0;
     }
 }
 
@@ -153,19 +141,16 @@ html, body {
     position: absolute;
     top: 24px;
     overflow: hidden;
-    animation: cmDropdownBg 0.25s;
+    animation: cmDropdown 0.25s;
     animation-timing-function: linear;
 }
 
 .contextMenu {
     width: 98px;
     position: absolute;
-    top: 0;
+    bottom: 3px;
     margin: 0 !important;
-    margin-top: 3px !important;
     margin-right: 3px;
-    animation: cmDropdown 0.25s;
-    animation-timing-function: linear;
 }
 
 .contextMenuItem {
@@ -201,20 +186,36 @@ html, body {
     top: 24px;
     left: 103px;
     overflow: hidden;
-    animation: cmDroprightBg 0.25s;
+    animation: cmDropright 0.25s;
     animation-timing-function: linear;
 }
 
 .confMenu {
     width: 178px;
     position: absolute;
-    top: 0;
-    left: 3px;
+    bottom: 3px;
+    right: 5px;
     margin: 0 !important;
-    margin-top: 3px !important;
     margin-right: 3px;
-    animation: cmDropright 0.25s;
+}
+
+#mainMenuBg {
+    display: none;
+    width: 100px;
+    height: 34px;
+    position: absolute;
+    overflow: hidden;
+    animation: cmDropdown 0.125s;
     animation-timing-function: linear;
+    z-index: 99998;
+}
+
+#mainMenu {
+    width: 98px;
+    position: absolute;
+    bottom: 3px;
+    margin: 0 !important;
+    margin-right: 3px;
 }
 
 .bgHtml {
@@ -243,7 +244,7 @@ html, body {
     z-index: 99999;
 }
 
-#errorWnd > p {
+#errorMsg {
     text-align: left;
     margin-left: 16px;
     margin-right: 16px;
@@ -257,16 +258,7 @@ html, body {
     overflow-x: scroll;
 }
 
-#newbtn {
-    position: absolute;
-    top: 0;
-    left: 0;
-    display: none;
-    padding: 0;
-    min-width: 25px;
-    font-size: 15px;
-}
-
-.debug {
-    display: none;
+#debug {
+    /*display: none;*/
+    text-align: right;
 }

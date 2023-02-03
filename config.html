@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>ModernActiveDesktop Settings</title>
+    <title>ModernActiveDesktop Settings</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="css/98.css">
     <link rel="stylesheet" href="css/config.css">
     <link id="scheme" rel="stylesheet" href="data:text/css,">
 </head>
 <body>
-    <p id="title" class="Label MenuItem">Settings</p>
+    <p id="title" class="Label MenuItem">Properties</p>
     <div class="MenuItem">
         <label class="InlineBlock">
             <p class="Label InlineBlock">BG Color: </p>
@@ -46,7 +46,7 @@
     <button style="margin-top: 3px;" onclick="const value = prompt('Enter scale (%) :') / 100; parent.changeScale(value); localStorage.madesktopScaleFactor = value;">Change scale</button>
     <button onclick="if (!confirm('This will remove every configuration changes of ModernActiveDesktop you made. Are you sure you want to continue?')) return; localStorage.clear(); parent.location.reload(true);">Reset config</button>
     <button onclick="parent.location.reload(true);">Refresh</button>
-    <p class="Label" style="color: gray; font-size: 12px; position: absolute; left: 2px; bottom: 1px" onclick="parent.debug();">Ingan121/RomanHue</p>
+    <p class="Label" style="color: gray; font-size: 12px; position: fixed; left: 2px; bottom: 1px" onclick="parent.debug();">Ingan121/RomanHue</p>
     <script src="js/config.js"></script>
 </body>
 </html>

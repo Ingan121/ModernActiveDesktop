@@ -26,7 +26,6 @@
         </div>
         <div class="contextMenuBg window">
             <div class="contextMenu window-body">
-                <div class="contextMenuItem debug"><p><u>D</u>ebug</p></div>
                 <div class="contextMenuItem"><p>C<u>o</u>nfigure</p><p class="submenuMark">⏵</p></div>
                 <div class="contextMenuItem"><p>R<u>e</u>set</p></div>
                 <div class="contextMenuItem"><p><u>R</u>eload</p></div>
@@ -42,15 +41,26 @@
             </div>
         </div>
     </div>
+    <div id="mainMenuBg" class="window">
+        <div id="mainMenu" class="window-body">
+            <div class="contextMenuItem"><p><u>N</u>ew</div>
+            <div class="contextMenuItem"><p><u>P</u>roperties</p></div>
+        </div>
+    </div>
     <div id="errorWnd" class="window">
-        <p>ModernActiveDesktop failed to initialize because of an unknown error. Please consult the log below and report this to the author.</p>
+        <p id="errorMsg">ModernActiveDesktop failed to initialize because of an unknown error. Please consult the log below and report this to the author.</p>
         <pre id="errorLog"></pre>
         <noscript>Please enable JavaScript!</noscript>
         <button onclick="copyLog();">Copy log</button> <button onclick="location.reload(true);">Retry</button> <button onclick="errorWnd.style.display='none';">Ignore</button>
     </div>
-    <button id="newbtn" onclick="createNewDeskItem();localStorage.madesktopItemCount++;">+</button>
-    <a class="debug" href="javascript:localStorage.clear();location.reload(true);" style="position: absolute; right: 0; top: 0;">Reset config</a>
-    <a class="debug" href="javascript:location.reload(true);" style="position: absolute; right: 0; top: 15px;">Refresh</a>
+    <div id="debug">
+        ModernActiveDesktop 2.2 Pre-release 4<br>
+        Loaded from <span id="location"></span><br>
+        <a href="javascript:localStorage.clear();location.reload(true);">Reset config</a><br>
+        <a href="javascript:location.reload(true);">Refresh</a><br>
+        <a href="javascript:debug();">Run JavaScript code</a><br>
+        <a href="javascript:showErrors();">Show errors</a>
+    </div>
     <script>
         const errorLog = document.getElementById("errorLog");
         
