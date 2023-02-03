@@ -81,10 +81,6 @@ window.wallpaperPropertyListener = {
                 alert("Please close ChannelViewer first then try again.");
             }
         }
-        if (properties.nonadstyle) {
-            if (properties.nonadstyle.value) localStorage.madesktopNonADStyle = true;
-            else localStorage.removeItem("madesktopNonADStyle");
-        }
         if (properties.leftmargin) {
             const str = isNaN(properties.leftmargin.value) ? properties.leftmargin.value : properties.leftmargin.value + 'px';
             container.style.marginLeft = str;

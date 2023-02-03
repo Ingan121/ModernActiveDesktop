@@ -3,10 +3,12 @@ const bgHtmlContainer = document.getElementById("bgHtmlContainer");
 const bgHtmlView = document.getElementById("bgHtmlView");
 const bgVideoView = document.getElementById("bgVideo");
 const schemeElement = document.getElementById("scheme");
+const styleElement = document.getElementById("style");
 const errorWnd = document.getElementById("errorWnd");
 const mainMenuBg = document.getElementById("mainMenuBg");
 const mainMenu = document.getElementById("mainMenu");
 const mainMenuItems = mainMenu.getElementsByClassName("contextMenuItem");
+const debugLogBtn = document.getElementById("debugLogBtn");
 
 const chord = new Audio("sounds/chord.wav");
 const ding = new Audio("sounds/ding.wav");
@@ -15,12 +17,14 @@ const startup = new Audio("sounds/The Microsoft Sound.wav");
 const WINDOW_PLACEHOLDER = "data:text/html,<body style='background-color: white'>⮡ Click this button to configure</body>";
 const NO_SYSPLUG_ALERT = "System plugin is not running. Please make sure you have installed it properly. If you don't want to use it, please disable the system plugin integration option.";
 
-let lastZIndex = 0;
+let lastZIndex = localStorage.madesktopItemCount || 0;
 let isContextMenuOpen = false;
 
 let scaleFactor = 1;
 let vWidth = window.innerWidth;
 let vHeight = window.innerHeight;
+
+let debugLog = false;
 
 // Load configs
 if (localStorage.madesktopBgColor) document.body.style.backgroundColor = localStorage.madesktopBgColor;
@@ -30,14 +34,16 @@ if (localStorage.madesktopBgVideoMuted) bgVideoView.muted = true;
 if (localStorage.madesktopBgHtmlSrc) bgHtmlView.src = localStorage.madesktopBgHtmlSrc;
 if (localStorage.madesktopColorScheme) changeColorScheme(localStorage.madesktopColorScheme);
 changeScale(localStorage.madesktopScaleFactor);
+if (localStorage.madesktopDebugMode) activateDebugMode(true);
 
 initDeskMover(0);
 
 // Migrate old config
 if (localStorage.madesktopNonADStyle) {
-    for (let i = 0; i < parseInt(localStorage.madesktopItemCount); i++) localStorage.setItem("madesktopItemStyle" + (i || ""), "nonad");
+    for (let i = 0; i < localStorage.madesktopItemCount; i++) localStorage.setItem("madesktopItemStyle" + (i || ""), "nonad");
     localStorage.removeItem("madesktopNonADStyle");
     location.reload();
+    throw new Error("Refreshing...");
 }
 
 if (localStorage.madesktopItemCount) {
@@ -48,12 +54,12 @@ if (localStorage.madesktopItemCount) {
     localStorage.madesktopItemCount = 1;
 }
 
-if (localStorage.madesktopLastVer == "2.0") { // Update from 2.0
+if (localStorage.madesktopLastVer == "2.0" || localStorage.madesktopLastVer == "2.1") { // Update from 2.x
     openWindow("Updated.md");
-} else if (localStorage.madesktopLastVer != "2.1") { // First run or update from 1.x
+} else if (localStorage.madesktopLastVer != "2.2") { // First run or update from 1.x
     openWindow("README.md");
 }
-localStorage.madesktopLastVer = "2.1";
+localStorage.madesktopLastVer = "2.2";
 
 if (localStorage.madesktopItemVisible == "false") windowContainers[0].style.display = "none";
 
@@ -65,6 +71,12 @@ bgHtmlView.addEventListener('load', function () {
 if (typeof wallpaperOnVideoEnded !== "function") { // Check if not running in Wallpaper Engine
     changeBgType("image");
 }
+
+// Press Ctrl+Shift+Q to activate the debug mode
+// Wont work in WE so just load config.html then click the Ingan121/RomanHue text
+document.addEventListener('keypress', function(event) {
+    if (event.ctrlKey && event.shiftKey && event.code == 'KeyQ') activateDebugMode();
+});
 
 // Main context menu things (only for non-WE uses)
 window.addEventListener('contextmenu', function (event) {
@@ -93,7 +105,7 @@ for (let i = 0; i < mainMenuItems.length; i++) {
 mainMenuItems[0].addEventListener('click', openWindow); // New button
 
 mainMenuItems[1].addEventListener('click', function() { // Properties button
-    openWindow("config.html", false, "388px", "188px");
+    openWindow("config.html", false, "388px", "168px");
 });
 
 // Detect WE config change
@@ -167,11 +179,6 @@ window.wallpaperPropertyListener = {
                     openWindow();
                 }
             }
-        }
-        if (properties.nonadstyle) {
-            if (properties.nonadstyle.value) localStorage.madesktopNonADStyle = true;
-            else localStorage.removeItem("madesktopNonADStyle");
-            if (!properties.bgcolor) location.reload();
         }
         if (properties.leftmargin) {
             const str = isNaN(properties.leftmargin.value) ? properties.leftmargin.value : properties.leftmargin.value + 'px';
@@ -456,6 +463,23 @@ function updateIframeScale() {
     }
 }
 
+// Save current window z-order
+function saveZOrder() {
+    let zOrders = [];
+    for (let i = 0; i < windowContainers.length; i++)
+        if (windowContainers[i].childElementCount) zOrders[zOrders.length] = [i, windowContainers[i].style.zIndex];
+    
+    zOrders.sort(function(a, b) {
+        if (+a[1] > +b[1]) return 1;
+        else if (+a[1] == +b[1]) return 0;
+        else return -1;
+    });
+    
+    for (let i = 0; i < zOrders.length; i++)
+        localStorage.setItem("madesktopItemZIndex" + (zOrders[i][0] || ""), i);
+    console.log(zOrders);
+}
+
 // Just for debugging
 function debug() {
     eval(prompt("Enter JavaScript code to run. (for debugging)"));
@@ -469,10 +493,30 @@ function debug() {
     }
 }
 
+function activateDebugMode(dontask) {
+    if (styleElement.textContent.length) return;
+    if (!dontask) if (!confirm("Activate debug mode?")) return;
+    styleElement.textContent = `
+        .debug { display: block; }
+        .contextMenuBg { height: 85px; }`;
+    localStorage.madesktopDebugMode = true;
+}
+
+function deactivateDebugMode() {
+    styleElement.textContent = "";
+    localStorage.removeItem("madesktopDebugMode");
+    if (debugLog) toggleDebugLog();
+}
+
+function toggleDebugLog() {
+    debugLog = !debugLog;
+    debugLogBtn.textContent = debugLog ? "Disable DeskMover debug logging" : "Enable DeskMover debug logging";
+}
+
 function showErrors() {
     document.getElementById("errorMsg").style.display = "none";
     errorWnd.style.animation = "none";
-    errorWnd.style.paddingTop = "6px";
+    errorWnd.style.paddingTop = "8px";
     errorWnd.style.display = "block";
 }
 

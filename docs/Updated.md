@@ -1,13 +1,17 @@
-# ModernActiveDesktop has been updated to 2.1
+# ModernActiveDesktop has been updated to 2.2
 
 ## New features
+* Added support for video and web backgrounds
+    * Configurable in the properties panel
+
+## Previous changelog
+
+### 2.1
 * Added a scaling feature for high DPI displays
     * Configurable in the properties panel
 <br><img src="MADScale.webp" width="360px" height="384px" title="Scaling screenshot">
 * Added error handling
 * Code improvements
-
-## Previous changelog
 
 ### 2.0
 * Added a system plugin for better usability

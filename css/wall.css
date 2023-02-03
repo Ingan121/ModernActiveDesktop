@@ -30,6 +30,12 @@ html, body {
     background-color: var(--background);
 }
 
+body {
+    background-attachment: fixed;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
 .ActiveChannelItem {
     display: block;
     margin-top: 1px;
@@ -85,12 +91,13 @@ html, body {
     padding-top: 18px;
     position: absolute;
     height: 471px;
-    left: 1736px;
     top: 200px;
+    right: 184px;
     width: 84px;
 }
 
 .windowTitlebar {
+    display: none;
     background-color: var(--button-face);
     padding: 0;
     position: absolute;
@@ -161,10 +168,24 @@ html, body {
     pointer-events: auto !important;
 }
 
-.contextMenuItem:not(.hasIcon) > p {
+.contextMenuItem > p {
     margin: 0;
-    padding-left: 15px;
     padding-top: 2px;
+}
+
+.contextMenuItem:not(.hasIcon):not(.activeStyle) > p {
+    padding-left: 15px;
+}
+
+.contextMenuItem.activeStyle > p {
+    line-height: 10px;
+}
+
+.contextMenuItem.activeStyle > p::before {
+    content: "●";
+    font-size: 15px;
+    margin-left: 2px;
+    margin-right: 4px;
 }
 
 .contextMenuItem:hover {
@@ -218,6 +239,10 @@ html, body {
     margin-right: 3px;
 }
 
+#bgHtmlContainer {
+    display: none;
+}
+
 .bgHtml {
     width: 100%;
     height: 100%;
@@ -259,6 +284,9 @@ html, body {
 }
 
 #debug {
-    /*display: none;*/
     text-align: right;
+}
+
+.debug {
+    display: none;
 }

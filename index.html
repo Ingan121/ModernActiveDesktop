@@ -3,17 +3,19 @@
 <head>
     <title>ModernActiveDesktop</title>
     <meta charset="utf-8">
+    <link rel="shortcut icon" href="icon.ico">
     <link rel="stylesheet" href="css/wall.css">
     <link rel="stylesheet" href="css/98.css">
     <link id="scheme" rel="stylesheet" href="data:text/css,">
+    <style id="style"></style>
 </head>
-<body style="background-attachment: fixed; background-position: center center; background-repeat: no-repeat; border: none;">
-    <div id="bgHtmlContainer" class="bgHtml" style="display: none;">
+<body>
+    <div id="bgHtmlContainer" class="bgHtml">
         <iframe id="bgHtmlView" class="bgHtml" src="bghtml/index.html"></iframe>
     </div>
     <video id="bgVideo" src="" autoplay></video>
     <div class="windowContainer">
-        <div class="windowTitlebar" style="display: none;">
+        <div class="windowTitlebar">
             <div class="windowMenuBtn windowBtn" style="left: 3px;">
                 <p class="windowBtnText">⏷</p>
             </div>
@@ -21,12 +23,13 @@
                 <p class="windowBtnText">🗙</p>
             </div>
         </div>
-        <div class="windowFrame" style="border-color: transparent;">
-            <iframe class="windowElement" name="DeskMovrW" src="ChannelBar.html" width="84px" height="471px" style="border-color: transparent;"></iframe>
+        <div class="windowFrame">
+            <iframe class="windowElement" name="DeskMovrW" src="ChannelBar.html" width="84px" height="471px"></iframe>
         </div>
         <div class="contextMenuBg window">
             <div class="contextMenu window-body">
                 <div class="contextMenuItem"><p>C<u>o</u>nfigure</p><p class="submenuMark">⏵</p></div>
+                <div class="contextMenuItem debug"><p><u>D</u>ebug</p></div>
                 <div class="contextMenuItem"><p>R<u>e</u>set</p></div>
                 <div class="contextMenuItem"><p><u>R</u>eload</p></div>
                 <div class="contextMenuItem hasIcon"><b>🗙 <u>C</u>lose</b></div>
@@ -43,8 +46,8 @@
     </div>
     <div id="mainMenuBg" class="window">
         <div id="mainMenu" class="window-body">
-            <div class="contextMenuItem"><p><u>N</u>ew</div>
-            <div class="contextMenuItem"><p><u>P</u>roperties</p></div>
+            <div class="contextMenuItem"><p><u>N</u>ew</p></div>
+            <div class="contextMenuItem"><p>P<u>r</u>operties</p></div>
         </div>
     </div>
     <div id="errorWnd" class="window">
@@ -53,13 +56,16 @@
         <noscript>Please enable JavaScript!</noscript>
         <button onclick="copyLog();">Copy log</button> <button onclick="location.reload(true);">Retry</button> <button onclick="errorWnd.style.display='none';">Ignore</button>
     </div>
-    <div id="debug">
-        ModernActiveDesktop 2.2 Pre-release 4<br>
+    <div id="debug" class="debug">
+        ModernActiveDesktop 2.2 Pre-release 5<br>
         Loaded from <span id="location"></span><br>
+        Debug mode<br>
         <a href="javascript:localStorage.clear();location.reload(true);">Reset config</a><br>
         <a href="javascript:location.reload(true);">Refresh</a><br>
         <a href="javascript:debug();">Run JavaScript code</a><br>
-        <a href="javascript:showErrors();">Show errors</a>
+        <a href="javascript:showErrors();">Show errors</a><br>
+        <a id="debugLogBtn" href="javascript:toggleDebugLog();">Enable DeskMover debug logging</a><br>
+        <a href="javascript:deactivateDebugMode();">Deactivate debug mode</a>
     </div>
     <script>
         const errorLog = document.getElementById("errorLog");
