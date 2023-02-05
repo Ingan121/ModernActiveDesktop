@@ -4,11 +4,22 @@ const bgHtmlView = document.getElementById("bgHtmlView");
 const bgVideoView = document.getElementById("bgVideo");
 const schemeElement = document.getElementById("scheme");
 const styleElement = document.getElementById("style");
+const msgboxBg = document.getElementById("msgboxBg");
+const msgbox = document.getElementById("msgbox");
+const msgboxTitlebar = msgbox.getElementsByClassName("title-bar")[0];
+const msgboxMessage = document.getElementById("msgbox-msg");
+const msgboxInput = document.getElementById("msgbox-input");
+const msgboxCloseBtn = document.getElementById("msgbox-close");
+const msgboxBtn1 = document.getElementById("msgbox-btn1");
+const msgboxBtn2 = document.getElementById("msgbox-btn2");
 const errorWnd = document.getElementById("errorWnd");
 const mainMenuBg = document.getElementById("mainMenuBg");
 const mainMenu = document.getElementById("mainMenu");
 const mainMenuItems = mainMenu.getElementsByClassName("contextMenuItem");
+const runningModeLabel = document.getElementById("runmode");
+const simulatedModeLabel = document.getElementById("simmode");
 const debugLogBtn = document.getElementById("debugLogBtn");
+const toggleModeBtn = document.getElementById("toggleModeBtn");
 
 const chord = new Audio("sounds/chord.wav");
 const ding = new Audio("sounds/ding.wav");
@@ -19,6 +30,11 @@ const NO_SYSPLUG_ALERT = "System plugin is not running. Please make sure you hav
 
 let lastZIndex = localStorage.madesktopItemCount || 0;
 let isContextMenuOpen = false;
+
+const WE = 1; // Wallpaper Engine
+const LW = 2; // Lively Wallpaper
+const BROWSER = 0; // None of the above
+let runningMode = BROWSER, origRunningMode = BROWSER;
 
 let scaleFactor = 1;
 let vWidth = window.innerWidth;
@@ -34,9 +50,10 @@ if (localStorage.madesktopBgVideoMuted) bgVideoView.muted = true;
 if (localStorage.madesktopBgHtmlSrc) bgHtmlView.src = localStorage.madesktopBgHtmlSrc;
 if (localStorage.madesktopColorScheme) changeColorScheme(localStorage.madesktopColorScheme);
 changeScale(localStorage.madesktopScaleFactor);
-if (localStorage.madesktopDebugMode) activateDebugMode(true);
+if (localStorage.madesktopDebugMode) activateDebugMode();
 
 initDeskMover(0);
+initSimpleMover(msgbox, msgboxTitlebar, [msgboxCloseBtn]);
 
 // Migrate old config
 if (localStorage.madesktopNonADStyle) {
@@ -68,7 +85,9 @@ bgHtmlView.addEventListener('load', function () {
     this.contentDocument.body.style.zoom = scaleFactor;
 });
 
-if (typeof wallpaperOnVideoEnded !== "function") { // Check if not running in Wallpaper Engine
+if (typeof wallpaperOnVideoEnded === "function") { // Check if running in Wallpaper Engine
+    runningMode = WE;
+} else {
     changeBgType("image");
 }
 
@@ -93,19 +112,26 @@ window.addEventListener('contextmenu', function (event) {
 }, false);
 
 for (let i = 0; i < mainMenuItems.length; i++) {
-        const elem = mainMenuItems[i];
-        elem.onmouseover = function () {
-            elem.getElementsByTagName('u')[0].style.borderBottomColor = 'var(--hilight-text)';
-        }
-        elem.onmouseout = function () {
-            elem.getElementsByTagName('u')[0].style.borderBottomColor = 'var(--window-text)';
-        }
+    const elem = mainMenuItems[i];
+    elem.onmouseover = function () {
+        elem.getElementsByTagName('u')[0].style.borderBottomColor = 'var(--hilight-text)';
     }
+    elem.onmouseout = function () {
+        elem.getElementsByTagName('u')[0].style.borderBottomColor = 'var(--window-text)';
+    }
+}
 
 mainMenuItems[0].addEventListener('click', openWindow); // New button
 
 mainMenuItems[1].addEventListener('click', function() { // Properties button
     openWindow("config.html", false, "388px", "168px");
+});
+
+msgboxBg.addEventListener('click', flashDialog);
+
+msgbox.addEventListener('click', function () {
+    event.preventDefault();
+    event.stopPropagation()
 });
 
 // Detect WE config change
@@ -172,12 +198,7 @@ window.wallpaperPropertyListener = {
         }
         if (properties.additem) {
             if (!properties.bgcolor) { // Ignore if this is a startup event
-                if (localStorage.madesktopItemVisible == "false") {
-                    windowContainers[0].style.display = "block";
-                    localStorage.removeItem("madesktopItemVisible");
-                } else {
-                    openWindow();
-                }
+                openWindow();
             }
         }
         if (properties.leftmargin) {
@@ -204,12 +225,13 @@ window.wallpaperPropertyListener = {
                     .then(response => response.text())
                     .then(responseText => {
                         if (responseText != "OK") {
-                            alert("An error occurred!\nSystem plugin response: " + responseText);
+                            madAlert("An error occurred!\nSystem plugin response: " + responseText);
                         }
                     })
                     .catch(error => {
-                        alert(NO_SYSPLUG_ALERT);
-                        openWindow("SysplugSetupGuide.md", true);
+                        madAlert(NO_SYSPLUG_ALERT, function() {
+                            openWindow("SysplugSetupGuide.md", true);
+                        });
                     })
                 } else {
                     localStorage.removeItem("sysplugIntegration");
@@ -224,12 +246,13 @@ window.wallpaperPropertyListener = {
                         .then(response => response.text())
                         .then(responseText => {
                             if (responseText != "OK") {
-                                alert("An error occurred!\nSystem plugin response: " + responseText);
+                                madAlert("An error occurred!\nSystem plugin response: " + responseText);
                             }
                         })
                         .catch(error => {
-                            alert(NO_SYSPLUG_ALERT);
-                            openWindow("SysplugSetupGuide.md", true);
+                            madAlert(NO_SYSPLUG_ALERT, function() {
+                                openWindow("SysplugSetupGuide.md", true);
+                            });
                         });
                 }
             }
@@ -257,17 +280,29 @@ window.wallpaperPropertyListener = {
         }
         if (properties.reset) {
             if (!properties.bgcolor) { // Ignore if this is a startup event
-                if (confirm("If you want to reset all the configurations completely, please cancel now, click the big red Reset button below first, then click this button again and continue.")) {
-                    if (confirm("This will remove every configuration changes of ModernActiveDesktop you made. Are you sure you want to continue?")) {
-                        localStorage.clear();
-                        alert("Reset complete. The wallpaper will now reload.");
-                        location.reload(true);
-                    }
-                }
+                madConfirm("If you want to reset all the configurations completely, please cancel now, click the big red Reset button below first, then click this button again and continue.", reset);
             }
         }
     }
 };
+
+function livelyPropertyListener(name, val) {
+    switch (name) {
+        case "bgcolor":
+            // Only this is called on startup
+            runningMode = LW;
+            runningModeLabel.textContent = "Lively Wallpaper";
+            origRunningMode = runningMode;
+            simulatedModeLabel.textContent = "";
+            changeBgColor(val);
+            break;
+        case "properties":
+            openWindow("config.html", false, "388px", "168px");
+            break;
+        default:
+            wallpaperPropertyListener.applyUserProperties({ [name]: { value: val } });
+    }
+}
 
 function changeBgType(type) {
     switch(type) {
@@ -427,8 +462,17 @@ function createNewDeskItem(openDoc, temp, width, height) {
 
 // Create a new AD item, initialize, and increase the saved window count
 function openWindow(openDoc, temp, width, height) {
-    createNewDeskItem(openDoc, temp, width, height);
-    localStorage.madesktopItemCount++;
+    if (localStorage.madesktopItemVisible == "false" && !openDoc) {
+        windowContainers[0].style.display = "block";
+        localStorage.removeItem("madesktopItemVisible");
+    } else {
+        if (localStorage.madesktopItemVisible == "false") {
+            windowContainers[0].style.display = "block";
+            createNewDeskItem(openDoc, temp, width, height);
+            windowContainers[0].style.display = "none";
+        } else createNewDeskItem(openDoc, temp, width, height);
+        localStorage.madesktopItemCount++;
+    }
 }
 
 function closeMainMenu() {
@@ -439,6 +483,7 @@ function closeMainMenu() {
 
 // Required as mouse movements over iframes are not detectable in the parent document
 function iframeClickEventCtrl(clickable) {
+    if (debugLog) console.log(clickable ? "clickable" : "unclickable")
     const value = clickable ? "auto" : "none";
     bgHtmlView.style.pointerEvents = value;
     for (let i = 0; i < windowContainers.length; i++)
@@ -477,12 +522,126 @@ function saveZOrder() {
     
     for (let i = 0; i < zOrders.length; i++)
         localStorage.setItem("madesktopItemZIndex" + (zOrders[i][0] || ""), i);
-    console.log(zOrders);
+    
+    if (debugLog) console.log(zOrders);
+}
+
+// Lively Wallpaper doesn't work well with alert/confirm/prompt, so replace these with custom ones
+function madAlert(msg, callback) {
+    msgboxMessage.textContent = msg;
+    msgbox.style.top = "50%";
+    msgbox.style.left = "50%";
+    msgboxBtn2.style.display = "none";
+    msgboxInput.style.display = "none";
+    msgboxBg.style.display = "block";
+    
+    msgboxBtn1.addEventListener('click', close);
+    msgboxCloseBtn.addEventListener('click', close);
+    
+    function close() {
+        msgboxBg.style.display = "none";
+        if (callback) callback();
+        msgboxBtn1.removeEventListener('click', close);
+        msgboxCloseBtn.removeEventListener('click', close);
+    }
+}
+
+function madConfirm(msg, callback) {
+    msgboxMessage.textContent = msg;
+    msgbox.style.top = "50%";
+    msgbox.style.left = "50%";
+    msgboxBtn2.style.display = "block";
+    msgboxInput.style.display = "none";
+    msgboxBg.style.display = "block";
+    
+    msgboxBtn1.addEventListener('click', ok);
+    msgboxBtn2.addEventListener('click', close);
+    msgboxCloseBtn.addEventListener('click', close);
+    
+    function ok() {
+        msgboxBg.style.display = "none";
+        if (callback) callback(true);
+        removeEvents();
+    }
+    function close() {
+        msgboxBg.style.display = "none";
+        if (callback) callback(false);
+        removeEvents();
+    }
+    function removeEvents() {
+        msgboxBtn1.removeEventListener('click', ok);
+        msgboxBtn2.removeEventListener('click', close);
+        msgboxCloseBtn.removeEventListener('click', close);
+    }
+}
+
+function madPrompt(msg, callback, hint, text) {
+    if (runningMode == WE) { // Wallpaper Engine normally does not support keyboard input
+        callback(prompt(msg, text));
+        return;
+    }
+    
+    msgboxMessage.textContent = msg;
+    msgbox.style.top = "50%";
+    msgbox.style.left = "50%";
+    msgboxBtn2.style.display = "block";
+    msgboxInput.style.display = "block";
+    msgboxInput.placeholder = hint || "";
+    msgboxInput.value = text || "";
+    msgboxBg.style.display = "block";
+    
+    msgboxBtn1.addEventListener('click', ok);
+    msgboxInput.addEventListener('keyup', ok);
+    msgboxBtn2.addEventListener('click', close);
+    msgboxCloseBtn.addEventListener('click', close);
+    
+    function ok(event) {
+        if (event.type == "click" || event.key == "Enter") {
+            msgboxBg.style.display = "none";
+            if (callback) callback(msgboxInput.value);
+            removeEvents();
+        }
+    }
+    function close() {
+        msgboxBg.style.display = "none";
+        if (callback) callback(null);
+        removeEvents();
+    }
+    function removeEvents() {
+        msgboxBtn1.removeEventListener('click', ok);
+        msgboxInput.removeEventListener('keyup', ok);
+        msgboxBtn2.removeEventListener('click', close);
+        msgboxCloseBtn.removeEventListener('click', close);
+    }
+}
+
+function flashDialog() {
+    let cnt = 1;
+    let interval = setInterval(function () {
+        if (cnt == 18) clearInterval(interval);
+        if (cnt % 2) msgboxTitlebar.classList.add("inactive");
+        else msgboxTitlebar.classList.remove("inactive");
+        cnt++;
+    }, 60);
+}
+
+function reset(res) {
+    if (typeof res === "undefined" || res)
+    madConfirm("This will remove every configuration changes of ModernActiveDesktop you made. Are you sure you want to continue?", function (res) {
+        if (res) {
+            localStorage.clear();
+            alert("Reset complete. The wallpaper will now reload.");
+            location.reload(true);
+            throw new Error("Refreshing...");
+        }
+    });
 }
 
 // Just for debugging
 function debug() {
-    eval(prompt("Enter JavaScript code to run. (for debugging)"));
+    madPrompt("Enter JavaScript code to run.", function (res) {
+        eval(res);
+    });
     function loadEruda() { // Load Eruda devtools (but Chrome DevTools is better)
         const script = document.createElement('script');
         script.src="https://cdn.jsdelivr.net/npm/eruda";
@@ -493,9 +652,8 @@ function debug() {
     }
 }
 
-function activateDebugMode(dontask) {
+function activateDebugMode() {
     if (styleElement.textContent.length) return;
-    if (!dontask) if (!confirm("Activate debug mode?")) return;
     styleElement.textContent = `
         .debug { display: block; }
         .contextMenuBg { height: 85px; }`;
@@ -510,7 +668,27 @@ function deactivateDebugMode() {
 
 function toggleDebugLog() {
     debugLog = !debugLog;
-    debugLogBtn.textContent = debugLog ? "Disable DeskMover debug logging" : "Enable DeskMover debug logging";
+    debugLogBtn.textContent = debugLog ? "Disable debug logging" : "Enable debug logging";
+}
+
+function toggleRunningMode() {
+    switch (runningMode) {
+        case BROWSER:
+            runningMode = WE;
+            simulatedModeLabel.textContent = ", simulating Wallpaper Engine behavior"
+            break;
+        
+        case WE:
+            runningMode = LW;
+            simulatedModeLabel.textContent = ", simulating Lively Wallpaper behavior"
+            break;
+        
+        case LW:
+            runningMode = BROWSER;
+            simulatedModeLabel.textContent = ", simulating browser behavior"
+            break;
+    }
+    if (runningMode == origRunningMode) simulatedModeLabel.textContent = "";
 }
 
 function showErrors() {
@@ -521,5 +699,7 @@ function showErrors() {
 }
 
 // Initialization complete
-document.getElementById("location").innerText = location.href;
+document.getElementById("location").textContent = location.href;
+if (runningMode == WE) runningModeLabel.textContent = "Wallpaper Engine";
+origRunningMode = runningMode;
 errorWnd.style.display = "none";

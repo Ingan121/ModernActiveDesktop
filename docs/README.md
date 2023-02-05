@@ -29,5 +29,5 @@
 * Support multiple Active Desktop item windows
 * Show a documentation window on first run
 
-Copyright (c) 2023 Ingan121/RomanHue  
+Copyright (c) 2023 Ingan121  
 [Licensed under the MIT license](?src=../license.txt&showbackbtn=1)

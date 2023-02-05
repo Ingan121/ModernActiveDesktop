@@ -4,6 +4,14 @@
 * Added support for video and web backgrounds
     * Configurable in the properties panel
 
+
+allow window offscreen
+zorder save
+per window style
+bugfixes - deskmover, reset
+98 style dialogs
+initial lively wallpaper support
+
 ## Previous changelog
 
 ### 2.1
@@ -22,5 +30,5 @@
 * Support multiple Active Desktop item windows
 * Show a documentation window on first run
 
-Copyright (c) 2023 Ingan121/RomanHue  
+Copyright (c) 2023 Ingan121  
 [Licensed under the MIT license](?src=../license.txt&showbackbtn=1)

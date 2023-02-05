@@ -1,0 +1,24 @@
+{
+    "additem" : 
+    {
+        "text" : "Add a new ActiveDesktop item",
+        "type" : "button",
+        "value" : "Add"
+    },
+    "bgcolor" : 
+    {
+        "text" : "Background color",
+        "type" : "color",
+        "value" : "#008080"
+    },
+    "properties" : 
+    {
+        "text" : "Show more settings",
+        "type" : "button",
+        "value" : "Properties"
+    },
+    "startup" :
+    {
+        "type" : "hidden"
+    }
+}

@@ -40,13 +40,14 @@ function loadBgImg() {
     reader.readAsDataURL(imgInput.files[0]);
 }
 
-function changeColorWithKeyboare() {
-    const str = prompt('Enter color (format: #RRGGBB)', colorPickerBtn.value);
-    if (str === null) return;
-    parent.changeBgColor(str);
+function changeColorWithKeyboard() {
+    parent.madPrompt('Enter color (format: #RRGGBB)', function(str) {
+        if (str === null) return;
+        parent.changeBgColor(str);
+    }, "Color", colorPickerBtn.value);
 }
 
-function remoteImage() {
+function removeImage() {
     parent.document.body.style.backgroundImage = 'none';
     localStorage.removeItem('madesktopBgImg');
 }
@@ -57,13 +58,9 @@ function changeColorScheme(scheme) {
 }
 
 function changeScale() {
-    const value = prompt('Enter scale (%) :') / 100;
-    parent.changeScale(value);
-    localStorage.madesktopScaleFactor = value;
-}
-
-function resetConfig() {
-    if (!confirm('This will remove every configuration changes of ModernActiveDesktop you made. Are you sure you want to continue?')) return;
-    localStorage.clear();
-    parent.location.reload(true);
+    parent.madPrompt("Enter scale (%) :", function (res) {
+        const value = res / 100;
+        parent.changeScale(value);
+        localStorage.madesktopScaleFactor = value;
+    });
 }

@@ -1,0 +1,14 @@
+{
+  "AppVersion": "2.2",
+  "Title": "Windows 98 Desktop Experience",
+  "Thumbnail": "preview.jpg",
+  "Preview": "preview.gif",
+  "Desc": "ModernActiveDesktop",
+  "Author": "Ingan121",
+  "License": "MIT",
+  "Contact": "https://github.com/Ingan121/ModernActiveDesktop",
+  "Type": 1,
+  "FileName": "index.html",
+  "Arguments": null,
+  "IsAbsolutePath": false
+}

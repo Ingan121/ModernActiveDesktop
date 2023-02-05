@@ -62,6 +62,8 @@ function initDeskMover(num, openDoc, temp, width, height) {
     document.addEventListener('mouseup', function () {
         iframeClickEventCtrl(true);
         isDown = false;
+        
+        if (windowContainer.style.display == "none") return; // offsets are always 0 when hidden, causing unexpected behaviors
         // Minimum size
         if (windowElement.offsetWidth < 60) windowElement.width = "60px";
         if (windowElement.offsetHeight < 15) windowElement.height = "15px";
@@ -71,7 +73,6 @@ function initDeskMover(num, openDoc, temp, width, height) {
         
         resizingMode = "none";
         document.body.style.cursor = "auto";
-        if (debugLog) console.log("mouseup");
     });
 
     windowElement.addEventListener('mouseover', function (event) {
@@ -227,14 +228,12 @@ function initDeskMover(num, openDoc, temp, width, height) {
         closeContextMenu();
         if (temp) {
             ding.play();
-            setTimeout(function() {
-                alert("This window is temporary, so it cannot be reset. Just close it.")
-            }, 100);
+            madAlert("This window is temporary, so it cannot be reset. Just close it.");
             return;
         }
         chord.play();
-        setTimeout(function () {
-            if (confirm("Are you sure you want to reset this window?")) {
+        madConfirm("Are you sure you want to reset this window?", function (res) {
+            if (res) {
                 localStorage.removeItem("madesktopItemWidth" + numStr);
                 localStorage.removeItem("madesktopItemHeight" + numStr);
                 localStorage.removeItem("madesktopItemXPos" + numStr);
@@ -243,8 +242,8 @@ function initDeskMover(num, openDoc, temp, width, height) {
                 localStorage.removeItem("madesktopItemStyle" + numStr);
                 location.reload();
                 throw new Error("Refreshing...");
-            };
-        }, 100);
+            }
+        });
     });
 
     contextMenuItems[3].addEventListener('click', function () { // Reload button
@@ -276,14 +275,19 @@ function initDeskMover(num, openDoc, temp, width, height) {
     
     confMenuItems[2].addEventListener('click', function () { // Set URL button
         closeContextMenu();
-        let url = prompt("Enter URL (leave empty to reset)");
-        if (url === null) return;
-        if (!url) {
-            if (num == 0) url = "ChannelBar.html";
-            else url = WINDOW_PLACEHOLDER;
-        }
-        windowElement.src = url;
-        localStorage.setItem("madesktopItemSrc" + numStr, url);
+        madPrompt("Enter URL (leave empty to reset)", function (url) {
+            if (url === null) return;
+            if (url == "!debugmode") {
+                activateDebugMode();
+                return;
+            }
+            if (!url) {
+                if (num == 0) url = "ChannelBar.html";
+                else url = WINDOW_PLACEHOLDER;
+            }
+            windowElement.src = url;
+            localStorage.setItem("madesktopItemSrc" + numStr, url);
+        });
     });
 
     windowCloseBtn.addEventListener('click', function () {
@@ -293,11 +297,12 @@ function initDeskMover(num, openDoc, temp, width, height) {
             localStorage.madesktopDestroyedItems += `|${numStr}|`;
         } else {
             ding.play();
-            setTimeout(function () {
-                alert("To show it again, click 'Add a new ActiveDesktop item' in the Wallpaper Engine properties panel.");
-                windowContainer.style.display = 'none';
-                localStorage.madesktopItemVisible = false;
-            }, 100);
+            let msg = "right click the background and click New.";
+            if (runningMode == WE) msg = "click 'Add a new ActiveDesktop item' in the Wallpaper Engine properties panel.";
+            else if (runningMode == LW) msg = "click Add in the Lively Wallpaper customize window.";
+            madAlert("To show it again, " + msg);
+            windowContainer.style.display = 'none';
+            localStorage.madesktopItemVisible = false;
         }
     });
     
@@ -316,13 +321,14 @@ function initDeskMover(num, openDoc, temp, width, height) {
         event.stopPropagation();
     }
     
-    function openContextMenu() {
+    function openContextMenu(event) {
         contextMenuBg.style.display = "block";
         setTimeout(function () {
             document.addEventListener('click', closeContextMenu);
             iframeClickEventCtrl(false);
         }, 100);
         isContextMenuOpen = true;
+        event.preventDefault();
     }
 
     function closeContextMenu() {
@@ -487,5 +493,42 @@ function initDeskMover(num, openDoc, temp, width, height) {
             windowFrame.style.backgroundColor = "var(--button-face)";
             windowTitlebar.style.display = "block";
         }
+    }
+}
+
+function initSimpleMover(container, titlebar, exclusions) {
+    let offset = [0, 0], isDown = false, mouseOverWndBtns = false;
+    
+    titlebar.addEventListener('mousedown', function() {
+        if (!mouseOverWndBtns) {
+            isDown = true;
+            iframeClickEventCtrl(false);
+            offset = [
+                container.offsetLeft - Math.ceil(event.clientX / scaleFactor), // event.clientXY doesn't work well with css zoom
+                container.offsetTop - Math.ceil(event.clientY / scaleFactor)
+            ];
+        }
+    });
+    
+    titlebar.addEventListener('mouseup', function() {
+        isDown = false;
+        iframeClickEventCtrl(true);
+    });
+    
+    document.addEventListener('mousemove', function() {
+        if (isDown) {
+            container.style.left = (Math.ceil(event.clientX / scaleFactor) + offset[0]) + 'px';
+            container.style.top  = (Math.ceil(event.clientY / scaleFactor) + offset[1]) + 'px';
+        }
+    });
+    
+    for (let i = 0; i < exclusions.length; i++) {
+        exclusions[i].addEventListener('mouseover', function () {
+            mouseOverWndBtns = true;
+        });
+
+        exclusions[i].addEventListener('mouseout', function () {
+            mouseOverWndBtns = false;
+        });
     }
 }

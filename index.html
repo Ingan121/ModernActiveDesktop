@@ -50,6 +50,24 @@
             <div class="contextMenuItem"><p>P<u>r</u>operties</p></div>
         </div>
     </div>
+    <div id="msgboxBg">
+        <div id="msgbox" class="window" style="width: 300px">
+            <div class="title-bar">
+                <div class="title-bar-text">ModernActiveDesktop</div>
+                <div class="title-bar-controls">
+                    <button id="msgbox-close" aria-label="Close"></button>
+                </div>
+            </div>
+            <div class="window-body">
+                <p id="msgbox-msg">Message</p>
+                <input id="msgbox-input" type="text">
+                <section class="field-row" style="justify-content: flex-end">
+                    <button id="msgbox-btn1">OK</button>
+                    <button id="msgbox-btn2">Cancel</button>
+                </section>
+            </div>
+        </div>
+    </div>
     <div id="errorWnd" class="window">
         <p id="errorMsg">ModernActiveDesktop failed to initialize because of an unknown error. Please consult the log below and report this to the author.</p>
         <pre id="errorLog"></pre>
@@ -57,14 +75,16 @@
         <button onclick="copyLog();">Copy log</button> <button onclick="location.reload(true);">Retry</button> <button onclick="errorWnd.style.display='none';">Ignore</button>
     </div>
     <div id="debug" class="debug">
-        ModernActiveDesktop 2.2 Pre-release 5<br>
+        ModernActiveDesktop 2.2 Pre-release 6<br>
         Loaded from <span id="location"></span><br>
+        Running in <span id="runmode">browser</span><span id="simmode"></span><br>
         Debug mode<br>
         <a href="javascript:localStorage.clear();location.reload(true);">Reset config</a><br>
         <a href="javascript:location.reload(true);">Refresh</a><br>
         <a href="javascript:debug();">Run JavaScript code</a><br>
         <a href="javascript:showErrors();">Show errors</a><br>
-        <a id="debugLogBtn" href="javascript:toggleDebugLog();">Enable DeskMover debug logging</a><br>
+        <a id="debugLogBtn" href="javascript:toggleDebugLog();">Enable debug logging</a><br>
+        <a id="toggleModeBtn" href="javascript:toggleRunningMode();">Simulate other environment</a><br>
         <a href="javascript:deactivateDebugMode();">Deactivate debug mode</a>
     </div>
     <script>

@@ -32,6 +32,8 @@ function createWindow () {
     resizable: false,
     show: false
   });
+  
+  if (args.cors == "*") showErrorMsg(mainWindow, "WARNING: You-re running ModernActiveDesktop System Plugin with wildcard CORS option. This is considered insecure, as any webpages can access your system with this plugin. Please only use this option for testing.", "warning");
 
   generateCssScheme();
 
@@ -254,10 +256,10 @@ function processNewWindow(childWindow, details) {
   }
 }
 
-function showErrorMsg(win, msg) {
+function showErrorMsg(win, msg, type) {
   const options = {
     message: msg,
-    type: 'error',
+    type: type,
     title: 'ModernActiveDesktop System Plugin',
     buttons: ['확인'],
     noLink: true
@@ -332,7 +334,8 @@ http.createServer(onRequest).listen(3031);
 
 function onRequest(req, res) {
   console.log('serve: ' + req.url);
-
+  res.setHeader('Access-Control-Allow-Origin', args.cors || 'https://www.ingan121.com');
+  
   switch (req.url) {
     case '/open':
       if (req.method == 'POST') {
@@ -385,11 +388,6 @@ function onRequest(req, res) {
         res.writeHead(406, {'Content-Type':'text/html'});
         res.end('<h1>406 Not Acceptable</h1><p>Usage: send a POST request with a JSON with the following format:<br><pre>{"openWith": number}</pre><br>0: Classic style channel viewer<br>1: Classic style channel viewer (fullscreen)<br>2: System default browser</p>')
       }
-      return;
-
-    case '/bghtmlconfig':
-      res.writeHead(200, {'Content-Type':'text/html'});
-      res.end('OK');
       return;
 
     case '/systemscheme':

@@ -23,6 +23,8 @@
             <input id="imgInput" type="file" accept="image/*" onchange="loadBgImg()">
         </label>
         | <p class="button" onclick="removeImage()">Remove</p>
+    </div>
+    <div>
         <form name="imgModeSelector">
             <p>BG Style:</p>
             <input id="radcenter" type="radio" name="imgMode" value="center" checked><label for="radcenter">Center</label>
@@ -43,9 +45,9 @@
         </form>
     </div>
     <button style="margin-top: 3px;" onclick="changeScale()">Change scale</button>
-    <button onclick="resetConfig()">Reset config</button>
+    <button onclick="parent.reset()">Reset config</button>
     <button onclick="parent.location.reload(true)">Refresh</button>
-    <p id="author" onclick="parent.activateDebugMode()">Ingan121/RomanHue</p>
+    <p id="author">Made by Ingan121</p>
     <script src="js/config.js"></script>
 </body>
 </html>
