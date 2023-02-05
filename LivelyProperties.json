@@ -16,9 +16,5 @@
         "text" : "Show more settings",
         "type" : "button",
         "value" : "Properties"
-    },
-    "startup" :
-    {
-        "type" : "hidden"
     }
 }

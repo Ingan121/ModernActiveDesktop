@@ -129,7 +129,7 @@ mainMenuItems[1].addEventListener('click', function() { // Properties button
 
 msgboxBg.addEventListener('click', flashDialog);
 
-msgbox.addEventListener('click', function () {
+msgbox.addEventListener('click', function (event) {
     event.preventDefault();
     event.stopPropagation()
 });
