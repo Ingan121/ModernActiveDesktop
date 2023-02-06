@@ -31,7 +31,7 @@ p {
 }
 
 #author {
-    color: gray;
+    color: var(--gray-text);
     font-size: 12px;
     position: fixed;
     left: 4px;

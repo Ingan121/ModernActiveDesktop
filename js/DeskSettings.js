@@ -25,7 +25,7 @@ const chord = new Audio("sounds/chord.wav");
 const ding = new Audio("sounds/ding.wav");
 const startup = new Audio("sounds/The Microsoft Sound.wav");
 
-const WINDOW_PLACEHOLDER = "data:text/html,<body style='background-color: white'>⮡ Click this button to configure</body>";
+const WINDOW_PLACEHOLDER = "data:text/html,<meta charset='utf-8'><body style='background-color: white'>⮡ Click this button to configure</body>";
 const NO_SYSPLUG_ALERT = "System plugin is not running. Please make sure you have installed it properly. If you don't want to use it, please disable the system plugin integration option.";
 
 let lastZIndex = localStorage.madesktopItemCount || 0;
@@ -44,7 +44,7 @@ let debugLog = false;
 
 // Load configs
 if (localStorage.madesktopBgColor) document.body.style.backgroundColor = localStorage.madesktopBgColor;
-changeBgType(localStorage.madesktopBgType || "color");
+changeBgType(localStorage.madesktopBgType || "image");
 changeBgImgMode(localStorage.madesktopBgImgMode || "center");
 if (localStorage.madesktopBgVideoMuted) bgVideoView.muted = true;
 if (localStorage.madesktopBgHtmlSrc) bgHtmlView.src = localStorage.madesktopBgHtmlSrc;
@@ -87,17 +87,15 @@ bgHtmlView.addEventListener('load', function () {
 
 if (typeof wallpaperOnVideoEnded === "function") { // Check if running in Wallpaper Engine
     runningMode = WE;
-} else {
-    changeBgType("image");
 }
 
 // Press Ctrl+Shift+Q to activate the debug mode
-// Wont work in WE so just load config.html then click the Ingan121/RomanHue text
+// Wont work in WE so enter !debugmode in the Change URL window
 document.addEventListener('keypress', function(event) {
     if (event.ctrlKey && event.shiftKey && event.code == 'KeyQ') activateDebugMode();
 });
 
-// Main context menu things (only for non-WE uses)
+// Main context menu things (only for browser uses)
 window.addEventListener('contextmenu', function (event) {
     if (isContextMenuOpen) return;
     mainMenuBg.style.left = event.clientX + "px";
@@ -132,6 +130,10 @@ msgboxBg.addEventListener('click', flashDialog);
 msgbox.addEventListener('click', function (event) {
     event.preventDefault();
     event.stopPropagation()
+});
+
+window.addEventListener('resize', function () {
+    changeScale(scaleFactor);
 });
 
 // Detect WE config change
@@ -280,7 +282,7 @@ window.wallpaperPropertyListener = {
         }
         if (properties.reset) {
             if (!properties.bgcolor) { // Ignore if this is a startup event
-                madConfirm("If you want to reset all the configurations completely, please cancel now, click the big red Reset button below first, then click this button again and continue.", reset);
+                madConfirm("If you want to reset all the configurations completely, first click the big red Reset button below, then click OK.", reset);
             }
         }
     }
@@ -306,12 +308,6 @@ function livelyPropertyListener(name, val) {
 
 function changeBgType(type) {
     switch(type) {
-        case 'color':
-            document.body.style.backgroundImage = "none";
-            bgHtmlContainer.style.display = "none";
-            bgVideoView.style.display = "none";
-            bgVideoView.src = "";
-            break;
         case 'image':
             loadBgImgConf();
             bgHtmlContainer.style.display = "none";
@@ -403,7 +399,7 @@ function changeScale(scale) {
     document.body.style.zoom = scaleFactor;
     updateIframeScale();
     document.dispatchEvent(new Event("mouseup")); // Move all deskitems inside the visible area
-    console.log({scaleFactor, vWidth, vHeight, dpi: 96 * scaleFactor});
+    if (debugLog) console.log({scaleFactor, vWidth, vHeight, dpi: 96 * scaleFactor});
 }
 
 // Find the cursor position inside an element
@@ -529,18 +525,25 @@ function saveZOrder() {
 // Lively Wallpaper doesn't work well with alert/confirm/prompt, so replace these with custom ones
 function madAlert(msg, callback) {
     msgboxMessage.textContent = msg;
-    msgbox.style.top = "50%";
-    msgbox.style.left = "50%";
     msgboxBtn2.style.display = "none";
     msgboxInput.style.display = "none";
-    msgboxBg.style.display = "block";
     
+    document.addEventListener('keyup', keyup);
     msgboxBtn1.addEventListener('click', close);
     msgboxCloseBtn.addEventListener('click', close);
     
+    showDialog();
+    
+    function keyup(event) {
+        switch (event.key) {
+            case "Enter": case "Escape":
+                close();
+        }
+    }
     function close() {
         msgboxBg.style.display = "none";
         if (callback) callback();
+        document.removeEventListener('keyup', keyup);
         msgboxBtn1.removeEventListener('click', close);
         msgboxCloseBtn.removeEventListener('click', close);
     }
@@ -548,16 +551,25 @@ function madAlert(msg, callback) {
 
 function madConfirm(msg, callback) {
     msgboxMessage.textContent = msg;
-    msgbox.style.top = "50%";
-    msgbox.style.left = "50%";
     msgboxBtn2.style.display = "block";
     msgboxInput.style.display = "none";
-    msgboxBg.style.display = "block";
     
+    document.addEventListener('keyup', keyup);
     msgboxBtn1.addEventListener('click', ok);
     msgboxBtn2.addEventListener('click', close);
     msgboxCloseBtn.addEventListener('click', close);
     
+    showDialog();
+    
+    function keyup(event) {
+        switch (event.key) {
+            case "Enter":
+                ok();
+                break;
+            case "Escape":
+                close();
+        }
+    }
     function ok() {
         msgboxBg.style.display = "none";
         if (callback) callback(true);
@@ -569,6 +581,7 @@ function madConfirm(msg, callback) {
         removeEvents();
     }
     function removeEvents() {
+        document.removeEventListener('keyup', keyup);
         msgboxBtn1.removeEventListener('click', ok);
         msgboxBtn2.removeEventListener('click', close);
         msgboxCloseBtn.removeEventListener('click', close);
@@ -582,25 +595,32 @@ function madPrompt(msg, callback, hint, text) {
     }
     
     msgboxMessage.textContent = msg;
-    msgbox.style.top = "50%";
-    msgbox.style.left = "50%";
     msgboxBtn2.style.display = "block";
     msgboxInput.style.display = "block";
     msgboxInput.placeholder = hint || "";
     msgboxInput.value = text || "";
-    msgboxBg.style.display = "block";
     
+    document.addEventListener('keyup', keyup);
     msgboxBtn1.addEventListener('click', ok);
-    msgboxInput.addEventListener('keyup', ok);
     msgboxBtn2.addEventListener('click', close);
     msgboxCloseBtn.addEventListener('click', close);
     
-    function ok(event) {
-        if (event.type == "click" || event.key == "Enter") {
-            msgboxBg.style.display = "none";
-            if (callback) callback(msgboxInput.value);
-            removeEvents();
+    showDialog();
+    msgboxInput.focus();
+    
+    function keyup(event) {
+        switch (event.key) {
+            case "Enter":
+                ok();
+                break;
+            case "Escape":
+                close();
         }
+    }
+    function ok() {
+        msgboxBg.style.display = "none";
+        if (callback) callback(msgboxInput.value);
+        removeEvents();
     }
     function close() {
         msgboxBg.style.display = "none";
@@ -608,6 +628,7 @@ function madPrompt(msg, callback, hint, text) {
         removeEvents();
     }
     function removeEvents() {
+        document.removeEventListener('keyup', keyup);
         msgboxBtn1.removeEventListener('click', ok);
         msgboxInput.removeEventListener('keyup', ok);
         msgboxBtn2.removeEventListener('click', close);
@@ -615,7 +636,14 @@ function madPrompt(msg, callback, hint, text) {
     }
 }
 
+function showDialog() {
+    msgboxBg.style.display = "block";
+    msgbox.style.top = vHeight / 2 - msgbox.offsetHeight / 2 + "px";
+    msgbox.style.left = vWidth / 2 - msgbox.offsetWidth / 2 + "px";
+}
+
 function flashDialog() {
+    ding.play();
     let cnt = 1;
     let interval = setInterval(function () {
         if (cnt == 18) clearInterval(interval);
@@ -664,6 +692,10 @@ function deactivateDebugMode() {
     styleElement.textContent = "";
     localStorage.removeItem("madesktopDebugMode");
     if (debugLog) toggleDebugLog();
+    if (runningMode != origRunningMode) {
+        runningMode = origRunningMode;
+        simulatedModeLabel.textContent = "";
+    }
 }
 
 function toggleDebugLog() {

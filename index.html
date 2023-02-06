@@ -13,7 +13,7 @@
     <div id="bgHtmlContainer" class="bgHtml">
         <iframe id="bgHtmlView" class="bgHtml" src="bghtml/index.html"></iframe>
     </div>
-    <video id="bgVideo" src="" autoplay></video>
+    <video id="bgVideo" src="" autoplay loop></video>
     <div class="windowContainer">
         <div class="windowTitlebar">
             <div class="windowMenuBtn windowBtn" style="left: 3px;">
@@ -75,10 +75,10 @@
         <button onclick="copyLog();">Copy log</button> <button onclick="location.reload(true);">Retry</button> <button onclick="errorWnd.style.display='none';">Ignore</button>
     </div>
     <div id="debug" class="debug">
-        ModernActiveDesktop 2.2 Pre-release 6<br>
-        Loaded from <span id="location"></span><br>
-        Running in <span id="runmode">browser</span><span id="simmode"></span><br>
-        Debug mode<br>
+        <span>ModernActiveDesktop 2.2</span><br>
+        <span>Loaded from <span id="location"></span></span><br>
+        <span>Running in <span id="runmode">browser</span><span id="simmode"></span></span><br>
+        <span>Debug mode</span><br>
         <a href="javascript:localStorage.clear();location.reload(true);">Reset config</a><br>
         <a href="javascript:location.reload(true);">Refresh</a><br>
         <a href="javascript:debug();">Run JavaScript code</a><br>

@@ -13,8 +13,8 @@
     },
     "properties" : 
     {
-        "text" : "Show more settings",
+        "text" : "Show more properties",
         "type" : "button",
-        "value" : "Properties"
+        "value" : "Show"
     }
 }

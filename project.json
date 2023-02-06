@@ -1,6 +1,6 @@
 {
 	"contentrating" : "Everyone",
-	"description" : "Wallpaper for imitating the Windows 98 desktop experience\r\n\r\nThis wallpaper includes Windows 98's Channel Bar and the startup sound.\r\n\r\nSome channel items won't show properly because of the limitations of the iframe security restrictions.\r\n\r\nPowered by https://jdan.github.io/98.css/\r\n\r\nRight click this wallpaper and click 'Open in Explorer' to view the source code and the license (MIT.)\r\n\r\nVisit https://winclassic.boards.net to learn how to get the classic theme on Windows 8+ or Windows 7 with Aero enabled.",
+	"description" : "Wallpaper for imitating the Windows 98 desktop experience\r\n\r\nThis wallpaper includes Windows 98's Channel Bar and the startup sound.\r\n\r\nSome channel items won't show properly because of the limitations of the iframe security restrictions.\r\n\r\nPowered by https://jdan.github.io/98.css/\r\n\r\nRight click this wallpaper and click 'Open in Explorer' to view the source code and the license (MIT.)\r\n\r\nVisit https://winclassic.boards.net to learn how to get the classic theme on Windows 8+ or Windows 7 with Aero enabled.\r\n\r\nSource code: https://github.com/Ingan121/ModernActiveDesktop",
 	"file" : "index.html",
 	"general" : 
 	{
@@ -17,8 +17,8 @@
 			},
 			"bgcolor" : 
 			{
-				"index" : 1,
-				"order" : 101,
+				"index" : 0,
+				"order" : 100,
 				"text" : "Background color",
 				"type" : "color",
 				"value" : "0 0.5019607843137255 0.5019607843137255"
@@ -75,13 +75,9 @@
 			},
 			"bgtype" : 
 			{
-				"index" : 0,
+				"index" : 1,
 				"options" : 
 				[
-					{
-						"label" : "Color",
-						"value" : "color"
-					},
 					{
 						"label" : "Image",
 						"value" : "image"
@@ -95,10 +91,10 @@
 						"value" : "web"
 					}
 				],
-				"order" : 100,
+				"order" : 101,
 				"text" : "Background type",
 				"type" : "combo",
-				"value" : "color"
+				"value" : "image"
 			},
 			"bgvideo" : 
 			{

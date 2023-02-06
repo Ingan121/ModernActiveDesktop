@@ -17,6 +17,7 @@ function initDeskMover(num, openDoc, temp, width, height) {
     let isDown = false, resizingMode = "none", mouseOverWndBtns = false;
     let timeout, timeout2;
     let prevOffsetRight, prevOffsetBottom;
+    let useNonADStyle = false; // non-ActiveDesktop styling
     
     // Check if the deskitem we're trying to initialize is destroyed or not
     // Skip for deskitem 0 (the ChannelBar) - this design is to maintain backwards compatibility with old versions
@@ -32,9 +33,6 @@ function initDeskMover(num, openDoc, temp, width, height) {
     // Add to destroyed list first for temp items
     // Will be destroyed on the next load
     if (temp) localStorage.madesktopDestroyedItems += `|${numStr}|`;
-    
-    let useNonADStyle = false; // non-ActiveDesktop styling
-    changeWndStyle(localStorage.getItem("madesktopItemStyle" + numStr));
     
     windowContainer.addEventListener('mousedown', function (event) {
         windowContainer.style.zIndex = ++lastZIndex; // bring to top
@@ -240,8 +238,7 @@ function initDeskMover(num, openDoc, temp, width, height) {
                 localStorage.removeItem("madesktopItemYPos" + numStr);
                 localStorage.removeItem("madesktopItemSrc" + numStr);
                 localStorage.removeItem("madesktopItemStyle" + numStr);
-                location.reload();
-                throw new Error("Refreshing...");
+                init(true);
             }
         });
     });
@@ -371,44 +368,57 @@ function initDeskMover(num, openDoc, temp, width, height) {
     windowCloseBtn.addEventListener('mouseout', function () {
         mouseOverWndBtns = false;
     });
+    
+    init();
+    
+    function init(reinit) {
+        // Load configs
+        if (localStorage.getItem("madesktopItemWidth" + numStr)) windowElement.width = localStorage.getItem("madesktopItemWidth" + numStr);
+        if (localStorage.getItem("madesktopItemHeight" + numStr)) windowElement.height = localStorage.getItem("madesktopItemHeight" + numStr);
+        if (localStorage.getItem("madesktopItemXPos" + numStr)) windowContainer.style.left = localStorage.getItem("madesktopItemXPos" + numStr);
+        else windowContainer.style.left = vWidth - windowContainer.offsetWidth - 100 + 'px';
+        if (localStorage.getItem("madesktopItemYPos" + numStr)) windowContainer.style.top = localStorage.getItem("madesktopItemYPos" + numStr);
+        changeWndStyle(localStorage.getItem("madesktopItemStyle" + numStr));
+        adjustElements();
+        keepInside();
+        windowContainer.style.zIndex = localStorage.getItem("madesktopItemZIndex" + numStr) || ++lastZIndex;
 
-    // Load configs
-    if (localStorage.getItem("madesktopItemWidth" + numStr)) windowElement.width = localStorage.getItem("madesktopItemWidth" + numStr);
-    if (localStorage.getItem("madesktopItemHeight" + numStr)) windowElement.height = localStorage.getItem("madesktopItemHeight" + numStr);
-    if (localStorage.getItem("madesktopItemXPos" + numStr)) windowContainer.style.left = localStorage.getItem("madesktopItemXPos" + numStr);
-    else windowContainer.style.left = vWidth - windowContainer.offsetWidth - 100 + 'px';
-    if (localStorage.getItem("madesktopItemYPos" + numStr)) windowContainer.style.top = localStorage.getItem("madesktopItemYPos" + numStr);
-    adjustElements();
-    keepInside();
-    windowContainer.style.zIndex = localStorage.getItem("madesktopItemZIndex" + numStr) || ++lastZIndex;
-
-    if (localStorage.getItem("madesktopItemSrc" + numStr)) {
-        windowElement.src = localStorage.getItem("madesktopItemSrc" + numStr);
-    } else {
-        if (num != 0) {
-            let url = WINDOW_PLACEHOLDER;
-            if (typeof openDoc === "string" || openDoc instanceof String) {
-                windowElement.width = width || '800px';
-                windowElement.height = height || '600px';
-                windowContainer.style.left = parseInt(localStorage.madesktopChanViewLeftMargin) || 75 + 250 + 'px';
-                windowContainer.style.top = '150px';
-                url = openDoc.endsWith(".html") ? openDoc : `docs/index.html?src=${openDoc}`;
-            } else {
-                windowElement.width = width || '250px';
-                windowElement.height = height || '150px';
-                windowContainer.style.left = vWidth - windowContainer.offsetWidth - (parseInt(localStorage.madesktopChanViewRightMargin) || 0) - 200 + 'px';
-                windowContainer.style.top = '200px';
-            }
-            adjustElements();
-            keepInside();
-            saveConfig();
-            
-            windowElement.src = url;
-            localStorage.setItem("madesktopItemSrc" + numStr, url);
+        if (localStorage.getItem("madesktopItemSrc" + numStr)) {
+            windowElement.src = localStorage.getItem("madesktopItemSrc" + numStr);
         } else {
-            if (!localStorage.madesktopItemXPos) windowContainer.style.left = vWidth - windowContainer.offsetWidth - parseInt(localStorage.madesktopChanViewRightMargin) - 100 + 'px';
+            if (num != 0) {
+                let url = WINDOW_PLACEHOLDER;
+                if ((typeof openDoc === "string" || openDoc instanceof String) && !reinit) {
+                    windowElement.width = width || '800px';
+                    windowElement.height = height || '600px';
+                    windowContainer.style.left = (parseInt(localStorage.madesktopChanViewLeftMargin) || 75) + 250 + 'px';
+                    windowContainer.style.top = '150px';
+                    url = openDoc.endsWith(".html") ? openDoc : `docs/index.html?src=${openDoc}`;
+                } else {
+                    windowElement.width = width || '250px';
+                    windowElement.height = height || '150px';
+                    adjustElements();
+                    windowContainer.style.left = vWidth - windowContainer.offsetWidth - (parseInt(localStorage.madesktopChanViewRightMargin) || 0) - 200 + 'px';
+                    windowContainer.style.top = '200px';
+                }
+                adjustElements();
+                keepInside();
+                saveConfig();
+                
+                windowElement.src = url;
+                localStorage.setItem("madesktopItemSrc" + numStr, url);
+            } else {
+                if (reinit) {
+                    windowContainer.style.top = '200px';
+                    windowElement.width = '84px';
+                    windowElement.height = '471px';
+                    adjustElements();
+                    windowElement.src = "ChannelBar.html";
+                }
+                if (!localStorage.madesktopItemXPos) windowContainer.style.left = vWidth - windowContainer.offsetWidth - (parseInt(localStorage.madesktopChanViewRightMargin) || 0) - 100 + 'px';
+            }
         }
-    }
+    }   
     
     function changeWndStyle(style) {
         if (style == "nonad") {
@@ -450,7 +460,7 @@ function initDeskMover(num, openDoc, temp, width, height) {
         updatePrevOffset();
     }
     
-    // Adjust all elements 
+    // Adjust all elements to windowElement
     function adjustElements() {
         windowContainer.style.height = windowElement.offsetHeight + 21 + 'px';
         windowFrame.style.height = windowElement.height;
@@ -510,9 +520,15 @@ function initSimpleMover(container, titlebar, exclusions) {
         }
     });
     
-    titlebar.addEventListener('mouseup', function() {
+    document.addEventListener('mouseup', function() {
         isDown = false;
         iframeClickEventCtrl(true);
+        
+        // Keep the window inside the visible area
+        if (container.offsetLeft < -container.offsetWidth + 60) container.style.left = -titlebar.offsetWidth + 60 + 'px';
+        if (container.offsetTop < 0) container.style.top = 0;
+        if (container.offsetLeft + 60 > vWidth) container.style.left = vWidth - 60 + 'px';
+        if (container.offsetTop + 50 > vHeight) container.style.top = vHeight - 50 + 'px';
     });
     
     document.addEventListener('mousemove', function() {

@@ -59,6 +59,7 @@ function changeColorScheme(scheme) {
 
 function changeScale() {
     parent.madPrompt("Enter scale (%) :", function (res) {
+        if (res === null) return;
         const value = res / 100;
         parent.changeScale(value);
         localStorage.madesktopScaleFactor = value;

@@ -3,14 +3,17 @@
 ## New features
 * Added support for video and web backgrounds
     * Configurable in the properties panel
-
-
-allow window offscreen
-zorder save
-per window style
-bugfixes - deskmover, reset
-98 style dialogs
-initial lively wallpaper support
+* Windows can now be placed off-screen, as long as its title bar is still visible
+* Window Z-orders are now persistent across reloads
+* Added per-window style setting
+* Fixed bugs with window resize and reset
+* Replaced default dialogs with 98-styled ones
+* Added initial support for Lively Wallpaper
+* Added a standalone properties panel for non-Wallpaper Engine usage
+* Added a right-click menu for browser usage
+* Resetting windows no longer reloads the entire wallpaper
+* Added advanced debugging features
+* Major code improvements
 
 ## Previous changelog
 
