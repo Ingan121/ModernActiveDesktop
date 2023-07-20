@@ -1,3 +1,5 @@
+@import 'marlett.css';
+
 @keyframes appear {
     0% {
         opacity: 0;
@@ -173,24 +175,45 @@ body {
     padding-top: 2px;
 }
 
-.contextMenuItem:not(.hasIcon):not(.activeStyle) > p {
+.contextMenuItem:not(.hasIcon):not(.activeStyle):not(.checkedItem) > p {
     padding-left: 15px;
 }
 
-.contextMenuItem.activeStyle > p {
+.confMenu > .contextMenuItem:not(.hasIcon):not(.activeStyle):not(.checkedItem) > p {
+    padding-left: 20px;
+}
+
+.contextMenuItem.activeStyle > p,
+.contextMenuItem.checkedItem > p {
     line-height: 10px;
 }
 
 .contextMenuItem.activeStyle > p::before {
     content: "●";
     font-size: 15px;
-    margin-left: 2px;
-    margin-right: 4px;
+    margin-left: 4px;
+    margin-right: 7px;
 }
 
-.contextMenuItem:hover {
+.contextMenuItem.checkedItem > p::before {
+	font-family: "marlett-icons";
+    content: "\e903";
+    font-size: 15px;
+	position: relative;
+	top: 2px;
+	left: 1px;
+    margin-right: 5px;
+}
+
+.contextMenuItem:hover,
+.contextMenuItem[data-active] {
     background-color: var(--hilight);
     color: var(--hilight-text);
+}
+
+.contextMenuItem:hover u,
+.contextMenuItem[data-active] u {
+    border-bottom-color: var(--hilight-text);
 }
 
 .submenuMark {
@@ -202,7 +225,7 @@ body {
 .confMenuBg {
     display: none;
     width: 180px;
-    height: 64px;
+    height: 86px;
     position: absolute;
     top: 24px;
     left: 103px;
@@ -218,6 +241,11 @@ body {
     right: 5px;
     margin: 0 !important;
     margin-right: 3px;
+}
+
+.confMenu > hr {
+    margin-top: 3px;
+    margin-bottom: 4px;
 }
 
 #mainMenuBg {

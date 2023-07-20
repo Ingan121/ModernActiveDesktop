@@ -3,7 +3,7 @@
 
 * ModernActiveDesktop, also known as Windows 98 Desktop Experience, aims to replicate the original Active Desktop behavior and improve the Classic Theme experience on modern Windows.
 * Designed for Wallpaper Engine and Lively Wallpaper.
-<br><br><img src="docs/screenshot.png" width="480px" height="270px" title="Screenshot"><br>
+<br><br><img src="docs/images/screenshot.png" width="480px" height="270px" title="Screenshot"><br>
 * [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2278898637)
 * [Try in your browser](https://www.ingan121.com/mad/)
 
@@ -36,7 +36,7 @@
 ### 2.1
 * Added a scaling feature for high DPI displays
     * Configurable in the properties panel
-<br><img src="docs/MADScale.webp" width="360px" height="384px" title="Scaling screenshot">
+<br><img src="docs/images/MADScale.webp" width="360px" height="384px" title="Scaling screenshot">
 * Added error handling
 * Code improvements
 

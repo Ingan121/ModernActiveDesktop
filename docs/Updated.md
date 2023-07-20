@@ -1,6 +1,14 @@
-# ModernActiveDesktop has been updated to 2.2
+# ModernActiveDesktop has been updated to 2.3
 
 ## New features
+* Added an option to disable scaling per window
+* Fixed some websites (e. g. YouTube embed) not displaying properly when scaled
+* Made the window configuration context menu look better
+* Updated dependencies
+
+## Previous changelog
+
+### 2.2
 * Added support for video and web backgrounds
     * Configurable in the properties panel
 * Windows can now be placed off-screen, as long as its title bar is still visible
@@ -15,12 +23,10 @@
 * Added advanced debugging features
 * Major code improvements
 
-## Previous changelog
-
 ### 2.1
 * Added a scaling feature for high DPI displays
     * Configurable in the properties panel
-<br><img src="MADScale.webp" width="360px" height="384px" title="Scaling screenshot">
+<br><img src="images/MADScale.webp" width="360px" height="384px" title="Scaling screenshot">
 * Added error handling
 * Code improvements
 
@@ -34,4 +40,5 @@
 * Show a documentation window on first run
 
 Copyright (c) 2023 Ingan121  
+[https://github.com/Ingan121/ModernActiveDesktop](javascript:openUrl('https://github.com/Ingan121/ModernActiveDesktop'))  
 [Licensed under the MIT license](?src=../license.txt&showbackbtn=1)

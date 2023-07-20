@@ -4,6 +4,7 @@ bghtml/*
 channels-en
 channels-ko
 images
+!docs/images
 sounds
 systemplugin/resources/app/images
 

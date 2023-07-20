@@ -71,28 +71,29 @@ if (localStorage.madesktopItemCount) {
     localStorage.madesktopItemCount = 1;
 }
 
-if (localStorage.madesktopLastVer == "2.0" || localStorage.madesktopLastVer == "2.1") { // Update from 2.x
+if ((localStorage.madesktopLastVer || "").startsWith("2.") && localStorage.madesktopLastVer != "2.3") { // Update from 2.x
     openWindow("Updated.md");
-} else if (localStorage.madesktopLastVer != "2.2") { // First run or update from 1.x
+} else if (localStorage.madesktopLastVer != "2.3") { // First run or update from 1.x
     openWindow("README.md");
 }
-localStorage.madesktopLastVer = "2.2";
+localStorage.madesktopLastVer = "2.3";
 
 if (localStorage.madesktopItemVisible == "false") windowContainers[0].style.display = "none";
 
 // Change the scale on load
 bgHtmlView.addEventListener('load', function () {
     this.contentDocument.body.style.zoom = scaleFactor;
+    hookIframeSize(bgHtmlView);
 });
 
 if (typeof wallpaperOnVideoEnded === "function") { // Check if running in Wallpaper Engine
     runningMode = WE;
 }
 
-// Press Ctrl+Shift+Q to activate the debug mode
+// Press Ctrl+Shift+Y to activate the debug mode
 // Wont work in WE so enter !debugmode in the Change URL window
 document.addEventListener('keypress', function(event) {
-    if (event.ctrlKey && event.shiftKey && event.code == 'KeyQ') activateDebugMode();
+    if (event.ctrlKey && event.shiftKey && event.code == 'KeyY') activateDebugMode();
 });
 
 // Main context menu things (only for browser uses)
@@ -458,7 +459,7 @@ function createNewDeskItem(openDoc, temp, width, height) {
 
 // Create a new AD item, initialize, and increase the saved window count
 function openWindow(openDoc, temp, width, height) {
-    if (localStorage.madesktopItemVisible == "false" && !openDoc) {
+    if (localStorage.madesktopItemVisible == "false" && !(typeof openDoc === "string" || openDoc instanceof String)) {
         windowContainers[0].style.display = "block";
         localStorage.removeItem("madesktopItemVisible");
     } else {
@@ -490,16 +491,72 @@ function iframeClickEventCtrl(clickable) {
 function updateIframeScale() {
     try {
         bgHtmlView.contentDocument.body.style.zoom = scaleFactor;
+        bgHtmlView.contentWindow.dispatchEvent(new Event("resize"));
     } catch {
         // page did not load yet
     }
     for (let i = 0; i < windowContainers.length; i++) {
         try {
-            windowContainers[i].getElementsByClassName("windowElement")[0].contentDocument.body.style.zoom = scaleFactor;
+			if (!localStorage.getItem("madesktopItemUnscaled" + (i || ""))) {
+                const iframe = windowContainers[i].getElementsByClassName("windowElement")[0];
+                iframe.contentDocument.body.style.zoom = scaleFactor;
+                iframe.contentWindow.dispatchEvent(new Event("resize"));
+            }
         } catch {
             // attempting to do this on destroyed deskitems
             // or page did not load yet
             // it works on external webpages thanks to the new WE iframe policy
+        }
+    }
+}
+
+// innerWidth/Height hook
+// Fixes some sites that are broken when scaled, such as YT
+function hookIframeSize(iframe, num) {
+    Object.defineProperty(iframe.contentWindow, "innerWidth", {
+        get: function () {
+            if (typeof num != "undefined" && localStorage.getItem("madesktopItemUnscaled" + (num || "")))
+                return iframe.clientWidth * scaleFactor;
+            return iframe.clientWidth;
+        }
+    });
+    Object.defineProperty(iframe.contentWindow, "innerHeight", {
+        get: function () {
+            if (typeof num != "undefined" && localStorage.getItem("madesktopItemUnscaled" + (num || "")))
+                return iframe.clientHeight * scaleFactor;
+            return iframe.clientHeight;
+        }
+    });
+
+    // Also hook window.open as this doesn't work in WE
+    // Try to use sysplug, and if unavailable, just prompt for URL copy
+    if (runningMode != BROWSER) {
+        iframe.contentWindow.open = function (url) {
+            if (localStorage.sysplugIntegration) {
+                fetch("http://localhost:3031/open", { method: "POST", body: url })
+                    .then(response => response.text())
+                    .then(responseText => {
+                        if (responseText != "OK") {
+                        alert("An error occured!\nSystem plugin response: " + responseText);
+                        copyPrompt(url);
+                        }
+                    })
+                    .catch(error => {
+                        alert("System plugin is not running. Please make sure you have installed it properly.");
+                        copyPrompt(url);
+                    });
+            } else copyPrompt(url);
+        
+            function copyPrompt(url) {
+                if (prompt("Paste this URL in the browser's address bar. Click OK to copy.", url)) {
+                const tmp = document.createElement("textarea");
+                document.body.appendChild(tmp);
+                tmp.value = url;
+                tmp.select();
+                document.execCommand('copy');
+                document.body.removeChild(tmp);
+                }
+            }
         }
     }
 }

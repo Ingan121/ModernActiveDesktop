@@ -1,7 +1,7 @@
 # Welcome to ModernActiveDesktop!
 * ModernActiveDesktop, also known as Windows 98 Desktop Experience, aims to replicate the original Active Desktop behavior and improve the Classic Theme experience on modern Windows.
 * Designed for Wallpaper Engine and Lively Wallpaper.
-<br><br><img src="screenshot.png" width="480px" height="270px" title="Screenshot">
+<br><br><img src="images/screenshot.png" width="480px" height="270px" title="Screenshot">
 
 ## Basic Usage Guide
 * Place the mouse cursor at the top of a window to show its title bar and menus.
@@ -13,6 +13,12 @@
 * To reset one window, click its ⏷ button, choose Reset, and its position, size, URL, and style will be reset. To completely reset, go to the Wallpaper Engine properties panel, click the big red Reset button first, then click the 'Reset completely' button. Everything will go back to the initial state.
 
 ## Changelog
+
+### 2.3
+* Added an option to disable scaling per window
+* Fixed some websites (e. g. YouTube embed) not displaying properly when scaled
+* Made the window configuration context menu look better
+* Updated dependencies
 
 ### 2.2
 * Added support for video and web backgrounds
@@ -32,7 +38,7 @@
 ### 2.1
 * Added a scaling feature for high DPI displays
     * Configurable in the properties panel
-<br><img src="MADScale.webp" width="360px" height="384px" title="Scaling screenshot">
+<br><img src="images/MADScale.webp" width="360px" height="384px" title="Scaling screenshot">
 * Added error handling
 * Code improvements
 
@@ -46,4 +52,5 @@
 * Show a documentation window on first run
 
 Copyright (c) 2023 Ingan121  
+[https://github.com/Ingan121/ModernActiveDesktop](javascript:openUrl('https://github.com/Ingan121/ModernActiveDesktop'))  
 [Licensed under the MIT license](?src=../license.txt&showbackbtn=1)

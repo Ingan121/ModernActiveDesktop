@@ -173,21 +173,20 @@ function initDeskMover(num, openDoc, temp, width, height) {
             saveZOrder();
         });
         
-        this.contentDocument.body.style.zoom = scaleFactor;
+        if (!localStorage.getItem("madesktopItemUnscaled" + numStr))
+			this.contentDocument.body.style.zoom = scaleFactor;
+        hookIframeSize(this, numStr);
     });
     
     // Window menu button click & title bar right click
     windowMenuBtn.addEventListener('click', openContextMenu);
     windowTitlebar.addEventListener('contextmenu', openContextMenu);
     
-    // Changes the underline color correctly
+    // Changes the active status correctly
     for (let i = 0; i < contextMenuItems.length; i++) {
         const elem = contextMenuItems[i];
         elem.onmouseover = function () {
-            elem.getElementsByTagName('u')[0].style.borderBottomColor = 'var(--hilight-text)';
-        }
-        elem.onmouseout = function () {
-            elem.getElementsByTagName('u')[0].style.borderBottomColor = 'var(--window-text)';
+            if (elem != contextMenuItems[0]) delete contextMenuItems[0].dataset.active;
         }
     }
     
@@ -238,6 +237,7 @@ function initDeskMover(num, openDoc, temp, width, height) {
                 localStorage.removeItem("madesktopItemYPos" + numStr);
                 localStorage.removeItem("madesktopItemSrc" + numStr);
                 localStorage.removeItem("madesktopItemStyle" + numStr);
+				localStorage.removeItem("madesktopItemUnscaled" + numStr);
                 init(true);
             }
         });
@@ -270,7 +270,21 @@ function initDeskMover(num, openDoc, temp, width, height) {
         localStorage.setItem("madesktopItemStyle" + numStr, "nonad");
     });
     
-    confMenuItems[2].addEventListener('click', function () { // Set URL button
+	confMenuItems[2].addEventListener('click', function () { // Scale contents button
+        closeContextMenu();
+		if (localStorage.getItem("madesktopItemUnscaled" + numStr)) {
+			windowElement.contentDocument.body.style.zoom = scaleFactor;
+			confMenuItems[2].classList.add("checkedItem");
+			localStorage.removeItem("madesktopItemUnscaled" + numStr);
+		} else {
+			windowElement.contentDocument.body.style.zoom = 1;
+            confMenuItems[2].classList.remove("checkedItem");
+			localStorage.setItem("madesktopItemUnscaled" + numStr, true);
+		}
+        windowElement.contentWindow.dispatchEvent(new Event("resize"));
+    });
+    
+    confMenuItems[3].addEventListener('click', function () { // Set URL button
         closeContextMenu();
         madPrompt("Enter URL (leave empty to reset)", function (url) {
             if (url === null) return;
@@ -337,6 +351,7 @@ function initDeskMover(num, openDoc, temp, width, height) {
     }
     
     function openConfMenu() {
+        contextMenuItems[0].dataset.active = true;
         confMenuBg.style.display = "block";
         setTimeout(function () {
             iframeClickEventCtrl(false);
@@ -344,6 +359,7 @@ function initDeskMover(num, openDoc, temp, width, height) {
     }
     
     function closeConfMenu() {
+        delete contextMenuItems[0].dataset.active;
         confMenuBg.style.display = "none";
     }
     
@@ -379,6 +395,8 @@ function initDeskMover(num, openDoc, temp, width, height) {
         else windowContainer.style.left = vWidth - windowContainer.offsetWidth - 100 + 'px';
         if (localStorage.getItem("madesktopItemYPos" + numStr)) windowContainer.style.top = localStorage.getItem("madesktopItemYPos" + numStr);
         changeWndStyle(localStorage.getItem("madesktopItemStyle" + numStr));
+		if (localStorage.getItem("madesktopItemUnscaled" + numStr)) confMenuItems[2].classList.remove("checkedItem");
+        else confMenuItems[2].classList.add("checkedItem");
         adjustElements();
         keepInside();
         windowContainer.style.zIndex = localStorage.getItem("madesktopItemZIndex" + numStr) || ++lastZIndex;

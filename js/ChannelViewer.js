@@ -18,10 +18,12 @@ changeScale(localStorage.madesktopScaleFactor);
 // Change the scale on load
 bgHtmlView.addEventListener('load', function () {
     this.contentDocument.body.style.zoom = scaleFactor;
+    hookIframeSize(this);
 });
 
 iframe.addEventListener('load', function () {
     this.contentDocument.body.style.zoom = scaleFactor;
+    hookIframeSize(this);
 });
 
 // Detect WE config change
@@ -244,6 +246,53 @@ function updateIframeScale() {
     } catch {
         // page did not load yet
         // it works on external webpages thanks to the new WE iframe policy
+    }
+}
+
+// innerWidth/Height hook
+// Fixes some sites that are broken when scaled, such as YT
+function hookIframeSize(iframe) {
+    Object.defineProperty(iframe.contentWindow, "innerWidth", {
+        get: function () {
+            return iframe.clientWidth;
+        }
+    });
+    Object.defineProperty(iframe.contentWindow, "innerHeight", {
+        get: function () {
+            return iframe.clientHeight;
+        }
+    });
+
+    // Also hook window.open as this doesn't work in WE
+    // Try to use sysplug, and if unavailable, just prompt for URL copy
+    if (runningMode != BROWSER) {
+        iframe.contentWindow.open = function (url) {
+            if (localStorage.sysplugIntegration) {
+                fetch("http://localhost:3031/open", { method: "POST", body: url })
+                    .then(response => response.text())
+                    .then(responseText => {
+                        if (responseText != "OK") {
+                        alert("An error occured!\nSystem plugin response: " + responseText);
+                        copyPrompt(url);
+                        }
+                    })
+                    .catch(error => {
+                        alert("System plugin is not running. Please make sure you have installed it properly.");
+                        copyPrompt(url);
+                    });
+            } else copyPrompt(url);
+        
+            function copyPrompt(url) {
+                if (prompt("Paste this URL in the browser's address bar. Click OK to copy.", url)) {
+                const tmp = document.createElement("textarea");
+                document.body.appendChild(tmp);
+                tmp.value = url;
+                tmp.select();
+                document.execCommand('copy');
+                document.body.removeChild(tmp);
+                }
+            }
+        }
     }
 }
 

@@ -33,7 +33,7 @@ function createWindow () {
     show: false
   });
   
-  if (args.cors == "*") showErrorMsg(mainWindow, "WARNING: You-re running ModernActiveDesktop System Plugin with wildcard CORS option. This is considered insecure, as any webpages can access your system with this plugin. Please only use this option for testing.", "warning");
+  if (args.cors == "*") showErrorMsg(mainWindow, "WARNING: You're running ModernActiveDesktop System Plugin with a wildcard CORS option. This is considered insecure, as any webpage can access your system with this plugin. Please only use this option for testing.", "warning");
 
   generateCssScheme();
 
@@ -58,7 +58,7 @@ function createWindow () {
   });
 
   session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
-    details.requestHeaders['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4818.2 Safari/537.36';
+    details.requestHeaders['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36';
     callback({ cancel: false, requestHeaders: details.requestHeaders });
   });
 

@@ -39,7 +39,6 @@
             window.onerror = function(msg, url, linenum) {
                 console.log({msg, url, linenum});
                 errorLog.textContent += `${msg} (${url}:${linenum})\n`;
-                debugger;
             }
             
             function copyLog() {

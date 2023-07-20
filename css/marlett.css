@@ -1,0 +1,67 @@
+@font-face {
+  font-family: 'marlett-icons';
+  src: url('../fonts/marlett/marlett.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="mi-"], [class*=" mi-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'marlett' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+}
+
+.mi-bullet_menu:before {
+  content: "\e900";
+}
+.mi-bullet_radio:before {
+  content: "\e901";
+}
+.mi-check_checkbox:before {
+  content: "\e902";
+}
+.mi-check_menu:before {
+  content: "\e903";
+}
+.mi-close:before {
+  content: "\e904";
+}
+.mi-downexpand:before {
+  content: "\e905";
+}
+.mi-grabber:before {
+  content: "\e906";
+}
+.mi-grabber_top:before {
+  content: "\e907";
+}
+.mi-help:before {
+  content: "\e908";
+}
+.mi-max:before {
+  content: "\e909";
+}
+.mi-min:before {
+  content: "\e90a";
+}
+.mi-restore:before {
+  content: "\e90b";
+}
+.mi-rtl_grabber:before {
+  content: "\e90c";
+}
+.mi-rtl_grabber_top:before {
+  content: "\e90d";
+}
+.mi-rtl_submenu:before {
+  content: "\e90e";
+}
+.mi-submenu:before {
+  content: "\e90f";
+}

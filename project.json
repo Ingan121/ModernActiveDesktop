@@ -315,8 +315,8 @@
 	"preview" : "preview.jpg",
 	"tags" : [ "Retro" ],
 	"title" : "Windows 98 Desktop Experience",
-	"type" : "web",
-	"version" : 9,
+	"type" : "Web",
+	"version" : 11,
 	"visibility" : "public",
 	"workshopid" : "2278898637",
 	"workshopurl" : "steam://url/CommunityFilePage/2278898637"
