@@ -1,10 +1,12 @@
 function initDeskMover(num, openDoc, temp, width, height) {
     const windowContainer = windowContainers[num];
-    const windowTitlebar = windowContainer.getElementsByClassName("windowTitlebar")[0];
+    const windowTitlebar = windowContainer.getElementsByClassName("windowTitlebar")[0] || windowContainer.getElementsByClassName("title-bar")[0];
+    const windowTitleText = windowContainer.getElementsByClassName("title-bar-text")[0];
     const windowFrame = windowContainer.getElementsByClassName("windowFrame")[0];
     const windowElement = windowContainer.getElementsByClassName("windowElement")[0];
     const windowMenuBtn = windowContainer.getElementsByClassName("windowMenuBtn")[0];
     const windowCloseBtn = windowContainer.getElementsByClassName("windowCloseBtn")[0];
+    const windowCloseBtnAlt = windowContainer.getElementsByClassName("windowCloseBtnAlt")[0];
     const contextMenuBg = windowContainer.getElementsByClassName("contextMenuBg")[0];
     const contextMenu = windowContainer.getElementsByClassName("contextMenu")[0];
     const contextMenuItems = contextMenu.getElementsByClassName("contextMenuItem");
@@ -33,6 +35,19 @@ function initDeskMover(num, openDoc, temp, width, height) {
     // Add to destroyed list first for temp items
     // Will be destroyed on the next load
     if (temp) localStorage.madesktopDestroyedItems += `|${numStr}|`;
+    
+    let config = new Proxy({}, {
+        get(target, key) {
+            return localStorage.getItem("madesktopItem" + key[0].toUpperCase() + key.slice(1) + numStr);
+        },
+        set(target, key, value) {
+            if (value) {
+                localStorage.setItem("madesktopItem" + key[0].toUpperCase() + key.slice(1) + numStr, value);
+            } else {
+                localStorage.removeItem("madesktopItem" + key[0].toUpperCase() + key.slice(1) + numStr);
+            }
+        }
+    });
     
     windowContainer.addEventListener('mousedown', function (event) {
         windowContainer.style.zIndex = ++lastZIndex; // bring to top
@@ -173,8 +188,13 @@ function initDeskMover(num, openDoc, temp, width, height) {
             saveZOrder();
         });
         
-        if (!localStorage.getItem("madesktopItemUnscaled" + numStr))
+        if (!config.title) {
+            windowTitleText.textContent = this.contentDocument.title || "ModernActiveDesktop";
+        }
+        
+        if (!config.unscaled) {
 			this.contentDocument.body.style.zoom = scaleFactor;
+        }
         hookIframeSize(this, numStr);
     });
     
@@ -187,16 +207,6 @@ function initDeskMover(num, openDoc, temp, width, height) {
         const elem = contextMenuItems[i];
         elem.onmouseover = function () {
             if (elem != contextMenuItems[0]) delete contextMenuItems[0].dataset.active;
-        }
-    }
-    
-    for (let i = 0; i < confMenuItems.length; i++) {
-        const elem = confMenuItems[i];
-        elem.onmouseover = function () {
-            elem.getElementsByTagName('u')[0].style.borderBottomColor = 'var(--hilight-text)';
-        }
-        elem.onmouseout = function () {
-            elem.getElementsByTagName('u')[0].style.borderBottomColor = 'var(--window-text)';
         }
     }
 
@@ -231,13 +241,14 @@ function initDeskMover(num, openDoc, temp, width, height) {
         chord.play();
         madConfirm("Are you sure you want to reset this window?", function (res) {
             if (res) {
-                localStorage.removeItem("madesktopItemWidth" + numStr);
-                localStorage.removeItem("madesktopItemHeight" + numStr);
-                localStorage.removeItem("madesktopItemXPos" + numStr);
-                localStorage.removeItem("madesktopItemYPos" + numStr);
-                localStorage.removeItem("madesktopItemSrc" + numStr);
-                localStorage.removeItem("madesktopItemStyle" + numStr);
-				localStorage.removeItem("madesktopItemUnscaled" + numStr);
+                config.width = null;
+                config.height = null;
+                config.xPos = null;
+                config.yPos = null;
+                config.src = null;
+                config.style = null;
+				config.unscaled = null;
+                config.title = null;
                 init(true);
             }
         });
@@ -250,7 +261,7 @@ function initDeskMover(num, openDoc, temp, width, height) {
 
     contextMenuItems[4].addEventListener('click', function () { // Close button
         closeContextMenu();
-        windowCloseBtn.click();
+        closeWindow();
     });
     
     // Hide the config menu when hovering other items than Configure and Debug
@@ -261,30 +272,36 @@ function initDeskMover(num, openDoc, temp, width, height) {
     confMenuItems[0].addEventListener('click', function () { // Active Desktop style button
         closeContextMenu();
         changeWndStyle("ad");
-        localStorage.setItem("madesktopItemStyle" + numStr, "ad");
+        config.style = "ad";
     });
     
     confMenuItems[1].addEventListener('click', function () { // Non-Active Desktop style button
         closeContextMenu();
         changeWndStyle("nonad");
-        localStorage.setItem("madesktopItemStyle" + numStr, "nonad");
+        config.style = "nonad";
     });
     
-	confMenuItems[2].addEventListener('click', function () { // Scale contents button
+    confMenuItems[2].addEventListener('click', function () { // Window style button
         closeContextMenu();
-		if (localStorage.getItem("madesktopItemUnscaled" + numStr)) {
+        changeWndStyle("wnd");
+        config.style = "wnd";
+    });
+    
+	confMenuItems[3].addEventListener('click', function () { // Scale contents button
+        closeContextMenu();
+		if (config.unscaled) {
 			windowElement.contentDocument.body.style.zoom = scaleFactor;
-			confMenuItems[2].classList.add("checkedItem");
-			localStorage.removeItem("madesktopItemUnscaled" + numStr);
+			confMenuItems[3].classList.add("checkedItem");
+			config.unscaled = false;
 		} else {
 			windowElement.contentDocument.body.style.zoom = 1;
-            confMenuItems[2].classList.remove("checkedItem");
-			localStorage.setItem("madesktopItemUnscaled" + numStr, true);
+            confMenuItems[3].classList.remove("checkedItem");
+			config.unscaled = true;
 		}
         windowElement.contentWindow.dispatchEvent(new Event("resize"));
     });
     
-    confMenuItems[3].addEventListener('click', function () { // Set URL button
+    confMenuItems[4].addEventListener('click', function () { // Set URL button
         closeContextMenu();
         madPrompt("Enter URL (leave empty to reset)", function (url) {
             if (url === null) return;
@@ -297,11 +314,28 @@ function initDeskMover(num, openDoc, temp, width, height) {
                 else url = WINDOW_PLACEHOLDER;
             }
             windowElement.src = url;
-            localStorage.setItem("madesktopItemSrc" + numStr, url);
+            config.src = url;
+        });
+    });
+    
+    confMenuItems[5].addEventListener('click', function () { // Set title button
+        closeContextMenu();
+        madPrompt("Enter title (leave empty to reset)", function (title) {
+            if (title === null) return;
+            if (title) {
+                windowTitleText.textContent = title;
+                config.title = title;
+            } else {
+                config.title = null;
+                windowTitleText.textContent = windowElement.contentDocument.title || "ModernActiveDesktop";
+            }
         });
     });
 
-    windowCloseBtn.addEventListener('click', function () {
+    windowCloseBtn.addEventListener('click', closeWindow);
+    windowCloseBtnAlt.addEventListener('click', closeWindow);
+    
+    function closeWindow() {
         if (num != 0) {
             windowContainer.style.display = "none";
             windowContainer.innerHTML = "";
@@ -315,7 +349,7 @@ function initDeskMover(num, openDoc, temp, width, height) {
             windowContainer.style.display = 'none';
             localStorage.madesktopItemVisible = false;
         }
-    });
+    }
     
     // Prevent unintended menu closing when clicking the menu items
     contextMenuBg.addEventListener('click', preventDefault);
@@ -376,6 +410,10 @@ function initDeskMover(num, openDoc, temp, width, height) {
     windowCloseBtn.addEventListener('mouseover', function () {
         mouseOverWndBtns = true;
     });
+    
+    windowCloseBtnAlt.addEventListener('mouseover', function () {
+        mouseOverWndBtns = true;
+    });
 
     windowMenuBtn.addEventListener('mouseout', function () {
         mouseOverWndBtns = false;
@@ -385,25 +423,33 @@ function initDeskMover(num, openDoc, temp, width, height) {
         mouseOverWndBtns = false;
     });
     
+    windowCloseBtnAlt.addEventListener('mouseout', function () {
+        mouseOverWndBtns = false;
+    });
+    
     init();
     
     function init(reinit) {
         // Load configs
-        if (localStorage.getItem("madesktopItemWidth" + numStr)) windowElement.width = localStorage.getItem("madesktopItemWidth" + numStr);
-        if (localStorage.getItem("madesktopItemHeight" + numStr)) windowElement.height = localStorage.getItem("madesktopItemHeight" + numStr);
-        if (localStorage.getItem("madesktopItemXPos" + numStr)) windowContainer.style.left = localStorage.getItem("madesktopItemXPos" + numStr);
+        if (config.width) windowElement.width = config.width;
+        if (config.height) windowElement.height = config.height;
+        if (config.xPos) windowContainer.style.left = config.xPos;
         else windowContainer.style.left = vWidth - windowContainer.offsetWidth - 100 + 'px';
-        if (localStorage.getItem("madesktopItemYPos" + numStr)) windowContainer.style.top = localStorage.getItem("madesktopItemYPos" + numStr);
-        changeWndStyle(localStorage.getItem("madesktopItemStyle" + numStr));
-		if (localStorage.getItem("madesktopItemUnscaled" + numStr)) confMenuItems[2].classList.remove("checkedItem");
-        else confMenuItems[2].classList.add("checkedItem");
+        if (config.yPos) windowContainer.style.top = config.yPos;
+        changeWndStyle(config.style || "ad");
+        if (config.unscaled) confMenuItems[3].classList.remove("checkedItem");
+        else confMenuItems[3].classList.add("checkedItem");
+        if (config.title) windowTitleText.textContent = config.title;
         adjustElements();
         keepInside();
-        windowContainer.style.zIndex = localStorage.getItem("madesktopItemZIndex" + numStr) || ++lastZIndex;
+        windowContainer.style.zIndex = config.zIndex || ++lastZIndex;
 
-        if (localStorage.getItem("madesktopItemSrc" + numStr)) {
-            windowElement.src = localStorage.getItem("madesktopItemSrc" + numStr);
+        if (config.src) {
+            windowElement.src = config.src;
         } else {
+            if (reinit) {
+                changeWndStyle("ad");
+            }
             if (num != 0) {
                 let url = WINDOW_PLACEHOLDER;
                 if ((typeof openDoc === "string" || openDoc instanceof String) && !reinit) {
@@ -424,7 +470,7 @@ function initDeskMover(num, openDoc, temp, width, height) {
                 saveConfig();
                 
                 windowElement.src = url;
-                localStorage.setItem("madesktopItemSrc" + numStr, url);
+                config.src = url;
             } else {
                 if (reinit) {
                     windowContainer.style.top = '200px';
@@ -439,27 +485,61 @@ function initDeskMover(num, openDoc, temp, width, height) {
     }   
     
     function changeWndStyle(style) {
-        if (style == "nonad") {
-            useNonADStyle = true;
-            windowContainer.classList.add("window");
-            windowTitlebar.style.display = "block";
-            contextMenuBg.style.top = "21px";
-            confMenuBg.style.top = "21px";
-            windowElement.style.borderColor = "transparent";
-            windowFrame.style.borderColor = "transparent";
-            windowFrame.style.backgroundColor = "transparent";
-            confMenuItems[0].classList.remove("activeStyle");
-            confMenuItems[1].classList.add("activeStyle");
-        } else {
-            useNonADStyle = false;
-            windowContainer.classList.remove("window");
-            windowTitlebar.style.display = "none";
-            contextMenuBg.style.top = "24px";
-            confMenuBg.style.top = "24px";
-            confMenuItems[0].classList.add("activeStyle");
-            confMenuItems[1].classList.remove("activeStyle");
+        switch (style) {
+            case "nonad":
+                useNonADStyle = true;
+                windowContainer.classList.add("window");
+                windowTitlebar.classList.add("windowTitlebar");
+                windowTitlebar.classList.remove("title-bar");
+                windowTitlebar.style.display = "block";
+                windowTitleText.style.display = "none";
+                windowCloseBtn.style.display = "block";
+                windowCloseBtnAlt.style.display = "none";
+                contextMenuBg.style.top = "21px";
+                confMenuBg.style.top = "21px";
+                windowTitlebar.style.width = windowElement.offsetWidth + 'px';
+                windowElement.style.borderColor = "transparent";
+                windowFrame.style.borderColor = "transparent";
+                windowFrame.style.backgroundColor = "transparent";
+                confMenuItems[0].classList.remove("activeStyle");
+                confMenuItems[1].classList.add("activeStyle");
+                confMenuItems[2].classList.remove("activeStyle");
+                break;
+            case "ad":
+                useNonADStyle = false;
+                windowContainer.classList.remove("window");
+                windowTitlebar.classList.add("windowTitlebar");
+                windowTitlebar.classList.remove("title-bar");
+                windowTitlebar.style.display = "none";
+                windowTitleText.style.display = "none";
+                windowCloseBtn.style.display = "block";
+                windowCloseBtnAlt.style.display = "none";
+                contextMenuBg.style.top = "24px";
+                confMenuBg.style.top = "24px";
+                windowTitlebar.style.width = windowElement.offsetWidth + 4 + 'px';
+                confMenuItems[0].classList.add("activeStyle");
+                confMenuItems[1].classList.remove("activeStyle");
+                confMenuItems[2].classList.remove("activeStyle");
+                break;
+            case "wnd":
+                useNonADStyle = true;
+                windowContainer.classList.add("window");
+                windowTitlebar.classList.remove("windowTitlebar");
+                windowTitlebar.classList.add("title-bar");
+                windowTitlebar.style.display = "flex";
+                windowTitleText.style.display = "block";
+                windowCloseBtn.style.display = "none";
+                windowCloseBtnAlt.style.display = "block";
+                contextMenuBg.style.top = "21px";
+                confMenuBg.style.top = "21px";
+                windowTitlebar.style.width = windowElement.offsetWidth - 7 + 'px';
+                windowElement.style.borderColor = "transparent";
+                windowFrame.style.borderColor = "transparent";
+                windowFrame.style.backgroundColor = "transparent";
+                confMenuItems[0].classList.remove("activeStyle");
+                confMenuItems[1].classList.remove("activeStyle");
+                confMenuItems[2].classList.add("activeStyle");
         }
-        windowTitlebar.style.width = windowElement.offsetWidth + (useNonADStyle ? 0 : 4) + 'px';
         windowTitlebar.style.left = useNonADStyle ? '2px' : 0;
         windowTitlebar.style.top = useNonADStyle ? '3px' : '6px';
     }
@@ -484,17 +564,21 @@ function initDeskMover(num, openDoc, temp, width, height) {
         windowFrame.style.height = windowElement.height;
         windowContainer.style.width = windowElement.offsetWidth - 2 + 'px';
         windowFrame.style.width = windowElement.offsetWidth + 'px';
-        windowTitlebar.style.width = windowElement.offsetWidth + (useNonADStyle ? 0 : 4) + 'px';
+        let titleWidth = windowElement.offsetWidth + (useNonADStyle ? 0 : 4) + 'px';
+        if (config.style == "wnd") {
+            titleWidth = windowElement.offsetWidth - 7 + 'px';
+        }
+        windowTitlebar.style.width = titleWidth;
         windowTitlebar.style.left = useNonADStyle ? '2px' : 0;
         windowTitlebar.style.top = useNonADStyle ? '3px' : '6px';
     }
     
     // Save configs
     function saveConfig() {
-        localStorage.setItem("madesktopItemWidth" + numStr, windowElement.width);
-        localStorage.setItem("madesktopItemHeight" + numStr, windowElement.height);
-        localStorage.setItem("madesktopItemXPos" + numStr, windowContainer.style.left);
-        localStorage.setItem("madesktopItemYPos" + numStr, windowContainer.style.top);
+        config.width = windowElement.width;
+        config.height = windowElement.height;
+        config.xPos = windowContainer.style.left;
+        config.yPos = windowContainer.style.top;
     }
     
     // Update the visibility of window components based on the cursor's position
@@ -507,8 +591,13 @@ function initDeskMover(num, openDoc, temp, width, height) {
                     windowFrame.style.borderColor = "var(--button-face)";
                     windowFrame.style.backgroundColor = "var(--button-face)"; // required to fix some weird artifacts in hidpi/css-zoomed mode
                 }
-                if (posInWindow.y <= 50 || useNonADStyle) windowTitlebar.style.display = "block";
-                else windowTitlebar.style.display = "none";
+                if (config.style === "wnd") {
+                    windowTitlebar.style.display = "flex";
+                } else if (posInWindow.y <= 50 || config.style === "nonad") {
+                    windowTitlebar.style.display = "block";
+                } else {
+                    windowTitlebar.style.display = "none";
+                }
             } else {
                 windowFrame.style.borderColor = "transparent";
                 windowFrame.style.backgroundColor = "transparent";
@@ -519,7 +608,7 @@ function initDeskMover(num, openDoc, temp, width, height) {
             // I use Chrome/Edge for some debugging as mouse hovering doesn't work well in WE with a debugger attached
             windowFrame.style.borderColor = "var(--button-face)";
             windowFrame.style.backgroundColor = "var(--button-face)";
-            windowTitlebar.style.display = "block";
+            windowTitlebar.style.display = config.style === "wnd" ? "flex" : "block";
         }
     }
 }

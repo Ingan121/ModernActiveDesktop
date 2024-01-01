@@ -313,9 +313,11 @@
 		}
 	},
 	"preview" : "preview.jpg",
+	"ratingsex" : "none",
+	"ratingviolence" : "none",
 	"tags" : [ "Retro" ],
 	"title" : "Windows 98 Desktop Experience",
-	"type" : "Web",
+	"type" : "web",
 	"version" : 11,
 	"visibility" : "public",
 	"workshopid" : "2278898637",

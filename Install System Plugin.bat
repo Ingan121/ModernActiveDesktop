@@ -1,7 +1,7 @@
 @echo off
 setlocal
 
-set title=ModernActiveDesktop System Plugin 2.3.0 Installer
+set title=ModernActiveDesktop System Plugin 2.4.0 Installer
 title %title%
 echo %title%
 echo.
@@ -12,11 +12,11 @@ cd /d "%~dp0"
 
 echo ----------------------------------------------------------
 echo.
-echo Please select a action:
+echo Please select an action:
 echo.
-echo 1. Install ModernActiveDesktop System Plugin 2.3.0
-echo 2. Run ModernActiveDesktop System Plugin 2.3.0 without instlling
-echo 3. Uninstall ModernActiveDesktop System Plugin 2.3.0
+echo 1. Install ModernActiveDesktop System Plugin 2.4.0
+echo 2. Run ModernActiveDesktop System Plugin 2.4.0 without instlling
+echo 3. Uninstall ModernActiveDesktop System Plugin 2.4.0
 echo 4. View license
 echo 5. Exit
 echo.

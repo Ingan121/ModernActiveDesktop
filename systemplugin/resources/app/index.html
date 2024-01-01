@@ -16,10 +16,10 @@
 		</div>
 		<form style="margin-top: 3px;">
 			Theme: 
-			<input id="98rad" type="radio" name="radgroup" value="98" onclick="switchTheme(this.value)" checked><label class="block" for="98rad">WinClassic</label>
-			<input id="bsrad" type="radio" name="radgroup" value="bootstrap" onclick="switchTheme(this.value)"><label class="block" for="bsrad">Bootstrap (but why?)</label>
+			<input id="98rad" type="radio" name="radgroup" value="98" onclick="config.theme = this.value" checked><label class="block" for="98rad">WinClassic</label>
+			<input id="bsrad" type="radio" name="radgroup" value="bootstrap" onclick="config.theme = this.value"><label class="block" for="bsrad">Bootstrap (but why?)</label>
 		</form>
-		<select id="openWith" onchange="applyOWConfig(this)">
+		<select id="openWith" onchange="config.openWith = this.selectedIndex">
 			<option>Classic style channel viewer</option>
 			<option>Classic style channel viewer (fullscreen)</option>
 			<option>System default browser</option>
@@ -28,6 +28,22 @@
 	<!--a href="javascript:location.reload(true);" style="position: absolute; right: 0; top: 0;">새로고침</a-->
 	<script>
 		const fs = require('fs');
+    
+    let configPath = new URL(location.href).searchParams.get('configPath');
+    let config = new Proxy({}, {
+      get(target, key) {
+        target = JSON.parse(fs.readFileSync(configPath));
+        return target[key];
+      },
+      set(target, key, value) {
+        target = JSON.parse(fs.readFileSync(configPath));
+        target[key] = value;
+        fs.writeFileSync(configPath, JSON.stringify(target));
+      }
+    });
+    
+    document.getElementById('openWith').selectedIndex = config.openWith;
+    document.getElementById('bsrad').checked = config.theme === 'bootstrap';
 		
 		document.onkeydown = function (e) {
 			if (e.code == 'F5') {
@@ -35,22 +51,13 @@
 			}
 		}
 
-		function openPage(url) {
-			config = JSON.parse(fs.readFileSync(configPath));
-			if (!url) var url = document.getElementById('url').value;
-			window.open('ChannelViewer' + (config.theme == '98' ? '.98' : '') + '.html?page=' + url, '_blank', 'width=1280,height=720,nodeIntegration=no,contextIsolation=yes');
+		function openPage(url = document.getElementById('url').value) {
+      const cvUrl = 'ChannelViewer' + (config.theme == '98' ? '.98' : '') + '.html?page=' + url + '&configPath=' + configPath;
+			window.open(cvUrl, '_blank', 'width=1280,height=720,nodeIntegration=no,contextIsolation=yes');
 		}
 
 		function switchTheme(theme) {
-			config = JSON.parse(fs.readFileSync(configPath));
 			config.theme = theme;
-			fs.writeFileSync(configPath, JSON.stringify(config));
-		}
-		
-		function applyOWConfig(elem) {
-			config = JSON.parse(fs.readFileSync(configPath));
-			config.openWith = elem.selectedIndex;
-			fs.writeFileSync(configPath, JSON.stringify(config));
 		}
 	</script>
 </body>

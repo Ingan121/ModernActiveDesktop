@@ -1,6 +1,20 @@
 const { ipcRenderer, contextBridge } = require('electron');
-let configPath = '';
-let config = {};
+const fs = require('fs');
+
+let configPath = new URL(location.href).searchParams.get('configPath');
+let config = new Proxy({}, {
+  get(target, key) {
+    target = JSON.parse(fs.readFileSync(configPath));
+    return target[key];
+  },
+  set(target, key, value) {
+    target = JSON.parse(fs.readFileSync(configPath));
+    target[key] = value;
+    fs.writeFileSync(configPath, JSON.stringify(target));
+  }
+});
+
+const is98Theme = config.theme === "98";
 
 process.once('loaded', () => {
   window.addEventListener('message', event => {
@@ -9,12 +23,6 @@ process.once('loaded', () => {
       ipcRenderer.send(message.type, message.command);
     }
   });
-});
-
-ipcRenderer.on("configPath", (event, receivedPath) => {
-  console.log("configPath: " + receivedPath);
-  configPath = receivedPath;
-  config = JSON.parse(require('fs').readFileSync(configPath));
 });
 
 ipcRenderer.on("cvNumber", (event, cvNumber) => {
@@ -30,7 +38,7 @@ ipcRenderer.on("cvNumber", (event, cvNumber) => {
     console.log("dlProgress: " + progress); // Progress in fraction, between 0 and 1
     const progressBar = document.getElementById("progress-bar-inside");
     progressBar.style.width = progress + "%";
-    const progressBarLabel = (config.theme == "98") ? document.getElementById("progress-bar-label"): progressBar;
+    const progressBarLabel = is98Theme ? document.getElementById("progress-bar-label"): progressBar;
     progressBarLabel.textContent = progress + "%";
   });
   
@@ -43,18 +51,18 @@ ipcRenderer.on("cvNumber", (event, cvNumber) => {
     console.log("loadStart");
     const refStopBtn = document.getElementById("refresh-stop-button");
     refStopBtn.dataset.status = "stop";
-    if (config.theme != "98") refStopBtn.getElementsByClassName("toolbarButtonImage")[0].classList.replace("bi-arrow-clockwise", "bi-x-circle");
+    if (!is98Theme) refStopBtn.getElementsByClassName("toolbarButtonImage")[0].classList.replace("bi-arrow-clockwise", "bi-x-circle");
   });
   
   ipcRenderer.on("loadComplete" + cvNumber, (event) => {
     console.log("loadComplete");
     const refStopBtn = document.getElementById("refresh-stop-button");
     refStopBtn.dataset.status = "refresh";
-    if (config.theme != "98") refStopBtn.getElementsByClassName("toolbarButtonImage")[0].classList.replace("bi-x-circle", "bi-arrow-clockwise");
+    if (!is98Theme) refStopBtn.getElementsByClassName("toolbarButtonImage")[0].classList.replace("bi-x-circle", "bi-arrow-clockwise");
   });
   
   ipcRenderer.on("cvbvurl" + cvNumber, (event, url) => {
-    console.log("cvbvurl" + url);
+    console.log("cvbvurl: " + url);
     document.getElementById("urlbar").value = url;
   });
   

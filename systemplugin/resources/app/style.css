@@ -6,10 +6,6 @@ html,body {
     background-color: white;
 }
 
-* {
-    font-family: "Malgun Gothic"
-}
-
 #windowBtnContainer {
     width: 55px;
     height: 26px;
@@ -119,4 +115,27 @@ html,body {
 ::selection {
     color: white;
     background-color: var(--accent);
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: black;
+    color: white;
+  }
+  
+  #toolbar {
+    background-color: black;
+  }
+
+  .windowBtn > p {
+    color: lightgray;
+  }
+  
+  .toolbarButton > i {
+    color: lightgray;
+  }
+  
+  .toolbarButton[data-disabled='true'] > i {
+    color: dimgray;
+  }
 }

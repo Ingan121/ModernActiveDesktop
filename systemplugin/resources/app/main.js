@@ -10,18 +10,30 @@ const gotTheLock = app.requestSingleInstanceLock()
 let tray = null;
 let mainWindow = null;
 let cvNumber = 0;
-let schemeStyle = '';
 
 const configPath = app.getPath('userData') + '/config.json';
-if (!fs.existsSync(configPath)) fs.writeFileSync(configPath, '{"theme":"98", "openWith":1}');
-let config = JSON.parse(fs.readFileSync(configPath));
+if (!fs.existsSync(configPath)) { // Setup initial config
+  fs.writeFileSync(configPath, '{"theme":"98", "openWith":1}');
+}
+
+let config = new Proxy({}, {
+  get(target, key) {
+    target = JSON.parse(fs.readFileSync(configPath));
+    return target[key];
+  },
+  set(target, key, value) {
+    target = JSON.parse(fs.readFileSync(configPath));
+    target[key] = value;
+    fs.writeFileSync(configPath, JSON.stringify(target));
+  }
+});
 
 function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 640,
     height: 240,
-    icon: path.join(__dirname, 'icon.ico'),
+    icon: process.platform === 'win32' ? path.join(__dirname, 'icon.ico') : null,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
@@ -33,12 +45,15 @@ function createWindow () {
     show: false
   });
   
-  if (args.cors == "*") showErrorMsg(mainWindow, "WARNING: You're running ModernActiveDesktop System Plugin with a wildcard CORS option. This is considered insecure, as any webpage can access your system with this plugin. Please only use this option for testing.", "warning");
-
-  generateCssScheme();
-
+  if (args.cors === "*") {
+    showErrorMsg(mainWindow, "WARNING: You're running ModernActiveDesktop System Plugin with a wildcard CORS option. This is considered insecure, as any webpage can access your system with this plugin. Please only use this option for testing.", "warning");
+  }
+  if (args.listen === "0.0.0.0") {
+    showErrorMsg(mainWindow, "WARNING: You're running ModernActiveDesktop System Plugin with a listen option to allow any remote access. This is considered insecure, as anyone on your network can access your system with this plugin. NEVER USE THIS OPTION if your device is connected directly to internet (i.e. you aren't using a router.)", "warning");
+  }
+  
   // and load the index.html of the app.
-  mainWindow.loadURL(path.join(__dirname, 'index.html'));
+  mainWindow.loadURL(path.join(__dirname, 'index.html') + '?configPath=' + configPath);
 
   // Remove the menu bar
   mainWindow.removeMenu();
@@ -58,22 +73,18 @@ function createWindow () {
   });
 
   session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
-    details.requestHeaders['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36';
+    details.requestHeaders['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
     callback({ cancel: false, requestHeaders: details.requestHeaders });
   });
 
   mainWindow.webContents.on('did-finish-load', () => {
-    mainWindow.webContents.executeJavaScript('const style=document.createElement("style");style.id="schemeStyle";style.textContent=`'+schemeStyle+'`;document.head.appendChild(style);');
+    mainWindow.webContents.executeJavaScript('const style=document.createElement("style");style.id="schemeStyle";style.textContent=`'+generateCssScheme()+'`;document.head.appendChild(style);');
 
-    if (args.open) mainWindow.webContents.executeJavaScript(`openPage("${args.open}");`);
-    else if (args.showui) mainWindow.show();
-
-    mainWindow.webContents.executeJavaScript(`
-      const configPath = "${configPath.replace(/\\/g, '\\\\')}";
-      let config = JSON.parse(fs.readFileSync(configPath));
-      document.getElementById('openWith').selectedIndex = config.openWith;
-      if (config.theme == 'bootstrap') document.getElementById('bsrad').checked = true;
-    `);
+    if (args.open) {
+      mainWindow.webContents.executeJavaScript(`openPage("${args.open}");`);
+    } else if (args.showui) {
+      mainWindow.show();
+    }
   });
 
   mainWindow.on('close', () => {
@@ -135,27 +146,21 @@ function processNewWindow(childWindow, details) {
   if (args.maximize) childWindow.maximize(); 
   childWindow.setIcon(path.join(__dirname, 'icon.ico'));
 
-  mainWindow.webContents.executeJavaScript('const style=document.createElement("style");style.id="schemeStyle";style.textContent=`'+schemeStyle+'`;document.head.appendcChild(style);');
+  mainWindow.webContents.executeJavaScript('const style=document.createElement("style");style.id="schemeStyle";style.textContent=`'+generateCssScheme()+'`;document.head.appendcChild(style);');
 
   let url = details.url;
-  let cvStr = "/ChannelViewer";
   let pageUrl = '';
-
-  if (url.includes(cvStr)) {
-    childWindow.setSize(1280, 720);
-    pageUrl = new URL(url).searchParams.get('page');
-    config = JSON.parse(fs.readFileSync(configPath));
-    if (config.openWith == 1) childWindow.webContents.executeJavaScript('document.body.requestFullscreen()', true);
-  } else {
-    return;
-    //pageUrl = url;
-    //childWindow.webContents.loadURL(path.join(__dirname, (config.theme == '98') ? 'ChannelViewer.98.html' : 'ChannelViewer.html'));debugger;
+  
+  childWindow.setSize(1280, 720);
+  pageUrl = new URL(url).searchParams.get('page');
+  
+  if (config.openWith === 1) {
+    childWindow.webContents.executeJavaScript('document.body.requestFullscreen()', true);
   }
 
   let cvNumberPrivate = cvNumber;
-  childWindow.webContents.send('configPath', configPath);
   childWindow.webContents.send('cvNumber', cvNumberPrivate);
-  childWindow.webContents.executeJavaScript('const style=document.createElement("style");style.textContent=`'+schemeStyle+'`;document.head.appendChild(style);');
+  childWindow.webContents.executeJavaScript('const style=document.createElement("style");style.textContent=`'+generateCssScheme()+'`;document.head.appendChild(style);');
 
   if (pageUrl) {
     const view = new BrowserView({
@@ -190,7 +195,7 @@ function processNewWindow(childWindow, details) {
     }
 
     ipcMain.on('cvbvurl' + cvNumberPrivate, (event, url) => {
-      console.log("cvbvurl:", url);
+      console.log("cvbvurl: ", url);
       view.webContents.loadURL(url);
       childWindow.webContents.send("cvbvurl" + cvNumberPrivate, view.webContents.getURL());
     })
@@ -261,52 +266,61 @@ function showErrorMsg(win, msg, type) {
     message: msg,
     type: type,
     title: 'ModernActiveDesktop System Plugin',
-    buttons: ['확인'],
+    buttons: ['OK'],
     noLink: true
   }
   dialog.showMessageBox(win, options);
 }
 
 function generateCssScheme() {
-  config = JSON.parse(fs.readFileSync(configPath));
   const accent = '#' + systemPreferences.getAccentColor();
 
-  schemeStyle =
-  `:root {
-     --active-border: ${systemPreferences.getColor('active-border')};
-     --active-title: ${systemPreferences.getColor('active-caption')};
-     --app-workspace: ${systemPreferences.getColor('app-workspace')};
-     --background: ${systemPreferences.getColor('desktop')};
-     --button-alternate-face: ${systemPreferences.getColor('3d-face')};
-     --button-dk-shadow: ${systemPreferences.getColor('3d-dark-shadow')};
-     --button-face: ${systemPreferences.getColor('3d-face')};
-     --button-hilight: ${systemPreferences.getColor('3d-highlight')};
-     --button-light: ${systemPreferences.getColor('3d-light')};
-     --button-shadow: ${systemPreferences.getColor('3d-shadow')};
-     --button-text: ${systemPreferences.getColor('button-text')};
-     --gradient-active-title: ${systemPreferences.getColor('active-caption-gradient')};
-     --gradient-inactive-title: ${systemPreferences.getColor('inactive-caption-gradient')};
-     --gray-text: ${systemPreferences.getColor('disabled-text')};
-     --hilight: ${systemPreferences.getColor('highlight')};
-     --hilight-text: ${systemPreferences.getColor('highlight-text')};
-     --hot-tracking-color: ${systemPreferences.getColor('hotlight')};
-     --inactive-border: ${systemPreferences.getColor('inactive-border')};
-     --inactive-title: ${systemPreferences.getColor('inactive-caption')};
-     --inactive-title-text: ${systemPreferences.getColor('inactive-caption-text')};
-     --info-text: ${systemPreferences.getColor('info-text')};
-     --info-window: ${systemPreferences.getColor('info-background')};
-     --menu: ${systemPreferences.getColor('menu')};
-     --menu-bar: ${systemPreferences.getColor('menubar')};
-     --menu-highlight: ${systemPreferences.getColor('menu-highlight')};
-     --menu-text: ${systemPreferences.getColor('menu-text')};
-     --scrollbar: ${systemPreferences.getColor('scrollbar')};
-     --title-text: ${systemPreferences.getColor('caption-text')};
-     --window: ${systemPreferences.getColor('window')};
-     --window-frame: ${systemPreferences.getColor('window-frame')};
-     --window-text: ${systemPreferences.getColor('window-text')};
-     --accent: ${accent};
-     --accent-dark: ${shadeColor(accent.substring(0, 6), -27)};
-  }`;
+  let schemeStyle = '';
+  if (process.platform === 'win32') {
+    schemeStyle = 
+      `:root {
+        --active-border: ${systemPreferences.getColor('active-border')};
+        --active-title: ${systemPreferences.getColor('active-caption')};
+        --app-workspace: ${systemPreferences.getColor('app-workspace')};
+        --background: ${systemPreferences.getColor('desktop')};
+        --button-alternate-face: ${systemPreferences.getColor('3d-face')};
+        --button-dk-shadow: ${systemPreferences.getColor('3d-dark-shadow')};
+        --button-face: ${systemPreferences.getColor('3d-face')};
+        --button-hilight: ${systemPreferences.getColor('3d-highlight')};
+        --button-light: ${systemPreferences.getColor('3d-light')};
+        --button-shadow: ${systemPreferences.getColor('3d-shadow')};
+        --button-text: ${systemPreferences.getColor('button-text')};
+        --gradient-active-title: ${systemPreferences.getColor('active-caption-gradient')};
+        --gradient-inactive-title: ${systemPreferences.getColor('inactive-caption-gradient')};
+        --gray-text: ${systemPreferences.getColor('disabled-text')};
+        --hilight: ${systemPreferences.getColor('highlight')};
+        --hilight-text: ${systemPreferences.getColor('highlight-text')};
+        --hot-tracking-color: ${systemPreferences.getColor('hotlight')};
+        --inactive-border: ${systemPreferences.getColor('inactive-border')};
+        --inactive-title: ${systemPreferences.getColor('inactive-caption')};
+        --inactive-title-text: ${systemPreferences.getColor('inactive-caption-text')};
+        --info-text: ${systemPreferences.getColor('info-text')};
+        --info-window: ${systemPreferences.getColor('info-background')};
+        --menu: ${systemPreferences.getColor('menu')};
+        --menu-bar: ${systemPreferences.getColor('menubar')};
+        --menu-highlight: ${systemPreferences.getColor('menu-highlight')};
+        --menu-text: ${systemPreferences.getColor('menu-text')};
+        --scrollbar: ${systemPreferences.getColor('scrollbar')};
+        --title-text: ${systemPreferences.getColor('caption-text')};
+        --window: ${systemPreferences.getColor('window')};
+        --window-frame: ${systemPreferences.getColor('window-frame')};
+        --window-text: ${systemPreferences.getColor('window-text')};
+        --accent: ${accent};
+        --accent-dark: ${shadeColor(accent.substring(0, 6), -27)};
+      }`;
+  } else {
+    schemeStyle = 
+      `:root {
+        --accent: ${accent};
+        --accent-dark: ${shadeColor(accent.substring(0, 6), -27)};
+      }`;
+  }
+  return schemeStyle;
 }
 
 // https://stackoverflow.com/a/13532993
@@ -323,14 +337,14 @@ function shadeColor(color, percent) {
   G = (G<255)?G:255;  
   B = (B<255)?B:255;  
 
-  var RR = ((R.toString(16).length==1)?"0"+R.toString(16):R.toString(16));
-  var GG = ((G.toString(16).length==1)?"0"+G.toString(16):G.toString(16));
-  var BB = ((B.toString(16).length==1)?"0"+B.toString(16):B.toString(16));
+  var RR = ((R.toString(16).length===1)?"0"+R.toString(16):R.toString(16));
+  var GG = ((G.toString(16).length===1)?"0"+G.toString(16):G.toString(16));
+  var BB = ((B.toString(16).length===1)?"0"+B.toString(16):B.toString(16));
 
   return "#"+RR+GG+BB;
 }
 
-http.createServer(onRequest).listen(3031);
+http.createServer(onRequest).listen(3031, args.listen || '127.0.0.1');
 
 function onRequest(req, res) {
   console.log('serve: ' + req.url);
@@ -338,7 +352,7 @@ function onRequest(req, res) {
   
   switch (req.url) {
     case '/open':
-      if (req.method == 'POST') {
+      if (req.method === 'POST') {
         let body = '';
 
         req.on('data', function (data) {
@@ -351,7 +365,6 @@ function onRequest(req, res) {
         });
 
         req.on('end', function () {
-          config = JSON.parse(fs.readFileSync(configPath));
           if (!body.startsWith('http')) body = url.pathToFileURL(path.normalize(`${__dirname}/../../../${body}`)).toString();
           
           if (config.openWith < 2) mainWindow.webContents.executeJavaScript(`openPage("${body}");`);
@@ -365,7 +378,7 @@ function onRequest(req, res) {
       return;
 
     case '/config':
-      if (req.method == 'POST') {
+      if (req.method === 'POST') {
         let body = '';
 
         req.on('data', function (data) {
@@ -379,9 +392,7 @@ function onRequest(req, res) {
 
         req.on('end', function () {
           const reqParse = JSON.parse(body);
-          config = JSON.parse(fs.readFileSync(configPath));
           config.openWith = reqParse.openWith;
-          fs.writeFileSync(configPath, JSON.stringify(config));
           res.end('OK');
         });
       } else {
@@ -392,8 +403,7 @@ function onRequest(req, res) {
 
     case '/systemscheme':
       res.writeHead(200, {'Content-Type':'text/css'});
-      generateCssScheme();
-      res.end(schemeStyle);
+      res.end(generateCssScheme());
       return;
       
     case '/connecttest':

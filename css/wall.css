@@ -110,6 +110,12 @@ body {
     z-index: 1;
 }
 
+.title-bar-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .windowFrame {
     height: 471px;
     width: 86px;
@@ -225,7 +231,7 @@ body {
 .confMenuBg {
     display: none;
     width: 180px;
-    height: 86px;
+    height: 120px;
     position: absolute;
     top: 24px;
     left: 103px;

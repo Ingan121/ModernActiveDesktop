@@ -16,11 +16,15 @@
     <video id="bgVideo" src="" autoplay loop></video>
     <div class="windowContainer">
         <div class="windowTitlebar">
-            <div class="windowMenuBtn windowBtn" style="left: 3px;">
-                <p class="windowBtnText">⏷</p>
-            </div>
-            <div class="windowCloseBtn windowBtn" style="right: 3px;">
-                <p class="windowBtnText">🗙</p>
+            <div class="title-bar-text" style="display: none;">ModernActiveDesktop</div>
+            <div class="title-bar-controls">
+                <div class="windowMenuBtn windowBtn" style="left: 3px;">
+                    <p class="windowBtnText">⏷</p>
+                </div>
+                <div class="windowCloseBtn windowBtn" style="right: 3px;">
+                    <p class="windowBtnText">🗙</p>
+                </div>
+                <button class="windowCloseBtnAlt" style="display: none;" aria-label="Close"></button>
             </div>
         </div>
         <div class="windowFrame">
@@ -39,10 +43,12 @@
             <div class="confMenu window-body">
                 <div class="contextMenuItem"><p><u>A</u>ctive Desktop</p></div>
                 <div class="contextMenuItem"><p><u>N</u>on-ActiveDesktop Channel Bar</p></div>
+                <div class="contextMenuItem"><p><u>W</u>indow</p></div>
                 <hr>
 				<div class="contextMenuItem checkedItem"><p><u>S</u>cale contents</p></div>
 				<hr>
                 <div class="contextMenuItem"><p><u>C</u>hange URL</p></div>
+                <div class="contextMenuItem"><p>Change <u>t</u>itle</p></div>
             </div>
         </div>
     </div>
@@ -71,13 +77,13 @@
         </div>
     </div>
     <div id="errorWnd" class="window">
-        <p id="errorMsg">ModernActiveDesktop failed to initialize because of an unknown error. Please consult the log below and report this to the author.</p>
+        <p id="errorMsg">ModernActiveDesktop failed to initialize because of an unknown error. Please consult the log below and report this to https://github.com/Ingan121/ModernActiveDesktop/issues.</p>
         <pre id="errorLog"></pre>
         <noscript>Please enable JavaScript!</noscript>
         <button onclick="copyLog();">Copy log</button> <button onclick="location.reload(true);">Retry</button> <button onclick="errorWnd.style.display='none';">Ignore</button>
     </div>
     <div id="debug" class="debug">
-        <span>ModernActiveDesktop 2.3</span><br>
+        <span>ModernActiveDesktop 2.4 Pre-release 1</span><br>
         <span>Loaded from <span id="location"></span></span><br>
         <span>Running in <span id="runmode">browser</span><span id="simmode"></span></span><br>
         <span>Debug mode</span><br>

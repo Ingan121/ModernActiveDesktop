@@ -71,12 +71,12 @@ if (localStorage.madesktopItemCount) {
     localStorage.madesktopItemCount = 1;
 }
 
-if ((localStorage.madesktopLastVer || "").startsWith("2.") && localStorage.madesktopLastVer != "2.3") { // Update from 2.x
+if ((localStorage.madesktopLastVer || "").startsWith("2.") && localStorage.madesktopLastVer != "2.4") { // Update from 2.x
     openWindow("Updated.md");
-} else if (localStorage.madesktopLastVer != "2.3") { // First run or update from 1.x
+} else if (localStorage.madesktopLastVer != "2.4") { // First run or update from 1.x
     openWindow("README.md");
 }
-localStorage.madesktopLastVer = "2.3";
+localStorage.madesktopLastVer = "2.4";
 
 if (localStorage.madesktopItemVisible == "false") windowContainers[0].style.display = "none";
 
@@ -715,7 +715,6 @@ function reset(res) {
     madConfirm("This will remove every configuration changes of ModernActiveDesktop you made. Are you sure you want to continue?", function (res) {
         if (res) {
             localStorage.clear();
-            alert("Reset complete. The wallpaper will now reload.");
             location.reload(true);
             throw new Error("Refreshing...");
         }
