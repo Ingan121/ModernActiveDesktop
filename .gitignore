@@ -17,4 +17,8 @@ systemplugin/resources/app/bootstrap
 systemplugin/resources/app/bootstrap-icons
 systemplugin/resources/app/node_modules
 
+# unmodified jspaint files
+apps/jspaint/*
+!apps/jspaint/index.html
+
 *.zip

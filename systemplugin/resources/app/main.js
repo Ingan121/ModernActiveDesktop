@@ -16,7 +16,7 @@ if (!fs.existsSync(configPath)) { // Setup initial config
   fs.writeFileSync(configPath, '{"theme":"98", "openWith":1}');
 }
 
-let config = new Proxy({}, {
+const config = new Proxy({}, {
   get(target, key) {
     target = JSON.parse(fs.readFileSync(configPath));
     return target[key];
@@ -191,6 +191,9 @@ function processNewWindow(childWindow, details) {
         case 'stop':
           view.webContents.stop();
           break;
+        case 'devtools':
+          view.webContents.openDevTools();
+          break;
       }
     }
 
@@ -344,7 +347,7 @@ function shadeColor(color, percent) {
   return "#"+RR+GG+BB;
 }
 
-http.createServer(onRequest).listen(3031, args.listen || '127.0.0.1');
+http.createServer(onRequest).listen(args.port || 3031, args.listen || '127.0.0.1');
 
 function onRequest(req, res) {
   console.log('serve: ' + req.url);

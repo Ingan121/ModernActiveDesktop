@@ -5,6 +5,7 @@ function initDeskMover(num, openDoc, temp, width, height) {
     const windowFrame = windowContainer.getElementsByClassName("windowFrame")[0];
     const windowElement = windowContainer.getElementsByClassName("windowElement")[0];
     const windowMenuBtn = windowContainer.getElementsByClassName("windowMenuBtn")[0];
+    const windowIcon = windowContainer.getElementsByClassName("windowIcon")[0];
     const windowCloseBtn = windowContainer.getElementsByClassName("windowCloseBtn")[0];
     const windowCloseBtnAlt = windowContainer.getElementsByClassName("windowCloseBtnAlt")[0];
     const contextMenuBg = windowContainer.getElementsByClassName("contextMenuBg")[0];
@@ -19,7 +20,6 @@ function initDeskMover(num, openDoc, temp, width, height) {
     let isDown = false, resizingMode = "none", mouseOverWndBtns = false;
     let timeout, timeout2;
     let prevOffsetRight, prevOffsetBottom;
-    let useNonADStyle = false; // non-ActiveDesktop styling
     
     // Check if the deskitem we're trying to initialize is destroyed or not
     // Skip for deskitem 0 (the ChannelBar) - this design is to maintain backwards compatibility with old versions
@@ -36,7 +36,7 @@ function initDeskMover(num, openDoc, temp, width, height) {
     // Will be destroyed on the next load
     if (temp) localStorage.madesktopDestroyedItems += `|${numStr}|`;
     
-    let config = new Proxy({}, {
+    const config = new Proxy({}, {
         get(target, key) {
             return localStorage.getItem("madesktopItem" + key[0].toUpperCase() + key.slice(1) + numStr);
         },
@@ -52,7 +52,7 @@ function initDeskMover(num, openDoc, temp, width, height) {
     windowContainer.addEventListener('mousedown', function (event) {
         windowContainer.style.zIndex = ++lastZIndex; // bring to top
         saveZOrder();
-        if ((windowFrame.style.borderColor != "transparent" || useNonADStyle) && !mouseOverWndBtns) {
+        if ((windowFrame.style.borderColor != "transparent" || config.style !== "ad") && !mouseOverWndBtns) {
             iframeClickEventCtrl(false);
             isDown = true;
             offset = [
@@ -64,10 +64,10 @@ function initDeskMover(num, openDoc, temp, width, height) {
             // Decide the resizing mode based on the position of the mouse cursor
             if (posInContainer.x <= 3) resizingMode = "left";
             else if (posInContainer.x >= windowContainer.offsetWidth - 3) resizingMode = "right";
-            else if (posInContainer.y <= 3 && useNonADStyle) resizingMode = "top";
-            else if (posInContainer.y <= 9 && posInContainer.y >= 6 && !useNonADStyle) resizingMode = "top";
+            else if (posInContainer.y <= 3 && config.style !== "ad") resizingMode = "top";
+            else if (posInContainer.y <= 9 && posInContainer.y >= 6 && config.style === "ad") resizingMode = "top";
             else if (posInContainer.y >= 30) resizingMode = "bottom";
-            else if (posInContainer.y >= 6 || useNonADStyle) resizingMode = "none";
+            else if (posInContainer.y >= 6 || config.style !== "ad") resizingMode = "none";
             else resizingMode = null;
         }
     });
@@ -97,7 +97,7 @@ function initDeskMover(num, openDoc, temp, width, height) {
         if (!isDown) {
             document.body.style.cursor = "auto";
             clearTimeout(timeout);
-            if (useNonADStyle) return; // never hide the frames in nonAD mode
+            if (config.style !== "ad") return; // never hide the frames in nonAD mode
             timeout = setTimeout(function () {
                 windowElement.style.borderColor = "transparent";
                 windowFrame.style.borderColor = "transparent";
@@ -162,18 +162,18 @@ function initDeskMover(num, openDoc, temp, width, height) {
             y : Math.ceil(event.clientY / scaleFactor) - windowContainer.offsetTop,
         }
         // Change the mouse cursor - although this is useless in WE
-        if (resizingMode == "none" && (windowElement.style.borderColor != "transparent" || useNonADStyle)) {
+        if (resizingMode == "none" && (windowElement.style.borderColor != "transparent" || config.style !== "ad")) {
             if (posInContainer.x <= 3) document.body.style.cursor = "ew-resize";
             else if (posInContainer.x >= windowContainer.offsetWidth - 3) document.body.style.cursor = "ew-resize";
-            else if (posInContainer.y <= 3 && useNonADStyle && windowTitlebar.style.display != "none") document.body.style.cursor = "ns-resize";
-            else if (posInContainer.y <= 9 && posInContainer.y >= 6 && !useNonADStyle && windowTitlebar.style.display != "none") document.body.style.cursor = "ns-resize";
+            else if (posInContainer.y <= 3 && config.style !== "ad" && windowTitlebar.style.display != "none") document.body.style.cursor = "ns-resize";
+            else if (posInContainer.y <= 9 && posInContainer.y >= 6 && config.style === "ad" && windowTitlebar.style.display != "none") document.body.style.cursor = "ns-resize";
             else if (posInContainer.y >= 30) document.body.style.cursor = "ns-resize";
             else document.body.style.cursor = "auto";
         }
         if (debugLog) console.log(posInContainer);
     })
 
-    windowElement.addEventListener('load', function () {
+    windowElement.addEventListener('load', async function () {
         this.contentDocument.addEventListener('mousemove', function (event) {
             posInWindow = {
                 x : Math.ceil(event.clientX / scaleFactor),
@@ -191,6 +191,7 @@ function initDeskMover(num, openDoc, temp, width, height) {
         if (!config.title) {
             windowTitleText.textContent = this.contentDocument.title || "ModernActiveDesktop";
         }
+        windowIcon.src = await getFavicon(this);
         
         if (!config.unscaled) {
 			this.contentDocument.body.style.zoom = scaleFactor;
@@ -200,6 +201,8 @@ function initDeskMover(num, openDoc, temp, width, height) {
     
     // Window menu button click & title bar right click
     windowMenuBtn.addEventListener('click', openContextMenu);
+    windowIcon.addEventListener('click', openContextMenu);
+    windowIcon.addEventListener('dblclick', closeWindow);
     windowTitlebar.addEventListener('contextmenu', openContextMenu);
     
     // Changes the active status correctly
@@ -247,7 +250,7 @@ function initDeskMover(num, openDoc, temp, width, height) {
                 config.yPos = null;
                 config.src = null;
                 config.style = null;
-				config.unscaled = null;
+                config.unscaled = null;
                 config.title = null;
                 init(true);
             }
@@ -272,36 +275,33 @@ function initDeskMover(num, openDoc, temp, width, height) {
     confMenuItems[0].addEventListener('click', function () { // Active Desktop style button
         closeContextMenu();
         changeWndStyle("ad");
-        config.style = "ad";
     });
     
     confMenuItems[1].addEventListener('click', function () { // Non-Active Desktop style button
         closeContextMenu();
         changeWndStyle("nonad");
-        config.style = "nonad";
     });
     
     confMenuItems[2].addEventListener('click', function () { // Window style button
         closeContextMenu();
         changeWndStyle("wnd");
-        config.style = "wnd";
     });
-    
-	confMenuItems[3].addEventListener('click', function () { // Scale contents button
+
+    confMenuItems[3].addEventListener('click', function () { // Scale contents button
         closeContextMenu();
-		if (config.unscaled) {
-			windowElement.contentDocument.body.style.zoom = scaleFactor;
-			confMenuItems[3].classList.add("checkedItem");
-			config.unscaled = false;
-		} else {
-			windowElement.contentDocument.body.style.zoom = 1;
+        if (config.unscaled) {
+            windowElement.contentDocument.body.style.zoom = scaleFactor;
+            confMenuItems[3].classList.add("checkedItem");
+            config.unscaled = false;
+        } else {
+            windowElement.contentDocument.body.style.zoom = 1;
             confMenuItems[3].classList.remove("checkedItem");
-			config.unscaled = true;
-		}
+            config.unscaled = true;
+        }
         windowElement.contentWindow.dispatchEvent(new Event("resize"));
     });
     
-    confMenuItems[4].addEventListener('click', function () { // Set URL button
+    confMenuItems[4].addEventListener('click', function () { // Change URL button
         closeContextMenu();
         madPrompt("Enter URL (leave empty to reset)", function (url) {
             if (url === null) return;
@@ -318,7 +318,7 @@ function initDeskMover(num, openDoc, temp, width, height) {
         });
     });
     
-    confMenuItems[5].addEventListener('click', function () { // Set title button
+    confMenuItems[5].addEventListener('click', function () { // Change title button
         closeContextMenu();
         madPrompt("Enter title (leave empty to reset)", function (title) {
             if (title === null) return;
@@ -407,6 +407,10 @@ function initDeskMover(num, openDoc, temp, width, height) {
         mouseOverWndBtns = true;
     });
 
+    windowIcon.addEventListener('mouseover', function () {
+        mouseOverWndBtns = true;
+    });
+
     windowCloseBtn.addEventListener('mouseover', function () {
         mouseOverWndBtns = true;
     });
@@ -416,6 +420,10 @@ function initDeskMover(num, openDoc, temp, width, height) {
     });
 
     windowMenuBtn.addEventListener('mouseout', function () {
+        mouseOverWndBtns = false;
+    });
+
+    windowIcon.addEventListener('mouseout', function () {
         mouseOverWndBtns = false;
     });
 
@@ -487,14 +495,12 @@ function initDeskMover(num, openDoc, temp, width, height) {
     function changeWndStyle(style) {
         switch (style) {
             case "nonad":
-                useNonADStyle = true;
                 windowContainer.classList.add("window");
                 windowTitlebar.classList.add("windowTitlebar");
                 windowTitlebar.classList.remove("title-bar");
                 windowTitlebar.style.display = "block";
-                windowTitleText.style.display = "none";
-                windowCloseBtn.style.display = "block";
-                windowCloseBtnAlt.style.display = "none";
+                windowTitlebar.style.left = "2px";
+                windowTitlebar.style.top = "3px";
                 contextMenuBg.style.top = "21px";
                 confMenuBg.style.top = "21px";
                 windowTitlebar.style.width = windowElement.offsetWidth + 'px';
@@ -506,14 +512,12 @@ function initDeskMover(num, openDoc, temp, width, height) {
                 confMenuItems[2].classList.remove("activeStyle");
                 break;
             case "ad":
-                useNonADStyle = false;
                 windowContainer.classList.remove("window");
                 windowTitlebar.classList.add("windowTitlebar");
                 windowTitlebar.classList.remove("title-bar");
                 windowTitlebar.style.display = "none";
-                windowTitleText.style.display = "none";
-                windowCloseBtn.style.display = "block";
-                windowCloseBtnAlt.style.display = "none";
+                windowTitlebar.style.left = "0px";
+                windowTitlebar.style.top = "6px";
                 contextMenuBg.style.top = "24px";
                 confMenuBg.style.top = "24px";
                 windowTitlebar.style.width = windowElement.offsetWidth + 4 + 'px';
@@ -522,16 +526,14 @@ function initDeskMover(num, openDoc, temp, width, height) {
                 confMenuItems[2].classList.remove("activeStyle");
                 break;
             case "wnd":
-                useNonADStyle = true;
                 windowContainer.classList.add("window");
                 windowTitlebar.classList.remove("windowTitlebar");
                 windowTitlebar.classList.add("title-bar");
                 windowTitlebar.style.display = "flex";
-                windowTitleText.style.display = "block";
-                windowCloseBtn.style.display = "none";
-                windowCloseBtnAlt.style.display = "block";
-                contextMenuBg.style.top = "21px";
-                confMenuBg.style.top = "21px";
+                windowTitlebar.style.left = "2px";
+                windowTitlebar.style.top = "3px";
+                contextMenuBg.style.top = "24px";
+                confMenuBg.style.top = "24px";
                 windowTitlebar.style.width = windowElement.offsetWidth - 7 + 'px';
                 windowElement.style.borderColor = "transparent";
                 windowFrame.style.borderColor = "transparent";
@@ -540,8 +542,7 @@ function initDeskMover(num, openDoc, temp, width, height) {
                 confMenuItems[1].classList.remove("activeStyle");
                 confMenuItems[2].classList.add("activeStyle");
         }
-        windowTitlebar.style.left = useNonADStyle ? '2px' : 0;
-        windowTitlebar.style.top = useNonADStyle ? '3px' : '6px';
+        config.style = style;
     }
     
     function updatePrevOffset() {
@@ -564,13 +565,19 @@ function initDeskMover(num, openDoc, temp, width, height) {
         windowFrame.style.height = windowElement.height;
         windowContainer.style.width = windowElement.offsetWidth - 2 + 'px';
         windowFrame.style.width = windowElement.offsetWidth + 'px';
-        let titleWidth = windowElement.offsetWidth + (useNonADStyle ? 0 : 4) + 'px';
-        if (config.style == "wnd") {
-            titleWidth = windowElement.offsetWidth - 7 + 'px';
+        switch (config.style) {
+            case "ad":
+                windowTitlebar.style.width = windowElement.offsetWidth + 4 + 'px';
+                break;
+            case "wnd":
+                windowTitlebar.style.width = windowElement.offsetWidth - 7 + 'px';
+                break;
+            case "nonad":
+                windowTitlebar.style.width = windowElement.offsetWidth + 'px';
+                break;
         }
-        windowTitlebar.style.width = titleWidth;
-        windowTitlebar.style.left = useNonADStyle ? '2px' : 0;
-        windowTitlebar.style.top = useNonADStyle ? '3px' : '6px';
+        windowTitlebar.style.left = config.style !== "ad" ? '2px' : 0;
+        windowTitlebar.style.top = config.style !== "ad" ? '3px' : '6px';
     }
     
     // Save configs
@@ -584,10 +591,10 @@ function initDeskMover(num, openDoc, temp, width, height) {
     // Update the visibility of window components based on the cursor's position
     // Replicates the original ActiveDesktop behavior
     function updateWindowComponentVisibility() {
-        if (!useNonADStyle) windowElement.style.borderColor = "var(--button-face)";
+        if (config.style === "ad") windowElement.style.borderColor = "var(--button-face)";
         if (typeof posInWindow !== 'undefined') {
             if (posInWindow.x <= 15 || posInWindow.x >= windowElement.offsetWidth - 15 || posInWindow.y <= 50 || posInWindow.y >= windowElement.offsetHeight - 15) {
-                if (!useNonADStyle) {
+                if (config.style === "ad") {
                     windowFrame.style.borderColor = "var(--button-face)";
                     windowFrame.style.backgroundColor = "var(--button-face)"; // required to fix some weird artifacts in hidpi/css-zoomed mode
                 }
@@ -601,11 +608,12 @@ function initDeskMover(num, openDoc, temp, width, height) {
             } else {
                 windowFrame.style.borderColor = "transparent";
                 windowFrame.style.backgroundColor = "transparent";
-                if (!useNonADStyle) windowTitlebar.style.display = "none";
+                if (config.style === "ad") windowTitlebar.style.display = "none";
             }
-        } else if (!useNonADStyle) {
+        } else if (config.style === "ad") {
             // Won't happen in WE; but required in normal browsers
             // I use Chrome/Edge for some debugging as mouse hovering doesn't work well in WE with a debugger attached
+            // Edit: Well it now works well at the time of writing (MAD 2.4)
             windowFrame.style.borderColor = "var(--button-face)";
             windowFrame.style.backgroundColor = "var(--button-face)";
             windowTitlebar.style.display = config.style === "wnd" ? "flex" : "block";

@@ -5,7 +5,7 @@ set title=ModernActiveDesktop System Plugin 2.4.0 Installer
 title %title%
 echo %title%
 echo.
-echo Copyright (c) 2023 Ingan121
+echo Copyright (c) 2024 Ingan121
 echo Licensed under the MIT License
 echo.
 cd /d "%~dp0"
@@ -30,7 +30,7 @@ if %choice% == 1 (
     reg add HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run /v MADSysPlug /t REG_SZ /d "%cd%\systemplugin\MADSysPlug.exe" /f >nul
     if not errorlevel 1 (echo Success) else echo Fail
     
-    echo Starting ModernActiveDesktop System Plugin 2.1.0...
+    echo Starting ModernActiveDesktop System Plugin 2.4.0...
     start cmd /c start systemplugin\MADSysPlug.exe
     
     echo.
@@ -39,7 +39,7 @@ if %choice% == 1 (
     echo Press any key to close this window.
     timeout 20 >nul
 ) else if %choice% == 2 (
-    echo Starting ModernActiveDesktop System Plugin 2.1.0...
+    echo Starting ModernActiveDesktop System Plugin 2.4.0...
     start cmd /c start systemplugin\MADSysPlug.exe
     
     echo.

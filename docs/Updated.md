@@ -39,6 +39,6 @@
 * Support multiple Active Desktop item windows
 * Show a documentation window on first run
 
-Copyright (c) 2023 Ingan121  
+Copyright (c) 2024 Ingan121  
 [https://github.com/Ingan121/ModernActiveDesktop](javascript:openUrl('https://github.com/Ingan121/ModernActiveDesktop'))  
 [Licensed under the MIT license](?src=../license.txt&showbackbtn=1)

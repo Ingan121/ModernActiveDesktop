@@ -114,6 +114,11 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    display: none;
+}
+
+.windowContainer > .title-bar > .title-bar-text {
+    margin-left: 18px;
 }
 
 .windowFrame {
@@ -147,6 +152,35 @@ body {
     text-align: center;
     margin-top: -2px;
     margin-left: -1px;
+}
+
+.windowIcon {
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    top: 5px;
+    margin-left: 1px;
+    display: none;
+}
+
+.windowCloseBtnAlt {
+    display: none !important;
+}
+
+.title-bar > .title-bar-text {
+    display: block;
+}
+
+.title-bar > .title-bar-controls > .windowIcon {
+    display: block;
+}
+
+.title-bar > .title-bar-controls > .windowCloseBtnAlt {
+    display: block !important;
+}
+
+.title-bar > .title-bar-controls > .windowBtn {
+    display: none;
 }
 
 .contextMenuBg {

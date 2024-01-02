@@ -1,36 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>ModernActiveDesktop System Plugin</title>
-	<meta charset="utf-8">
-	<link rel="stylesheet" href="style.98.css">
-	<link rel="stylesheet" href="98.css">
+    <title>ModernActiveDesktop System Plugin</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="style.98.css">
+    <link rel="stylesheet" href="98.css">
 </head>
 <body style="background-color: var(--button-face); color: var(--button-text); font-size: 16px;">
-	<div style="width: 550px; text-align: center; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
-		<p style="font-size: 30px; line-height: 5px; margin-top: -2px;"><b>ModernActiveDesktop</b></p>
-		Enter address<br>
-		<div class="input-group">
-			<input id="url" class="form-control" type="text" onkeyup="if (event.key == 'Enter') openPage()" style="width: 400px;">
-			<button class="btn btn-primary" onclick="openPage()">Open</button>
-		</div>
-		<form style="margin-top: 3px;">
-			Theme: 
-			<input id="98rad" type="radio" name="radgroup" value="98" onclick="config.theme = this.value" checked><label class="block" for="98rad">WinClassic</label>
-			<input id="bsrad" type="radio" name="radgroup" value="bootstrap" onclick="config.theme = this.value"><label class="block" for="bsrad">Bootstrap (but why?)</label>
-		</form>
-		<select id="openWith" onchange="config.openWith = this.selectedIndex">
-			<option>Classic style channel viewer</option>
-			<option>Classic style channel viewer (fullscreen)</option>
-			<option>System default browser</option>
-		</select>
-	</div>
-	<!--a href="javascript:location.reload(true);" style="position: absolute; right: 0; top: 0;">새로고침</a-->
-	<script>
-		const fs = require('fs');
+    <div style="width: 550px; text-align: center; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+        <p style="font-size: 30px; line-height: 5px; margin-top: -2px;"><b>ModernActiveDesktop</b></p>
+        Enter address<br>
+        <div class="input-group">
+            <input id="url" class="form-control" type="text" onkeyup="if (event.key == 'Enter') openPage()" style="width: 400px;">
+            <button class="btn btn-primary" onclick="openPage()">Open</button>
+        </div>
+        <form style="margin-top: 3px;">
+            Theme:
+            <input id="98rad" type="radio" name="radgroup" value="98" onclick="config.theme = this.value" checked><label class="block" for="98rad">WinClassic</label>
+            <input id="bsrad" type="radio" name="radgroup" value="bootstrap" onclick="config.theme = this.value"><label class="block" for="bsrad">Bootstrap (but why?)</label>
+        </form>
+        <select id="openWith" onchange="config.openWith = this.selectedIndex">
+            <option>Classic style channel viewer</option>
+            <option>Classic style channel viewer (fullscreen)</option>
+            <option>System default browser</option>
+        </select>
+    </div>
+    <script>
+    const fs = require('fs');
     
-    let configPath = new URL(location.href).searchParams.get('configPath');
-    let config = new Proxy({}, {
+    const configPath = new URL(location.href).searchParams.get('configPath');
+    const config = new Proxy({}, {
       get(target, key) {
         target = JSON.parse(fs.readFileSync(configPath));
         return target[key];
@@ -44,21 +43,21 @@
     
     document.getElementById('openWith').selectedIndex = config.openWith;
     document.getElementById('bsrad').checked = config.theme === 'bootstrap';
-		
-		document.onkeydown = function (e) {
-			if (e.code == 'F5') {
-				location.reload(true);
-			}
-		}
 
-		function openPage(url = document.getElementById('url').value) {
-      const cvUrl = 'ChannelViewer' + (config.theme == '98' ? '.98' : '') + '.html?page=' + url + '&configPath=' + configPath;
-			window.open(cvUrl, '_blank', 'width=1280,height=720,nodeIntegration=no,contextIsolation=yes');
-		}
+    document.onkeydown = function (e) {
+        if (e.code == 'F5') {
+            location.reload(true);
+        }
+    }
 
-		function switchTheme(theme) {
-			config.theme = theme;
-		}
-	</script>
+    function openPage(url = document.getElementById('url').value) {
+        const cvUrl = 'ChannelViewer' + (config.theme == '98' ? '.98' : '') + '.html?page=' + url + '&configPath=' + configPath;
+        window.open(cvUrl, '_blank', 'width=1280,height=720,nodeIntegration=no,contextIsolation=yes');
+    }
+
+    function switchTheme(theme) {
+        config.theme = theme;
+    }
+    </script>
 </body>
 </html>

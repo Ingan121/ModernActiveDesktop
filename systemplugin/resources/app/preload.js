@@ -2,7 +2,7 @@ const { ipcRenderer, contextBridge } = require('electron');
 const fs = require('fs');
 
 let configPath = new URL(location.href).searchParams.get('configPath');
-let config = new Proxy({}, {
+const config = new Proxy({}, {
   get(target, key) {
     target = JSON.parse(fs.readFileSync(configPath));
     return target[key];

@@ -18,6 +18,12 @@
 
 ## Changelog
 
+### 2.3
+* Added an option to disable scaling per window
+* Fixed some websites (e. g. YouTube embed) not displaying properly when scaled
+* Made the window configuration context menu look better
+* Updated dependencies
+
 ### 2.2
 * Added support for video and web backgrounds
     * Configurable in the properties panel
@@ -49,5 +55,5 @@
 * Support multiple Active Desktop item windows
 * Show a documentation window on first run
 
-Copyright (c) 2023 Ingan121  
+Copyright (c) 2024 Ingan121  
 [Licensed under the MIT license](license.txt)

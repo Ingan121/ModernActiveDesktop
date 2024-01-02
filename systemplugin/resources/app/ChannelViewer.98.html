@@ -43,37 +43,6 @@
                 <!--<a href="javascript:location.reload(true);" style="position: absolute; right: 50px; top: 0;">새로고침</a>-->
             </div>
         </div>
-        <script>
-            document.onkeydown = function (e) {
-                if (e.code == "F11") {
-                    e.preventDefault();
-                    if (document.fullscreen) document.exitFullscreen();
-                    else document.body.requestFullscreen();
-
-                }
-            }
-            
-            function browserViewCtl(cmd) {
-                window.postMessage({
-                    type : 'cvbvctl' + ipc.cvNumber, // ChannelViewer BrowserView Control
-                    command : cmd
-                }, "*");
-            }
-
-            function go(url) {
-                if (!url.startsWith('http')) url = 'http://' + url;
-                window.postMessage({
-                    type : 'cvbvurl' + ipc.cvNumber, // ChannelViewer BrowserView Control
-                    command : url
-                }, "*");
-            }
-            
-            function minimize() {
-                window.postMessage({
-                    type: 'cvwndctl' + ipc.cvNumber, // ChannelViewer Window Control
-                    command: 'minimize'
-                }, "*");
-            }
-        </script>
+        <script src="ChannelViewer.js"></script>
     </body>
 </html>

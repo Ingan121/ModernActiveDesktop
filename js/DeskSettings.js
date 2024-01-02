@@ -390,6 +390,21 @@ function changeColorScheme(scheme) {
                 // Ignore it as SysPlug startup is slower than high priority WE startup
             })
     }
+
+    try {
+        bgHtmlView.contentWindow.postMessage({ type: "scheme-updated" }, "*");
+    } catch {
+        // page did not load yet
+    }
+    for (let i = 0; i < windowContainers.length; i++) {
+        try {
+            const iframe = windowContainers[i].getElementsByClassName("windowElement")[0];
+            iframe.contentWindow.postMessage({ type: "scheme-updated" }, "*");
+        } catch {
+            // attempting to do this on destroyed deskitems
+            // or page did not load yet
+        }
+    }
 }
 
 // Change the scaling factor
@@ -483,8 +498,9 @@ function iframeClickEventCtrl(clickable) {
     if (debugLog) console.log(clickable ? "clickable" : "unclickable")
     const value = clickable ? "auto" : "none";
     bgHtmlView.style.pointerEvents = value;
-    for (let i = 0; i < windowContainers.length; i++)
+    for (let i = 0; i < windowContainers.length; i++) {
         windowContainers[i].style.pointerEvents = value;
+    }
 }
 
 // Change the scaleFactor of all iframes
@@ -577,6 +593,47 @@ function saveZOrder() {
         localStorage.setItem("madesktopItemZIndex" + (zOrders[i][0] || ""), i);
     
     if (debugLog) console.log(zOrders);
+}
+
+async function getFavicon(iframe) {
+    try {
+        const loc = iframe.contentWindow.location.href;
+        const doc = iframe.contentDocument;
+        const url = new URL(loc);
+
+        // Get the favicon from the page
+        const iconElem = doc.querySelector("link[rel*='icon']") || doc.querySelector("link[rel*='shortcut icon']") || { href: '/favicon.ico' };
+        let path = iconElem.href;
+
+        // Use the MAD icon for local files and data URLs
+        if (loc.startsWith("file:///") || loc.startsWith("data:")) {
+            if (path == '/favicon.ico') {
+                return 'icon.ico';
+            } else {
+                return path;
+            }
+        }
+
+        // Make sure the URL is absolute
+        if (!path.startsWith("https://") && !path.startsWith("http://") && !path.startsWith("//")) {
+            if (path.startsWith("/")) {
+                path = url.origin + path;
+            } else {
+                path = url.origin + url.pathname + "/" + path;
+            }
+        }
+        
+        // Check if the favicon exists
+        await fetch(path).then(response => {
+            if (!response.ok) {
+                // Use generic icon if the favicon doesn't exist
+                path = 'images/html.ico';
+            }
+        });
+        return path;
+    } catch {
+        return 'images/html.ico';
+    }
 }
 
 // Lively Wallpaper doesn't work well with alert/confirm/prompt, so replace these with custom ones
