@@ -26,11 +26,24 @@ p {
 
 #conf {
     padding-top: 15px;
-    width: 300px;
+    width: 260px;
     margin: 0 auto;
 }
 
-select {
+#selector {
     width: 200px;
     margin-right: 5px;
+}
+
+#notice {
+    font-family: "Pixelated MS Sans Serif";
+    font-size: 12px;
+    margin-top: 5px;
+    text-align: center;
+}
+
+#applyBtn {
+    display: block;
+    margin: 0 auto;
+    margin-top: 10px;
 }

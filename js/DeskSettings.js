@@ -18,6 +18,7 @@ const mainMenu = document.getElementById("mainMenu");
 const mainMenuItems = mainMenu.getElementsByClassName("contextMenuItem");
 const runningModeLabel = document.getElementById("runmode");
 const simulatedModeLabel = document.getElementById("simmode");
+const debugMenu = document.getElementById("debug");
 const debugLogBtn = document.getElementById("debugLogBtn");
 const toggleModeBtn = document.getElementById("toggleModeBtn");
 
@@ -51,9 +52,11 @@ if (localStorage.madesktopBgHtmlSrc) bgHtmlView.src = localStorage.madesktopBgHt
 if (localStorage.madesktopColorScheme) changeColorScheme(localStorage.madesktopColorScheme);
 changeScale(localStorage.madesktopScaleFactor);
 if (localStorage.madesktopDebugMode) activateDebugMode();
+if (localStorage.madesktopDebugLog) toggleDebugLog();
 
 initDeskMover(0);
 initSimpleMover(msgbox, msgboxTitlebar, [msgboxCloseBtn]);
+initSimpleMover(debugMenu, debugMenu, debugMenu.querySelectorAll("a"));
 
 // Migrate old config
 if (localStorage.madesktopNonADStyle) {
@@ -140,7 +143,7 @@ window.addEventListener('resize', function () {
 // Detect WE config change
 window.wallpaperPropertyListener = {
     applyUserProperties: function(properties) {
-        console.log(properties);
+        log(properties);
         if (properties.bgtype) {
             if (!properties.leftmargin) { // Ignore if this is a startup event
                 changeBgType(properties.bgtype.value);
@@ -374,10 +377,13 @@ function changeBgImgMode(value) {
 }
 
 function changeColorScheme(scheme) {
-    if (scheme == "98") schemeElement.href = "data:text/css,";
-    else if (scheme != "sys") schemeElement.href = `schemes/${scheme}.css`;
-    else {
-        if (localStorage.madesktopSysColorCache) schemeElement.href = localStorage.madesktopSysColorCache;
+    if (scheme === "98") schemeElement.href = "data:text/css,";
+    else if (scheme === "custom") schemeElement.href = localStorage.madesktopCustomColor;
+    else if (scheme !== "sys" && scheme.split('\n').length === 1) schemeElement.href = `schemes/${scheme}.css`;
+    else if (scheme === "sys") {
+        if (localStorage.madesktopSysColorCache) {
+            schemeElement.href = localStorage.madesktopSysColorCache;
+        }
 
         fetch("http://localhost:3031/systemscheme")
             .then(response => response.text())
@@ -389,6 +395,10 @@ function changeColorScheme(scheme) {
             .catch(error => {
                 // Ignore it as SysPlug startup is slower than high priority WE startup
             })
+    } else {
+        const dataURL = `data:text/css,${encodeURIComponent(scheme)}`;
+        schemeElement.href = dataURL;
+        localStorage.madesktopCustomColor = dataURL;
     }
 
     try {
@@ -415,7 +425,7 @@ function changeScale(scale) {
     document.body.style.zoom = scaleFactor;
     updateIframeScale();
     document.dispatchEvent(new Event("mouseup")); // Move all deskitems inside the visible area
-    if (debugLog) console.log({scaleFactor, vWidth, vHeight, dpi: 96 * scaleFactor});
+    log({scaleFactor, vWidth, vHeight, dpi: 96 * scaleFactor});
 }
 
 // Find the cursor position inside an element
@@ -495,7 +505,7 @@ function closeMainMenu() {
 
 // Required as mouse movements over iframes are not detectable in the parent document
 function iframeClickEventCtrl(clickable) {
-    if (debugLog) console.log(clickable ? "clickable" : "unclickable")
+    log(clickable ? "clickable" : "unclickable", "debug");
     const value = clickable ? "auto" : "none";
     bgHtmlView.style.pointerEvents = value;
     for (let i = 0; i < windowContainers.length; i++) {
@@ -589,10 +599,11 @@ function saveZOrder() {
         else return -1;
     });
     
-    for (let i = 0; i < zOrders.length; i++)
+    for (let i = 0; i < zOrders.length; i++) {
         localStorage.setItem("madesktopItemZIndex" + (zOrders[i][0] || ""), i);
+    }
     
-    if (debugLog) console.log(zOrders);
+    log(zOrders);
 }
 
 async function getFavicon(iframe) {
@@ -604,6 +615,7 @@ async function getFavicon(iframe) {
         // Get the favicon from the page
         const iconElem = doc.querySelector("link[rel*='icon']") || doc.querySelector("link[rel*='shortcut icon']") || { href: '/favicon.ico' };
         let path = iconElem.href;
+        log('Favicon path from page: ' + path);
 
         // Use the MAD icon for local files and data URLs
         if (loc.startsWith("file:///") || loc.startsWith("data:")) {
@@ -613,25 +625,17 @@ async function getFavicon(iframe) {
                 return path;
             }
         }
-
-        // Make sure the URL is absolute
-        if (!path.startsWith("https://") && !path.startsWith("http://") && !path.startsWith("//")) {
-            if (path.startsWith("/")) {
-                path = url.origin + path;
-            } else {
-                path = url.origin + url.pathname + "/" + path;
-            }
-        }
         
         // Check if the favicon exists
         await fetch(path).then(response => {
             if (!response.ok) {
-                // Use generic icon if the favicon doesn't exist
+                log('Favicon not found, using generic icon', 'log', 'getFavicon');
                 path = 'images/html.ico';
             }
         });
         return path;
     } catch {
+        log('Error getting favicon');
         return 'images/html.ico';
     }
 }
@@ -778,6 +782,15 @@ function reset(res) {
     });
 }
 
+function log(str, level, caller) {
+    if (debugLog) {
+        if (typeof str === "object") {
+            str = JSON.stringify(str);
+        }
+        console[level || 'log']((caller || arguments.callee.caller.name) + ": " + str);
+    }
+}
+
 // Just for debugging
 function debug() {
     madPrompt("Enter JavaScript code to run.", function (res) {
@@ -814,6 +827,11 @@ function deactivateDebugMode() {
 function toggleDebugLog() {
     debugLog = !debugLog;
     debugLogBtn.textContent = debugLog ? "Disable debug logging" : "Enable debug logging";
+    if (debugLog) {
+        localStorage.madesktopDebugLog = true;
+    } else {
+        localStorage.removeItem("madesktopDebugLog");
+    }
 }
 
 function toggleRunningMode() {

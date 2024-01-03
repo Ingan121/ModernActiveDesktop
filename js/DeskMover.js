@@ -1,4 +1,4 @@
-function initDeskMover(num, openDoc, temp, width, height) {
+function initDeskMover(num, openDoc, temp, width, height, style) {
     const windowContainer = windowContainers[num];
     const windowTitlebar = windowContainer.getElementsByClassName("windowTitlebar")[0] || windowContainer.getElementsByClassName("title-bar")[0];
     const windowTitleText = windowContainer.getElementsByClassName("title-bar-text")[0];
@@ -35,6 +35,8 @@ function initDeskMover(num, openDoc, temp, width, height) {
     // Add to destroyed list first for temp items
     // Will be destroyed on the next load
     if (temp) localStorage.madesktopDestroyedItems += `|${numStr}|`;
+
+    windowElement.dataset.num = numStr;
     
     const config = new Proxy({}, {
         get(target, key) {
@@ -49,7 +51,7 @@ function initDeskMover(num, openDoc, temp, width, height) {
         }
     });
     
-    windowContainer.addEventListener('mousedown', function (event) {
+    windowContainer.addEventListener('mousedown', function wcMouseDown(event) {
         windowContainer.style.zIndex = ++lastZIndex; // bring to top
         saveZOrder();
         if ((windowFrame.style.borderColor != "transparent" || config.style !== "ad") && !mouseOverWndBtns) {
@@ -60,7 +62,7 @@ function initDeskMover(num, openDoc, temp, width, height) {
                 windowContainer.offsetTop - Math.ceil(event.clientY / scaleFactor)
             ];
             updatePrevOffset();
-            if (debugLog) console.log(["mousedown", posInContainer.x, posInContainer.y]);
+            log([posInContainer.x, posInContainer.y]);
             // Decide the resizing mode based on the position of the mouse cursor
             if (posInContainer.x <= 3) resizingMode = "left";
             else if (posInContainer.x >= windowContainer.offsetWidth - 3) resizingMode = "right";
@@ -155,8 +157,8 @@ function initDeskMover(num, openDoc, temp, width, height) {
         }
     });
 
-    windowContainer.addEventListener('mousemove', function (event) {
-        if (debugLog) console.log({cx: event.clientX, cy: event.clientY, cxs: event.clientX / scaleFactor, cys: event.clientY / scaleFactor});
+    windowContainer.addEventListener('mousemove', function wcMouseMove(event) {
+        log({cx: event.clientX, cy: event.clientY, cxs: event.clientX / scaleFactor, cys: event.clientY / scaleFactor}, "debug");
         posInContainer = {
             x : Math.ceil(event.clientX / scaleFactor) - windowContainer.offsetLeft,
             y : Math.ceil(event.clientY / scaleFactor) - windowContainer.offsetTop,
@@ -170,7 +172,7 @@ function initDeskMover(num, openDoc, temp, width, height) {
             else if (posInContainer.y >= 30) document.body.style.cursor = "ns-resize";
             else document.body.style.cursor = "auto";
         }
-        if (debugLog) console.log(posInContainer);
+        log(posInContainer, "debug");
     })
 
     windowElement.addEventListener('load', async function () {
@@ -303,6 +305,7 @@ function initDeskMover(num, openDoc, temp, width, height) {
     
     confMenuItems[4].addEventListener('click', function () { // Change URL button
         closeContextMenu();
+        const urlToShow = config.src.startsWith("data:") ? "" : (config.src || "");
         madPrompt("Enter URL (leave empty to reset)", function (url) {
             if (url === null) return;
             if (url == "!debugmode") {
@@ -315,7 +318,7 @@ function initDeskMover(num, openDoc, temp, width, height) {
             }
             windowElement.src = url;
             config.src = url;
-        });
+        }, "", urlToShow);
     });
     
     confMenuItems[5].addEventListener('click', function () { // Change title button
@@ -330,7 +333,7 @@ function initDeskMover(num, openDoc, temp, width, height) {
                 windowTitleText.textContent = windowElement.contentDocument.title || "ModernActiveDesktop";
             }
         });
-    });
+    }, "", config.title || "");
 
     windowCloseBtn.addEventListener('click', closeWindow);
     windowCloseBtnAlt.addEventListener('click', closeWindow);
@@ -444,7 +447,7 @@ function initDeskMover(num, openDoc, temp, width, height) {
         if (config.xPos) windowContainer.style.left = config.xPos;
         else windowContainer.style.left = vWidth - windowContainer.offsetWidth - 100 + 'px';
         if (config.yPos) windowContainer.style.top = config.yPos;
-        changeWndStyle(config.style || "ad");
+        changeWndStyle(config.style || style || "ad");
         if (config.unscaled) confMenuItems[3].classList.remove("checkedItem");
         else confMenuItems[3].classList.add("checkedItem");
         if (config.title) windowTitleText.textContent = config.title;
@@ -562,7 +565,7 @@ function initDeskMover(num, openDoc, temp, width, height) {
     // Adjust all elements to windowElement
     function adjustElements() {
         windowContainer.style.height = windowElement.offsetHeight + 21 + 'px';
-        windowFrame.style.height = windowElement.height;
+        windowFrame.style.height = windowElement.offsetHeight + 'px';
         windowContainer.style.width = windowElement.offsetWidth - 2 + 'px';
         windowFrame.style.width = windowElement.offsetWidth + 'px';
         switch (config.style) {
@@ -650,6 +653,7 @@ function initSimpleMover(container, titlebar, exclusions) {
         if (isDown) {
             container.style.left = (Math.ceil(event.clientX / scaleFactor) + offset[0]) + 'px';
             container.style.top  = (Math.ceil(event.clientY / scaleFactor) + offset[1]) + 'px';
+            container.style.right = "auto";
         }
     });
     

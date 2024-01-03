@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="../../css/98.css">
     <link rel="stylesheet" href="config.css">
     <link id="scheme" rel="stylesheet" href="data:text/css,">
+    <style id="style"></style>
 </head>
 <body>
     <div id="preview">
@@ -26,11 +27,11 @@
         </div>
     </div>
     <div id="conf">
-        <select>
+        <select id="selector">
             <option>active-border</option>
             <option>active-title</option>
             <option>app-workspace</option>
-            <option>background</option>
+            <option selected>background</option>
             <option>button-alternate-face</option>
             <option>button-dk-shadow</option>
             <option>button-face</option>
@@ -61,6 +62,8 @@
         </select>
         <input id="colorPicker" type="color" value="#008080">
     </div>
+    <div id="notice">* Switch to any other window (non-MAD one) if the dropdown and color picker do not show.</div>
+    <button id="applyBtn">Apply</button>
     
     <script src="../../js/libmad.js"></script>
     <script src="config.js"></script>
