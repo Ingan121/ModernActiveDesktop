@@ -27,38 +27,95 @@
         </div>
     </div>
     <div id="conf">
-        <select id="selector">
-            <option>active-border</option>
-            <option>active-title</option>
-            <option>app-workspace</option>
-            <option selected>background</option>
-            <option>button-alternate-face</option>
-            <option>button-dk-shadow</option>
-            <option>button-face</option>
-            <option>button-hilight</option>
-            <option>button-light</option>
-            <option>button-shadow</option>
-            <option>button-text</option>
-            <option>gradient-active-title</option>
-            <option>gradient-inactive-title</option>
-            <option>gray-text</option>
-            <option>hilight</option>
-            <option>hilight-text</option>
-            <option>hot-tracking-color</option>
-            <option>inactive-border</option>
-            <option>inactive-title</option>
-            <option>inactive-title-text</option>
-            <option>info-text</option>
-            <option>info-window</option>
-            <option>menu</option>
-            <option>menu-bar</option>
-            <option>menu-highlight</option>
-            <option>menu-text</option>
-            <option>scrollbar</option>
-            <option>title-text</option>
-            <option>window</option>
-            <option>window-frame</option>
-            <option>window-text</option>
+        <p>Scheme:
+        <select id="schemeSelector" onclick="madOpenDropdown(this)">
+            <option selected hidden>Current Scheme</option>
+            <option value="98">Windows Classic (98)</option>
+            <option value="2k">Windows Standard (2000)</option>
+            <option value="95">Windows 95</option>
+            <option value="xp">Windows XP Luna Blue</option>
+            <option value="xp_olive">Windows XP Luna Olive</option>
+            <option value="xp_silver">Windows XP Luna Silver</option>
+            <option value="aero">Windows Aero</option>
+            <option value="brick">Brick</option>
+            <option value="desert">Desert</option>
+            <option value="eggplant">Eggplant</option>
+            <option value="high_contrast_1">High Contrast #1</option>
+            <option value="high_contrast_2">High Contrast #2</option>
+            <option value="high_contrast_black">High Contrast Black</option>
+            <option value="high_contrast_white">High Contrast White</option>
+            <option value="lilac">Lilac</option>
+            <option value="maple">Maple</option>
+            <option value="marine">Marine (high color)</option>
+            <option value="plum">Plum (high color)</option>
+            <option value="pumpkin">Pumpkin</option>
+            <option value="rainy_day">Rainy Day</option>
+            <option value="red_white_and_blue">Red, White, and Blue (VGA)</option>
+            <option value="rose">Rose</option>
+            <option value="slate">Slate</option>
+            <option value="spruce">Spruce</option>
+            <option value="storm">Storm (VGA)</option>
+            <option value="teal">Teal (VGA)</option>
+            <option value="wheat">Wheat</option>
+            <option value="win1">Win 1</option>
+            <option value="win2">Win 2</option>
+            <option value="win3_arizona">Win 3 - Arizona</option>
+            <option value="win3_black_leather_jacket">Win 3 - Black Leather Jacket</option>
+            <option value="win3_bordeaux">Win 3 - Bordeaux</option>
+            <option value="win3_cinnamon">Win 3 - Cinnamon</option>
+            <option value="win3_default_16">Win 3 -  Default 16-bit</option>
+            <option value="win3_default_32">Win 3 -  Default 32-bit</option>
+            <option value="win3_designer">Win 3 - Designer</option>
+            <option value="win3_emerald_city">Win 3 - Emerald City</option>
+            <option value="win3_fluorescent">Win 3 - Fluorescent</option>
+            <option value="win3_hotdog_stand">Win 3 - Hotdog Stand</option>
+            <option value="win3_lcd_default">Win 3 - LCD Default</option>
+            <option value="win3_lcd_reversed_dark">Win 3 - LCD Reversed - Dark</option>
+            <option value="win3_lcd_reversed_light">Win 3 - LCD Reversed - Light</option>
+            <option value="win3_mahogany">Win 3 - Mahogany</option>
+            <option value="win3_monochrome">Win 3 - Monochrome</option>
+            <option value="win3_ocean">Win 3 - Ocean</option>
+            <option value="win3_pastel">Win 3 - Pastel</option>
+            <option value="win3_patchwork">Win 3 - Patchwork</option>
+            <option value="win3_plasma_power_saver">Win 3 - Plasma Power Saver</option>
+            <option value="win3_rugby">Win 3 - Rugby</option>
+            <option value="win3_the_blues">Win 3 - The Blues</option>
+            <option value="win3_tweed">Win 3 - Tweed</option>
+            <option value="win3_valentine">Win 3 - Valentine</option>
+            <option value="win3_wingtips">Win 3 - Wingtips</option>
+        </select></p>
+        <select id="selector" onclick="madOpenDropdown(this)">
+            <option value="button-alternate-face">3D Alternate Face</option>
+            <option value="button-dk-shadow">3D Dark Shadow</option>
+            <option value="button-face">3D Object</option>
+            <option value="button-hilight">3D Highlight</option>
+            <option value="button-light">3D Light</option>
+            <option value="button-shadow">3D Shadow</option>
+            <option value="active-title">Active Title Bar</option>
+            <option value="gradient-active-title">Active Title Bar Color 2</option>
+            <option value="title-text">Active Title Bar Text</option>
+            <option value="active-border">Active Window Border</option>
+            <option value="app-workspace">Application Background</option>
+            <option value="background" selected>Desktop</option>
+            <option value="button-text">Button Text</option>
+            <option value="gray-text">Disabled Item</option>
+            <option value="hot-tracking-color">Hyperlink</option>
+            <option value="inactive-border">Inactive Window Border</option>
+            <option value="inactive-title">Inactive Title Bar</option>
+            <option value="gradient-inactive-title">Inactive Title Bar Color 2</option>
+            <option value="inactive-title-text">Inactive Title Bar Text</option>
+            <option value="menu">Menu</option>
+            <option value="menu-bar">Menu Bar</option>
+            <option value="menu-highlight">Menu Highlight</option>
+            <option value="menu-text">Menu Text</option>
+            <option value="scrollbar">Scrollbar</option>
+            <option value="hilight">Selected Item</option>
+            <option value="hilight-text">Selected Item Text</option>
+            <option value="info-window">ToolTip</option>
+            <option value="info-text">ToolTip Text</option>
+            <option value="window">Window</option>
+            <option value="window-frame">Window Frame</option>
+            <option value="window-text">Window Text</option>
         </select>
         <input id="colorPicker" type="color" value="#008080">
     </div>

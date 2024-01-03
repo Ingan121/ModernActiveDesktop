@@ -1,0 +1,34 @@
+/* Win 3 - Wingtips */
+:root {
+    --active-border: #804000;
+    --active-title: #808080;
+    --app-workspace: #C0C0C0;
+    --background: #808040;
+    --button-alternate-face: #B5B5B5;
+    --button-dk-shadow: #000000;
+    --button-face: #C0C0C0;
+    --button-hilight: #FFFFFF;
+    --button-light: #000000;
+    --button-shadow: #808080;
+    --button-text: #000000;
+    --gradient-active-title: #808080;
+    --gradient-inactive-title: #FFFFFF;
+    --gray-text: #C0C0C0;
+    --hilight: #808080;
+    --hilight-text: #FFFFFF;
+    --hot-tracking-color: #0000FF;
+    --inactive-border: #FFFFFF;
+    --inactive-title: #FFFFFF;
+    --inactive-title-text: #000000;
+    --info-text: #000000;
+    --info-window: #FFFFFF;
+    --menu: #FFFFFF;
+    --menu-bar: #FFFFFF;
+    --menu-highlight: #808080;
+    --menu-text: #000000;
+    --scrollbar: #808080;
+    --title-text: #FFFFFF;
+    --window: #FFFFFF;
+    --window-frame: #000000;
+    --window-text: #000000;
+}

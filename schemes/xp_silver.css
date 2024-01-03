@@ -1,33 +1,33 @@
-/* Windows XP Luna Blue */
+/* Windows XP Luna Silver */
 :root {
     --active-border: #D4D0C8;
-    --active-title: #0054E3;
+    --active-title: #C0C0C0;
     --app-workspace: #808080;
-    --background: #004E98;
+    --background: #585768;
     --button-alternate-face: #B5B5B5;
     --button-dk-shadow: #716F64;
-    --button-face: #ECE9D8;
+    --button-face: #E0DFE3;
     --button-hilight: #FFFFFF;
     --button-light: #F1EFE2;
-    --button-shadow: #ACA899;
+    --button-shadow: #9D9DA1;
     --button-text: #000000;
-    --gradient-active-title: #3D95FF;
-    --gradient-inactive-title: #9DB9EB;
+    --gradient-active-title: #C8C8C8;
+    --gradient-inactive-title: #EEEFF7;
     --gray-text: #ACA899;
-    --hilight: #316AC5;
-    --hilight-text: #FFFFFF;
-    --hot-tracking-color: #000080;
+    --hilight: #B2B4BF;
+    --hilight-text: #000000;
+    --hot-tracking-color: #648BCB;
     --inactive-border: #D4D0C8;
-    --inactive-title: #7A96DF;
-    --inactive-title-text: #D8E4F8;
+    --inactive-title: #FFFFFF;
+    --inactive-title-text: #A2A1A1;
     --info-text: #000000;
     --info-window: #FFFFE1;
     --menu: #FFFFFF;
-    --menu-bar: #ECE9D8;
-    --menu-highlight: #316AC5;
+    --menu-bar: #E0E2EB;
+    --menu-highlight: #BBB7C7;
     --menu-text: #000000;
     --scrollbar: #D4D0C8;
-    --title-text: #FFFFFF;
+    --title-text: #0E1010;
     --window: #FFFFFF;
     --window-frame: #000000;
     --window-text: #000000;

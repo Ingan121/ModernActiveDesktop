@@ -1,0 +1,34 @@
+/* Win 3 -  Default 32-bit */
+:root {
+    --active-border: #C0C0C0;
+    --active-title: #A4C8F0;
+    --app-workspace: #FFFBF0;
+    --background: #A0A0A4;
+    --button-alternate-face: #B5B5B5;
+    --button-dk-shadow: #000000;
+    --button-face: #C0C0C0;
+    --button-hilight: #FFFFFF;
+    --button-light: #000000;
+    --button-shadow: #808080;
+    --button-text: #000000;
+    --gradient-active-title: #A4C8F0;
+    --gradient-inactive-title: #FFFFFF;
+    --gray-text: #C0C0C0;
+    --hilight: #A4C8F0;
+    --hilight-text: #000000;
+    --hot-tracking-color: #0000FF;
+    --inactive-border: #C0C0C0;
+    --inactive-title: #FFFFFF;
+    --inactive-title-text: #000000;
+    --info-text: #000000;
+    --info-window: #FFFFFF;
+    --menu: #FFFFFF;
+    --menu-bar: #FFFFFF;
+    --menu-highlight: #A4C8F0;
+    --menu-text: #000000;
+    --scrollbar: #C0C0C0;
+    --title-text: #000000;
+    --window: #FFFFFF;
+    --window-frame: #000000;
+    --window-text: #000000;
+}

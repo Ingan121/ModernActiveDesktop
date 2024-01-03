@@ -1,0 +1,34 @@
+/* Red, White, and Blue (VGA) */
+:root {
+    --active-border: #C0C0C0;
+    --active-title: #800000;
+    --app-workspace: #FFFFFF;
+    --background: #000042;
+    --button-alternate-face: #C0C0C0;
+    --button-dk-shadow: #000000;
+    --button-face: #C0C0C0;
+    --button-hilight: #FFFFFF;
+    --button-light: #C0C0C0;
+    --button-shadow: #808080;
+    --button-text: #000000;
+    --gradient-active-title: #0010A8;
+    --gradient-inactive-title: #BABEC9;
+    --gray-text: #808080;
+    --hilight: #800000;
+    --hilight-text: #FFFFFF;
+    --hot-tracking-color: #800000;
+    --inactive-border: #C0C0C0;
+    --inactive-title: #808080;
+    --inactive-title-text: #C0C0C0;
+    --info-text: #000080;
+    --info-window: #FFFFFF;
+    --menu: #C0C0C0;
+    --menu-bar: #C0C0C0;
+    --menu-highlight: #800000;
+    --menu-text: #000000;
+    --scrollbar: #C0C0C0;
+    --title-text: #FFFFFF;
+    --window: #FFFFFF;
+    --window-frame: #000000;
+    --window-text: #000000;
+}

@@ -332,8 +332,8 @@ function initDeskMover(num, openDoc, temp, width, height, style) {
                 config.title = null;
                 windowTitleText.textContent = windowElement.contentDocument.title || "ModernActiveDesktop";
             }
-        });
-    }, "", config.title || "");
+        }, "", config.title || "");
+    });
 
     windowCloseBtn.addEventListener('click', closeWindow);
     windowCloseBtnAlt.addEventListener('click', closeWindow);

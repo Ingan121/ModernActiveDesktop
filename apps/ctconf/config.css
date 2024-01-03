@@ -35,6 +35,10 @@ p {
     margin-right: 5px;
 }
 
+#schemeSelector {
+    width: 200px;
+}
+
 #notice {
     font-family: "Pixelated MS Sans Serif";
     font-size: 12px;

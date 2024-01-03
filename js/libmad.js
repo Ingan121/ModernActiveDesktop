@@ -3,6 +3,9 @@
     const schemeElement = document.getElementById("scheme");
     const styleElement = document.getElementById("style");
     const numStr = frameElement.dataset.num;
+    const windowContainer = frameElement.parentElement.parentElement;
+    const dropdownBg = windowContainer.querySelector(".dropdownBg");
+    const dropdown = dropdownBg.querySelector(".dropdown");
 
     const config = new Proxy({}, {
         get(target, key) {
@@ -74,6 +77,61 @@
         location.href = url;
     }
 
+    window.madOpenDropdown = function(elem) {
+        const dummy = dropdownBg.querySelector(".dropdownItem");
+        const options = elem.options;
+
+        if (dropdown.childElementCount > 1) {
+            for (let i = dropdown.childElementCount - 1; i > 0; i--) {
+                dropdown.removeChild(dropdown.children[i]);
+            }
+        }
+
+        for (const option of options) {
+            if (option.hidden) {
+                delete option;
+                continue;
+            }
+            const item = dummy.cloneNode(dummy, true);
+            item.textContent = option.textContent;
+            item.dataset.value = option.value;
+            item.addEventListener('click', function() {
+                elem.value = this.dataset.value;
+                elem.dispatchEvent(new Event('change'));
+                closeDropdown();
+            });
+            dropdown.appendChild(item);
+        }
+
+        if (options.length >= 35) {
+            dropdownBg.style.height = "490px";
+        } else {
+            dropdownBg.style.height = 14 * options.length + "px";
+        }
+        dropdown.style.height = dropdownBg.style.height;
+        if (config.unscaled) {
+            dropdownBg.style.left = elem.offsetLeft / parent.scaleFactor + "px";
+            dropdownBg.style.top = (elem.offsetTop + elem.offsetHeight) / parent.scaleFactor + "px";
+        } else {
+            dropdownBg.style.left = elem.offsetLeft + "px";
+            dropdownBg.style.top = elem.offsetTop + elem.offsetHeight + "px";
+        }
+        dropdownBg.style.display = "block";
+
+        parent.addEventListener('click', closeDropdown);
+        parent.iframeClickEventCtrl(false);
+        dropdownBg.style.pointerEvents = "auto";
+
+        elem.blur();
+        elem.focus();
+    }
+
+    function closeDropdown() {
+        dropdownBg.style.display = "none";
+        parent.document.removeEventListener('click', closeDropdown);
+        parent.iframeClickEventCtrl(true);
+    }
+
     window.madResizeTo = function(width, height) {
         frameElement.width = width;
         frameElement.height = height;
@@ -81,8 +139,8 @@
     }
 
     window.madMoveTo = function(x, y) {
-        frameElement.parentElement.parentElement.style.left = x + "px";
-        frameElement.parentElement.parentElement.style.top = y + "px";
+        windowContainer.style.left = x + "px";
+        windowContainer.style.top = y + "px";
         config.xPos = x + "px";
         config.yPos = y + "px";
     }

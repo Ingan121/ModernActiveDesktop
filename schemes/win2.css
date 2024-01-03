@@ -1,0 +1,34 @@
+/* Win 2 */
+:root {
+    --active-border: #7F7F7F;
+    --active-title: #0000FF;
+    --app-workspace: #0080FF;
+    --background: #00FFFF;
+    --button-alternate-face: #B5B5B5;
+    --button-dk-shadow: #000000;
+    --button-face: #FFFFFF;
+    --button-hilight: #000000;
+    --button-light: #000000;
+    --button-shadow: #000000;
+    --button-text: #000000;
+    --gradient-active-title: #0000FF;
+    --gradient-inactive-title: #FFFFFF;
+    --gray-text: #808080;
+    --hilight: #000080;
+    --hilight-text: #FFFFFF;
+    --hot-tracking-color: #0000FF;
+    --inactive-border: #7F7F7F;
+    --inactive-title: #FFFFFF;
+    --inactive-title-text: #000000;
+    --info-text: #000000;
+    --info-window: #FFFFFF;
+    --menu: #00FFFF;
+    --menu-bar: #00FFFF;
+    --menu-highlight: #FF0000;
+    --menu-text: #000000;
+    --scrollbar: #3F3F3F;
+    --title-text: #FFFFFF;
+    --window: #FFFFFF;
+    --window-frame: #000000;
+    --window-text: #000000;
+}

@@ -1,0 +1,34 @@
+/* Slate */
+:root {
+    --active-border: #9DB9C8;
+    --active-title: #558097;
+    --app-workspace: #424242;
+    --background: #414141;
+    --button-alternate-face: #C0C0C0;
+    --button-dk-shadow: #000000;
+    --button-face: #9DB9C8;
+    --button-hilight: #CEDCE3;
+    --button-light: #9DB9C8;
+    --button-shadow: #558097;
+    --button-text: #000000;
+    --gradient-active-title: #88B8D8;
+    --gradient-inactive-title: #A0BCC8;
+    --gray-text: #558097;
+    --hilight: #558097;
+    --hilight-text: #FFFFFF;
+    --hot-tracking-color: #558097;
+    --inactive-border: #9DB9C8;
+    --inactive-title: #808080;
+    --inactive-title-text: #C0C0C0;
+    --info-text: #000000;
+    --info-window: #FFFFFF;
+    --menu: #9DB9C8;
+    --menu-bar: #9DB9C8;
+    --menu-highlight: #558097;
+    --menu-text: #000000;
+    --scrollbar: #CEDCE3;
+    --title-text: #FFFFFF;
+    --window: #FFFFFF;
+    --window-frame: #000000;
+    --window-text: #000000;
+}

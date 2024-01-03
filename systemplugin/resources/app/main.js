@@ -6,7 +6,23 @@ const fs = require('fs');
 const url = require('url');
 const args = require('minimist')(process.argv);
 
-const gotTheLock = app.requestSingleInstanceLock()
+if (args.help) {
+  console.log(`ModernActiveDesktop System Plugin ${app.getVersion()} Help`);
+  console.log("Made by Ingan121");
+  console.log("Licensed under the MIT License\n");
+  console.log("Usage: MADSysPlug.exe [options]");
+  console.log("--open: Open a URL on startup");
+  console.log("--maximize: Maximize the window on startup");
+  console.log("--showui: Show the main UI on startup");
+  console.log("--port: Port to listen on (default: 3031)");
+  console.log("--listen: IP address to listen on (default: 127.0.0.1)");
+  console.log("--cors: CORS origin to allow (default: https://www.ingan121.com)");
+  console.log("--help: Show this help message\n");
+  console.log("Warning: Using --cors=* or --listen=0.0.0.0 is considered insecure. Please only use these options for testing.\n");
+  process.exit();
+}
+
+const gotTheLock = app.requestSingleInstanceLock();
 let tray = null;
 let mainWindow = null;
 let cvNumber = 0;
@@ -280,6 +296,7 @@ function generateCssScheme() {
 
   let schemeStyle = '';
   if (process.platform === 'win32') {
+    // idk why but button-alternate-face is not supported by Electron so just made it the same as button-face
     schemeStyle = 
       `:root {
         --active-border: ${systemPreferences.getColor('active-border')};

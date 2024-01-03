@@ -1,0 +1,34 @@
+/* Win 3 - Hotdog Stand */
+:root {
+    --active-border: #FF0000;
+    --active-title: #000000;
+    --app-workspace: #FFFF00;
+    --background: #FFFF00;
+    --button-alternate-face: #B5B5B5;
+    --button-dk-shadow: #000000;
+    --button-face: #C0C0C0;
+    --button-hilight: #FFFFFF;
+    --button-light: #000000;
+    --button-shadow: #808080;
+    --button-text: #000000;
+    --gradient-active-title: #000000;
+    --gradient-inactive-title: #FF0000;
+    --gray-text: #808080;
+    --hilight: #000000;
+    --hilight-text: #FFFFFF;
+    --hot-tracking-color: #0000FF;
+    --inactive-border: #FF0000;
+    --inactive-title: #FF0000;
+    --inactive-title-text: #FFFFFF;
+    --info-text: #FFFFFF;
+    --info-window: #FF0000;
+    --menu: #FFFFFF;
+    --menu-bar: #FFFFFF;
+    --menu-highlight: #000000;
+    --menu-text: #000000;
+    --scrollbar: #C0C0C0;
+    --title-text: #FFFFFF;
+    --window: #FF0000;
+    --window-frame: #000000;
+    --window-text: #FFFFFF;
+}

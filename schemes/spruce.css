@@ -1,0 +1,34 @@
+/* Spruce */
+:root {
+    --active-border: #A2C8A9;
+    --active-title: #599764;
+    --app-workspace: #D0E3D3;
+    --background: #213F21;
+    --button-alternate-face: #C0C0C0;
+    --button-dk-shadow: #000000;
+    --button-face: #A2C8A9;
+    --button-hilight: #D0E3D3;
+    --button-light: #A2C8A9;
+    --button-shadow: #599764;
+    --button-text: #000000;
+    --gradient-active-title: #98C8E8;
+    --gradient-inactive-title: #A8CCB0;
+    --gray-text: #599764;
+    --hilight: #599764;
+    --hilight-text: #FFFFFF;
+    --hot-tracking-color: #599764;
+    --inactive-border: #A2C8A9;
+    --inactive-title: #808080;
+    --inactive-title-text: #D0E3D3;
+    --info-text: #000000;
+    --info-window: #FFFFFF;
+    --menu: #A2C8A9;
+    --menu-bar: #A2C8A9;
+    --menu-highlight: #599764;
+    --menu-text: #000000;
+    --scrollbar: #D0E3D3;
+    --title-text: #FFFFFF;
+    --window: #FFFFFF;
+    --window-frame: #000000;
+    --window-text: #000000;
+}

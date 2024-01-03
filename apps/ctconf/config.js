@@ -2,11 +2,18 @@ main();
 
 async function main() {
     let scheme = parseCssScheme(await getSchemeText());
+    const schemeSelector = document.getElementById("schemeSelector");
     const selector = document.getElementById("selector");
     const options = selector.options;
     const colorPicker = document.getElementById("colorPicker");
     const applyBtn = document.getElementById("applyBtn");
     colorPicker.value = scheme[options[selector.selectedIndex].value];
+
+    schemeSelector.addEventListener("change", async function() {
+        scheme = parseCssScheme(await getSchemeText(schemeSelector.value));
+        applyPreview(scheme);
+        selector.dispatchEvent(new Event("change"));
+    });
 
     selector.addEventListener("change", function() {
         const option = options[selector.selectedIndex].value;
@@ -24,8 +31,8 @@ async function main() {
     });
 }
 
-async function getSchemeText() {
-    const schemeLink = parent.document.getElementById("scheme").href;
+async function getSchemeText(scheme) {
+    const schemeLink = scheme ? `../../schemes/${scheme}.css` : parent.document.getElementById("scheme").href;
     // 98 scheme
     let schemeText = `:root {
         --active-border: #c0c0c0;
@@ -60,7 +67,7 @@ async function getSchemeText() {
         --window-frame: #000000;
         --window-text: #000000;
     `;
-    if (schemeLink === "data:text/css,") {
+    if (scheme === "98" || schemeLink === "data:text/css,") {
         return schemeText;
     } else {
         await fetch(schemeLink).then(res => res.text()).then(text => {

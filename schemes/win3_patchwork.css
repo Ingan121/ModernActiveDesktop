@@ -1,0 +1,34 @@
+/* Win 3 - Patchwork */
+:root {
+    --active-border: #4EB164;
+    --active-title: #80FFFF;
+    --app-workspace: #FAFBC1;
+    --background: #BB4495;
+    --button-alternate-face: #B5B5B5;
+    --button-dk-shadow: #000000;
+    --button-face: #C0C0C0;
+    --button-hilight: #FFFFFF;
+    --button-light: #000000;
+    --button-shadow: #808080;
+    --button-text: #000000;
+    --gradient-active-title: #80FFFF;
+    --gradient-inactive-title: #FFFFFF;
+    --gray-text: #808080;
+    --hilight: #00FFFF;
+    --hilight-text: #000000;
+    --hot-tracking-color: #0000FF;
+    --inactive-border: #FFFFFF;
+    --inactive-title: #FFFFFF;
+    --inactive-title-text: #000000;
+    --info-text: #000000;
+    --info-window: #FFFFFF;
+    --menu: #FFFFFF;
+    --menu-bar: #FFFFFF;
+    --menu-highlight: #00FFFF;
+    --menu-text: #000000;
+    --scrollbar: #C0C0C0;
+    --title-text: #000000;
+    --window: #FFFFFF;
+    --window-frame: #000000;
+    --window-text: #000000;
+}

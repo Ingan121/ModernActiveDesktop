@@ -24,6 +24,10 @@
     }
 }
 
+:root {
+    --hilight-inverted: #FFFF7F;
+}
+
 html, body {
     height: 100%;
     user-select: none;
@@ -281,6 +285,44 @@ body {
     right: 5px;
     margin: 0 !important;
     margin-right: 3px;
+}
+
+.dropdownBg {
+    width: 200px;
+    height: 14px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: var(--window);
+    color: var(--window-text);
+    border: solid 1px var(--window-frame);
+    overflow: hidden;
+    animation: cmDropdown 0.25s;
+    animation-timing-function: linear;
+    display: none;
+}
+
+.dropdown {
+    width: 200px;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    margin: 0;
+    overflow-y: scroll;
+}
+
+.dropdownItem:first-child {
+    display: none;
+}
+
+.dropdownItem {
+    border: solid 1px transparent;
+}
+
+.dropdownItem:hover {
+    background-color: var(--hilight);
+    color: var(--hilight-text);
+    border: dotted 1px var(--hilight-inverted);
 }
 
 .confMenu > hr {

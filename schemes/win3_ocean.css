@@ -1,0 +1,34 @@
+/* Win 3 - Ocean */
+:root {
+    --active-border: #C0C0C0;
+    --active-title: #004080;
+    --app-workspace: #008040;
+    --background: #008080;
+    --button-alternate-face: #B5B5B5;
+    --button-dk-shadow: #000000;
+    --button-face: #C0C0C0;
+    --button-hilight: #FFFFFF;
+    --button-light: #000000;
+    --button-shadow: #808080;
+    --button-text: #000000;
+    --gradient-active-title: #004080;
+    --gradient-inactive-title: #C0C0C0;
+    --gray-text: #000000;
+    --hilight: #008080;
+    --hilight-text: #000000;
+    --hot-tracking-color: #0000FF;
+    --inactive-border: #C0C0C0;
+    --inactive-title: #C0C0C0;
+    --inactive-title-text: #000000;
+    --info-text: #000000;
+    --info-window: #FFFFFF;
+    --menu: #FFFFFF;
+    --menu-bar: #FFFFFF;
+    --menu-highlight: #008080;
+    --menu-text: #000000;
+    --scrollbar: #C0C0C0;
+    --title-text: #FFFFFF;
+    --window: #FFFFFF;
+    --window-frame: #000000;
+    --window-text: #000000;
+}

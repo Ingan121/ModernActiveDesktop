@@ -1,0 +1,34 @@
+/* Pumpkin */
+:root {
+    --active-border: #ECD59D;
+    --active-title: #D7A52F;
+    --app-workspace: #F5EACF;
+    --background: #420042;
+    --button-alternate-face: #C0C0C0;
+    --button-dk-shadow: #000000;
+    --button-face: #ECD59D;
+    --button-hilight: #F5EACF;
+    --button-light: #ECD59D;
+    --button-shadow: #D7A52F;
+    --button-text: #000000;
+    --gradient-active-title: #E0CC88;
+    --gradient-inactive-title: #D0CC90;
+    --gray-text: #D7A52F;
+    --hilight: #800080;
+    --hilight-text: #FFFFFF;
+    --hot-tracking-color: #D7A52F;
+    --inactive-border: #ECD59D;
+    --inactive-title: #A0A0A4;
+    --inactive-title-text: #F5EACF;
+    --info-text: #800080;
+    --info-window: #FFFFFF;
+    --menu: #ECD59D;
+    --menu-bar: #ECD59D;
+    --menu-highlight: #800080;
+    --menu-text: #000000;
+    --scrollbar: #F5EACF;
+    --title-text: #FFFFFF;
+    --window: #FFFFFF;
+    --window-frame: #000000;
+    --window-text: #000000;
+}

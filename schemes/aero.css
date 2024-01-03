@@ -1,0 +1,34 @@
+/* Windows Aero */
+:root {
+    --active-border: #B4B4B4;
+    --active-title: #99B4D1;
+    --app-workspace: #ABABAB;
+    --background: #000000;
+    --button-alternate-face: #000000;
+    --button-dk-shadow: #696969;
+    --button-face: #F0F0F0;
+    --button-hilight: #FFFFFF;
+    --button-light: #E3E3E3;
+    --button-shadow: #A0A0A0;
+    --button-text: #000000;
+    --gradient-active-title: #B9D1EA;
+    --gradient-inactive-title: #D7E4F2;
+    --gray-text: #6D6D6D;
+    --hilight: #3399FF;
+    --hilight-text: #FFFFFF;
+    --hot-tracking-color: #0066CC;
+    --inactive-border: #F4F7FC;
+    --inactive-title: #BFCDDB;
+    --inactive-title-text: #434E54;
+    --info-text: #000000;
+    --info-window: #FFFFE1;
+    --menu: #F0F0F0;
+    --menu-bar: #F0F0F0;
+    --menu-highlight: #3399FF;
+    --menu-text: #000000;
+    --scrollbar: #C8C8C8;
+    --title-text: #000000;
+    --window: #FFFFFF;
+    --window-frame: #000000;
+    --window-text: #646464;
+}

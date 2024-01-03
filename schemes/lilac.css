@@ -1,0 +1,34 @@
+/* Lilac */
+:root {
+    --active-border: #AEA8D9;
+    --active-title: #5A4EB1;
+    --app-workspace: #5A4EB1;
+    --background: #000000;
+    --button-alternate-face: #C0C0C0;
+    --button-dk-shadow: #000000;
+    --button-face: #AEA8D9;
+    --button-hilight: #D8D5EC;
+    --button-light: #AEA8D9;
+    --button-shadow: #5A4EB1;
+    --button-text: #000000;
+    --gradient-active-title: #B68FCB;
+    --gradient-inactive-title: #B8B4D0;
+    --gray-text: #5A4EB1;
+    --hilight: #5A4EB1;
+    --hilight-text: #FFFFFF;
+    --hot-tracking-color: #5A4EB1;
+    --inactive-border: #AEA8D9;
+    --inactive-title: #808080;
+    --inactive-title-text: #FFFFFF;
+    --info-text: #000000;
+    --info-window: #FFFFFF;
+    --menu: #AEA8D9;
+    --menu-bar: #AEA8D9;
+    --menu-highlight: #5A4EB1;
+    --menu-text: #000000;
+    --scrollbar: #AEA8D9;
+    --title-text: #FFFFFF;
+    --window: #FFFFFF;
+    --window-frame: #000000;
+    --window-text: #000000;
+}

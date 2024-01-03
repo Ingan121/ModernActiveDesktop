@@ -1,0 +1,34 @@
+/* Desert */
+:root {
+    --active-border: #D5CCBB;
+    --active-title: #008080;
+    --app-workspace: #A28D68;
+    --background: #A28D68;
+    --button-alternate-face: #C0C0C0;
+    --button-dk-shadow: #000000;
+    --button-face: #D5CCBB;
+    --button-hilight: #EAE6DD;
+    --button-light: #D5CCBB;
+    --button-shadow: #A28D68;
+    --button-text: #000000;
+    --gradient-active-title: #84BDAA;
+    --gradient-inactive-title: #E8D080;
+    --gray-text: #A28D68;
+    --hilight: #008080;
+    --hilight-text: #FFFFFF;
+    --hot-tracking-color: #008080;
+    --inactive-border: #D5CCBB;
+    --inactive-title: #A28D68;
+    --inactive-title-text: #FFFFFF;
+    --info-text: #000000;
+    --info-window: #FFFFFF;
+    --menu: #D5CCBB;
+    --menu-bar: #D5CCBB;
+    --menu-highlight: #008080;
+    --menu-text: #000000;
+    --scrollbar: #EAE6DD;
+    --title-text: #FFFFFF;
+    --window: #FFFFFF;
+    --window-frame: #000000;
+    --window-text: #000000;
+}

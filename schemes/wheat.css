@@ -1,0 +1,34 @@
+/* Wheat */
+:root {
+    --active-border: #DEDEA0;
+    --active-title: #808000;
+    --app-workspace: #BCBC41;
+    --background: #00401D;
+    --button-alternate-face: #C0C0C0;
+    --button-dk-shadow: #000000;
+    --button-face: #DEDEA0;
+    --button-hilight: #EEEED0;
+    --button-light: #DEDEA0;
+    --button-shadow: #BCBC41;
+    --button-text: #000000;
+    --gradient-active-title: #C8B048;
+    --gradient-inactive-title: #B8B880;
+    --gray-text: #BCBC41;
+    --hilight: #808000;
+    --hilight-text: #FFFFFF;
+    --hot-tracking-color: #808000;
+    --inactive-border: #DEDEA0;
+    --inactive-title: #BCBC41;
+    --inactive-title-text: #FFFFFF;
+    --info-text: #000000;
+    --info-window: #FFFFFF;
+    --menu: #DEDEA0;
+    --menu-bar: #DEDEA0;
+    --menu-highlight: #808000;
+    --menu-text: #000000;
+    --scrollbar: #EEEED0;
+    --title-text: #FFFFFF;
+    --window: #FFFFFF;
+    --window-frame: #000000;
+    --window-text: #000000;
+}

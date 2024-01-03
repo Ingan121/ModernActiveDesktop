@@ -37,7 +37,7 @@ const LW = 2; // Lively Wallpaper
 const BROWSER = 0; // None of the above
 let runningMode = BROWSER, origRunningMode = BROWSER;
 
-let scaleFactor = 1;
+window.scaleFactor = 1;
 let vWidth = window.innerWidth;
 let vHeight = window.innerHeight;
 
@@ -377,10 +377,15 @@ function changeBgImgMode(value) {
 }
 
 function changeColorScheme(scheme) {
-    if (scheme === "98") schemeElement.href = "data:text/css,";
-    else if (scheme === "custom") schemeElement.href = localStorage.madesktopCustomColor;
-    else if (scheme !== "sys" && scheme.split('\n').length === 1) schemeElement.href = `schemes/${scheme}.css`;
-    else if (scheme === "sys") {
+    if (scheme === "98") {
+        schemeElement.href = "data:text/css,";
+    } else if (scheme === "custom") {
+        schemeElement.href = localStorage.madesktopCustomColor;
+    } else if (scheme.split('\n').length > 1) {
+        const dataURL = `data:text/css,${encodeURIComponent(scheme)}`;
+        schemeElement.href = dataURL;
+        localStorage.madesktopCustomColor = dataURL;
+    } else if (scheme === "sys") {
         if (localStorage.madesktopSysColorCache) {
             schemeElement.href = localStorage.madesktopSysColorCache;
         }
@@ -396,9 +401,13 @@ function changeColorScheme(scheme) {
                 // Ignore it as SysPlug startup is slower than high priority WE startup
             })
     } else {
-        const dataURL = `data:text/css,${encodeURIComponent(scheme)}`;
-        schemeElement.href = dataURL;
-        localStorage.madesktopCustomColor = dataURL;
+        schemeElement.href = `schemes/${scheme}.css`;
+    }
+    
+    try {
+        document.documentElement.style.setProperty('--hilight-inverted', invertColor(getComputedStyle(document.documentElement).getPropertyValue('--hilight')));
+    } catch {
+        document.documentElement.style.setProperty('--hilight-inverted', 'var(--hilight-text)');
     }
 
     try {
@@ -474,25 +483,56 @@ function parseWallEngColorProp(value) {
     return rgbToHex('rgb(' + customColor + ')');
 }
 
+// https://stackoverflow.com/a/35970186
+function invertColor(hex) {
+    if (hex.indexOf(' ') === 0) {
+        hex = hex.slice(1);
+    }
+    if (hex.indexOf('#') === 0) {
+        hex = hex.slice(1);
+    }
+    // convert 3-digit hex to 6-digits.
+    if (hex.length === 3) {
+        hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+    }
+    if (hex.length !== 6) {
+        throw new Error('Invalid HEX color.');
+    }
+    // invert color components
+    var r = (255 - parseInt(hex.slice(0, 2), 16)).toString(16),
+        g = (255 - parseInt(hex.slice(2, 4), 16)).toString(16),
+        b = (255 - parseInt(hex.slice(4, 6), 16)).toString(16);
+    // pad each with zeros and return
+    return '#' + padZero(r) + padZero(g) + padZero(b);
+}
+
+function padZero(str, len) {
+    len = len || 2;
+    var zeros = new Array(len).join('0');
+    return (zeros + str).slice(-len);
+}
+
 // Create a new ActiveDesktop item and initialize it
-function createNewDeskItem(openDoc, temp, width, height) {
+function createNewDeskItem(openDoc, temp, width, height, style) {
     const newContainer = windowContainers[0].cloneNode(true);
     document.body.appendChild(newContainer);
     windowContainers = document.getElementsByClassName("windowContainer");
-    initDeskMover(windowContainers.length - 1, openDoc, temp, width, height);
+    initDeskMover(windowContainers.length - 1, openDoc, temp, width, height, style);
 }
 
 // Create a new AD item, initialize, and increase the saved window count
-function openWindow(openDoc, temp, width, height) {
+function openWindow(openDoc, temp, width, height, style) {
     if (localStorage.madesktopItemVisible == "false" && !(typeof openDoc === "string" || openDoc instanceof String)) {
         windowContainers[0].style.display = "block";
         localStorage.removeItem("madesktopItemVisible");
     } else {
         if (localStorage.madesktopItemVisible == "false") {
             windowContainers[0].style.display = "block";
-            createNewDeskItem(openDoc, temp, width, height);
+            createNewDeskItem(openDoc, temp, width, height, style);
             windowContainers[0].style.display = "none";
-        } else createNewDeskItem(openDoc, temp, width, height);
+        } else {
+            createNewDeskItem(openDoc, temp, width, height, style)
+        }
         localStorage.madesktopItemCount++;
     }
 }

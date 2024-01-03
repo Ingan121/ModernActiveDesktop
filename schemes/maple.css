@@ -1,0 +1,34 @@
+/* Maple */
+:root {
+    --active-border: #E6D8AE;
+    --active-title: #800000;
+    --app-workspace: #C6A646;
+    --background: #000000;
+    --button-alternate-face: #C0C0C0;
+    --button-dk-shadow: #000000;
+    --button-face: #E6D8AE;
+    --button-hilight: #F2ECD7;
+    --button-light: #E6D8AE;
+    --button-shadow: #C6A646;
+    --button-text: #000000;
+    --gradient-active-title: #C09C38;
+    --gradient-inactive-title: #E0C888;
+    --gray-text: #C6A646;
+    --hilight: #C6A646;
+    --hilight-text: #000000;
+    --hot-tracking-color: #C6A646;
+    --inactive-border: #E6D8AE;
+    --inactive-title: #C6A646;
+    --inactive-title-text: #F2ECD7;
+    --info-text: #000000;
+    --info-window: #FFFFFF;
+    --menu: #E6D8AE;
+    --menu-bar: #E6D8AE;
+    --menu-highlight: #C6A646;
+    --menu-text: #000000;
+    --scrollbar: #F2ECD7;
+    --title-text: #FFFFFF;
+    --window: #FFFFFF;
+    --window-frame: #000000;
+    --window-text: #000000;
+}

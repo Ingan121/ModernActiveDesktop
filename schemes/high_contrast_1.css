@@ -1,0 +1,34 @@
+/* High Contrast #1 */
+:root {
+    --active-border: #0000FF;
+    --active-title: #0000FF;
+    --app-workspace: #000000;
+    --background: #000000;
+    --button-alternate-face: #C0C0C0;
+    --button-dk-shadow: #FFFFFF;
+    --button-face: #000000;
+    --button-hilight: #C0C0C0;
+    --button-light: #FFFFFF;
+    --button-shadow: #808080;
+    --button-text: #FFFFFF;
+    --gradient-active-title: #0000FF;
+    --gradient-inactive-title: #00FFFF;
+    --gray-text: #00FF00;
+    --hilight: #008000;
+    --hilight-text: #FFFFFF;
+    --hot-tracking-color: #800080;
+    --inactive-border: #00FFFF;
+    --inactive-title: #00FFFF;
+    --inactive-title-text: #000000;
+    --info-text: #FFFF00;
+    --info-window: #000000;
+    --menu: #000000;
+    --menu-bar: #000000;
+    --menu-highlight: #008000;
+    --menu-text: #FFFFFF;
+    --scrollbar: #000000;
+    --title-text: #FFFFFF;
+    --window: #000000;
+    --window-frame: #FFFFFF;
+    --window-text: #FFFF00;
+}
