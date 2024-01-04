@@ -1,42 +1,31 @@
-function initDeskMover(num, openDoc, temp, width, height, style) {
-    const windowContainer = windowContainers[num];
-    const windowTitlebar = windowContainer.getElementsByClassName("windowTitlebar")[0] || windowContainer.getElementsByClassName("title-bar")[0];
-    const windowTitleText = windowContainer.getElementsByClassName("title-bar-text")[0];
-    const windowFrame = windowContainer.getElementsByClassName("windowFrame")[0];
-    const windowElement = windowContainer.getElementsByClassName("windowElement")[0];
-    const windowMenuBtn = windowContainer.getElementsByClassName("windowMenuBtn")[0];
-    const windowIcon = windowContainer.getElementsByClassName("windowIcon")[0];
-    const windowCloseBtn = windowContainer.getElementsByClassName("windowCloseBtn")[0];
-    const windowCloseBtnAlt = windowContainer.getElementsByClassName("windowCloseBtnAlt")[0];
-    const contextMenuBg = windowContainer.getElementsByClassName("contextMenuBg")[0];
-    const contextMenu = windowContainer.getElementsByClassName("contextMenu")[0];
-    const contextMenuItems = contextMenu.getElementsByClassName("contextMenuItem");
-    const confMenuBg = windowContainer.getElementsByClassName("confMenuBg")[0];
-    const confMenu = windowContainer.getElementsByClassName("confMenu")[0];
-    const confMenuItems = confMenu.getElementsByClassName("contextMenuItem");
-    const numStr = num == 0 ? "" : num;
+function initDeskMover(windowContainer, numStr, openDoc, temp, width, height, style) {
+    const windowTitlebar = windowContainer.querySelector(".windowTitlebar") || windowContainer.querySelector(".title-bar");
+    const windowTitleText = windowContainer.querySelector(".title-bar-text");
+    const windowFrame = windowContainer.querySelector(".windowFrame");
+    const windowElement = windowContainer.querySelector(".windowElement");
+    const windowMenuBtn = windowContainer.querySelector(".windowMenuBtn");
+    const windowIcon = windowContainer.querySelector(".windowIcon");
+    const windowCloseBtn = windowContainer.querySelector(".windowCloseBtn");
+    const windowCloseBtnAlt = windowContainer.querySelector(".windowCloseBtnAlt");
+    const contextMenuBg = windowContainer.querySelector(".contextMenuBg");
+    const contextMenu = windowContainer.querySelector(".contextMenu");
+    const contextMenuItems = contextMenu.querySelectorAll(".contextMenuItem");
+    const confMenuBg = windowContainer.querySelector(".confMenuBg");
+    const confMenu = windowContainer.querySelector(".confMenu");
+    const confMenuItems = confMenu.querySelectorAll(".contextMenuItem");
+    const dropdownBg = windowContainer.querySelector(".dropdownBg");
     let mousePosition, posInWindow, posInContainer;
     let offset = [0, 0];
     let isDown = false, resizingMode = "none", mouseOverWndBtns = false;
     let timeout, timeout2;
     let prevOffsetRight, prevOffsetBottom;
-    
-    // Check if the deskitem we're trying to initialize is destroyed or not
-    // Skip for deskitem 0 (the ChannelBar) - this design is to maintain backwards compatibility with old versions
-    // which supported only one deskitem
-    if (localStorage.madesktopDestroyedItems && num != 0) {
-        if (localStorage.madesktopDestroyedItems.includes(`|${numStr}|`)) {
-            windowContainer.style.display = "none";
-            windowContainer.innerHTML = "";
-            return;
-        }
-    }
 
     // Add to destroyed list first for temp items
     // Will be destroyed on the next load
     if (temp) localStorage.madesktopDestroyedItems += `|${numStr}|`;
 
     windowElement.dataset.num = numStr;
+    windowContainer.querySelector(".windowNumber").textContent = numStr;
     
     const config = new Proxy({}, {
         get(target, key) {
@@ -72,6 +61,10 @@ function initDeskMover(num, openDoc, temp, width, height, style) {
             else if (posInContainer.y >= 6 || config.style !== "ad") resizingMode = "none";
             else resizingMode = null;
         }
+    });
+
+    dropdownBg.addEventListener('mousedown', function (event) {
+        event.stopPropagation();
     });
 
     document.addEventListener('mouseup', function () {
@@ -305,7 +298,7 @@ function initDeskMover(num, openDoc, temp, width, height, style) {
     
     confMenuItems[4].addEventListener('click', function () { // Change URL button
         closeContextMenu();
-        const urlToShow = config.src.startsWith("data:") ? "" : (config.src || "");
+        const urlToShow = config.src || "";
         madPrompt("Enter URL (leave empty to reset)", function (url) {
             if (url === null) return;
             if (url == "!debugmode") {
@@ -313,7 +306,7 @@ function initDeskMover(num, openDoc, temp, width, height, style) {
                 return;
             }
             if (!url) {
-                if (num == 0) url = "ChannelBar.html";
+                if (numStr === "") url = "ChannelBar.html";
                 else url = WINDOW_PLACEHOLDER;
             }
             windowElement.src = url;
@@ -339,7 +332,7 @@ function initDeskMover(num, openDoc, temp, width, height, style) {
     windowCloseBtnAlt.addEventListener('click', closeWindow);
     
     function closeWindow() {
-        if (num != 0) {
+        if (numStr !== "") {
             windowContainer.style.display = "none";
             windowContainer.innerHTML = "";
             localStorage.madesktopDestroyedItems += `|${numStr}|`;
@@ -450,9 +443,11 @@ function initDeskMover(num, openDoc, temp, width, height, style) {
         changeWndStyle(config.style || style || "ad");
         if (config.unscaled) confMenuItems[3].classList.remove("checkedItem");
         else confMenuItems[3].classList.add("checkedItem");
-        if (config.title) windowTitleText.textContent = config.title;
+        windowTitleText.textContent = config.title || "ModernActiveDesktop";
         adjustElements();
         keepInside();
+        closeContextMenu();
+        closeConfMenu();
         windowContainer.style.zIndex = config.zIndex || ++lastZIndex;
 
         if (config.src) {
@@ -461,7 +456,7 @@ function initDeskMover(num, openDoc, temp, width, height, style) {
             if (reinit) {
                 changeWndStyle("ad");
             }
-            if (num != 0) {
+            if (numStr !== "") {
                 let url = WINDOW_PLACEHOLDER;
                 if ((typeof openDoc === "string" || openDoc instanceof String) && !reinit) {
                     windowElement.width = width || '800px';
@@ -640,7 +635,7 @@ function initSimpleMover(container, titlebar, exclusions) {
     
     document.addEventListener('mouseup', function() {
         isDown = false;
-        iframeClickEventCtrl(true);
+        //iframeClickEventCtrl(true);
         
         // Keep the window inside the visible area
         if (container.offsetLeft < -container.offsetWidth + 60) container.style.left = -titlebar.offsetWidth + 60 + 'px';

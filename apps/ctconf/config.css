@@ -1,3 +1,5 @@
+@import '../../css/marlett.css';
+
 body {
     background-color: var(--button-face);
     padding: 2px;
@@ -46,8 +48,14 @@ p {
     text-align: center;
 }
 
-#applyBtn {
-    display: block;
-    margin: 0 auto;
-    margin-top: 10px;
+.field-row {
+    margin-top: 5px;
+}
+
+.title-bar-controls button:before {
+    font-family: "marlett-icons";
+    content: "\e904";
+    position: relative;
+    top: 0.2px;
+    left: -0.1px;
 }

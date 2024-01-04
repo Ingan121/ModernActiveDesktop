@@ -35,7 +35,8 @@ let isContextMenuOpen = false;
 const WE = 1; // Wallpaper Engine
 const LW = 2; // Lively Wallpaper
 const BROWSER = 0; // None of the above
-let runningMode = BROWSER, origRunningMode = BROWSER;
+window.runningMode = BROWSER;
+let origRunningMode = BROWSER;
 
 window.scaleFactor = 1;
 let vWidth = window.innerWidth;
@@ -54,7 +55,7 @@ changeScale(localStorage.madesktopScaleFactor);
 if (localStorage.madesktopDebugMode) activateDebugMode();
 if (localStorage.madesktopDebugLog) toggleDebugLog();
 
-initDeskMover(0);
+initDeskMover(windowContainers[0], "");
 initSimpleMover(msgbox, msgboxTitlebar, [msgboxCloseBtn]);
 initSimpleMover(debugMenu, debugMenu, debugMenu.querySelectorAll("a"));
 
@@ -68,7 +69,18 @@ if (localStorage.madesktopNonADStyle) {
 
 if (localStorage.madesktopItemCount) {
     if (localStorage.madesktopItemCount > 1) {
-        for (let i = 0; i < localStorage.madesktopItemCount - 1; i++) createNewDeskItem();
+        for (let i = 1; i < localStorage.madesktopItemCount; i++) {
+            // Check if the deskitem we're trying to initialize is destroyed or not
+            // Skip for deskitem 0 (the ChannelBar) - this design is to maintain backwards compatibility with old versions
+            // which supported only one deskitem
+            if (localStorage.madesktopDestroyedItems) {
+                if (!localStorage.madesktopDestroyedItems.includes(`|${i}|`)) {
+                    createNewDeskItem(i.toString());
+                }
+            } else {
+                createNewDeskItem(i.toString());
+            }
+        }
     }
 } else {
     localStorage.madesktopItemCount = 1;
@@ -81,7 +93,9 @@ if ((localStorage.madesktopLastVer || "").startsWith("2.") && localStorage.mades
 }
 localStorage.madesktopLastVer = "2.4";
 
-if (localStorage.madesktopItemVisible == "false") windowContainers[0].style.display = "none";
+if (localStorage.madesktopItemVisible == "false") {
+    windowContainers[0].style.display = "none";
+}
 
 // Change the scale on load
 bgHtmlView.addEventListener('load', function () {
@@ -264,11 +278,10 @@ window.wallpaperPropertyListener = {
             }
             localStorage.madesktopPrevOWConfigRequest = properties.openwith.value;
         }
-        if (properties.colorscheme || properties.colorscheme2) {
-            const value = localStorage.sysplugIntegration ? properties.colorscheme.value : properties.colorscheme2.value;
-            changeColorScheme(value);
-            if (!properties.leftmargin) changeBgColor("var(--background)"); // Don't change the background color if this is a startup event
-            localStorage.madesktopColorScheme = value;
+        if (properties.colorscheme) {
+            if (!properties.bgcolor) { // Ignore if this is a startup event
+                openWindow("apps/ctconf/index.html", true, "480px", "402px", "wnd");
+            }
         }
         if (properties.scale) {
             if (!properties.bgcolor) { // Ignore if this is a startup event
@@ -513,11 +526,11 @@ function padZero(str, len) {
 }
 
 // Create a new ActiveDesktop item and initialize it
-function createNewDeskItem(openDoc, temp, width, height, style) {
+function createNewDeskItem(numStr, openDoc, temp, width, height, style) {
     const newContainer = windowContainers[0].cloneNode(true);
     document.body.appendChild(newContainer);
     windowContainers = document.getElementsByClassName("windowContainer");
-    initDeskMover(windowContainers.length - 1, openDoc, temp, width, height, style);
+    initDeskMover(newContainer, numStr, openDoc, temp, width, height, style);
 }
 
 // Create a new AD item, initialize, and increase the saved window count
@@ -528,10 +541,10 @@ function openWindow(openDoc, temp, width, height, style) {
     } else {
         if (localStorage.madesktopItemVisible == "false") {
             windowContainers[0].style.display = "block";
-            createNewDeskItem(openDoc, temp, width, height, style);
+            createNewDeskItem(localStorage.madesktopItemCount, openDoc, temp, width, height, style || (openDoc ? "wnd" : "ad"));
             windowContainers[0].style.display = "none";
         } else {
-            createNewDeskItem(openDoc, temp, width, height, style)
+            createNewDeskItem(localStorage.madesktopItemCount, openDoc, temp, width, height, style || (openDoc ? "wnd" : "ad"))
         }
         localStorage.madesktopItemCount++;
     }

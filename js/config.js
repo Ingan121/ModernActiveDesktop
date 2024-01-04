@@ -1,7 +1,6 @@
 // Declare & set variables
 const colorPickerBtn = document.getElementById("colorPicker");
 const imgModeRadBtns = document.imgModeSelector.imgMode;
-const colorSchemeRadBtns = document.colorSchemeSelector.colorScheme;
 
 // Add event listeners
 for (let i = 0; i < imgModeRadBtns.length; i++) {
@@ -10,19 +9,10 @@ for (let i = 0; i < imgModeRadBtns.length; i++) {
         parent.changeBgImgMode(this.value);
     });
 }
-for (let i = 0; i < colorSchemeRadBtns.length; i++) {
-    colorSchemeRadBtns[i].addEventListener('change', function() {
-        localStorage.madesktopColorScheme = this.value;
-        parent.changeColorScheme(this.value);
-    });
-}
 
 // Load configs
 colorPickerBtn.value = localStorage.madesktopBgColor || "#008080";
 imgModeRadBtns.value = localStorage.madesktopBgImgMode || "center";
-if (localStorage.madesktopColorScheme) {
-    colorSchemeRadBtns.value = localStorage.madesktopColorScheme;
-}
 
 // Load background image from builtin settings
 function loadBgImg() {

@@ -117,77 +117,18 @@
 			},
 			"colorscheme" : 
 			{
-				"condition" : "sysplugintegration.value",
-				"index" : 13,
-				"options" : 
-				[
-					{
-						"label" : "Windows 98",
-						"value" : "98"
-					},
-					{
-						"label" : "Windows 2000",
-						"value" : "2k"
-					},
-					{
-						"label" : "Windows XP",
-						"value" : "xp"
-					},
-					{
-						"label" : "Brick",
-						"value" : "brick"
-					},
-					{
-						"label" : "Marine",
-						"value" : "marine"
-					},
-					{
-						"label" : "System",
-						"value" : "sys"
-					}
-				],
-				"order" : 113,
-				"text" : "Color scheme",
-				"type" : "combo",
-				"value" : "98"
-			},
-			"colorscheme2" : 
-			{
-				"condition" : "!sysplugintegration.value",
-				"index" : 14,
-				"options" : 
-				[
-					{
-						"label" : "Windows 98",
-						"value" : "98"
-					},
-					{
-						"label" : "Windows 2000",
-						"value" : "2k"
-					},
-					{
-						"label" : "Windows XP",
-						"value" : "xp"
-					},
-					{
-						"label" : "Brick",
-						"value" : "brick"
-					},
-					{
-						"label" : "Marine",
-						"value" : "marine"
-					}
-				],
-				"order" : 114,
-				"text" : "Color scheme",
-				"type" : "combo",
-				"value" : "98"
+				"condition" : "colorscheme.value = false; true",
+				"index" : 8,
+				"order" : 108,
+				"text" : "Change color scheme",
+				"type" : "bool",
+				"value" : false
 			},
 			"customscale" : 
 			{
 				"condition" : "scale.value == \"custom\"",
-				"index" : 16,
-				"order" : 116,
+				"index" : 15,
+				"order" : 115,
 				"text" : "Custom scale (%)",
 				"type" : "textinput",
 				"value" : "100"
@@ -195,8 +136,8 @@
 			"leftmargin" : 
 			{
 				"condition" : "",
-				"index" : 8,
-				"order" : 108,
+				"index" : 9,
+				"order" : 109,
 				"text" : "Left icon area",
 				"type" : "textinput",
 				"value" : "75px"
@@ -204,7 +145,7 @@
 			"openwith" : 
 			{
 				"condition" : "sysplugintegration.value",
-				"index" : 12,
+				"index" : 13,
 				"options" : 
 				[
 					{
@@ -220,15 +161,15 @@
 						"value" : "2"
 					}
 				],
-				"order" : 112,
+				"order" : 113,
 				"text" : "Open page with...",
 				"type" : "combo",
 				"value" : "0"
 			},
 			"playstartsnd" : 
 			{
-				"index" : 10,
-				"order" : 110,
+				"index" : 11,
+				"order" : 111,
 				"text" : "Play startup sound",
 				"type" : "bool",
 				"value" : true
@@ -236,8 +177,8 @@
 			"reset" : 
 			{
 				"condition" : "reset.value = false; true",
-				"index" : 17,
-				"order" : 117,
+				"index" : 16,
+				"order" : 116,
 				"text" : "Reset completely",
 				"type" : "bool",
 				"value" : false
@@ -245,8 +186,8 @@
 			"rightmargin" : 
 			{
 				"condition" : "",
-				"index" : 9,
-				"order" : 109,
+				"index" : 10,
+				"order" : 110,
 				"text" : "Right icon area",
 				"type" : "textinput",
 				"value" : "0px"
@@ -254,7 +195,7 @@
 			"scale" : 
 			{
 				"condition" : "",
-				"index" : 15,
+				"index" : 14,
 				"options" : 
 				[
 					{
@@ -290,7 +231,7 @@
 						"value" : "custom"
 					}
 				],
-				"order" : 115,
+				"order" : 114,
 				"text" : "Scale",
 				"type" : "combo",
 				"value" : "1"
@@ -304,8 +245,8 @@
 			},
 			"sysplugintegration" : 
 			{
-				"index" : 11,
-				"order" : 111,
+				"index" : 12,
+				"order" : 112,
 				"text" : "System plugin integration",
 				"type" : "bool",
 				"value" : false

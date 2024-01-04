@@ -6,6 +6,9 @@ async function main() {
     const selector = document.getElementById("selector");
     const options = selector.options;
     const colorPicker = document.getElementById("colorPicker");
+    const generalBtn = document.getElementById("generalBtn");
+    const okBtn = document.getElementById("okBtn");
+    const cancelBtn = document.getElementById("cancelBtn");
     const applyBtn = document.getElementById("applyBtn");
     colorPicker.value = scheme[options[selector.selectedIndex].value];
 
@@ -26,9 +29,28 @@ async function main() {
         applyPreview(scheme);
     });
 
+    generalBtn.addEventListener("click", function() {
+        madLocReplace("../../config.html");
+    });
+
+    okBtn.addEventListener("click", function() {
+        applyScheme(scheme);
+        madCloseWindow();
+    });
+
+    cancelBtn.addEventListener("click", function() {
+        madCloseWindow();
+    });
+
     applyBtn.addEventListener("click", function() {
         applyScheme(scheme);
     });
+
+    okBtn.focus();
+    if (parent.runningMode !== 0) {
+        generalBtn.style.display = "none";
+    
+    }
 }
 
 async function getSchemeText(scheme) {

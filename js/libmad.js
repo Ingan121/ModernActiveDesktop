@@ -4,6 +4,7 @@
     const styleElement = document.getElementById("style");
     const numStr = frameElement.dataset.num;
     const windowContainer = frameElement.parentElement.parentElement;
+    const windowCloseBtn = windowContainer.getElementsByClassName("windowCloseBtn")[0];
     const dropdownBg = windowContainer.querySelector(".dropdownBg");
     const dropdown = dropdownBg.querySelector(".dropdown");
 
@@ -110,17 +111,19 @@
         }
         dropdown.style.height = dropdownBg.style.height;
         if (config.unscaled) {
-            dropdownBg.style.left = elem.offsetLeft / parent.scaleFactor + "px";
-            dropdownBg.style.top = (elem.offsetTop + elem.offsetHeight) / parent.scaleFactor + "px";
+            dropdownBg.style.left = elem.getBoundingClientRect().left / parent.scaleFactor + "px";
+            dropdownBg.style.top = (elem.getBoundingClientRect().top + elem.offsetHeight) / parent.scaleFactor + "px";
+            dropdownBg.style.width = elem.offsetWidth / parent.scaleFactor + "px";
         } else {
-            dropdownBg.style.left = elem.offsetLeft + "px";
-            dropdownBg.style.top = elem.offsetTop + elem.offsetHeight + "px";
+            dropdownBg.style.left = elem.getBoundingClientRect().left + "px";
+            dropdownBg.style.top = elem.getBoundingClientRect().top + elem.offsetHeight + "px";
+            dropdownBg.style.width = elem.offsetWidth + "px";
         }
+        dropdown.style.width = dropdownBg.style.width;
         dropdownBg.style.display = "block";
 
         parent.addEventListener('click', closeDropdown);
         parent.iframeClickEventCtrl(false);
-        dropdownBg.style.pointerEvents = "auto";
 
         elem.blur();
         elem.focus();
@@ -143,5 +146,9 @@
         windowContainer.style.top = y + "px";
         config.xPos = x + "px";
         config.yPos = y + "px";
+    }
+
+    window.madCloseWindow = function() {
+        windowCloseBtn.click();
     }
 })();
