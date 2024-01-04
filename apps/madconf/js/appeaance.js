@@ -30,7 +30,7 @@ async function main() {
     });
 
     generalBtn.addEventListener("click", function() {
-        madLocReplace("../../config.html");
+        madLocReplace("general.html");
     });
 
     okBtn.addEventListener("click", function() {

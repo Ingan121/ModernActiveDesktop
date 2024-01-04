@@ -1,620 +1,701 @@
-function initDeskMover(windowContainer, numStr, openDoc, temp, width, height, style) {
-    const windowTitlebar = windowContainer.querySelector(".windowTitlebar") || windowContainer.querySelector(".title-bar");
-    const windowTitleText = windowContainer.querySelector(".title-bar-text");
-    const windowFrame = windowContainer.querySelector(".windowFrame");
-    const windowElement = windowContainer.querySelector(".windowElement");
-    const windowMenuBtn = windowContainer.querySelector(".windowMenuBtn");
-    const windowIcon = windowContainer.querySelector(".windowIcon");
-    const windowCloseBtn = windowContainer.querySelector(".windowCloseBtn");
-    const windowCloseBtnAlt = windowContainer.querySelector(".windowCloseBtnAlt");
-    const contextMenuBg = windowContainer.querySelector(".contextMenuBg");
-    const contextMenu = windowContainer.querySelector(".contextMenu");
-    const contextMenuItems = contextMenu.querySelectorAll(".contextMenuItem");
-    const confMenuBg = windowContainer.querySelector(".confMenuBg");
-    const confMenu = windowContainer.querySelector(".confMenu");
-    const confMenuItems = confMenu.querySelectorAll(".contextMenuItem");
-    const dropdownBg = windowContainer.querySelector(".dropdownBg");
-    let mousePosition, posInWindow, posInContainer;
-    let offset = [0, 0];
-    let isDown = false, resizingMode = "none", mouseOverWndBtns = false;
-    let timeout, timeout2;
-    let prevOffsetRight, prevOffsetBottom;
+class DeskMover {
+    constructor(windowContainer, numStr, openDoc, temp, width, height, style, reinit) {
+        this.numStr = numStr;
+        this.temp = temp;
 
-    // Add to destroyed list first for temp items
-    // Will be destroyed on the next load
-    if (temp) localStorage.madesktopDestroyedItems += `|${numStr}|`;
+        this.windowContainer = windowContainer;
+        this.windowTitlebar = windowContainer.querySelector(".windowTitlebar") || windowContainer.querySelector(".title-bar");
+        this.windowTitleText = windowContainer.querySelector(".title-bar-text");
+        this.windowFrame = windowContainer.querySelector(".windowFrame");
+        this.windowElement = windowContainer.querySelector(".windowElement");
+        this.windowMenuBtn = windowContainer.querySelector(".windowMenuBtn");
+        this.windowIcon = windowContainer.querySelector(".windowIcon");
+        this.windowCloseBtn = windowContainer.querySelector(".windowCloseBtn");
+        this.windowCloseBtnAlt = windowContainer.querySelector(".windowCloseBtnAlt");
+        this.contextMenuBg = windowContainer.querySelector(".contextMenuBg");
+        this.contextMenu = windowContainer.querySelector(".contextMenu");
+        this.contextMenuItems = this.contextMenu.querySelectorAll(".contextMenuItem");
+        this.confMenuBg = windowContainer.querySelector(".confMenuBg");
+        this.confMenu = windowContainer.querySelector(".confMenu");
+        this.confMenuItems = this.confMenu.querySelectorAll(".contextMenuItem");
+        this.dropdownBg = windowContainer.querySelector(".dropdownBg");
+        this.dropdown = windowContainer.querySelector(".dropdown");
 
-    windowElement.dataset.num = numStr;
-    windowContainer.querySelector(".windowNumber").textContent = numStr;
-    
-    const config = new Proxy({}, {
-        get(target, key) {
-            return localStorage.getItem("madesktopItem" + key[0].toUpperCase() + key.slice(1) + numStr);
-        },
-        set(target, key, value) {
-            if (value) {
-                localStorage.setItem("madesktopItem" + key[0].toUpperCase() + key.slice(1) + numStr, value);
-            } else {
-                localStorage.removeItem("madesktopItem" + key[0].toUpperCase() + key.slice(1) + numStr);
+        this.mousePosition, this.posInWindow, this.posInContainer;
+        this.offset = [0, 0];
+        this.isDown = false, this.resizingMode = "none", this.mouseOverWndBtns = false;
+        this.timeout, this.timeout2;
+        this.prevOffsetRight, this.prevOffsetBottom;
+
+        this.config = new Proxy({}, {
+            get(target, key) {
+                return localStorage.getItem("madesktopItem" + key[0].toUpperCase() + key.slice(1) + numStr);
+            },
+            set(target, key, value) {
+                if (value !== false && value !== null && value !== undefined) {
+                    localStorage.setItem("madesktopItem" + key[0].toUpperCase() + key.slice(1) + numStr, value);
+                } else {
+                    localStorage.removeItem("madesktopItem" + key[0].toUpperCase() + key.slice(1) + numStr);
+                }
+                return true;
             }
+        });
+
+        // Add to destroyed list first for temp items
+        // Will be destroyed on the next load
+        if (this.temp) {
+            localStorage.madesktopDestroyedItems += `|${this.numStr}|`;
         }
-    });
-    
-    windowContainer.addEventListener('mousedown', function wcMouseDown(event) {
-        windowContainer.style.zIndex = ++lastZIndex; // bring to top
-        saveZOrder();
-        if ((windowFrame.style.borderColor != "transparent" || config.style !== "ad") && !mouseOverWndBtns) {
-            iframeClickEventCtrl(false);
-            isDown = true;
-            offset = [
-                windowContainer.offsetLeft - Math.ceil(event.clientX / scaleFactor), // event.clientXY doesn't work well with css zoom
-                windowContainer.offsetTop - Math.ceil(event.clientY / scaleFactor)
-            ];
-            updatePrevOffset();
-            log([posInContainer.x, posInContainer.y]);
-            // Decide the resizing mode based on the position of the mouse cursor
-            if (posInContainer.x <= 3) resizingMode = "left";
-            else if (posInContainer.x >= windowContainer.offsetWidth - 3) resizingMode = "right";
-            else if (posInContainer.y <= 3 && config.style !== "ad") resizingMode = "top";
-            else if (posInContainer.y <= 9 && posInContainer.y >= 6 && config.style === "ad") resizingMode = "top";
-            else if (posInContainer.y >= 30) resizingMode = "bottom";
-            else if (posInContainer.y >= 6 || config.style !== "ad") resizingMode = "none";
-            else resizingMode = null;
+
+        this.windowElement.dataset.num = numStr;
+        this.windowContainer.querySelector(".windowNumber").textContent = this.numStr;
+        
+        /* Event listeners */
+        if (!reinit) {
+            // Prevent window from resizing when dragging the dropdown scrollbar
+            this.dropdownBg.addEventListener('mousedown', preventDefault);
+
+            // Prevent unintended menu closing when clicking the menu items
+            this.contextMenuBg.addEventListener('click', preventDefault);
+            this.contextMenuBg.addEventListener('mousedown', preventDefault);
+            this.contextMenuBg.addEventListener('mouseup', preventDefault);
+            this.contextMenuBg.addEventListener('mousemove', preventDefault);
+            this.confMenuBg.addEventListener('click', preventDefault);
+            this.confMenuBg.addEventListener('mousedown', preventDefault);
+            this.confMenuBg.addEventListener('mouseup', preventDefault);
+            this.confMenuBg.addEventListener('mousemove', preventDefault);
+
+            this.windowContainer.addEventListener('mousedown', this.#wcMouseDown.bind(this));
+            document.addEventListener('mouseup', this.#docMouseUp.bind(this));
+            this.windowElement.addEventListener('mouseover', this.#weMouseOver.bind(this));
+            this.windowContainer.addEventListener('mouseleave', this.#wcMouseLeave.bind(this));
+            document.addEventListener('mousemove', this.#docMouseMove.bind(this));
+            this.windowContainer.addEventListener('mousemove', this.#wcMouseMove.bind(this));
+            this.windowElement.addEventListener('load', this.#weLoad.bind(this));
+            
+            // Window menu button click & title bar right click
+            this.windowMenuBtn.addEventListener('click', this.openContextMenu.bind(this));
+            this.windowIcon.addEventListener('click', this.openContextMenu.bind(this));
+            this.windowIcon.addEventListener('dblclick', this.closeWindow.bind(this));
+            this.windowTitlebar.addEventListener('contextmenu', this.openContextMenu.bind(this));
+            
+            // Changes the active status correctly
+            for (let i = 0; i < this.contextMenuItems.length; i++) {
+                const elem = this.contextMenuItems[i];
+                elem.onmouseover = () => {
+                    if (elem != this.contextMenuItems[0]) {
+                        delete this.contextMenuItems[0].dataset.active;
+                    }
+                }
+            }
+        
+            // Context menu button listeners
+            this.contextMenuItems[0].addEventListener('click', this.openConfMenu.bind(this)); // Configure button
+            
+            this.contextMenuItems[0].addEventListener('mouseover', () => { // Configure button mouseover
+                this.timeout2 = setTimeout(() => {
+                    this.openConfMenu();
+                }, 300);
+            });
+            
+            this.contextMenuItems[0].addEventListener('mouseleave', () => { // Configure button mouseleave
+                clearTimeout(this.timeout2);
+            });
+            
+            this.contextMenuItems[1].addEventListener('click', () => { // Debug button
+                // Open DevTools first then click this button
+                // This allows you to debug current DeskMover
+                // Can call its functions in the console
+                debugger;
+            });
+            // Don't hide any menu on debug mouseover because it's better for debugging
+        
+            this.contextMenuItems[2].addEventListener('click', this.#reset.bind(this)); // Reset button
+        
+            this.contextMenuItems[3].addEventListener('click', () => { // Reload button
+                this.closeContextMenu();
+                location.reload();
+            });
+        
+            this.contextMenuItems[4].addEventListener('click', () => { // Close button
+                this.closeContextMenu();
+                this.closeWindow();
+            });
+            
+            // Hide the config menu when hovering other items than Configure and Debug
+            this.contextMenuItems[2].addEventListener('mouseover', this.#delayedCloseConfMenu.bind(this));
+            this.contextMenuItems[3].addEventListener('mouseover', this.#delayedCloseConfMenu.bind(this));
+            this.contextMenuItems[4].addEventListener('mouseover', this.#delayedCloseConfMenu.bind(this));
+
+            this.confMenuItems[0].addEventListener('click', () => { // Active Desktop style button
+                this.closeContextMenu();
+                this.changeWndStyle("ad");
+            });
+            
+            this.confMenuItems[1].addEventListener('click', () => { // Non-Active Desktop style button
+                this.closeContextMenu();
+                this.changeWndStyle("nonad");
+            });
+            
+            this.confMenuItems[2].addEventListener('click', () => { // Window style button
+                this.closeContextMenu();
+                this.changeWndStyle("wnd");
+            });
+        
+            this.confMenuItems[3].addEventListener('click', this.#toggleScale.bind(this)); // Scale contents button
+            this.confMenuItems[4].addEventListener('click', this.#changeUrl.bind(this)); // Change URL button
+            this.confMenuItems[5].addEventListener('click', this.#changeTitle.bind(this)); // Change title button
+        
+            this.windowCloseBtn.addEventListener('click', this.closeWindow.bind(this));
+            this.windowCloseBtnAlt.addEventListener('click', this.closeWindow.bind(this));
+        
+            this.windowMenuBtn.addEventListener('mouseover', () => {
+                this.mouseOverWndBtns = true;
+            });
+        
+            this.windowIcon.addEventListener('mouseover', () => {
+                this.mouseOverWndBtns = true;
+            });
+        
+            this.windowCloseBtn.addEventListener('mouseover', () => {
+                this.mouseOverWndBtns = true;
+            });
+            
+            this.windowCloseBtnAlt.addEventListener('mouseover', () => {
+                this.mouseOverWndBtns = true;
+            });
+        
+            this.windowMenuBtn.addEventListener('mouseout', () => {
+                this.mouseOverWndBtns = false;
+            });
+        
+            this.windowIcon.addEventListener('mouseout', () => {
+                this.mouseOverWndBtns = false;
+            });
+        
+            this.windowCloseBtn.addEventListener('mouseout', () => {
+                this.mouseOverWndBtns = false;
+            });
+            
+            this.windowCloseBtnAlt.addEventListener('mouseout', () => {
+                this.mouseOverWndBtns = false;
+            });
         }
-    });
-
-    dropdownBg.addEventListener('mousedown', function (event) {
-        event.stopPropagation();
-    });
-
-    document.addEventListener('mouseup', function () {
-        iframeClickEventCtrl(true);
-        isDown = false;
+        /* End of event listeners */
         
-        if (windowContainer.style.display == "none") return; // offsets are always 0 when hidden, causing unexpected behaviors
-        // Minimum size
-        if (windowElement.offsetWidth < 60) windowElement.width = "60px";
-        if (windowElement.offsetHeight < 15) windowElement.height = "15px";
-        keepInside();
-        adjustElements();
-        saveConfig();
+        /* Init */
+        // Load configs
+        if (this.config.width) this.windowElement.width = this.config.width;
+        if (this.config.height) this.windowElement.height = this.config.height;
+        if (this.config.xPos) this.windowContainer.style.left = this.config.xPos;
+        else this.windowContainer.style.left = vWidth - this.windowContainer.offsetWidth - 100 + 'px';
+        if (this.config.yPos) this.windowContainer.style.top = this.config.yPos;
+        this.changeWndStyle(this.config.style || style || "ad");
+        if (this.config.unscaled) this.confMenuItems[3].classList.remove("checkedItem");
+        else this.confMenuItems[3].classList.add("checkedItem");
+        this.windowTitleText.textContent = this.config.title || "ModernActiveDesktop";
+        this.#adjustElements();
+        this.#keepInside();
+        this.closeContextMenu();
+        this.windowContainer.style.zIndex = this.config.zIndex || ++lastZIndex;
+        if (!this.config.active && !localStorage.madesktopNoDeactivate) this.windowTitlebar.classList.add("inactive");
+        else this.windowTitlebar.classList.remove("inactive");
         
-        resizingMode = "none";
-        document.body.style.cursor = "auto";
-    });
-
-    windowElement.addEventListener('mouseover', function (event) {
-        clearTimeout(timeout);
-        timeout = setTimeout(updateWindowComponentVisibility, 500);
-    });
-
-    windowContainer.addEventListener('mouseleave', function (event) {
-        if (!isDown) {
-            document.body.style.cursor = "auto";
-            clearTimeout(timeout);
-            if (config.style !== "ad") return; // never hide the frames in nonAD mode
-            timeout = setTimeout(function () {
-                windowElement.style.borderColor = "transparent";
-                windowFrame.style.borderColor = "transparent";
-                windowFrame.style.backgroundColor = "transparent";
-                windowTitlebar.style.display = "none";
-            }, 2000);
+        if (this.config.src) {
+            this.windowElement.src = this.config.src;
         } else {
-            clearTimeout(timeout);
-        }
-    });
-
-    document.addEventListener('mousemove', function (event) {
-        mousePosition = {
-            x : Math.ceil(event.clientX / scaleFactor),
-            y : Math.ceil(event.clientY / scaleFactor)
-        };
-        posInContainer = {
-            x : Math.ceil(event.clientX / scaleFactor) - windowContainer.offsetLeft,
-            y : Math.ceil(event.clientY / scaleFactor) - windowContainer.offsetTop,
-        }
-        if (isDown) {
-            // Window resizing & moving - adjust windowContainer / windowElement first
-            switch (resizingMode) {
-                case "left":
-                    if (windowElement.offsetWidth >= 60) {
-                        windowElement.width = prevOffsetRight - mousePosition.x + 'px';
-                        windowContainer.style.left = (mousePosition.x + offset[0]) + 'px';
-                    }
-                    break;
-
-                case "right":
-                    if (windowElement.offsetWidth >= 60) windowElement.width = posInContainer.x - 6 + 'px';
-                    break;
-
-                case "top":
-                    if (windowElement.offsetHeight >= 15) {
-                        windowElement.height = prevOffsetBottom - mousePosition.y + 'px';
-                        windowContainer.style.top = (mousePosition.y + offset[1]) + 'px';
-                    }
-                    break;
-
-                case "bottom":
-                    if (windowElement.offsetHeight >= 15) windowElement.height = posInContainer.y - 21 + 'px';
-                    break;
-
-                case "none":
-                    windowContainer.style.left = (mousePosition.x + offset[0]) + 'px';
-                    windowContainer.style.top  = (mousePosition.y + offset[1]) + 'px';
-                    break;
+            if (reinit) {
+                this.changeWndStyle("ad");
             }
-            if (resizingMode != "none") {
-                // Now adjust the others
-                adjustElements();
+            if (this.numStr !== "") {
+                let url = WINDOW_PLACEHOLDER;
+                if ((typeof openDoc === "string" || openDoc instanceof String) && !reinit) {
+                    this.windowElement.width = width || '800px';
+                    this.windowElement.height = height || '600px';
+                    this.windowContainer.style.left = (parseInt(localStorage.madesktopChanViewLeftMargin) || 75) + 250 + 'px';
+                    this.windowContainer.style.top = '150px';
+                    url = openDoc.endsWith(".html") ? openDoc : `docs/index.html?src=${openDoc}`;
+                } else {
+                    this.windowElement.width = width || '250px';
+                    this.windowElement.height = height || '150px';
+                    this.#adjustElements();
+                    this.windowContainer.style.left = vWidth - this.windowContainer.offsetWidth - (parseInt(localStorage.madesktopChanViewRightMargin) || 0) - 200 + 'px';
+                    this.windowContainer.style.top = '200px';
+                }
+                this.#adjustElements();
+                this.#keepInside();
+                this.#saveConfig();
+                
+                this.windowElement.src = url;
+                this.config.src = url;
+            } else {
+                if (reinit) {
+                    this.windowContainer.style.top = '200px';
+                    this.windowElement.width = '84px';
+                    this.windowElement.height = '471px';
+                    this.#adjustElements();
+                    this.windowElement.src = "ChannelBar.html";
+                }
+                if (!localStorage.madesktopItemXPos) {
+                    this.windowContainer.style.left = vWidth - this.windowContainer.offsetWidth - (parseInt(localStorage.madesktopChanViewRightMargin) || 0) - 100 + 'px';
+                }
             }
         }
-    });
-
-    windowContainer.addEventListener('mousemove', function wcMouseMove(event) {
-        log({cx: event.clientX, cy: event.clientY, cxs: event.clientX / scaleFactor, cys: event.clientY / scaleFactor}, "debug");
-        posInContainer = {
-            x : Math.ceil(event.clientX / scaleFactor) - windowContainer.offsetLeft,
-            y : Math.ceil(event.clientY / scaleFactor) - windowContainer.offsetTop,
-        }
-        // Change the mouse cursor - although this is useless in WE
-        if (resizingMode == "none" && (windowElement.style.borderColor != "transparent" || config.style !== "ad")) {
-            if (posInContainer.x <= 3) document.body.style.cursor = "ew-resize";
-            else if (posInContainer.x >= windowContainer.offsetWidth - 3) document.body.style.cursor = "ew-resize";
-            else if (posInContainer.y <= 3 && config.style !== "ad" && windowTitlebar.style.display != "none") document.body.style.cursor = "ns-resize";
-            else if (posInContainer.y <= 9 && posInContainer.y >= 6 && config.style === "ad" && windowTitlebar.style.display != "none") document.body.style.cursor = "ns-resize";
-            else if (posInContainer.y >= 30) document.body.style.cursor = "ns-resize";
-            else document.body.style.cursor = "auto";
-        }
-        log(posInContainer, "debug");
-    })
-
-    windowElement.addEventListener('load', async function () {
-        this.contentDocument.addEventListener('mousemove', function (event) {
-            posInWindow = {
-                x : Math.ceil(event.clientX / scaleFactor),
-                y : Math.ceil(event.clientY / scaleFactor)
-            };
-            clearTimeout(timeout);
-            timeout = setTimeout(updateWindowComponentVisibility, 500);
-        });
-
-        this.contentDocument.addEventListener('mousedown', function (event) {
-            windowContainer.style.zIndex = ++lastZIndex;
-            saveZOrder();
-        });
-        
-        if (!config.title) {
-            windowTitleText.textContent = this.contentDocument.title || "ModernActiveDesktop";
-        }
-        windowIcon.src = await getFavicon(this);
-        
-        if (!config.unscaled) {
-			this.contentDocument.body.style.zoom = scaleFactor;
-        }
-        hookIframeSize(this, numStr);
-    });
-    
-    // Window menu button click & title bar right click
-    windowMenuBtn.addEventListener('click', openContextMenu);
-    windowIcon.addEventListener('click', openContextMenu);
-    windowIcon.addEventListener('dblclick', closeWindow);
-    windowTitlebar.addEventListener('contextmenu', openContextMenu);
-    
-    // Changes the active status correctly
-    for (let i = 0; i < contextMenuItems.length; i++) {
-        const elem = contextMenuItems[i];
-        elem.onmouseover = function () {
-            if (elem != contextMenuItems[0]) delete contextMenuItems[0].dataset.active;
-        }
+        /* Init complete */
     }
 
-    // Context menu button listeners
-    contextMenuItems[0].addEventListener('click', openConfMenu); // Configure button
-    
-    contextMenuItems[0].addEventListener('mouseover', function() { // Configure button mouseover
-        timeout2 = setTimeout(function () {
-            openConfMenu();
-        }, 300);
-    });
-    
-    contextMenuItems[0].addEventListener('mouseleave', function() { // Configure button mouseleave
-        clearTimeout(timeout2);
-    });
-    
-    contextMenuItems[1].addEventListener('click', function () { // Debug button
-        // Open DevTools first then click this button
-        // This allows you to debug current DeskMover
-        // Can call its functions in the console
-        debugger;
-    });
-    // Don't hide any menu on debug mouseover because it's better for debugging
-
-    contextMenuItems[2].addEventListener('click', function () { // Reset button
-        closeContextMenu();
-        if (temp) {
-            ding.play();
-            madAlert("This window is temporary, so it cannot be reset. Just close it.");
-            return;
-        }
-        chord.play();
-        madConfirm("Are you sure you want to reset this window?", function (res) {
-            if (res) {
-                config.width = null;
-                config.height = null;
-                config.xPos = null;
-                config.yPos = null;
-                config.src = null;
-                config.style = null;
-                config.unscaled = null;
-                config.title = null;
-                init(true);
-            }
-        });
-    });
-
-    contextMenuItems[3].addEventListener('click', function () { // Reload button
-        closeContextMenu();
-        location.reload();
-    });
-
-    contextMenuItems[4].addEventListener('click', function () { // Close button
-        closeContextMenu();
-        closeWindow();
-    });
-    
-    // Hide the config menu when hovering other items than Configure and Debug
-    contextMenuItems[2].addEventListener('mouseover', delayedCloseConfMenu);
-    contextMenuItems[3].addEventListener('mouseover', delayedCloseConfMenu);
-    contextMenuItems[4].addEventListener('mouseover', delayedCloseConfMenu);
-    
-    confMenuItems[0].addEventListener('click', function () { // Active Desktop style button
-        closeContextMenu();
-        changeWndStyle("ad");
-    });
-    
-    confMenuItems[1].addEventListener('click', function () { // Non-Active Desktop style button
-        closeContextMenu();
-        changeWndStyle("nonad");
-    });
-    
-    confMenuItems[2].addEventListener('click', function () { // Window style button
-        closeContextMenu();
-        changeWndStyle("wnd");
-    });
-
-    confMenuItems[3].addEventListener('click', function () { // Scale contents button
-        closeContextMenu();
-        if (config.unscaled) {
-            windowElement.contentDocument.body.style.zoom = scaleFactor;
-            confMenuItems[3].classList.add("checkedItem");
-            config.unscaled = false;
-        } else {
-            windowElement.contentDocument.body.style.zoom = 1;
-            confMenuItems[3].classList.remove("checkedItem");
-            config.unscaled = true;
-        }
-        windowElement.contentWindow.dispatchEvent(new Event("resize"));
-    });
-    
-    confMenuItems[4].addEventListener('click', function () { // Change URL button
-        closeContextMenu();
-        const urlToShow = config.src || "";
-        madPrompt("Enter URL (leave empty to reset)", function (url) {
-            if (url === null) return;
-            if (url == "!debugmode") {
-                activateDebugMode();
-                return;
-            }
-            if (!url) {
-                if (numStr === "") url = "ChannelBar.html";
-                else url = WINDOW_PLACEHOLDER;
-            }
-            windowElement.src = url;
-            config.src = url;
-        }, "", urlToShow);
-    });
-    
-    confMenuItems[5].addEventListener('click', function () { // Change title button
-        closeContextMenu();
-        madPrompt("Enter title (leave empty to reset)", function (title) {
-            if (title === null) return;
-            if (title) {
-                windowTitleText.textContent = title;
-                config.title = title;
-            } else {
-                config.title = null;
-                windowTitleText.textContent = windowElement.contentDocument.title || "ModernActiveDesktop";
-            }
-        }, "", config.title || "");
-    });
-
-    windowCloseBtn.addEventListener('click', closeWindow);
-    windowCloseBtnAlt.addEventListener('click', closeWindow);
-    
-    function closeWindow() {
-        if (numStr !== "") {
-            windowContainer.style.display = "none";
-            windowContainer.innerHTML = "";
-            localStorage.madesktopDestroyedItems += `|${numStr}|`;
+    closeWindow() {
+        if (this.numStr !== "") {
+            this.windowContainer.style.display = "none";
+            this.windowContainer.innerHTML = "";
+            localStorage.madesktopDestroyedItems += `|${this.numStr}|`;
         } else {
             ding.play();
-            let msg = "right click the background and click New.";
-            if (runningMode == WE) msg = "click 'Add a new ActiveDesktop item' in the Wallpaper Engine properties panel.";
-            else if (runningMode == LW) msg = "click Add in the Lively Wallpaper customize window.";
+            let msg = "";
+            switch (window.runningMode) {
+                case WE:
+                    msg = "click 'Add a new ActiveDesktop item' in the Wallpaper Engine properties panel.";
+                    break;
+                case LW:
+                    msg = "click Add in the Lively Wallpaper customize window.";
+                    break;
+                case BROWSER:
+                    msg = "right click the background and click New.";
+                    break;
+            }
             madAlert("To show it again, " + msg);
-            windowContainer.style.display = 'none';
+            this.windowContainer.style.display = 'none';
             localStorage.madesktopItemVisible = false;
         }
     }
     
-    // Prevent unintended menu closing when clicking the menu items
-    contextMenuBg.addEventListener('click', preventDefault);
-    contextMenuBg.addEventListener('mousedown', preventDefault);
-    contextMenuBg.addEventListener('mouseup', preventDefault);
-    contextMenuBg.addEventListener('mousemove', preventDefault);
-    confMenuBg.addEventListener('click', preventDefault);
-    confMenuBg.addEventListener('mousedown', preventDefault);
-    confMenuBg.addEventListener('mouseup', preventDefault);
-    confMenuBg.addEventListener('mousemove', preventDefault);
-    
-    function preventDefault(event) {
-        event.preventDefault();
-        event.stopPropagation();
-    }
-    
-    function openContextMenu(event) {
-        contextMenuBg.style.display = "block";
-        setTimeout(function () {
-            document.addEventListener('click', closeContextMenu);
+    openContextMenu(event) {
+        this.contextMenuBg.style.display = "block";
+        this.boundCloseContextMenu = this.closeContextMenu.bind(this);
+        setTimeout(() => {
+            document.addEventListener('click', this.boundCloseContextMenu);
             iframeClickEventCtrl(false);
         }, 100);
         isContextMenuOpen = true;
         event.preventDefault();
     }
 
-    function closeContextMenu() {
-        contextMenuBg.style.display = "none";
-        document.removeEventListener('click', closeContextMenu);
-        closeConfMenu();
+    closeContextMenu() {
+        this.contextMenuBg.style.display = "none";
+        document.removeEventListener('click', this.boundCloseContextMenu);
+        this.closeConfMenu();
         iframeClickEventCtrl(true);
         isContextMenuOpen = false;
     }
     
-    function openConfMenu() {
-        contextMenuItems[0].dataset.active = true;
-        confMenuBg.style.display = "block";
-        setTimeout(function () {
-            iframeClickEventCtrl(false);
-        }, 100);
+    openConfMenu() {
+        this.contextMenuItems[0].dataset.active = true;
+        this.confMenuBg.style.display = "block";
+        iframeClickEventCtrl(false);
     }
     
-    function closeConfMenu() {
-        delete contextMenuItems[0].dataset.active;
-        confMenuBg.style.display = "none";
+    closeConfMenu() {
+        delete this.contextMenuItems[0].dataset.active;
+        this.confMenuBg.style.display = "none";
     }
     
-    function delayedCloseConfMenu() { 
-        timeout2 = setTimeout(function () {
-            closeConfMenu();
-        }, 300);
+    #delayedCloseConfMenu() { 
+        this.timeout2 = setTimeout(this.closeConfMenu.bind(this), 300);
     }
 
-    windowMenuBtn.addEventListener('mouseover', function () {
-        mouseOverWndBtns = true;
-    });
-
-    windowIcon.addEventListener('mouseover', function () {
-        mouseOverWndBtns = true;
-    });
-
-    windowCloseBtn.addEventListener('mouseover', function () {
-        mouseOverWndBtns = true;
-    });
-    
-    windowCloseBtnAlt.addEventListener('mouseover', function () {
-        mouseOverWndBtns = true;
-    });
-
-    windowMenuBtn.addEventListener('mouseout', function () {
-        mouseOverWndBtns = false;
-    });
-
-    windowIcon.addEventListener('mouseout', function () {
-        mouseOverWndBtns = false;
-    });
-
-    windowCloseBtn.addEventListener('mouseout', function () {
-        mouseOverWndBtns = false;
-    });
-    
-    windowCloseBtnAlt.addEventListener('mouseout', function () {
-        mouseOverWndBtns = false;
-    });
-    
-    init();
-    
-    function init(reinit) {
-        // Load configs
-        if (config.width) windowElement.width = config.width;
-        if (config.height) windowElement.height = config.height;
-        if (config.xPos) windowContainer.style.left = config.xPos;
-        else windowContainer.style.left = vWidth - windowContainer.offsetWidth - 100 + 'px';
-        if (config.yPos) windowContainer.style.top = config.yPos;
-        changeWndStyle(config.style || style || "ad");
-        if (config.unscaled) confMenuItems[3].classList.remove("checkedItem");
-        else confMenuItems[3].classList.add("checkedItem");
-        windowTitleText.textContent = config.title || "ModernActiveDesktop";
-        adjustElements();
-        keepInside();
-        closeContextMenu();
-        closeConfMenu();
-        windowContainer.style.zIndex = config.zIndex || ++lastZIndex;
-
-        if (config.src) {
-            windowElement.src = config.src;
-        } else {
-            if (reinit) {
-                changeWndStyle("ad");
-            }
-            if (numStr !== "") {
-                let url = WINDOW_PLACEHOLDER;
-                if ((typeof openDoc === "string" || openDoc instanceof String) && !reinit) {
-                    windowElement.width = width || '800px';
-                    windowElement.height = height || '600px';
-                    windowContainer.style.left = (parseInt(localStorage.madesktopChanViewLeftMargin) || 75) + 250 + 'px';
-                    windowContainer.style.top = '150px';
-                    url = openDoc.endsWith(".html") ? openDoc : `docs/index.html?src=${openDoc}`;
-                } else {
-                    windowElement.width = width || '250px';
-                    windowElement.height = height || '150px';
-                    adjustElements();
-                    windowContainer.style.left = vWidth - windowContainer.offsetWidth - (parseInt(localStorage.madesktopChanViewRightMargin) || 0) - 200 + 'px';
-                    windowContainer.style.top = '200px';
-                }
-                adjustElements();
-                keepInside();
-                saveConfig();
-                
-                windowElement.src = url;
-                config.src = url;
-            } else {
-                if (reinit) {
-                    windowContainer.style.top = '200px';
-                    windowElement.width = '84px';
-                    windowElement.height = '471px';
-                    adjustElements();
-                    windowElement.src = "ChannelBar.html";
-                }
-                if (!localStorage.madesktopItemXPos) windowContainer.style.left = vWidth - windowContainer.offsetWidth - (parseInt(localStorage.madesktopChanViewRightMargin) || 0) - 100 + 'px';
-            }
-        }
-    }   
-    
-    function changeWndStyle(style) {
+    changeWndStyle(style) {
         switch (style) {
             case "nonad":
-                windowContainer.classList.add("window");
-                windowTitlebar.classList.add("windowTitlebar");
-                windowTitlebar.classList.remove("title-bar");
-                windowTitlebar.style.display = "block";
-                windowTitlebar.style.left = "2px";
-                windowTitlebar.style.top = "3px";
-                contextMenuBg.style.top = "21px";
-                confMenuBg.style.top = "21px";
-                windowTitlebar.style.width = windowElement.offsetWidth + 'px';
-                windowElement.style.borderColor = "transparent";
-                windowFrame.style.borderColor = "transparent";
-                windowFrame.style.backgroundColor = "transparent";
-                confMenuItems[0].classList.remove("activeStyle");
-                confMenuItems[1].classList.add("activeStyle");
-                confMenuItems[2].classList.remove("activeStyle");
+                this.windowContainer.classList.add("window");
+                this.windowTitlebar.classList.add("windowTitlebar");
+                this.windowTitlebar.classList.remove("title-bar");
+                this.windowTitlebar.style.display = "block";
+                this.windowTitlebar.style.left = "2px";
+                this.windowTitlebar.style.top = "3px";
+                this.contextMenuBg.style.top = "21px";
+                this.confMenuBg.style.top = "21px";
+                this.windowTitlebar.style.width = this.windowElement.offsetWidth + 'px';
+                this.windowElement.style.borderColor = "transparent";
+                this.windowFrame.style.borderColor = "transparent";
+                this.windowFrame.style.backgroundColor = "transparent";
+                this.confMenuItems[0].classList.remove("activeStyle");
+                this.confMenuItems[1].classList.add("activeStyle");
+                this.confMenuItems[2].classList.remove("activeStyle");
                 break;
             case "ad":
-                windowContainer.classList.remove("window");
-                windowTitlebar.classList.add("windowTitlebar");
-                windowTitlebar.classList.remove("title-bar");
-                windowTitlebar.style.display = "none";
-                windowTitlebar.style.left = "0px";
-                windowTitlebar.style.top = "6px";
-                contextMenuBg.style.top = "24px";
-                confMenuBg.style.top = "24px";
-                windowTitlebar.style.width = windowElement.offsetWidth + 4 + 'px';
-                confMenuItems[0].classList.add("activeStyle");
-                confMenuItems[1].classList.remove("activeStyle");
-                confMenuItems[2].classList.remove("activeStyle");
+                this.windowContainer.classList.remove("window");
+                this.windowTitlebar.classList.add("windowTitlebar");
+                this.windowTitlebar.classList.remove("title-bar");
+                this.windowTitlebar.style.display = "none";
+                this.windowTitlebar.style.left = "0px";
+                this.windowTitlebar.style.top = "6px";
+                this.contextMenuBg.style.top = "24px";
+                this.confMenuBg.style.top = "24px";
+                this.windowTitlebar.style.width = this.windowElement.offsetWidth + 4 + 'px';
+                this.confMenuItems[0].classList.add("activeStyle");
+                this.confMenuItems[1].classList.remove("activeStyle");
+                this.confMenuItems[2].classList.remove("activeStyle");
                 break;
             case "wnd":
-                windowContainer.classList.add("window");
-                windowTitlebar.classList.remove("windowTitlebar");
-                windowTitlebar.classList.add("title-bar");
-                windowTitlebar.style.display = "flex";
-                windowTitlebar.style.left = "2px";
-                windowTitlebar.style.top = "3px";
-                contextMenuBg.style.top = "24px";
-                confMenuBg.style.top = "24px";
-                windowTitlebar.style.width = windowElement.offsetWidth - 7 + 'px';
-                windowElement.style.borderColor = "transparent";
-                windowFrame.style.borderColor = "transparent";
-                windowFrame.style.backgroundColor = "transparent";
-                confMenuItems[0].classList.remove("activeStyle");
-                confMenuItems[1].classList.remove("activeStyle");
-                confMenuItems[2].classList.add("activeStyle");
+                this.windowContainer.classList.add("window");
+                this.windowTitlebar.classList.remove("windowTitlebar");
+                this.windowTitlebar.classList.add("title-bar");
+                this.windowTitlebar.style.display = "flex";
+                this.windowTitlebar.style.left = "2px";
+                this.windowTitlebar.style.top = "3px";
+                this.contextMenuBg.style.top = "24px";
+                this.confMenuBg.style.top = "24px";
+                this.windowTitlebar.style.width = this.windowElement.offsetWidth - 7 + 'px';
+                this.windowElement.style.borderColor = "transparent";
+                this.windowFrame.style.borderColor = "transparent";
+                this.windowFrame.style.backgroundColor = "transparent";
+                this.confMenuItems[0].classList.remove("activeStyle");
+                this.confMenuItems[1].classList.remove("activeStyle");
+                this.confMenuItems[2].classList.add("activeStyle");
         }
-        config.style = style;
+        this.config.style = style;
+    }
+
+    moveTo(x, y) {
+        this.windowContainer.style.left = x + 'px';
+        this.windowContainer.style.top = y + 'px';
+        this.#keepInside();
+        this.#saveConfig();
+    }
+
+    resizeTo(width, height) {
+        this.windowElement.width = width + 'px';
+        this.windowElement.height = height + 'px';
+        this.#adjustElements();
+        this.#keepInside();
+        this.#saveConfig();
+    }
+
+    #wcMouseDown(event) {
+        this.windowContainer.style.zIndex = ++lastZIndex; // bring to top
+        activateWindow(this.numStr || 0);
+        saveZOrder();
+        if ((this.windowFrame.style.borderColor != "transparent" || this.config.style !== "ad") && !this.mouseOverWndBtns) {
+            iframeClickEventCtrl(false);
+            this.isDown = true;
+            this.offset = [
+                this.windowContainer.offsetLeft - Math.ceil(event.clientX / window.scaleFactor), // event.clientXY doesn't work well with css zoom
+                this.windowContainer.offsetTop - Math.ceil(event.clientY / window.scaleFactor)
+            ];
+            this.#updatePrevOffset();
+            log([this.posInContainer.x, this.posInContainer.y]);
+            // Decide the resizing mode based on the position of the mouse cursor
+            if (this.posInContainer.x <= 3) {
+                this.resizingMode = "left";
+            } else if (this.posInContainer.x >= this.windowContainer.offsetWidth - 3) {
+                this.resizingMode = "right";
+            } else if (this.posInContainer.y <= 3 && this.config.style !== "ad") {
+                this.resizingMode = "top";
+            } else if (this.posInContainer.y <= 9 && this.posInContainer.y >= 6 && this.config.style === "ad") {
+                this.resizingMode = "top";
+            } else if (this.posInContainer.y >= 30) {
+                this.resizingMode = "bottom";
+            } else if (this.posInContainer.y >= 6 || this.config.style !== "ad") {
+                this.resizingMode = "none";
+            } else {
+                this.resizingMode = null;
+            }
+        }
+    }
+
+    #docMouseUp() {
+        iframeClickEventCtrl(true);
+        this.isDown = false;
+        
+        if (this.windowContainer.style.display == "none") return; // offsets are always 0 when hidden, causing unexpected behaviors
+        // Minimum size
+        if (this.windowElement.offsetWidth < 60) this.windowElement.width = "60px";
+        if (this.windowElement.offsetHeight < 15) this.windowElement.height = "15px";
+        this.#keepInside();
+        this.#adjustElements();
+        this.#saveConfig();
+        
+        this.resizingMode = "none";
+        document.body.style.cursor = "auto";
+    }
+
+    #weMouseOver() {
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(this.#updateWindowComponentVisibility.bind(this), 500);
+    }
+
+    #wcMouseLeave() {
+        if (!this.isDown) {
+            document.body.style.cursor = "auto";
+            clearTimeout(this.timeout);
+            if (this.config.style !== "ad") return; // never hide the frames in nonAD mode
+            this.timeout = setTimeout(() => {   
+                this.windowElement.style.borderColor = "transparent";
+                this.windowFrame.style.borderColor = "transparent";
+                this.windowFrame.style.backgroundColor = "transparent";
+                this.windowTitlebar.style.display = "none";
+            }, 2000);
+        } else {
+            clearTimeout(this.timeout);
+        }
+    }
+
+    #docMouseMove(event) {
+        this.mousePosition = {
+            x : Math.ceil(event.clientX / window.scaleFactor),
+            y : Math.ceil(event.clientY / window.scaleFactor)
+        };
+        this.posInContainer = {
+            x : Math.ceil(event.clientX / window.scaleFactor) - this.windowContainer.offsetLeft,
+            y : Math.ceil(event.clientY / window.scaleFactor) - this.windowContainer.offsetTop,
+        }
+        if (this.isDown) {
+            // Window resizing & moving - adjust windowContainer / windowElement first
+            switch (this.resizingMode) {
+                case "left":
+                    if (this.windowElement.offsetWidth >= 60) {
+                        this.windowElement.width = this.prevOffsetRight - this.mousePosition.x + 'px';
+                        this.windowContainer.style.left = (this.mousePosition.x + this.offset[0]) + 'px';
+                    }
+                    break;
+
+                case "right":
+                    if (this.windowElement.offsetWidth >= 60) {
+                        this.windowElement.width = this.posInContainer.x - 6 + 'px';
+                    }
+                    break;
+
+                case "top":
+                    if (this.windowElement.offsetHeight >= 15) {
+                        this.windowElement.height = this.prevOffsetBottom - this.mousePosition.y + 'px';
+                        this.windowContainer.style.top = (this.mousePosition.y + this.offset[1]) + 'px';
+                    }
+                    break;
+
+                case "bottom":
+                    if (this.windowElement.offsetHeight >= 15) {
+                        this.windowElement.height = this.posInContainer.y - 21 + 'px';
+                    }
+                    break;
+
+                case "none":
+                    this.windowContainer.style.left = (this.mousePosition.x + this.offset[0]) + 'px';
+                    this.windowContainer.style.top  = (this.mousePosition.y + this.offset[1]) + 'px';
+                    break;
+            }
+            if (this.resizingMode !== "none") {
+                // Now adjust the others
+                this.#adjustElements();
+            }
+        }
+    }
+
+    #wcMouseMove(event) {
+        log({cx: event.clientX, cy: event.clientY, cxs: event.clientX / window.scaleFactor, cys: event.clientY / window.scaleFactor}, "debug");
+        this.posInContainer = {
+            x : Math.ceil(event.clientX / window.scaleFactor) - this.windowContainer.offsetLeft,
+            y : Math.ceil(event.clientY / window.scaleFactor) - this.windowContainer.offsetTop,
+        }
+        // Change the mouse cursor - although this is useless in WE
+        if (this.resizingMode == "none" && (this.windowElement.style.borderColor != "transparent" || this.config.style !== "ad")) {
+            if (this.posInContainer.x <= 3) {
+                document.body.style.cursor = "ew-resize";
+            } else if (this.posInContainer.x >= this.windowContainer.offsetWidth - 3) {
+                document.body.style.cursor = "ew-resize";
+            } else if (this.posInContainer.y <= 3 && this.config.style !== "ad" && this.windowTitlebar.style.display != "none") {
+                document.body.style.cursor = "ns-resize";
+            } else if (this.posInContainer.y <= 9 && this.posInContainer.y >= 6 && this.config.style === "ad" && this.windowTitlebar.style.display != "none") {
+                document.body.style.cursor = "ns-resize";
+            } else if (this.posInContainer.y >= 30) {
+                document.body.style.cursor = "ns-resize";
+            } else {
+                document.body.style.cursor = "auto";
+            }
+        }
+        log(this.posInContainer, "debug");
     }
     
-    function updatePrevOffset() {
-        prevOffsetRight = windowElement.offsetWidth + windowContainer.offsetLeft;
-        prevOffsetBottom = windowElement.offsetHeight + windowContainer.offsetTop;
+    async #weLoad () {
+        this.windowElement.contentDocument.addEventListener('mousemove', this.#weConMouseMove.bind(this));
+        this.windowElement.contentDocument.addEventListener('mousedown', this.#weConMouseDown.bind(this));
+        
+        if (!this.config.title) {
+            this.windowTitleText.textContent = this.windowElement.contentDocument.title || "ModernActiveDesktop";
+        }
+        this.windowIcon.src = await getFavicon(this.windowElement);
+        
+        if (!this.config.unscaled) {
+            this.windowElement.contentDocument.body.style.zoom = scaleFactor;
+        }
+        hookIframeSize(this.windowElement, this.numStr);
+    }
+
+    #reset() {
+        this.closeContextMenu();
+        if (this.temp) {
+            ding.play();
+            madAlert("This window is temporary, so it cannot be reset. Just close it.");
+            return;
+        }
+        chord.play();
+        madConfirm("Are you sure you want to reset this window?", res => {
+            if (res) {
+                this.config.width = null;
+                this.config.height = null;
+                this.config.xPos = null;
+                this.config.yPos = null;
+                this.config.src = null;
+                this.config.style = null;
+                this.config.unscaled = null;
+                this.config.title = null;
+                this.config.zIndex = null;
+                this.config.active = null;
+                deskMovers[this.numStr] = new DeskMover(this.windowContainer, this.numStr, false, undefined, undefined, undefined, undefined, true);
+            }
+        });
+    }
+
+    #toggleScale() {
+        this.closeContextMenu();
+        if (this.config.unscaled) {
+            this.windowElement.contentDocument.body.style.zoom = window.scaleFactor;
+            this.confMenuItems[3].classList.add("checkedItem");
+            this.config.unscaled = false;
+        } else {
+            this.windowElement.contentDocument.body.style.zoom = 1;
+            this.confMenuItems[3].classList.remove("checkedItem");
+            this.config.unscaled = true;
+        }
+        this.windowElement.contentWindow.dispatchEvent(new Event("resize"));
+    }
+
+    #changeUrl() {
+        this.closeContextMenu();
+        const urlToShow = this.config.src || "";
+        madPrompt("Enter URL (leave empty to reset)", url => {
+            if (url === null) return;
+            if (url == "!debugmode") {
+                activateDebugMode();
+                return;
+            }
+            if (!url) {
+                if (this.numStr === "") url = "ChannelBar.html";
+                else url = WINDOW_PLACEHOLDER;
+            }
+            this.windowElement.src = url;
+            this.config.src = url;
+        }, "", urlToShow);
+    }
+
+    #changeTitle() {
+        this.closeContextMenu();
+        madPrompt("Enter title (leave empty to reset)", title => {
+            if (title === null) return;
+            if (title) {
+                this.windowTitleText.textContent = title;
+                this.config.title = title;
+            } else {
+                this.config.title = null;
+                this.windowTitleText.textContent = this.windowElement.contentDocument.title || "ModernActiveDesktop";
+            }
+        }, "", this.config.title || "");
+    }
+
+    #weConMouseMove (event) {
+        this.posInWindow = {
+            x : Math.ceil(event.clientX / window.scaleFactor),
+            y : Math.ceil(event.clientY / window.scaleFactor)
+        };
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(this.#updateWindowComponentVisibility.bind(this), 500);
+    }
+
+    #weConMouseDown () {
+        this.windowContainer.style.zIndex = ++lastZIndex;
+        activateWindow(this.numStr || 0);
+        saveZOrder();
+    }
+
+    #updatePrevOffset() {
+        this.prevOffsetRight = this.windowElement.offsetWidth + this.windowContainer.offsetLeft;
+        this.prevOffsetBottom = this.windowElement.offsetHeight + this.windowContainer.offsetTop;
     }
     
     // Keep the deskitem inside the visible area
-    function keepInside() {
-        if (windowContainer.offsetLeft < -windowContainer.offsetWidth + 60) windowContainer.style.left = -windowTitlebar.offsetWidth + 60 + 'px';
-        if (windowContainer.offsetTop < 0) windowContainer.style.top = 0;
-        if (windowContainer.offsetLeft + 60 > vWidth) windowContainer.style.left = vWidth - 60 + 'px';
-        if (windowContainer.offsetTop + 50 > vHeight) windowContainer.style.top = vHeight - 50 + 'px';
-        updatePrevOffset();
+    #keepInside() {
+        if (this.windowContainer.offsetLeft < -this.windowContainer.offsetWidth + 60) this.windowContainer.style.left = -this.windowTitlebar.offsetWidth + 60 + 'px';
+        if (this.windowContainer.offsetTop < 0) this.windowContainer.style.top = 0;
+        if (this.windowContainer.offsetLeft + 60 > vWidth) this.windowContainer.style.left = vWidth - 60 + 'px';
+        if (this.windowContainer.offsetTop + 50 > vHeight) this.windowContainer.style.top = vHeight - 50 + 'px';
+        this.#updatePrevOffset();
     }
     
     // Adjust all elements to windowElement
-    function adjustElements() {
-        windowContainer.style.height = windowElement.offsetHeight + 21 + 'px';
-        windowFrame.style.height = windowElement.offsetHeight + 'px';
-        windowContainer.style.width = windowElement.offsetWidth - 2 + 'px';
-        windowFrame.style.width = windowElement.offsetWidth + 'px';
-        switch (config.style) {
+    #adjustElements() {
+        this.windowContainer.style.height = this.windowElement.offsetHeight + 21 + 'px';
+        this.windowFrame.style.height = this.windowElement.offsetHeight + 'px';
+        this.windowContainer.style.width = this.windowElement.offsetWidth - 2 + 'px';
+        this.windowFrame.style.width = this.windowElement.offsetWidth + 'px';
+        switch (this.config.style) {
             case "ad":
-                windowTitlebar.style.width = windowElement.offsetWidth + 4 + 'px';
+                this.windowTitlebar.style.width = this.windowElement.offsetWidth + 4 + 'px';
                 break;
             case "wnd":
-                windowTitlebar.style.width = windowElement.offsetWidth - 7 + 'px';
+                this.windowTitlebar.style.width = this.windowElement.offsetWidth - 7 + 'px';
                 break;
             case "nonad":
-                windowTitlebar.style.width = windowElement.offsetWidth + 'px';
+                this.windowTitlebar.style.width = this.windowElement.offsetWidth + 'px';
                 break;
         }
-        windowTitlebar.style.left = config.style !== "ad" ? '2px' : 0;
-        windowTitlebar.style.top = config.style !== "ad" ? '3px' : '6px';
+        this.windowTitlebar.style.left = this.config.style !== "ad" ? '2px' : 0;
+        this.windowTitlebar.style.top = this.config.style !== "ad" ? '3px' : '6px';
     }
     
     // Save configs
-    function saveConfig() {
-        config.width = windowElement.width;
-        config.height = windowElement.height;
-        config.xPos = windowContainer.style.left;
-        config.yPos = windowContainer.style.top;
+    #saveConfig() {
+        this.config.width = this.windowElement.width;
+        this.config.height = this.windowElement.height;
+        this.config.xPos = this.windowContainer.style.left;
+        this.config.yPos = this.windowContainer.style.top;
     }
     
     // Update the visibility of window components based on the cursor's position
     // Replicates the original ActiveDesktop behavior
-    function updateWindowComponentVisibility() {
-        if (config.style === "ad") windowElement.style.borderColor = "var(--button-face)";
-        if (typeof posInWindow !== 'undefined') {
-            if (posInWindow.x <= 15 || posInWindow.x >= windowElement.offsetWidth - 15 || posInWindow.y <= 50 || posInWindow.y >= windowElement.offsetHeight - 15) {
-                if (config.style === "ad") {
-                    windowFrame.style.borderColor = "var(--button-face)";
-                    windowFrame.style.backgroundColor = "var(--button-face)"; // required to fix some weird artifacts in hidpi/css-zoomed mode
+    #updateWindowComponentVisibility() {
+        if (this.config.style === "ad") {
+            this.windowElement.style.borderColor = "var(--button-face)";
+        }
+        if (typeof this.posInWindow !== 'undefined') {
+            if (this.posInWindow.x <= 15 || 
+                this.posInWindow.x >= this.windowElement.offsetWidth - 15 || 
+                this.posInWindow.y <= 50 || 
+                this.posInWindow.y >= this.windowElement.offsetHeight - 15
+            ) {
+                if (this.config.style === "ad") {
+                    this.windowFrame.style.borderColor = "var(--button-face)";
+                    this.windowFrame.style.backgroundColor = "var(--button-face)"; // required to fix some weird artifacts in hidpi/css-zoomed mode
                 }
-                if (config.style === "wnd") {
-                    windowTitlebar.style.display = "flex";
-                } else if (posInWindow.y <= 50 || config.style === "nonad") {
-                    windowTitlebar.style.display = "block";
+                if (this.config.style === "wnd") {
+                    this.windowTitlebar.style.display = "flex";
+                } else if (this.posInWindow.y <= 50 || this.config.style === "nonad") {
+                    this.windowTitlebar.style.display = "block";
                 } else {
-                    windowTitlebar.style.display = "none";
+                    this.windowTitlebar.style.display = "none";
                 }
             } else {
-                windowFrame.style.borderColor = "transparent";
-                windowFrame.style.backgroundColor = "transparent";
-                if (config.style === "ad") windowTitlebar.style.display = "none";
+                this.windowFrame.style.borderColor = "transparent";
+                this.windowFrame.style.backgroundColor = "transparent";
+                if (this.config.style === "ad") {
+                    this.windowTitlebar.style.display = "none";
+                }
             }
-        } else if (config.style === "ad") {
+        } else if (this.config.style === "ad") {
             // Won't happen in WE; but required in normal browsers
             // I use Chrome/Edge for some debugging as mouse hovering doesn't work well in WE with a debugger attached
             // Edit: Well it now works well at the time of writing (MAD 2.4)
-            windowFrame.style.borderColor = "var(--button-face)";
-            windowFrame.style.backgroundColor = "var(--button-face)";
-            windowTitlebar.style.display = config.style === "wnd" ? "flex" : "block";
+            this.windowFrame.style.borderColor = "var(--button-face)";
+            this.windowFrame.style.backgroundColor = "var(--button-face)";
+            this.windowTitlebar.style.display = this.config.style === "wnd" ? "flex" : "block";
         }
     }
 }
@@ -635,7 +716,7 @@ function initSimpleMover(container, titlebar, exclusions) {
     
     document.addEventListener('mouseup', function() {
         isDown = false;
-        //iframeClickEventCtrl(true);
+        iframeClickEventCtrl(true);
         
         // Keep the window inside the visible area
         if (container.offsetLeft < -container.offsetWidth + 60) container.style.left = -titlebar.offsetWidth + 60 + 'px';

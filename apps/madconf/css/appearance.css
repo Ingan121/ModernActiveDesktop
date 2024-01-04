@@ -1,4 +1,4 @@
-@import '../../css/marlett.css';
+@import '../../../css/marlett.css';
 
 body {
     background-color: var(--button-face);

@@ -55,7 +55,7 @@ changeScale(localStorage.madesktopScaleFactor);
 if (localStorage.madesktopDebugMode) activateDebugMode();
 if (localStorage.madesktopDebugLog) toggleDebugLog();
 
-initDeskMover(windowContainers[0], "");
+window.deskMovers = {0: new DeskMover(windowContainers[0], "")};
 initSimpleMover(msgbox, msgboxTitlebar, [msgboxCloseBtn]);
 initSimpleMover(debugMenu, debugMenu, debugMenu.querySelectorAll("a"));
 
@@ -140,15 +140,12 @@ for (let i = 0; i < mainMenuItems.length; i++) {
 mainMenuItems[0].addEventListener('click', openWindow); // New button
 
 mainMenuItems[1].addEventListener('click', function() { // Properties button
-    openWindow("config.html", false, "388px", "168px");
+    openWindow("apps/madconf/general.html", false, "388px", "168px");
 });
 
 msgboxBg.addEventListener('click', flashDialog);
 
-msgbox.addEventListener('click', function (event) {
-    event.preventDefault();
-    event.stopPropagation()
-});
+msgbox.addEventListener('click', preventDefault);
 
 window.addEventListener('resize', function () {
     changeScale(scaleFactor);
@@ -280,7 +277,7 @@ window.wallpaperPropertyListener = {
         }
         if (properties.colorscheme) {
             if (!properties.bgcolor) { // Ignore if this is a startup event
-                openWindow("apps/ctconf/index.html", true, "480px", "402px", "wnd");
+                openWindow("apps/madconf/appearance.html", true, "480px", "402px", "wnd");
             }
         }
         if (properties.scale) {
@@ -316,7 +313,7 @@ function livelyPropertyListener(name, val) {
             changeBgColor(val);
             break;
         case "properties":
-            openWindow("config.html", false, "388px", "168px");
+            openWindow("apps/madconf/general.html", false, "388px", "168px");
             break;
         default:
             wallpaperPropertyListener.applyUserProperties({ [name]: { value: val } });
@@ -355,7 +352,7 @@ function changeBgColor(str) {
 function loadBgImgConf() {
     if (localStorage.madesktopBgImg) {
         if (localStorage.madesktopBgImg.startsWith("file:///")) document.body.style.backgroundImage = "url('" + localStorage.madesktopBgImg + "')"; // Set in WE
-        else document.body.style.backgroundImage = "url('data:image/png;base64," + localStorage.madesktopBgImg + "')"; // Set in config.html
+        else document.body.style.backgroundImage = "url('data:image/png;base64," + localStorage.madesktopBgImg + "')"; // Set in madconf
     }
 }
 
@@ -530,7 +527,7 @@ function createNewDeskItem(numStr, openDoc, temp, width, height, style) {
     const newContainer = windowContainers[0].cloneNode(true);
     document.body.appendChild(newContainer);
     windowContainers = document.getElementsByClassName("windowContainer");
-    initDeskMover(newContainer, numStr, openDoc, temp, width, height, style);
+    deskMovers[numStr] = new DeskMover(newContainer, numStr, openDoc, temp, width, height, style, false);
 }
 
 // Create a new AD item, initialize, and increase the saved window count
@@ -558,7 +555,7 @@ function closeMainMenu() {
 
 // Required as mouse movements over iframes are not detectable in the parent document
 function iframeClickEventCtrl(clickable) {
-    log(clickable ? "clickable" : "unclickable", "debug");
+    log(clickable ? "clickable" : "unclickable", "debug", new Error().stack.split('\n')[2].trim().slice(3).split(' ')[0] + " -> iframeClickEventCtrl");
     const value = clickable ? "auto" : "none";
     bgHtmlView.style.pointerEvents = value;
     for (let i = 0; i < windowContainers.length; i++) {
@@ -576,7 +573,7 @@ function updateIframeScale() {
     }
     for (let i = 0; i < windowContainers.length; i++) {
         try {
-			if (!localStorage.getItem("madesktopItemUnscaled" + (i || ""))) {
+			if (!deskMovers[i].config.unscaled) {
                 const iframe = windowContainers[i].getElementsByClassName("windowElement")[0];
                 iframe.contentDocument.body.style.zoom = scaleFactor;
                 iframe.contentWindow.dispatchEvent(new Event("resize"));
@@ -594,15 +591,17 @@ function updateIframeScale() {
 function hookIframeSize(iframe, num) {
     Object.defineProperty(iframe.contentWindow, "innerWidth", {
         get: function () {
-            if (typeof num != "undefined" && localStorage.getItem("madesktopItemUnscaled" + (num || "")))
+            if (typeof num != "undefined" && deskMovers[num].config.unscaled) {
                 return iframe.clientWidth * scaleFactor;
+            }
             return iframe.clientWidth;
         }
     });
     Object.defineProperty(iframe.contentWindow, "innerHeight", {
         get: function () {
-            if (typeof num != "undefined" && localStorage.getItem("madesktopItemUnscaled" + (num || "")))
+            if (typeof num != "undefined" && deskMovers[num].config.unscaled) {
                 return iframe.clientHeight * scaleFactor;
+            }
             return iframe.clientHeight;
         }
     });
@@ -643,8 +642,9 @@ function hookIframeSize(iframe, num) {
 // Save current window z-order
 function saveZOrder() {
     let zOrders = [];
-    for (let i = 0; i < windowContainers.length; i++)
-        if (windowContainers[i].childElementCount) zOrders[zOrders.length] = [i, windowContainers[i].style.zIndex];
+    for (const i in deskMovers) {
+        zOrders[zOrders.length] = [i, deskMovers[i].windowContainer.style.zIndex];
+    }
     
     zOrders.sort(function(a, b) {
         if (+a[1] > +b[1]) return 1;
@@ -653,11 +653,25 @@ function saveZOrder() {
     });
     
     for (let i = 0; i < zOrders.length; i++) {
-        localStorage.setItem("madesktopItemZIndex" + (zOrders[i][0] || ""), i);
+        deskMovers[zOrders[i][0]].config.zIndex = i;
     }
     
     log(zOrders);
 }
+
+function activateWindow(num) {
+    deskMovers[num].windowTitlebar.classList.remove("inactive");
+    if (localStorage.madesktopNoDeactivate) return;
+    
+    deskMovers[num].config.active = true;
+    for (const i in deskMovers) {
+        if (i != num) {
+            deskMovers[i].windowTitlebar.classList.add("inactive");
+            deskMovers[i].config.active = false;
+        }
+    }
+}
+
 
 async function getFavicon(iframe) {
     try {
@@ -687,8 +701,9 @@ async function getFavicon(iframe) {
             }
         });
         return path;
-    } catch {
+    } catch (e) {
         log('Error getting favicon');
+        console.log(e);
         return 'images/html.ico';
     }
 }
@@ -807,6 +822,11 @@ function madPrompt(msg, callback, hint, text) {
     }
 }
 
+function preventDefault(event) {
+    event.preventDefault();
+    event.stopPropagation();
+}
+
 function showDialog() {
     msgboxBg.style.display = "block";
     msgbox.style.top = vHeight / 2 - msgbox.offsetHeight / 2 + "px";
@@ -835,12 +855,12 @@ function reset(res) {
     });
 }
 
-function log(str, level, caller) {
+function log(str, level, caller = new Error().stack.split('\n')[2].trim().slice(3).split(' ')[0]) {
     if (debugLog) {
         if (typeof str === "object") {
             str = JSON.stringify(str);
         }
-        console[level || 'log']((caller || arguments.callee.caller.name) + ": " + str);
+        console[level || 'log'](caller + ": " + str);
     }
 }
 

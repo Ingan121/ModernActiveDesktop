@@ -2,24 +2,12 @@
     const parentSchemeElement = parent.document.getElementById("scheme");
     const schemeElement = document.getElementById("scheme");
     const styleElement = document.getElementById("style");
-    const numStr = frameElement.dataset.num;
-    const windowContainer = frameElement.parentElement.parentElement;
-    const windowCloseBtn = windowContainer.getElementsByClassName("windowCloseBtn")[0];
-    const dropdownBg = windowContainer.querySelector(".dropdownBg");
-    const dropdown = dropdownBg.querySelector(".dropdown");
-
-    const config = new Proxy({}, {
-        get(target, key) {
-            return localStorage.getItem("madesktopItem" + key[0].toUpperCase() + key.slice(1) + numStr);
-        },
-        set(target, key, value) {
-            if (value) {
-                localStorage.setItem("madesktopItem" + key[0].toUpperCase() + key.slice(1) + numStr, value);
-            } else {
-                localStorage.removeItem("madesktopItem" + key[0].toUpperCase() + key.slice(1) + numStr);
-            }
-        }
-    });
+    const deskMoverNum = frameElement.dataset.num || 0;
+    const deskMover = parent.deskMovers[deskMoverNum];
+    const windowContainer = deskMover.windowContainer;
+    const dropdownBg = deskMover.dropdownBg;
+    const dropdown = deskMover.dropdown;
+    const config = deskMover.config;
 
     applyScheme();
 
@@ -135,20 +123,7 @@
         parent.iframeClickEventCtrl(true);
     }
 
-    window.madResizeTo = function(width, height) {
-        frameElement.width = width;
-        frameElement.height = height;
-        parent.document.dispatchEvent(new Event("mouseup")); // Trigger adjustElements()
-    }
-
-    window.madMoveTo = function(x, y) {
-        windowContainer.style.left = x + "px";
-        windowContainer.style.top = y + "px";
-        config.xPos = x + "px";
-        config.yPos = y + "px";
-    }
-
-    window.madCloseWindow = function() {
-        windowCloseBtn.click();
-    }
+    window.madResizeTo = deskMover.resizeTo;
+    window.madMoveTo = deskMover.moveTo;
+    window.madCloseWindow = deskMover.closeWindow;
 })();
