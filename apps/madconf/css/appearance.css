@@ -1,29 +1,72 @@
-@import '../../../css/marlett.css';
-
-body {
-    background-color: var(--button-face);
-    padding: 2px;
-    line-height: 16px;
-}
-
-p {
-    font-family: "Pixelated MS Sans Serif";
-    margin-top: 2px;
-    margin-bottom: 2px;
-}
+@import 'common.css';
 
 #preview {
     height: 200px;
     max-width: 500px;
     background-color: var(--background);
     margin: 0 auto;
+    pointer-events: none;
+}
+
+#inactiveWindow {
+    position: absolute;
+    width: 380px;
+    height: 150px;
+    top: 20px;
+    left: 50%;
+    transform: translate(-200px, 0);
+    z-index: 1;
+}
+
+#activeWindow {
+    position: absolute;
+    width: 400px;
+    height: 140px;
+    top: 46px;
+    left: 50%;
+    transform: translate(-196px, 0);
+    z-index: 2;
+}
+
+#menu {
+    display: flex;
+    margin-top: 1px;
+    margin-bottom: 1px;
+}
+
+#menu > div {
+    padding-left: 5px;
+    padding-right: 5px;
+    border: solid 1px transparent;
+}
+
+#disabled {
+    color: var(--button-shadow);
+    text-shadow: 1px 1px 0 var(--button-hilight);
+}
+
+#selected {
+    border-color: var(--button-shadow) var(--button-hilight) var(--button-hilight) var(--button-shadow) !important;
+}
+
+textarea {
+    width: 100%;
+    height: 98px;
+    margin: 0;
+    resize: none;
+    font-size: 12px;
+    font-weight: bold;
+    padding-top: 6px;
+    padding-left: 5px;
 }
 
 #msgbox {
-    position: relative;
-    top: 50%;
+    position: absolute;
+    width: 260px;
+    top: 120px;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-186px, 0);
+    z-index: 3;
 }
 
 #conf {
@@ -42,14 +85,9 @@ p {
 }
 
 #notice {
-    font-family: "Pixelated MS Sans Serif";
     font-size: 12px;
     margin-top: 5px;
     text-align: center;
-}
-
-.field-row {
-    margin-top: 5px;
 }
 
 .title-bar-controls button:before {

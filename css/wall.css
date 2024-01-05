@@ -175,6 +175,10 @@ body {
     display: block;
 }
 
+.inactive > .title-bar-text {
+    color: var(--inactive-title-text);
+}
+
 .title-bar > .title-bar-controls > .windowIcon {
     display: block;
 }
@@ -248,12 +252,12 @@ body {
 }
 
 .contextMenuItem.checkedItem > p::before {
-	font-family: "marlett-icons";
+    font-family: "marlett-icons";
     content: "\e903";
     font-size: 15px;
-	position: relative;
-	top: 2px;
-	left: 1px;
+    position: relative;
+    top: 2px;
+    left: 1px;
     margin-right: 5px;
 }
 
@@ -276,8 +280,8 @@ body {
 
 .confMenuBg {
     display: none;
-    width: 180px;
-    height: 120px;
+    width: 200px;
+    height: 180px;
     position: absolute;
     top: 24px;
     left: 103px;
@@ -287,7 +291,7 @@ body {
 }
 
 .confMenu {
-    width: 178px;
+    width: 198px;
     position: absolute;
     bottom: 3px;
     right: 5px;
@@ -418,11 +422,12 @@ body {
 }
 
 #errorLog {
+    max-height: 50vh;
     margin: 4px;
     margin-top: 0;
     padding: 4px;
     text-align: left;
-    overflow-x: scroll;
+    overflow: scroll;
 }
 
 #debug {

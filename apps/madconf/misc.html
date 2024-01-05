@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ModernActiveDesktop Properties</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../../css/98.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link id="scheme" rel="stylesheet" href="data:text/css,">
+    <link id="font" rel="stylesheet" href="">
+    <style id="style"></style>
+</head>
+<body>
+    <div class="window-body">
+        <menu role="tablist">
+            <li class="tab" role="tab" data-pagename="background"><a id="generalBtn" href="#tabs">Background</a></li>
+            <li class="tab" role="tab" data-pagename="appearance"><a href="#tabs">Appearance</a></li>
+            <li class="tab" role="tab" data-pagename="misc" aria-selected="true"><a href="#tabs">Miscellaneous</a></li>
+            <li class="tab" role="tab" data-pagename="about"><a href="#tabs">About</a></li>
+        </menu>
+        <div class="window" role="tabpanel">
+            <div class="window-body">
+                <fieldset>
+                    <legend>Display scaling</legend>
+                    <div class="field-row">
+                        100%
+                        <input id="dpiSlider" type="range" min="0" max="8" value="0" />
+                        300%
+                        <select id="dpiSelector">
+                            <option value="1">100%</option>
+                            <option value="1.25">125%</option>
+                            <option value="1.5">150%</option>
+                            <option value="1.75">175%</option>
+                            <option value="2">200%</option>
+                            <option value="2.25">225%</option>
+                            <option value="2.5">250%</option>
+                            <option value="2.75">275%</option>
+                            <option value="3">300%</option>
+                            <option value="3.25">325%</option>
+                            <option value="3.5">350%</option>
+                            <option value="3.75">375%</option>
+                            <option value="4">400%</option>
+                            <option value="custom">Custom</option>
+                        </select>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend>System plugin integration</legend>
+                    <input id="sysplugChkBox" type="checkbox">
+                    <label for="sysplugChkBox">Enable system plugin integration</label>
+                    <div class="field-row">
+                        Open pages in...
+                        <select id="sysplugOpenOptSelector" disabled>
+                            <option>Classic style channel viewer</option>
+                            <option>Classic style channel viewer (fullscreen)</option>
+                            <option>System default browser</option>
+                        </select>
+                    </div>
+                    <div class="topmargin field-row">
+                        <button id="connectTestBtn">Check connectivity</button>
+                        <button id="showGuideBtn">Show guide</button>
+                    </div>
+                    <p id="connectionStatus">Click the above button to begin the connectivity check</p>
+                </fieldset>
+                <fieldset>
+                    <legend>Sounds</legend>
+                    <input id="startSoundChkBox" type="checkbox">
+                    <label for="startSoundChkBox">Play startup sound</label><br>
+                    <input id="alertSoundChkBox" type="checkbox">
+                    <label for="alertSoundChkBox">Play alert sounds</label>
+                </fieldset>
+                <fieldset>
+                    <legend>Window management</legend>
+                    <input id="noDisableChkBox" type="checkbox">
+                    <label for="noDisableChkBox">Do not deactivate windows</label><br>
+                    <div class="topmargin field-row">
+                        <label for="leftIconArea">Left icon area</label>
+                        <input id="leftIconArea" class="shortInput" type="text" value="75px"/>
+                        <label for="rightIconArea">Right icon area</label>
+                        <input id="rightIconArea" class="shortInput" type="text" value="0"/>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+        <section class="topmargin field-row" style="justify-content: flex-end;">
+            <button id="resetBtn">Reset config</button>
+            <button id="okBtn">OK</button>
+            <button id="cancelBtn">Cancel</button>
+            <button id="applyBtn">Apply</button>
+        </section>
+    </div>
+    
+    <script src="../../js/libmad.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/misc.js"></script>
+</body>
+</html>

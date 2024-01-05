@@ -4,11 +4,24 @@
 <head>
   <meta charset="utf-8">
   <title>ModernActiveDesktop Documentation</title>
+  <link id="scheme" rel="stylesheet" href="data:text/css,">
+  <style id="style"></style>
+  <style>
+    body {
+      background-color: var(--window, white);
+      color: var(--window-text, black);
+    }
+
+    a {
+      color: var(--hot-tracking-color, blue);
+    }
+  </style>
 </head>
 
-<body style="background-color: white;">
+<body>
   <div id="content"></div><a id="backbtn" href="javascript:history.back();" style="display: none;">Go back to the previous page</a>
   <script src="../js/marked.min.js"></script>
+  <script src="../js/libmad.js"></script>
   <script>
     const content = document.getElementById('content');
     const url = new URL(location.href);

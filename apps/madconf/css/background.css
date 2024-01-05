@@ -1,0 +1,17 @@
+@import 'common.css';
+
+*:not(head):not(div) {
+    display: inline-block;
+}
+
+#colorPicker {
+    cursor: pointer;
+}
+
+#imgInput {
+    display: none;
+}
+
+.button {
+    cursor: pointer;
+}

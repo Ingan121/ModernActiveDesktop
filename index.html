@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="css/wall.css">
     <link rel="stylesheet" href="css/98.css">
     <link id="scheme" rel="stylesheet" href="data:text/css,">
+    <link id="font" rel="stylesheet" href="">
     <style id="style"></style>
 </head>
 <body>
@@ -51,10 +52,14 @@
                 <div class="contextMenuItem"><p><u>N</u>on-ActiveDesktop Channel Bar</p></div>
                 <div class="contextMenuItem"><p><u>W</u>indow</p></div>
                 <hr>
-				<div class="contextMenuItem checkedItem"><p><u>S</u>cale contents</p></div>
-				<hr>
+                <div class="contextMenuItem checkedItem"><p><u>S</u>cale contents</p></div>
+                <hr>
                 <div class="contextMenuItem"><p><u>C</u>hange URL</p></div>
                 <div class="contextMenuItem"><p>Change <u>t</u>itle</p></div>
+                <hr>
+                <div class="contextMenuItem"><p>N<u>e</u>w window</p></div>
+                <div class="contextMenuItem"><p><u>R</u>eload wallpaper</p></div>
+                <div class="contextMenuItem"><p><u>P</u>roperties</p></div>
             </div>
         </div>
     </div>
@@ -89,24 +94,26 @@
         <button onclick="copyLog();">Copy log</button> <button onclick="location.reload(true);">Retry</button> <button onclick="errorWnd.style.display='none';">Ignore</button>
     </div>
     <div id="debug" class="debug">
-        <span>ModernActiveDesktop 2.4 Pre-release 5</span><br>
+        <span>ModernActiveDesktop 2.4 Pre-release 6</span><br>
         <span>Loaded from <span id="location"></span></span><br>
         <span>Running in <span id="runmode">browser</span><span id="simmode"></span></span><br>
         <span>Debug mode</span><br>
         <a href="javascript:localStorage.clear();location.reload(true);">Reset config</a><br>
         <a href="javascript:location.reload(true);">Refresh</a><br>
         <a href="javascript:debug();">Run JavaScript code</a><br>
-        <a href="javascript:showErrors();">Show errors</a><br>
+        <a href="javascript:showErrors();">Show errors <span id="errorCnt"></span></a><br>
         <a id="debugLogBtn" href="javascript:toggleDebugLog();">Enable debug logging</a><br>
         <a id="toggleModeBtn" href="javascript:toggleRunningMode();">Simulate other environment</a><br>
         <a href="javascript:deactivateDebugMode();">Deactivate debug mode</a>
     </div>
     <script>
         const errorLog = document.getElementById("errorLog");
+        const errorCnt = document.getElementById("errorCnt");
         
         window.onerror = function(msg, url, linenum) {
             console.log({msg, url, linenum});
             errorLog.textContent += `${msg} (${url}:${linenum})\n`;
+            errorCnt.textContent = `(${parseInt(errorCnt.textContent.slice(1, -1) || 0) + 1})`;
         }
         
         function copyLog() {

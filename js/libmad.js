@@ -1,6 +1,8 @@
 (function() {
     const parentSchemeElement = parent.document.getElementById("scheme");
+    const parentFontElement = parent.document.getElementById("font");
     const schemeElement = document.getElementById("scheme");
+    const fontElement = document.getElementById("font");
     const styleElement = document.getElementById("style");
     const deskMoverNum = frameElement.dataset.num || 0;
     const deskMover = parent.deskMovers[deskMoverNum];
@@ -57,14 +59,23 @@
             }
         }
         schemeElement.href = parentSchemeElement.href;
+
+        if (fontElement) {
+            fontElement.href = parentFontElement.href;
+        }
     }
+
+    Object.defineProperty(window, "madScaleFactor", {
+        get: function() {
+            if (config.unscaled) {
+                return 1;
+            } else {
+                return parent.scaleFactor;
+            }
+        }
+    });
 
     window.madOpenWindow = parent.openWindow;
-
-    window.madLocReplace = function(url) {
-        config.src = url;
-        location.href = url;
-    }
 
     window.madOpenDropdown = function(elem) {
         const dummy = dropdownBg.querySelector(".dropdownItem");
@@ -91,11 +102,14 @@
             });
             dropdown.appendChild(item);
         }
-
+        
         if (options.length >= 35) {
             dropdownBg.style.height = "490px";
         } else {
-            dropdownBg.style.height = 14 * options.length + "px";
+            // TODO: Fix getting real height of dropdown items
+            // It somehow always returns 0 at this point
+            const itemHeight = localStorage.madesktopNoPixelFonts ? 14 : 15;
+            dropdownBg.style.height = itemHeight * options.length + "px";
         }
         dropdown.style.height = dropdownBg.style.height;
         if (config.unscaled) {
@@ -123,7 +137,13 @@
         parent.iframeClickEventCtrl(true);
     }
 
-    window.madResizeTo = deskMover.resizeTo;
-    window.madMoveTo = deskMover.moveTo;
-    window.madCloseWindow = deskMover.closeWindow;
+    window.madLocReplace = deskMover.locReplace.bind(deskMover);
+    window.madResizeTo = deskMover.resizeTo.bind(deskMover);
+    window.madMoveTo = deskMover.moveTo.bind(deskMover);
+    window.madCloseWindow = deskMover.closeWindow.bind(deskMover);
+
+    window.madAlert = parent.madAlert;
+    window.madConfirm = parent.madConfirm;
+    window.madPrompt = parent.madPrompt;
+    window.madPlaySound = parent.playSound;
 })();

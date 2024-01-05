@@ -115,126 +115,14 @@
 				"type" : "bool",
 				"value" : false
 			},
-			"colorscheme" : 
+			"openproperties" : 
 			{
-				"condition" : "colorscheme.value = false; true",
+				"condition" : "openproperties.value = false; true",
 				"index" : 8,
 				"order" : 108,
-				"text" : "Change color scheme",
+				"text" : "Show more options",
 				"type" : "bool",
 				"value" : false
-			},
-			"customscale" : 
-			{
-				"condition" : "scale.value == \"custom\"",
-				"index" : 15,
-				"order" : 115,
-				"text" : "Custom scale (%)",
-				"type" : "textinput",
-				"value" : "100"
-			},
-			"leftmargin" : 
-			{
-				"condition" : "",
-				"index" : 9,
-				"order" : 109,
-				"text" : "Left icon area",
-				"type" : "textinput",
-				"value" : "75px"
-			},
-			"openwith" : 
-			{
-				"condition" : "sysplugintegration.value",
-				"index" : 13,
-				"options" : 
-				[
-					{
-						"label" : "ChannelViewer",
-						"value" : "0"
-					},
-					{
-						"label" : "ChannelViewer (FullScrn)",
-						"value" : "1"
-					},
-					{
-						"label" : "Default browser",
-						"value" : "2"
-					}
-				],
-				"order" : 113,
-				"text" : "Open page with...",
-				"type" : "combo",
-				"value" : "0"
-			},
-			"playstartsnd" : 
-			{
-				"index" : 11,
-				"order" : 111,
-				"text" : "Play startup sound",
-				"type" : "bool",
-				"value" : true
-			},
-			"reset" : 
-			{
-				"condition" : "reset.value = false; true",
-				"index" : 16,
-				"order" : 116,
-				"text" : "Reset completely",
-				"type" : "bool",
-				"value" : false
-			},
-			"rightmargin" : 
-			{
-				"condition" : "",
-				"index" : 10,
-				"order" : 110,
-				"text" : "Right icon area",
-				"type" : "textinput",
-				"value" : "0px"
-			},
-			"scale" : 
-			{
-				"condition" : "",
-				"index" : 14,
-				"options" : 
-				[
-					{
-						"label" : "100%",
-						"value" : "1"
-					},
-					{
-						"label" : "125%",
-						"value" : "1.25"
-					},
-					{
-						"label" : "150%",
-						"value" : "1.5"
-					},
-					{
-						"label" : "175%",
-						"value" : "1.75"
-					},
-					{
-						"label" : "200%",
-						"value" : "2"
-					},
-					{
-						"label" : "225%",
-						"value" : "2.25"
-					},
-					{
-						"label" : "250%",
-						"value" : "2.5"
-					},
-					{
-						"label" : "Custom",
-						"value" : "custom"
-					}
-				],
-				"order" : 114,
-				"text" : "Scale",
-				"type" : "combo",
-				"value" : "1"
 			},
 			"schemecolor" : 
 			{
@@ -242,14 +130,6 @@
 				"text" : "ui_browse_properties_scheme_color",
 				"type" : "color",
 				"value" : "0 0.5019607843137255 0.5019607843137255"
-			},
-			"sysplugintegration" : 
-			{
-				"index" : 12,
-				"order" : 112,
-				"text" : "System plugin integration",
-				"type" : "bool",
-				"value" : false
 			}
 		}
 	},

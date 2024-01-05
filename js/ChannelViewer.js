@@ -13,7 +13,7 @@ if (localStorage.madesktopColorScheme) changeColorScheme(localStorage.madesktopC
 if (localStorage.madesktopChanViewLeftMargin) container.style.marginLeft = localStorage.madesktopChanViewLeftMargin;
 if (localStorage.madesktopChanViewRightMargin) container.style.marginRight = localStorage.madesktopChanViewRightMargin;
 changeScale(localStorage.madesktopScaleFactor);
-
+changeFont(localStorage.madesktopNoPixelFonts);
 
 // Change the scale on load
 bgHtmlView.addEventListener('load', function () {
@@ -78,67 +78,9 @@ window.wallpaperPropertyListener = {
                 localStorage.madesktopBgHtmlSrc = url;
             }
         }
-        if (properties.additem) {
+        if (properties.additem || properties.openproperties) {
             if (!properties.bgcolor) { // Ignore if this is a startup event
                 alert("Please close ChannelViewer first then try again.");
-            }
-        }
-        if (properties.leftmargin) {
-            const str = isNaN(properties.leftmargin.value) ? properties.leftmargin.value : properties.leftmargin.value + 'px';
-            container.style.marginLeft = str;
-            localStorage.madesktopChanViewLeftMargin = str;
-        }
-        if (properties.rightmargin) {
-            const str = isNaN(properties.rightmargin.value) ? properties.rightmargin.value : properties.rightmargin.value + 'px';
-            container.style.marginRight = str;
-            localStorage.madesktopChanViewRightMargin = str;
-        }
-        if (properties.sysplugintegration) {
-            if (!properties.bgcolor) { // Ignore if this is a startup event
-                if (properties.sysplugintegration.value) {
-                    localStorage.sysplugIntegration = true;
-                    location.href = 'index.html';
-                } else {
-                    localStorage.removeItem("sysplugIntegration");
-                    if (localStorage.madesktopColorScheme == "sys") localStorage.removeItem("madesktopColorScheme");
-                }
-            }
-        }
-        if (properties.openwith) {
-            if (!properties.bgcolor) { // Ignore if this is a startup event
-                // This should never happen
-                location.href = 'index.html';
-            }
-        }
-        if (properties.colorscheme || properties.colorscheme2) {
-            const value = localStorage.sysplugIntegration ? properties.colorscheme.value : properties.colorscheme2.value;
-            changeColorScheme(value);
-            if (!properties.leftmargin) changeBgColor("var(--background)"); // Don't change the background color if this is a startup event
-            localStorage.madesktopColorScheme = value;
-        }
-        if (properties.scale) {
-            if (!properties.bgcolor) { // Ignore if this is a startup event
-                const value = properties.scale.value;
-                changeScale(value == "custom" ? localStorage.madesktopLastCustomScale : properties.scale.value);
-                localStorage.madesktopScaleFactor = scaleFactor;
-            }
-        }
-        if (properties.customscale) {
-            if (!properties.bgcolor) { // Ignore if this is a startup event
-                changeScale(properties.customscale.value / 100);
-                localStorage.madesktopScaleFactor = scaleFactor;
-                localStorage.madesktopLastCustomScale = scaleFactor;
-            }
-        }
-        if (properties.reset) {
-            if (!properties.bgcolor) { // Ignore if this is a startup event
-                if (confirm("If you want to reset all the configurations completely, please cancel now, click the big red Reset button below first, then click this button again and continue.")) {
-                    if (confirm("This will remove every configuration changes of ModernActiveDesktop you made. Are you sure you want to continue?")) {
-                        localStorage.clear();
-                        alert("Reset complete. The wallpaper will now reload.");
-                        location.href = 'index.html';
-                    }
-                }
             }
         }
     }
@@ -168,6 +110,15 @@ function changeBgType(type) {
 function changeBgColor(str) {
     document.body.style.backgroundColor = str;
     localStorage.madesktopBgColor = str;
+}
+
+// Toggle between "Pixelated MS Sans Serif" and just sans-serif
+function changeFont(isPixel) {
+    if (isPixel) {
+        fontElement.href = "css/nopixel.css";
+    } else {
+        fontElement.href = "";
+    }
 }
 
 function loadBgImgConf() {

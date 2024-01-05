@@ -6,36 +6,60 @@
     <link rel="stylesheet" href="../../css/98.css">
     <link rel="stylesheet" href="css/appearance.css">
     <link id="scheme" rel="stylesheet" href="data:text/css,">
+    <link id="font" rel="stylesheet" href="">
     <style id="style"></style>
 </head>
 <body>
     <div class="window-body">
         <menu role="tablist">
-            <li role="tab"><a id="generalBtn" href="#tabs">General</a></li>
-            <li role="tab" aria-selected="true"><a href="#tabs">Appearance</a></li>
+            <li class="tab" role="tab" data-pagename="background"><a id="generalBtn" href="#tabs">Background</a></li>
+            <li class="tab" role="tab" data-pagename="appearance" aria-selected="true"><a href="#tabs">Appearance</a></li>
+            <li class="tab" role="tab" data-pagename="misc"><a href="#tabs">Miscellaneous</a></li>
+            <li class="tab" role="tab" data-pagename="about"><a href="#tabs">About</a></li>
         </menu>
         <div class="window" role="tabpanel">
             <div class="window-body">
                 <div id="preview">
-                    <div id="msgbox" class="window" style="width: 300px">
+                    <div id="inactiveWindow" class="window">
+                        <div class="title-bar inactive">
+                            <div class="title-bar-text">Inactive Window</div>
+                            <div class="title-bar-controls">
+                                <button id="msgbox-close"></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="activeWindow" class="window">
                         <div class="title-bar">
-                            <div class="title-bar-text">ModernActiveDesktop</div>
+                            <div class="title-bar-text">Active Window</div>
+                            <div class="title-bar-controls">
+                                <button id="msgbox-close"></button>
+                            </div>
+                        </div>
+                        <div id="menu">
+                            <div id="normal">Normal</div>
+                            <div id="disabled">Disabled</div>
+                            <div id="selected">Selected</div>
+                        </div>
+                        <textarea>Window Text</textarea>
+                    </div>
+                    <div id="msgbox" class="window">
+                        <div class="title-bar">
+                            <div class="title-bar-text">Message Box</div>
                             <div class="title-bar-controls">
                                 <button id="msgbox-close"></button>
                             </div>
                         </div>
                         <div class="window-body">
-                            <p id="msgbox-msg">Message</p>
-                            <section class="field-row" style="justify-content: flex-end">
+                            <p id="msgbox-msg">Message Text</p>
+                            <section class="field-row" style="justify-content: center">
                                 <button id="msgbox-btn1">OK</button>
-                                <button id="msgbox-btn2">Cancel</button>
                             </section>
                         </div>
                     </div>
                 </div>
                 <div id="conf">
                     <p>Scheme:
-                    <select id="schemeSelector" onclick="madOpenDropdown(this)">
+                    <select id="schemeSelector">
                         <option selected hidden>Current Scheme</option>
                         <option value="98">Windows Classic (98)</option>
                         <option value="2k">Windows Standard (2000)</option>
@@ -91,7 +115,7 @@
                         <option value="win3_valentine">Win 3 - Valentine</option>
                         <option value="win3_wingtips">Win 3 - Wingtips</option>
                     </select></p>
-                    <select id="selector" onclick="madOpenDropdown(this)">
+                    <select id="selector">
                         <option value="button-alternate-face">3D Alternate Face</option>
                         <option value="button-dk-shadow">3D Dark Shadow</option>
                         <option value="button-face">3D Object</option>
@@ -125,11 +149,16 @@
                         <option value="window-text">Window Text</option>
                     </select>
                     <input id="colorPicker" type="color" value="#008080">
+
+                    <input id="systemColorChkBox" type="checkbox" disabled>
+                    <label for="systemColorChkBox" class="topmargin">Use system colors (system plugin required)</label><br>
+                    <input id="fontSmoothingChkBox" type="checkbox">
+                    <label for="fontSmoothingChkBox">Enable font smoothing</label>
                 </div>
                 <div id="notice">* Switch to any other window (non-MAD one) if the color picker does not show.</div>
             </div>
         </div>
-        <section class="field-row" style="justify-content: flex-end;">
+        <section class="topmargin field-row" style="justify-content: flex-end;">
             <button id="okBtn">OK</button>
             <button id="cancelBtn">Cancel</button>
             <button id="applyBtn">Apply</button>
@@ -137,6 +166,7 @@
     </div>
     
     <script src="../../js/libmad.js"></script>
-    <script src="js/appeaance.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/appearance.js"></script>
 </body>
 </html>

@@ -3,6 +3,7 @@ const bgHtmlContainer = document.getElementById("bgHtmlContainer");
 const bgHtmlView = document.getElementById("bgHtmlView");
 const bgVideoView = document.getElementById("bgVideo");
 const schemeElement = document.getElementById("scheme");
+const fontElement = document.getElementById("font");
 const styleElement = document.getElementById("style");
 const msgboxBg = document.getElementById("msgboxBg");
 const msgbox = document.getElementById("msgbox");
@@ -31,6 +32,7 @@ const NO_SYSPLUG_ALERT = "System plugin is not running. Please make sure you hav
 
 let lastZIndex = localStorage.madesktopItemCount || 0;
 let isContextMenuOpen = false;
+let activeWindow = 0;
 
 const WE = 1; // Wallpaper Engine
 const LW = 2; // Lively Wallpaper
@@ -39,8 +41,10 @@ window.runningMode = BROWSER;
 let origRunningMode = BROWSER;
 
 window.scaleFactor = 1;
-let vWidth = window.innerWidth;
-let vHeight = window.innerHeight;
+window.vWidth = window.innerWidth;
+window.vHeight = window.innerHeight;
+
+window.deskMovers = {};
 
 let debugLog = false;
 
@@ -54,36 +58,42 @@ if (localStorage.madesktopColorScheme) changeColorScheme(localStorage.madesktopC
 changeScale(localStorage.madesktopScaleFactor);
 if (localStorage.madesktopDebugMode) activateDebugMode();
 if (localStorage.madesktopDebugLog) toggleDebugLog();
+changeFont(localStorage.madesktopNoPixelFonts);
 
-window.deskMovers = {0: new DeskMover(windowContainers[0], "")};
+deskMovers[0] = new DeskMover(windowContainers[0], "");
 initSimpleMover(msgbox, msgboxTitlebar, [msgboxCloseBtn]);
 initSimpleMover(debugMenu, debugMenu, debugMenu.querySelectorAll("a"));
 
-// Migrate old config
+// Migrate old configs
 if (localStorage.madesktopNonADStyle) {
     for (let i = 0; i < localStorage.madesktopItemCount; i++) localStorage.setItem("madesktopItemStyle" + (i || ""), "nonad");
     localStorage.removeItem("madesktopNonADStyle");
     location.reload();
     throw new Error("Refreshing...");
 }
+if (localStorage.madesktopDestroyedItems) {
+    let openWindows = [0];
+    for (let i = 1; i < localStorage.madesktopItemCount; i++) {
+        if (!localStorage.madesktopDestroyedItems.includes(`|${i}|`)) {
+            openWindows[openWindows.length] = i;
+        }
+    }
+    localStorage.madesktopOpenWindows = openWindows;
+    localStorage.removeItem("madesktopDestroyedItems");
+}
 
 if (localStorage.madesktopItemCount) {
     if (localStorage.madesktopItemCount > 1) {
-        for (let i = 1; i < localStorage.madesktopItemCount; i++) {
-            // Check if the deskitem we're trying to initialize is destroyed or not
-            // Skip for deskitem 0 (the ChannelBar) - this design is to maintain backwards compatibility with old versions
-            // which supported only one deskitem
-            if (localStorage.madesktopDestroyedItems) {
-                if (!localStorage.madesktopDestroyedItems.includes(`|${i}|`)) {
-                    createNewDeskItem(i.toString());
-                }
-            } else {
-                createNewDeskItem(i.toString());
-            }
+        // Check if the deskitem we're trying to initialize is open or not
+        // Skip for deskitem 0 (the ChannelBar) - this design is to maintain backwards compatibility with old versions
+        // which supported only one deskitem
+        for (const i of localStorage.madesktopOpenWindows.split(',').slice(1)) {
+            createNewDeskItem(i.toString());
         }
     }
 } else {
     localStorage.madesktopItemCount = 1;
+    localStorage.madesktopOpenWindows = "0";
 }
 
 if ((localStorage.madesktopLastVer || "").startsWith("2.") && localStorage.madesktopLastVer != "2.4") { // Update from 2.x
@@ -127,20 +137,10 @@ window.addEventListener('contextmenu', function (event) {
     event.preventDefault();
 }, false);
 
-for (let i = 0; i < mainMenuItems.length; i++) {
-    const elem = mainMenuItems[i];
-    elem.onmouseover = function () {
-        elem.getElementsByTagName('u')[0].style.borderBottomColor = 'var(--hilight-text)';
-    }
-    elem.onmouseout = function () {
-        elem.getElementsByTagName('u')[0].style.borderBottomColor = 'var(--window-text)';
-    }
-}
-
 mainMenuItems[0].addEventListener('click', openWindow); // New button
 
 mainMenuItems[1].addEventListener('click', function() { // Properties button
-    openWindow("apps/madconf/general.html", false, "388px", "168px");
+    openWindow("apps/madconf/background.html", false, "388px", "168px");
 });
 
 msgboxBg.addEventListener('click', flashDialog);
@@ -155,27 +155,27 @@ window.addEventListener('resize', function () {
 window.wallpaperPropertyListener = {
     applyUserProperties: function(properties) {
         log(properties);
+
+        // Ignore if this is a startup event
+        if (properties.bgtype && properties.bgcolor) {
+            return;
+        }
+
         if (properties.bgtype) {
-            if (!properties.leftmargin) { // Ignore if this is a startup event
-                changeBgType(properties.bgtype.value);
-                localStorage.madesktopBgType = properties.bgtype.value;
-            }
+            changeBgType(properties.bgtype.value);
+            localStorage.madesktopBgType = properties.bgtype.value;
         }
         if (properties.bgcolor) {
-            if (!properties.leftmargin) { // Ignore if this is a startup event
-                changeBgColor(parseWallEngColorProp(properties.bgcolor.value));
-            }
+            changeBgColor(parseWallEngColorProp(properties.bgcolor.value));
         }
         if (properties.bgimg) {
-            if (!properties.leftmargin) { // Ignore if this is a startup event
-                if (properties.bgimg.value) {
-                    const path = "file:///" + properties.bgimg.value;
-                    document.body.style.backgroundImage = "url('" + path + "')";
-                    localStorage.madesktopBgImg = path;
-                } else {
-                    document.body.style.backgroundImage = 'none';
-                    localStorage.removeItem('madesktopBgImg');
-                }
+            if (properties.bgimg.value) {
+                const path = "file:///" + properties.bgimg.value;
+                document.body.style.backgroundImage = "url('" + path + "')";
+                localStorage.madesktopBgImg = path;
+            } else {
+                document.body.style.backgroundImage = 'none';
+                localStorage.removeItem('madesktopBgImg');
             }
         }
         if (properties.bgimgmode) {
@@ -183,121 +183,35 @@ window.wallpaperPropertyListener = {
             localStorage.madesktopBgImgMode = properties.bgimgmode.value;
         }
         if (properties.bgvideo) {
-            if (!properties.leftmargin) { // Ignore if this is a startup event
-                if (properties.bgvideo.value) {
-                    const path = "file:///" + properties.bgvideo.value;
-                    bgVideoView.src = path;
-                    localStorage.madesktopBgVideo = path;
-                } else {
-                    bgVideoView.src = "";
-                    localStorage.removeItem('madesktopBgVideo');
-                }
+            if (properties.bgvideo.value) {
+                const path = "file:///" + properties.bgvideo.value;
+                bgVideoView.src = path;
+                localStorage.madesktopBgVideo = path;
+            } else {
+                bgVideoView.src = "";
+                localStorage.removeItem('madesktopBgVideo');
             }
         }
         if (properties.bgvideomute) {
-            if (!properties.leftmargin) { // Ignore if this is a startup event
-                if (properties.bgvideomute.value) {
-                    bgVideoView.muted = true;
-                    localStorage.madesktopBgVideoMuted = true;
-                } else {
-                    bgVideoView.muted = false;
-                    localStorage.removeItem('madesktopBgVideoMuted');
-                }
+            if (properties.bgvideomute.value) {
+                bgVideoView.muted = true;
+                localStorage.madesktopBgVideoMuted = true;
+            } else {
+                bgVideoView.muted = false;
+                localStorage.removeItem('madesktopBgVideoMuted');
             }
         }
         if (properties.bghtmlurl) {
-            if (!properties.leftmargin) { // Ignore if this is a startup event
-                const url = properties.bghtmlurl.value || "bghtml/index.html";
-                if (url == "index.html") return; // This could cause untended behaviors
-                bgHtmlView.src = url;
-                localStorage.madesktopBgHtmlSrc = url;
-            }
+            const url = properties.bghtmlurl.value || "bghtml/index.html";
+            if (url == "index.html") return; // This could cause untended behaviors
+            bgHtmlView.src = url;
+            localStorage.madesktopBgHtmlSrc = url;
         }
         if (properties.additem) {
-            if (!properties.bgcolor) { // Ignore if this is a startup event
-                openWindow();
-            }
+            openWindow();
         }
-        if (properties.leftmargin) {
-            const str = isNaN(properties.leftmargin.value) ? properties.leftmargin.value : properties.leftmargin.value + 'px';
-            localStorage.madesktopChanViewLeftMargin = str;
-        }
-        if (properties.rightmargin) {
-            const str = isNaN(properties.rightmargin.value) ? properties.rightmargin.value : properties.rightmargin.value + 'px';
-            localStorage.madesktopChanViewRightMargin = str;
-        }
-        if (properties.playstartsnd) {
-            if (properties.playstartsnd.value) startup.play();
-            else {
-                startup.pause();
-                startup.currentTime = 0;
-            }
-        }
-        if (properties.sysplugintegration) {
-            if (!properties.bgcolor) { // Ignore if this is a startup event
-                if (properties.sysplugintegration.value) {
-                    localStorage.sysplugIntegration = true;
-
-                    fetch("http://localhost:3031/connecttest")
-                    .then(response => response.text())
-                    .then(responseText => {
-                        if (responseText != "OK") {
-                            madAlert("An error occurred!\nSystem plugin response: " + responseText);
-                        }
-                    })
-                    .catch(error => {
-                        madAlert(NO_SYSPLUG_ALERT, function() {
-                            openWindow("SysplugSetupGuide.md", true);
-                        });
-                    })
-                } else {
-                    localStorage.removeItem("sysplugIntegration");
-                    if (localStorage.madesktopColorScheme == "sys") localStorage.removeItem("madesktopColorScheme");
-                }
-            }
-        }
-        if (properties.openwith) {
-            if (!properties.bgcolor) { // Ignore if this is a startup event
-                if (localStorage.madesktopPrevOWConfigRequest != properties.openwith.value) {
-                    fetch("http://localhost:3031/config", { method: "POST", body: `{"openWith": ${properties.openwith.value}}` })
-                        .then(response => response.text())
-                        .then(responseText => {
-                            if (responseText != "OK") {
-                                madAlert("An error occurred!\nSystem plugin response: " + responseText);
-                            }
-                        })
-                        .catch(error => {
-                            madAlert(NO_SYSPLUG_ALERT, function() {
-                                openWindow("SysplugSetupGuide.md", true);
-                            });
-                        });
-                }
-            }
-            localStorage.madesktopPrevOWConfigRequest = properties.openwith.value;
-        }
-        if (properties.colorscheme) {
-            if (!properties.bgcolor) { // Ignore if this is a startup event
-                openWindow("apps/madconf/appearance.html", true, "480px", "402px", "wnd");
-            }
-        }
-        if (properties.scale) {
-            if (!properties.bgcolor) { // Ignore if this is a startup event
-                const value = properties.scale.value;
-                changeScale(value == "custom" ? localStorage.madesktopLastCustomScale : properties.scale.value);
-                localStorage.madesktopScaleFactor = scaleFactor;
-            }
-        }
-        if (properties.customscale) {
-            if (!properties.bgcolor) { // Ignore if this is a startup event
-                changeScale(properties.customscale.value / 100);
-                localStorage.madesktopScaleFactor = scaleFactor;
-                localStorage.madesktopLastCustomScale = scaleFactor;
-            }
-        }
-        if (properties.reset) {
-            if (!properties.bgcolor) { // Ignore if this is a startup event
-                madConfirm("If you want to reset all the configurations completely, first click the big red Reset button below, then click OK.", reset);
-            }
+        if (properties.openproperties) {
+            openWindow("apps/madconf/appearance.html", true, "500px", "450px", "wnd");
         }
     }
 };
@@ -313,7 +227,7 @@ function livelyPropertyListener(name, val) {
             changeBgColor(val);
             break;
         case "properties":
-            openWindow("apps/madconf/general.html", false, "388px", "168px");
+            openWindow("apps/madconf/appearance.html", false, "388px", "168px");
             break;
         default:
             wallpaperPropertyListener.applyUserProperties({ [name]: { value: val } });
@@ -344,7 +258,7 @@ function changeBgType(type) {
 }
 
 function changeBgColor(str) {
-    console.log(str);
+    log(str);
     document.body.style.backgroundColor = str;
     localStorage.madesktopBgColor = str;
 }
@@ -447,6 +361,31 @@ function changeScale(scale) {
     log({scaleFactor, vWidth, vHeight, dpi: 96 * scaleFactor});
 }
 
+// Toggle between "Pixelated MS Sans Serif" and just sans-serif
+function changeFont(isPixel) {
+    if (isPixel) {
+        fontElement.href = "css/nopixel.css";
+    } else {
+        fontElement.href = "";
+    }
+}
+
+// Change the 'open with' option of the system plugin, by sending a POST request to the system plugin
+function updateSysplugOpenOpt(option) {
+    fetch("http://localhost:3031/config", { method: "POST", body: `{"openWith": ${option}}` })
+        .then(response => response.text())
+        .then(responseText => {
+            if (responseText != "OK") {
+                madAlert("An error occurred!\nSystem plugin response: " + responseText);
+            }
+        })
+        .catch(error => {
+            madAlert("Failed to change the open option because system plugin was not running. Please install it first then try again.", function() {
+                openWindow("SysplugSetupGuide.md", true);
+            });
+        });
+}
+
 // Find the cursor position inside an element
 function findPos(elem) {
     let curleft = 0, curtop = 0;
@@ -535,7 +474,11 @@ function openWindow(openDoc, temp, width, height, style) {
     if (localStorage.madesktopItemVisible == "false" && !(typeof openDoc === "string" || openDoc instanceof String)) {
         windowContainers[0].style.display = "block";
         localStorage.removeItem("madesktopItemVisible");
+        activateWindow(0);
     } else {
+        if (!temp) {
+            localStorage.madesktopOpenWindows += `,${localStorage.madesktopItemCount}`;
+        }
         if (localStorage.madesktopItemVisible == "false") {
             windowContainers[0].style.display = "block";
             createNewDeskItem(localStorage.madesktopItemCount, openDoc, temp, width, height, style || (openDoc ? "wnd" : "ad"));
@@ -543,6 +486,7 @@ function openWindow(openDoc, temp, width, height, style) {
         } else {
             createNewDeskItem(localStorage.madesktopItemCount, openDoc, temp, width, height, style || (openDoc ? "wnd" : "ad"))
         }
+        activateWindow(localStorage.madesktopItemCount);
         localStorage.madesktopItemCount++;
     }
 }
@@ -571,16 +515,15 @@ function updateIframeScale() {
     } catch {
         // page did not load yet
     }
-    for (let i = 0; i < windowContainers.length; i++) {
+    for (const i in deskMovers) {
         try {
-			if (!deskMovers[i].config.unscaled) {
-                const iframe = windowContainers[i].getElementsByClassName("windowElement")[0];
+            if (!deskMovers[i].config.unscaled) {
+                const iframe = deskMovers[i].windowElement;
                 iframe.contentDocument.body.style.zoom = scaleFactor;
                 iframe.contentWindow.dispatchEvent(new Event("resize"));
             }
         } catch {
-            // attempting to do this on destroyed deskitems
-            // or page did not load yet
+            // page did not load yet
             // it works on external webpages thanks to the new WE iframe policy
         }
     }
@@ -659,15 +602,22 @@ function saveZOrder() {
     log(zOrders);
 }
 
-function activateWindow(num) {
+function activateWindow(num = activeWindow || 0) {
     deskMovers[num].windowTitlebar.classList.remove("inactive");
-    if (localStorage.madesktopNoDeactivate) return;
-    
-    deskMovers[num].config.active = true;
+    activeWindow = num;
+
+    if (!localStorage.madesktopNoDeactivate) {
+        deskMovers[num].config.active = true;
+    }
+
     for (const i in deskMovers) {
         if (i != num) {
-            deskMovers[i].windowTitlebar.classList.add("inactive");
-            deskMovers[i].config.active = false;
+            if (localStorage.madesktopNoDeactivate) {
+                deskMovers[i].windowTitlebar.classList.remove("inactive");
+            } else {
+                deskMovers[i].windowTitlebar.classList.add("inactive");
+                deskMovers[i].config.active = false;
+            }
         }
     }
 }
@@ -680,13 +630,13 @@ async function getFavicon(iframe) {
         const url = new URL(loc);
 
         // Get the favicon from the page
-        const iconElem = doc.querySelector("link[rel*='icon']") || doc.querySelector("link[rel*='shortcut icon']") || { href: '/favicon.ico' };
+        const iconElem = doc.querySelector("link[rel*='icon']") || doc.querySelector("link[rel*='shortcut icon']") || { href: url.origin + '/favicon.ico', notFound: true };
         let path = iconElem.href;
         log('Favicon path from page: ' + path);
 
         // Use the MAD icon for local files and data URLs
         if (loc.startsWith("file:///") || loc.startsWith("data:")) {
-            if (path == '/favicon.ico') {
+            if (iconElem.notFound) {
                 return 'icon.ico';
             } else {
                 return path;
@@ -732,6 +682,7 @@ function madAlert(msg, callback) {
         document.removeEventListener('keyup', keyup);
         msgboxBtn1.removeEventListener('click', close);
         msgboxCloseBtn.removeEventListener('click', close);
+        deskMovers[activeWindow].windowTitlebar.classList.remove("inactive");
     }
 }
 
@@ -771,6 +722,7 @@ function madConfirm(msg, callback) {
         msgboxBtn1.removeEventListener('click', ok);
         msgboxBtn2.removeEventListener('click', close);
         msgboxCloseBtn.removeEventListener('click', close);
+        deskMovers[activeWindow].windowTitlebar.classList.remove("inactive");
     }
 }
 
@@ -819,6 +771,7 @@ function madPrompt(msg, callback, hint, text) {
         msgboxInput.removeEventListener('keyup', ok);
         msgboxBtn2.removeEventListener('click', close);
         msgboxCloseBtn.removeEventListener('click', close);
+        deskMovers[activeWindow].windowTitlebar.classList.remove("inactive");
     }
 }
 
@@ -828,13 +781,16 @@ function preventDefault(event) {
 }
 
 function showDialog() {
+    if (!localStorage.madesktopNoDeactivate) {
+        deskMovers[activeWindow].windowTitlebar.classList.add("inactive");
+    }
     msgboxBg.style.display = "block";
     msgbox.style.top = vHeight / 2 - msgbox.offsetHeight / 2 + "px";
     msgbox.style.left = vWidth / 2 - msgbox.offsetWidth / 2 + "px";
 }
 
 function flashDialog() {
-    ding.play();
+    playSound("ding");
     let cnt = 1;
     let interval = setInterval(function () {
         if (cnt == 18) clearInterval(interval);
@@ -844,15 +800,30 @@ function flashDialog() {
     }, 60);
 }
 
-function reset(res) {
-    if (typeof res === "undefined" || res)
-    madConfirm("This will remove every configuration changes of ModernActiveDesktop you made. Are you sure you want to continue?", function (res) {
-        if (res) {
-            localStorage.clear();
-            location.reload(true);
-            throw new Error("Refreshing...");
+function playSound(sound) {
+    if (!localStorage.madesktopAlertSndMuted) {
+        switch (sound) {
+            case "chord":
+                chord.play();
+                break;
+            case "ding":
+                ding.play();
+                break;
         }
-    });
+    }
+}
+
+function reset(res) {
+    if (typeof res === "undefined" || res) {
+        playSound("chord");
+        madConfirm("This will remove every configuration changes of ModernActiveDesktop you made. Are you sure you want to continue?", function (res) {
+            if (res) {
+                localStorage.clear();
+                location.reload(true);
+                throw new Error("Refreshing...");
+            }
+        });
+    }
 }
 
 function log(str, level, caller = new Error().stack.split('\n')[2].trim().slice(3).split(' ')[0]) {
@@ -938,4 +909,5 @@ function showErrors() {
 document.getElementById("location").textContent = location.href;
 if (runningMode == WE) runningModeLabel.textContent = "Wallpaper Engine";
 origRunningMode = runningMode;
+if (!localStorage.madesktopStartSndMuted) startup.play();
 errorWnd.style.display = "none";

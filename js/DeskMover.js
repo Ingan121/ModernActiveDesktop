@@ -41,12 +41,6 @@ class DeskMover {
             }
         });
 
-        // Add to destroyed list first for temp items
-        // Will be destroyed on the next load
-        if (this.temp) {
-            localStorage.madesktopDestroyedItems += `|${this.numStr}|`;
-        }
-
         this.windowElement.dataset.num = numStr;
         this.windowContainer.querySelector(".windowNumber").textContent = this.numStr;
         
@@ -114,7 +108,7 @@ class DeskMover {
         
             this.contextMenuItems[3].addEventListener('click', () => { // Reload button
                 this.closeContextMenu();
-                location.reload();
+                this.windowElement.contentWindow.location.reload();
             });
         
             this.contextMenuItems[4].addEventListener('click', () => { // Close button
@@ -145,7 +139,22 @@ class DeskMover {
             this.confMenuItems[3].addEventListener('click', this.#toggleScale.bind(this)); // Scale contents button
             this.confMenuItems[4].addEventListener('click', this.#changeUrl.bind(this)); // Change URL button
             this.confMenuItems[5].addEventListener('click', this.#changeTitle.bind(this)); // Change title button
-        
+            
+            this.confMenuItems[6].addEventListener('click', () => { // New window button
+                this.closeContextMenu();
+                openWindow();
+            });
+
+            this.confMenuItems[7].addEventListener('click', () => { // Reload wallpaper button
+                this.closeContextMenu();
+                location.reload();
+            });
+
+            this.confMenuItems[8].addEventListener('click', () => { // Properties button
+                this.closeContextMenu();
+                openWindow("apps/madconf/appearance.html", true, "500px", "450px", "wnd");
+            });
+
             this.windowCloseBtn.addEventListener('click', this.closeWindow.bind(this));
             this.windowCloseBtnAlt.addEventListener('click', this.closeWindow.bind(this));
         
@@ -248,9 +257,11 @@ class DeskMover {
         if (this.numStr !== "") {
             this.windowContainer.style.display = "none";
             this.windowContainer.innerHTML = "";
-            localStorage.madesktopDestroyedItems += `|${this.numStr}|`;
+            let openWindows = localStorage.madesktopOpenWindows.split(',');
+            openWindows.splice(openWindows.indexOf(parseInt(this.numStr)), 1);
+            localStorage.madesktopOpenWindows = openWindows;
         } else {
-            ding.play();
+            playSound("ding");
             let msg = "";
             switch (window.runningMode) {
                 case WE:
@@ -354,6 +365,11 @@ class DeskMover {
                 this.confMenuItems[2].classList.add("activeStyle");
         }
         this.config.style = style;
+    }
+
+    locReplace(url) {
+        this.windowElement.src = url;
+        this.config.src = url;
     }
 
     moveTo(x, y) {
@@ -525,7 +541,7 @@ class DeskMover {
         this.windowIcon.src = await getFavicon(this.windowElement);
         
         if (!this.config.unscaled) {
-            this.windowElement.contentDocument.body.style.zoom = scaleFactor;
+            this.windowElement.contentDocument.body.style.zoom = window.scaleFactor;
         }
         hookIframeSize(this.windowElement, this.numStr);
     }
@@ -533,11 +549,11 @@ class DeskMover {
     #reset() {
         this.closeContextMenu();
         if (this.temp) {
-            ding.play();
+            playSound("ding");
             madAlert("This window is temporary, so it cannot be reset. Just close it.");
             return;
         }
-        chord.play();
+        playSound("chord");
         madConfirm("Are you sure you want to reset this window?", res => {
             if (res) {
                 this.config.width = null;

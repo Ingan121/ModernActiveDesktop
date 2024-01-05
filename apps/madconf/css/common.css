@@ -1,0 +1,21 @@
+@import '../../../css/marlett.css';
+
+body {
+    background-color: var(--button-face);
+    padding: 2px;
+    line-height: 16px;
+}
+
+p {
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+.topmargin, fieldset
+{
+    margin-top: 5px;
+}
+
+.shortInput {
+    width: 50px;
+}
