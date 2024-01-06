@@ -7,6 +7,6 @@
 ![Step 4](images/sysplug2.png)
 5. Enter 1.  
 ![Step 5](images/sysplug3.png)
-6. In the Wallpaper Engine properties panel, check the 'System plugin integration' option.  
+6. In the Properties window, check the 'Enable system plugin integration' option.  
 ![Step 6](images/sysplug4.png)
 7. You are all set!

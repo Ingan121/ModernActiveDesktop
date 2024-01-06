@@ -28,6 +28,16 @@
 		$button_group.append($bold, $italic, $underline, $vertical);
 		$fb.append($family, $size, $button_group);
 
+		$size.on("click", () => {
+			if (parent.runningMode === 1) {
+				madPrompt("Enter value :", function (res) {
+					if (res === null) return;
+					$size.val(res);
+					$size.trigger("input");
+				}, '', $size.val());
+			}
+		});
+
 		const update_font = () => {
 			text_tool_font.size = Number($size.val());
 			text_tool_font.family = $family.val();

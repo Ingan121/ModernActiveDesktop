@@ -8,6 +8,7 @@ async function main() {
     const colorPicker = document.getElementById("colorPicker");
     const systemColorChhkBox = document.getElementById("systemColorChkBox");
     const fontSmoothingChkBox = document.getElementById("fontSmoothingChkBox");
+    const importBtn = document.getElementById("importBtn");
 
     colorPicker.value = scheme[options[selector.selectedIndex].value];
 
@@ -25,7 +26,7 @@ async function main() {
     colorPicker.addEventListener("change", function() {
         const option = options[selector.selectedIndex].value;
         scheme[option] = colorPicker.value;
-        applyPreview(scheme);
+        applyPreview(scheme, fontSmoothingChkBox.checked);
     });
 
     systemColorChhkBox.addEventListener("change", async function() {
@@ -34,12 +35,24 @@ async function main() {
             selector.disabled = true;
             colorPicker.disabled = true;
             scheme = parseCssScheme(await getSchemeText("http://localhost:3031/systemscheme"));
-            applyPreview(scheme);
+            applyPreview(scheme, fontSmoothingChkBox.checked);
         } else {
             schemeSelector.disabled = false;
             selector.disabled = false;
             colorPicker.disabled = false;
         }
+    });
+
+    fontSmoothingChkBox.addEventListener("change", function() {
+        applyPreview(scheme, fontSmoothingChkBox.checked);
+    });
+
+    importBtn.addEventListener("click", async function() {
+        [fileHandle] = await window.showOpenFilePicker();
+        const file = await fileHandle.getFile();
+        const text = await file.text();
+        parent.changeColorScheme(text);
+        localStorage.madesktopColorScheme = "custom";
     });
 
     window.apply = function() {
@@ -70,6 +83,10 @@ async function main() {
     
     if (localStorage.madesktopNoPixelFonts) {
         fontSmoothingChkBox.checked = true;
+    }
+
+    if (localStorage.madesktopDebugMode) {
+        importBtn.style.display = "block";
     }
 }
 
@@ -118,10 +135,23 @@ async function getSchemeText(scheme = parent.document.getElementById("scheme").h
     }
 }
 
-function applyPreview(scheme) {
+function applyPreview(scheme, nopixel = false) {
     const styleElement = document.getElementById("style");
     const schemeText = generateCssScheme(scheme, "#preview");
     styleElement.textContent = schemeText;
+    if (nopixel) {
+        styleElement.textContent += `
+            #preview * {
+                font-family: 'Segoe UI', sans-serif !important;
+            }
+        `;
+    } else {
+        styleElement.textContent += `
+            #preview * {
+                font-family: "Pixelated MS Sans Serif" !important;
+            }
+        `;
+    }
 }
 
 function applyScheme(scheme) {

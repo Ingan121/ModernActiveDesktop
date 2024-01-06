@@ -2,6 +2,7 @@ const bgHtmlView = document.getElementById("bgHtml");
 const iframe = document.getElementById("iframe");
 const container = document.getElementById("container");
 const schemeElement = document.getElementById("scheme");
+const fontElement = document.getElementById("font");
 let scaleFactor = 1;
 
 // Load configs
@@ -159,10 +160,18 @@ function changeBgImgMode(value) {
 }
 
 function changeColorScheme(scheme) {
-    if (scheme == "98") schemeElement.href = "data:text/css,";
-    else if (scheme != "sys") schemeElement.href = `schemes/${scheme}.css`;
-    else {
-        if (localStorage.madesktopSysColorCache) schemeElement.href = localStorage.madesktopSysColorCache;
+    if (scheme === "98") {
+        schemeElement.href = "data:text/css,";
+    } else if (scheme === "custom") {
+        schemeElement.href = localStorage.madesktopCustomColor;
+    } else if (scheme.split('\n').length > 1) {
+        const dataURL = `data:text/css,${encodeURIComponent(scheme)}`;
+        schemeElement.href = dataURL;
+        localStorage.madesktopCustomColor = dataURL;
+    } else if (scheme === "sys") {
+        if (localStorage.madesktopSysColorCache) {
+            schemeElement.href = localStorage.madesktopSysColorCache;
+        }
 
         fetch("http://localhost:3031/systemscheme")
             .then(response => response.text())
@@ -174,6 +183,8 @@ function changeColorScheme(scheme) {
             .catch(error => {
                 // Ignore it as SysPlug startup is slower than high priority WE startup
             })
+    } else {
+        schemeElement.href = `schemes/${scheme}.css`;
     }
 }
 

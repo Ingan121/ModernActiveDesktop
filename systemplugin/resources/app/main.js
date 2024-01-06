@@ -28,6 +28,8 @@ let mainWindow = null;
 let cvNumber = 0;
 
 const configPath = app.getPath('userData') + '/config.json';
+const tempFilePath = app.getPath('temp') + '/madsp-uploaded.dat';
+
 if (!fs.existsSync(configPath)) { // Setup initial config
   fs.writeFileSync(configPath, '{"theme":"98", "openWith":1}');
 }
@@ -395,7 +397,37 @@ function onRequest(req, res) {
         res.writeHead(406, {'Content-Type':'text/html'});
         res.end('<h1>406 Not Acceptable</h1><p>Usage: send a POST request with a URL in the request body</p>')
       }
-      return;
+      break;
+    
+    case '/save':
+      if (req.method === 'POST') {
+        try {
+          const stream = fs.createWriteStream(tempFilePath);
+          req.pipe(stream);
+          stream.on('finish', () => {
+            const options = {
+              defaultPath : app.getPath('pictures'),
+              filters : [
+                  {name: req.headers['x-format-name'], extensions: [req.headers['x-format-extension'].slice(1)]},
+                  {name: 'All Files', extensions: ['*']}
+              ]
+            };
+            console.log(req.headers);
+            const savePath = dialog.showSaveDialogSync(null, options);
+            if (!savePath) {
+              res.writeHead(500);
+              res.end('Aborted');
+              return;
+            }
+            fs.copyFileSync(tempFilePath, savePath);
+            res.end(path.basename(savePath));
+          });
+        } catch (e) {
+          res.writeHead(500)
+          res.end(e);
+        }
+      }
+      break;
 
     case '/config':
       if (req.method === 'POST') {
@@ -419,33 +451,33 @@ function onRequest(req, res) {
         res.writeHead(406, {'Content-Type':'text/html'});
         res.end('<h1>406 Not Acceptable</h1><p>Usage: send a POST request with a JSON with the following format:<br><pre>{"openWith": number}</pre><br>0: Classic style channel viewer<br>1: Classic style channel viewer (fullscreen)<br>2: System default browser</p>')
       }
-      return;
+      break;
 
     case '/systemscheme':
       res.writeHead(200, {'Content-Type':'text/css'});
       res.end(generateCssScheme());
-      return;
+      break;
       
     case '/connecttest':
       res.writeHead(200, {'Content-Type':'text/html'});
       res.end('OK');
-      return;
+      break;
 
     case '/debugger':
       res.writeHead(200, {'Content-Type':'text/html'});
       res.end('<span style="font-family:monospace">debugger</span> statement activated (if a node debugger has been attached)');
       debugger;
-      return;
+      break;
 
     case '/favicon.ico':
       res.writeHead(200, {'Content-Type':'image/vnd.microsoft.icon'});
       res.end(fs.readFileSync(path.join(__dirname, 'icon.ico')));
-      return;
+      break;
 
     case '/':
       res.writeHead(200, {'Content-Type':'text/html'});
       res.end(`<h1>ModernActiveDesktop System Plugin ${app.getVersion()} Web Interface</h1><p>Available pages:<br><a href="/open">/open</a><br><a href="/config">/config</a><br><a href="/systemscheme">/systemscheme</a><br><a href="/connecttest">/connecttest</a><br><a href="/debugger">/debugger</a></p>`)
-      return;
+      break;
 
     default:
       res.writeHead(404);

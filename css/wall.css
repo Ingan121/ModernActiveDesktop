@@ -121,7 +121,7 @@ body {
     display: none;
 }
 
-.windowContainer > .title-bar > .title-bar-text {
+.windowContainer .title-bar-text {
     margin-left: 18px;
 }
 
@@ -171,23 +171,23 @@ body {
     display: none !important;
 }
 
-.title-bar > .title-bar-text {
+.title-bar .title-bar-text {
     display: block;
 }
 
-.inactive > .title-bar-text {
+.inactive .title-bar-text {
     color: var(--inactive-title-text);
 }
 
-.title-bar > .title-bar-controls > .windowIcon {
+.title-bar .windowIcon {
     display: block;
 }
 
-.title-bar > .title-bar-controls > .windowCloseBtnAlt {
+.title-bar .windowCloseBtnAlt {
     display: block !important;
 }
 
-.title-bar > .title-bar-controls > .windowBtn {
+.title-bar .windowBtn {
     display: none;
 }
 
@@ -226,7 +226,7 @@ body {
     pointer-events: auto !important;
 }
 
-.contextMenuItem > p {
+.contextMenuItem p {
     margin: 0;
     padding-top: 2px;
 }
@@ -239,19 +239,19 @@ body {
     padding-left: 20px;
 }
 
-.contextMenuItem.activeStyle > p,
-.contextMenuItem.checkedItem > p {
+.contextMenuItem.activeStyle p,
+.contextMenuItem.checkedItem p {
     line-height: 10px;
 }
 
-.contextMenuItem.activeStyle > p::before {
+.contextMenuItem.activeStyle p::before {
     content: "●";
     font-size: 15px;
     margin-left: 4px;
     margin-right: 7px;
 }
 
-.contextMenuItem.checkedItem > p::before {
+.contextMenuItem.checkedItem p::before {
     font-family: "marlett-icons";
     content: "\e903";
     font-size: 15px;
@@ -338,7 +338,7 @@ body {
     border: dotted 1px var(--hilight-inverted);
 }
 
-.confMenu > hr {
+.confMenu hr {
     margin-top: 3px;
     margin-bottom: 4px;
 }
@@ -393,13 +393,27 @@ body {
     position: absolute;
     top: 50%;
     left: 50%;
+    min-width: 300px;
     z-index: 99997;
+}
+
+#msgbox-icon {
+    width: 32px;
+    height: 32px;
+    margin-top: 4px;
+    margin-left: 3px;
+    margin-right: 12px;
+    image-rendering: pixelated;
 }
 
 #msgbox-input {
     width: 100%;
-    margin-top: -5px;
     margin-bottom: 10px;
+}
+
+#msgbox-buttons {
+    margin-top: 14px;
+    margin-bottom: 12px;
 }
 
 #errorWnd {

@@ -75,7 +75,37 @@
         }
     });
 
-    window.madOpenWindow = parent.openWindow;
+    // jspaint stuff
+    window.systemHooks = {
+        setWallpaperTiled: (canvas) => {
+            canvas.toBlob((blob) => {
+                const reader = new FileReader();
+                reader.onload = function () {
+                    parent.changeBgImgMode("grid");
+                    localStorage.madesktopBgImgMode = "grid";
+                    const b64str = reader.result.split(";base64,")[1];
+                    parent.document.body.style.backgroundImage = "url('data:image/png;base64," + b64str + "')";
+                    localStorage.madesktopBgImg = b64str;
+                };
+                reader.readAsDataURL(blob);
+            });
+        },
+        setWallpaperCentered: (canvas) => {
+            canvas.toBlob((blob) => {
+                const reader = new FileReader();
+                reader.onload = function () {
+                    parent.changeBgImgMode("center");
+                    localStorage.madesktopBgImgMode = "center";
+                    const b64str = reader.result.split(";base64,")[1];
+                    parent.document.body.style.backgroundImage = "url('data:image/png;base64," + b64str + "')";
+                    localStorage.madesktopBgImg = b64str;
+                };
+                reader.readAsDataURL(blob);
+            });
+        }
+    };
+
+    window.madDeskMover = deskMover;
 
     window.madOpenDropdown = function(elem) {
         const dummy = dropdownBg.querySelector(".dropdownItem");
@@ -137,9 +167,11 @@
         parent.iframeClickEventCtrl(true);
     }
 
+    window.madOpenWindow = parent.openWindow;
     window.madLocReplace = deskMover.locReplace.bind(deskMover);
     window.madResizeTo = deskMover.resizeTo.bind(deskMover);
     window.madMoveTo = deskMover.moveTo.bind(deskMover);
+    window.madChangeWndStyle = deskMover.changeWndStyle.bind(deskMover);
     window.madCloseWindow = deskMover.closeWindow.bind(deskMover);
 
     window.madAlert = parent.madAlert;

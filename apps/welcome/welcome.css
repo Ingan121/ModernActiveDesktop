@@ -1,0 +1,170 @@
+@keyframes appear {
+    0% {
+        opacity: 0;
+    }
+    99% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes barAnim {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+@keyframes borderAnim {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+
+}
+
+body {
+    width: 476px;
+    height: 288px;
+    overflow: hidden;
+    background-color: white;
+    background-image: url(background.bmp);
+    background-repeat: no-repeat;
+    color: black;
+}
+
+#author {
+    position: absolute;
+    top: 19px;
+    left: 37px;
+}
+
+#logo {
+    position: absolute;
+    top: 12px;
+    left: 90px;
+    width: 32px;
+    height: 32px;
+    font-family: sans-serif;
+}
+
+#title {
+    position: absolute;
+    top: 19px;
+    left: 42px;
+    font-size: 22px;
+    font-weight: bold;
+    font-family: sans-serif;
+}
+
+#bar {
+    position: absolute;
+    top: 44px;
+    left: 0;
+    animation: barAnim 0.25s;
+    animation-timing-function: linear;
+}
+
+#contentsTitle {
+    position: absolute;
+    top: 81px;
+    left: 0;
+    width: 180px;
+    height: 15px;
+    font-size: 12px;
+    background-color: black;
+    animation: appear 0.5s;
+}
+
+#contentsTitle img {
+    position: absolute;
+    top: 4px;
+    left: 13px;
+}
+
+.items {
+    position: absolute;
+    left: 0;
+    width: 180px;
+    height: 26px;
+    font-family: "Pixelated MS Sans Serif";
+    font-weight: bold;
+    margin-top: 2px;
+}
+
+.items .itemText {
+    position: relative;
+    top: 7px;
+    left: 9px;
+}
+
+#item1 {
+    top: 94px;
+    border-left: solid 4px #009cff;
+    animation: appear 1.5s;
+}
+
+#item2 {
+    top: 120px;
+    border-left: solid 4px #ff3100;
+    animation: appear 1.75s;
+}
+
+#item3 {
+    top: 146px;
+    border-left: solid 4px #6bce39;
+    animation: appear 2s;
+}
+
+#item4 {
+    top: 172px;
+    border-left: solid 4px #ffcc00;
+    animation: appear 2.25s;
+}
+
+.lines {
+    position: absolute;
+    left: 0;
+    width: 180px;
+    height: 2px;
+    background-color: #c0c0c0;
+    animation: 0.5s linear 0.75s borderAnim both;
+}
+
+#line1 {
+    top: 96px;
+}
+
+#line2 {
+    top: 122px;
+}
+
+#line3 {
+    top: 148px;
+}
+
+#line4 {
+    top: 174px;
+}
+
+#line5 {
+    top: 200px;
+}
+
+label[for="showWelcome"] {
+    position: absolute !important;
+    left: 12px;
+    bottom: 9px;
+}
+
+#closeBtn {
+    position: absolute;
+    right: 9px;
+    bottom: 6px;
+}

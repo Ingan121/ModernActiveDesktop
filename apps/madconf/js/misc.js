@@ -189,11 +189,11 @@ rightIconArea.addEventListener('change', function() {
 connectTestBtn.addEventListener('click', checkSysplug);
 
 showGuideBtn.addEventListener('click', function() {
-    madOpenWindow("SysplugSetupGuide.md");
+    madOpenWindow("SysplugSetupGuide.md", true);
 });
 
 resetBtn.addEventListener('click', function() {
-    madConfirm("If you want to reset all the configurations completely, first click the big red Reset button below, then click OK.", parent.reset);
+    madConfirm("If you want to reset all the configurations completely, first click the big red Reset button in the Wallpaper Engine properties panel, then click OK.", parent.reset);
 });
 
 function checkSysplug() {
@@ -203,7 +203,7 @@ function checkSysplug() {
         .then(responseText => {
             if (responseText != "OK") {
                 connectionStatus.textContent = "An error occurred while connecting with the system plugin.";
-                madAlert("An error occurred!\nSystem plugin response: " + responseText);
+                madAlert("An error occurred!\nSystem plugin response: " + responseText, null, "error");
             } else {
                 connectionStatus.textContent = "System plugin connection successful!";
             }

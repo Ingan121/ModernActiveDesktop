@@ -452,13 +452,25 @@
 				});
 				$right.append(label, input);
 
+				input.addEventListener("click", function() {
+					if (parent.runningMode === 1) {
+						madPrompt("Enter value :", function (res) {
+							if (res === null) return;
+							input.value = res;
+							handle_input(input);
+						}, '', input.value);
+					}
+				});
+
 				inputs_by_component_letter[component_letter] = input;
 			});
 		});
 
 		// listening for input events on input elements using event delegation (looks a little weird)
 		$right.on("input", "input", (event) => {
-			const input = event.target;
+			handle_input(event.target);
+		});
+		const handle_input = function (input) {
 			const component_letter = input.dataset.componentLetter;
 			if (component_letter) {
 				// In Windows, it actually only updates if the numerical value changes, not just the text.
@@ -501,7 +513,7 @@
 					input.select();
 				}
 			}
-		});
+		}
 		$right.on("focusout", "input", (event) => {
 			const input = event.target;
 			const component_letter = input.dataset.componentLetter;

@@ -86,6 +86,7 @@ function set_all_url_params(params, { replace_history_state = false } = {}) {
 		} else {
 			history.pushState(null, document.title, new_url);
 		}
+		window.madDeskMover.config.jspaintHash = new_hash;
 	} catch (error) {
 		location.hash = new_hash;
 	}
@@ -411,6 +412,13 @@ function show_custom_zoom_window() {
 	const $really_custom_input = $fieldset.find("input[name='really-custom-zoom-input']");
 
 	$really_custom_input.closest("label").on("click", (event) => {
+		if (parent.runningMode === 1) {
+			madPrompt("Enter value :", function (res) {
+				if (res === null) return;
+				$really_custom_input.val(res);
+				$really_custom_input.trigger("input");
+			}, '', $really_custom_input.val());
+		}
 		$really_custom_radio_option.prop("checked", true);
 		// If the user clicks on the input, let it get focus naturally, placing the caret where you click.
 		// If the user clicks outside it on the label, focus the input and select the text.
@@ -993,6 +1001,15 @@ function file_load_from_url() {
 		</div>
 	`);
 	const $input = $w.$main.find("#url-input");
+	$input.on("click", () => {
+		if (parent.runningMode === 1) {
+			madPrompt("Enter value :", function (res) {
+				if (res === null) return;
+				$input.val(res);
+				$input.trigger("input");
+			}, '', $input.val());
+		}
+	});
 	// $w.$Button("Load", () => {
 	$w.$Button(localize("Open"), () => {
 		const uris = get_uris($input.val());
@@ -2853,6 +2870,18 @@ function image_attributes() {
 	const $width = $(E("input")).attr({ type: "number", min: 1, "aria-keyshortcuts": "Alt+W W W" }).addClass("no-spinner inset-deep").appendTo($width_label);
 	const $height = $(E("input")).attr({ type: "number", min: 1, "aria-keyshortcuts": "Alt+H H H" }).addClass("no-spinner inset-deep").appendTo($height_label);
 
+	for (const elem of [$width, $height]) {
+		elem.on("click", () => {
+			if (parent.runningMode === 1) {
+				madPrompt("Enter value :", function (res) {
+					if (res === null) return;
+					elem.val(res);
+					elem.trigger("input");
+				}, '', elem.val());
+			}
+		});
+	}
+
 	$main.find("input")
 		.css({ width: "40px" })
 		.on("change keyup keydown keypress pointerdown pointermove paste drop", () => {
@@ -3129,6 +3158,17 @@ function image_flip_and_rotate() {
 		$fieldset.find("input[value='arbitrary']").prop("checked", true);
 	});
 
+	const $arbitrary = $fieldset.find("input[name='rotate-by-arbitrary-angle']");
+	$arbitrary.on("click", () => {
+		if (parent.runningMode === 1) {
+			madPrompt("Enter value :", function (res) {
+				if (res === null) return;
+				$arbitrary.val(res);
+				$arbitrary.trigger("input");
+			}, '', $arbitrary.val());
+		}
+	});
+
 	$w.$Button(localize("OK"), () => {
 		const action = $fieldset.find("input[name='flip-or-rotate']:checked").val();
 		switch (action) {
@@ -3211,6 +3251,18 @@ function image_stretch_and_skew() {
 	const stretch_y = $RowInput($fieldset_stretch.find("table"), "stretch-y", localize("&Vertical:"), 100, "%", 1, 5000);
 	const skew_x = $RowInput($fieldset_skew.find("table"), "skew-x", localize("H&orizontal:"), 0, localize("Degrees"), -90, 90);
 	const skew_y = $RowInput($fieldset_skew.find("table"), "skew-y", localize("V&ertical:"), 0, localize("Degrees"), -90, 90);
+
+	for (const elem of [stretch_x, stretch_y, skew_x, skew_y]) {
+		elem.on("click", () => {
+			if (parent.runningMode === 1) {
+				madPrompt("Enter value :", function (res) {
+					if (res === null) return;
+					elem.val(res);
+					elem.trigger("input");
+				}, '', elem.val());
+			}
+		});
+	}
 
 	$w.$Button(localize("OK"), () => {
 		const x_scale = parseFloat(stretch_x.val()) / 100;
@@ -3337,11 +3389,22 @@ function save_as_prompt({
 		$w.$main.append(`
 			<label>
 				Save as type:
-				<select class="file-type-select inset-deep"></select>
+				<select class="file-type-select inset-deep" onclick="madOpenDropdown(this)"></select>
 			</label>
 		`);
 		const $file_type = $w.$main.find(".file-type-select");
 		const $file_name = $w.$main.find(".file-name");
+
+		// MAD Additions
+		$file_name.on("click", () => {
+			if (parent.runningMode === 1) {
+				madPrompt("Enter value :", function (res) {
+					if (res === null) return;
+					$file_name.val(res);
+					$file_name.trigger("input");
+				}, '', $file_name.val());
+			}
+		});
 
 		for (const format of formats) {
 			$file_type.append($("<option>").val(format.formatID).text(format.nameWithExtensions));

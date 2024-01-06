@@ -18,6 +18,10 @@
     z-index: 1;
 }
 
+.inactive > .title-bar-text {
+    color: var(--inactive-title-text);
+}
+
 #activeWindow {
     position: absolute;
     width: 400px;
@@ -84,6 +88,10 @@ textarea {
     width: 200px;
 }
 
+label[for=systemColorChkBox] {
+    margin-top: 10px;
+}
+
 #notice {
     font-size: 12px;
     margin-top: 5px;
@@ -96,4 +104,8 @@ textarea {
     position: relative;
     top: 0.2px;
     left: -0.1px;
+}
+
+#importBtn {
+    display: none;
 }

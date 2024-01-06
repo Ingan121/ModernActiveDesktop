@@ -70,7 +70,7 @@
         </div>
     </div>
     <div id="msgboxBg">
-        <div id="msgbox" class="window" style="width: 300px">
+        <div id="msgbox" class="window">
             <div class="title-bar">
                 <div class="title-bar-text">ModernActiveDesktop</div>
                 <div class="title-bar-controls">
@@ -78,9 +78,12 @@
                 </div>
             </div>
             <div class="window-body">
-                <p id="msgbox-msg">Message</p>
+                <section class="field-row">
+                    <img id="msgbox-icon" src="images/info.png">
+                    <p id="msgbox-msg">Message</p>
+                </section>
                 <input id="msgbox-input" type="text">
-                <section class="field-row" style="justify-content: flex-end">
+                <section id="msgbox-buttons" class="field-row" style="justify-content: center;">
                     <button id="msgbox-btn1">OK</button>
                     <button id="msgbox-btn2">Cancel</button>
                 </section>
@@ -94,7 +97,7 @@
         <button onclick="copyLog();">Copy log</button> <button onclick="location.reload(true);">Retry</button> <button onclick="errorWnd.style.display='none';">Ignore</button>
     </div>
     <div id="debug" class="debug">
-        <span>ModernActiveDesktop 2.4 Pre-release 6</span><br>
+        <span>ModernActiveDesktop 2.4 Pre-release 7</span><br>
         <span>Loaded from <span id="location"></span></span><br>
         <span>Running in <span id="runmode">browser</span><span id="simmode"></span></span><br>
         <span>Debug mode</span><br>

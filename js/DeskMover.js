@@ -24,18 +24,32 @@ class DeskMover {
         this.mousePosition, this.posInWindow, this.posInContainer;
         this.offset = [0, 0];
         this.isDown = false, this.resizingMode = "none", this.mouseOverWndBtns = false;
-        this.timeout, this.timeout2;
+
+        this.timeout; // for handling ActiveDesktop style window frame hiding
+        this.timeout2; // for handling context menu auto closing
+
+        this.contextMenuOpening = false;
+        this.shouldNotCloseConfMenu = false;
+
         this.prevOffsetRight, this.prevOffsetBottom;
 
-        this.config = new Proxy({}, {
+        let tempConfigStorage = {};
+        this.config = new Proxy(tempConfigStorage, {
             get(target, key) {
+                if (temp) {
+                    return target[key];
+                }
                 return localStorage.getItem("madesktopItem" + key[0].toUpperCase() + key.slice(1) + numStr);
             },
             set(target, key, value) {
-                if (value !== false && value !== null && value !== undefined) {
-                    localStorage.setItem("madesktopItem" + key[0].toUpperCase() + key.slice(1) + numStr, value);
+                if (temp) {
+                    target[key] = value;
                 } else {
-                    localStorage.removeItem("madesktopItem" + key[0].toUpperCase() + key.slice(1) + numStr);
+                    if (value !== false && value !== null && value !== undefined) {
+                        localStorage.setItem("madesktopItem" + key[0].toUpperCase() + key.slice(1) + numStr, value);
+                    } else {
+                        localStorage.removeItem("madesktopItem" + key[0].toUpperCase() + key.slice(1) + numStr);
+                    }
                 }
                 return true;
             }
@@ -103,14 +117,14 @@ class DeskMover {
                 debugger;
             });
             // Don't hide any menu on debug mouseover because it's better for debugging
-        
+            
             this.contextMenuItems[2].addEventListener('click', this.#reset.bind(this)); // Reset button
-        
+            
             this.contextMenuItems[3].addEventListener('click', () => { // Reload button
                 this.closeContextMenu();
                 this.windowElement.contentWindow.location.reload();
             });
-        
+            
             this.contextMenuItems[4].addEventListener('click', () => { // Close button
                 this.closeContextMenu();
                 this.closeWindow();
@@ -120,7 +134,19 @@ class DeskMover {
             this.contextMenuItems[2].addEventListener('mouseover', this.#delayedCloseConfMenu.bind(this));
             this.contextMenuItems[3].addEventListener('mouseover', this.#delayedCloseConfMenu.bind(this));
             this.contextMenuItems[4].addEventListener('mouseover', this.#delayedCloseConfMenu.bind(this));
+            
+            this.contextMenuBg.addEventListener('mouseleave', () => {
+                this.#delayedCloseConfMenu(200);
+            });
 
+            this.confMenuBg.addEventListener('mouseover', () => {
+                this.shouldNotCloseConfMenu = true;
+                this.contextMenuItems[0].dataset.active = true;
+            });
+            this.confMenuBg.addEventListener('mouseleave', () => {
+                this.shouldNotCloseConfMenu = false;
+            });
+            
             this.confMenuItems[0].addEventListener('click', () => { // Active Desktop style button
                 this.closeContextMenu();
                 this.changeWndStyle("ad");
@@ -135,7 +161,7 @@ class DeskMover {
                 this.closeContextMenu();
                 this.changeWndStyle("wnd");
             });
-        
+            
             this.confMenuItems[3].addEventListener('click', this.#toggleScale.bind(this)); // Scale contents button
             this.confMenuItems[4].addEventListener('click', this.#changeUrl.bind(this)); // Change URL button
             this.confMenuItems[5].addEventListener('click', this.#changeTitle.bind(this)); // Change title button
@@ -217,7 +243,7 @@ class DeskMover {
                 this.changeWndStyle("ad");
             }
             if (this.numStr !== "") {
-                let url = WINDOW_PLACEHOLDER;
+                let url = "placeholder.html";
                 if ((typeof openDoc === "string" || openDoc instanceof String) && !reinit) {
                     this.windowElement.width = width || '800px';
                     this.windowElement.height = height || '600px';
@@ -257,9 +283,13 @@ class DeskMover {
         if (this.numStr !== "") {
             this.windowContainer.style.display = "none";
             this.windowContainer.innerHTML = "";
-            let openWindows = localStorage.madesktopOpenWindows.split(',');
-            openWindows.splice(openWindows.indexOf(parseInt(this.numStr)), 1);
-            localStorage.madesktopOpenWindows = openWindows;
+            if (!this.temp) {
+                this.#clearConfig();
+                let openWindows = localStorage.madesktopOpenWindows.split(',');
+                openWindows.splice(openWindows.indexOf(this.numStr), 1);
+                localStorage.madesktopOpenWindows = openWindows;
+            }
+            delete deskMovers[this.numStr];
         } else {
             playSound("ding");
             let msg = "";
@@ -283,15 +313,35 @@ class DeskMover {
     openContextMenu(event) {
         this.contextMenuBg.style.display = "block";
         this.boundCloseContextMenu = this.closeContextMenu.bind(this);
+
+        this.contextMenuOpening = null;
         setTimeout(() => {
-            document.addEventListener('click', this.boundCloseContextMenu);
-            iframeClickEventCtrl(false);
-        }, 100);
+            this.contextMenuOpening = this.posInContainer;
+        }, 1);
+        setTimeout(() => {
+            this.contextMenuOpening = false;
+        }, 500);
+
+        document.addEventListener('click', this.boundCloseContextMenu);
+        iframeClickEventCtrl(false);
         isContextMenuOpen = true;
         event.preventDefault();
     }
-
+    
     closeContextMenu() {
+        log(`contextMenuOpening: ${this.contextMenuOpening}`);
+        if (this.contextMenuOpening) {
+            if (this.contextMenuOpening === this.posInContainer)
+            {
+                this.closeWindow();
+                return;
+            }
+        }
+        if (this.contextMenuOpening === null) {
+            return;
+        }
+
+        this.shouldNotCloseConfMenu = false;
         this.contextMenuBg.style.display = "none";
         document.removeEventListener('click', this.boundCloseContextMenu);
         this.closeConfMenu();
@@ -306,12 +356,18 @@ class DeskMover {
     }
     
     closeConfMenu() {
+        if (this.shouldNotCloseConfMenu) {
+            return
+        }
         delete this.contextMenuItems[0].dataset.active;
         this.confMenuBg.style.display = "none";
     }
     
-    #delayedCloseConfMenu() { 
-        this.timeout2 = setTimeout(this.closeConfMenu.bind(this), 300);
+    #delayedCloseConfMenu(delay) { 
+        if (typeof delay !== "number") {
+            delay = 300;
+        }
+        setTimeout(this.closeConfMenu.bind(this), delay);
     }
 
     changeWndStyle(style) {
@@ -556,16 +612,7 @@ class DeskMover {
         playSound("chord");
         madConfirm("Are you sure you want to reset this window?", res => {
             if (res) {
-                this.config.width = null;
-                this.config.height = null;
-                this.config.xPos = null;
-                this.config.yPos = null;
-                this.config.src = null;
-                this.config.style = null;
-                this.config.unscaled = null;
-                this.config.title = null;
-                this.config.zIndex = null;
-                this.config.active = null;
+                this.#clearConfig();
                 deskMovers[this.numStr] = new DeskMover(this.windowContainer, this.numStr, false, undefined, undefined, undefined, undefined, true);
             }
         });
@@ -596,7 +643,7 @@ class DeskMover {
             }
             if (!url) {
                 if (this.numStr === "") url = "ChannelBar.html";
-                else url = WINDOW_PLACEHOLDER;
+                else url = "placeholder.html";
             }
             this.windowElement.src = url;
             this.config.src = url;
@@ -673,6 +720,20 @@ class DeskMover {
         this.config.height = this.windowElement.height;
         this.config.xPos = this.windowContainer.style.left;
         this.config.yPos = this.windowContainer.style.top;
+    }
+
+    // Clear configs
+    #clearConfig() {
+        this.config.width = null;
+        this.config.height = null;
+        this.config.xPos = null;
+        this.config.yPos = null;
+        this.config.src = null;
+        this.config.style = null;
+        this.config.unscaled = null;
+        this.config.title = null;
+        this.config.zIndex = null;
+        this.config.active = null;
     }
     
     // Update the visibility of window components based on the cursor's position

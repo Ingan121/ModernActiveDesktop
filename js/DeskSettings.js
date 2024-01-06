@@ -9,6 +9,7 @@ const msgboxBg = document.getElementById("msgboxBg");
 const msgbox = document.getElementById("msgbox");
 const msgboxTitlebar = msgbox.getElementsByClassName("title-bar")[0];
 const msgboxMessage = document.getElementById("msgbox-msg");
+const msgboxIcon = document.getElementById("msgbox-icon");
 const msgboxInput = document.getElementById("msgbox-input");
 const msgboxCloseBtn = document.getElementById("msgbox-close");
 const msgboxBtn1 = document.getElementById("msgbox-btn1");
@@ -27,7 +28,6 @@ const chord = new Audio("sounds/chord.wav");
 const ding = new Audio("sounds/ding.wav");
 const startup = new Audio("sounds/The Microsoft Sound.wav");
 
-const WINDOW_PLACEHOLDER = "data:text/html,<meta charset='utf-8'><body style='background-color: white'>⮡ Click this button to configure</body>";
 const NO_SYSPLUG_ALERT = "System plugin is not running. Please make sure you have installed it properly. If you don't want to use it, please disable the system plugin integration option.";
 
 let lastZIndex = localStorage.madesktopItemCount || 0;
@@ -76,6 +76,16 @@ if (localStorage.madesktopDestroyedItems) {
     for (let i = 1; i < localStorage.madesktopItemCount; i++) {
         if (!localStorage.madesktopDestroyedItems.includes(`|${i}|`)) {
             openWindows[openWindows.length] = i;
+            localStorage.removeItem(`madesktopItemWidth${i}`);
+            localStorage.removeItem(`madesktopItemHeight${i}`);
+            localStorage.removeItem(`madesktopItemXPos${i}`);
+            localStorage.removeItem(`madesktopItemYPos${i}`);
+            localStorage.removeItem(`madesktopItemSrc${i}`);
+            localStorage.removeItem(`madesktopItemStyle${i}`);
+            localStorage.removeItem(`madesktopItemUnscaled${i}`);
+            localStorage.removeItem(`madesktopItemTitle${i}`);
+            localStorage.removeItem(`madesktopItemZIndex${i}`);
+            localStorage.removeItem(`madesktopItemActive${i}`);
         }
     }
     localStorage.madesktopOpenWindows = openWindows;
@@ -140,7 +150,7 @@ window.addEventListener('contextmenu', function (event) {
 mainMenuItems[0].addEventListener('click', openWindow); // New button
 
 mainMenuItems[1].addEventListener('click', function() { // Properties button
-    openWindow("apps/madconf/background.html", false, "388px", "168px");
+    openWindow("apps/madconf/background.html", true, "500px", "450px", "wnd")
 });
 
 msgboxBg.addEventListener('click', flashDialog);
@@ -376,13 +386,13 @@ function updateSysplugOpenOpt(option) {
         .then(response => response.text())
         .then(responseText => {
             if (responseText != "OK") {
-                madAlert("An error occurred!\nSystem plugin response: " + responseText);
+                madAlert("An error occurred!\nSystem plugin response: " + responseText, null, "error");
             }
         })
         .catch(error => {
-            madAlert("Failed to change the open option because system plugin was not running. Please install it first then try again.", function() {
+            madAlert("Failed to change the open option because system plugin is not running. Please install it first then try again.", function() {
                 openWindow("SysplugSetupGuide.md", true);
-            });
+            }, "warning");
         });
 }
 
@@ -558,13 +568,15 @@ function hookIframeSize(iframe, num) {
                     .then(response => response.text())
                     .then(responseText => {
                         if (responseText != "OK") {
-                        alert("An error occured!\nSystem plugin response: " + responseText);
-                        copyPrompt(url);
+                            madAlert("An error occured!\nSystem plugin response: " + responseText, function () {
+                                copyPrompt(url);
+                            }, "error");
                         }
                     })
                     .catch(error => {
-                        alert("System plugin is not running. Please make sure you have installed it properly.");
-                        copyPrompt(url);
+                        madAlert("System plugin is not running. Please make sure you have installed it properly.", function () {
+                            copyPrompt(url);
+                        }, "warning");
                     });
             } else copyPrompt(url);
         
@@ -580,6 +592,14 @@ function hookIframeSize(iframe, num) {
             }
         }
     }
+
+    // Listen for title changes
+    new MutationObserver(function(mutations) {
+        deskMovers[num].windowTitleText.textContent = mutations[0].target.innerText;
+    }).observe(
+        iframe.contentDocument.querySelector('title'),
+        { subtree: true, characterData: true, childList: true }
+    );
 }
 
 // Save current window z-order
@@ -659,8 +679,16 @@ async function getFavicon(iframe) {
 }
 
 // Lively Wallpaper doesn't work well with alert/confirm/prompt, so replace these with custom ones
-function madAlert(msg, callback) {
+function madAlert(msg, callback, icon = "info") {
+    if (icon === "warning" || icon === "error") {
+        playSound("chord");
+    } else {
+        playSound("ding");
+    }
+
     msgboxMessage.textContent = msg;
+    msgboxIcon.style.display = "block";
+    msgboxIcon.src = `images/${icon}.png`;
     msgboxBtn2.style.display = "none";
     msgboxInput.style.display = "none";
     
@@ -687,7 +715,11 @@ function madAlert(msg, callback) {
 }
 
 function madConfirm(msg, callback) {
+    playSound("chord");
+
     msgboxMessage.textContent = msg;
+    msgboxIcon.style.display = "block";
+    msgboxIcon.src = "images/question.png";
     msgboxBtn2.style.display = "block";
     msgboxInput.style.display = "none";
     
@@ -733,6 +765,7 @@ function madPrompt(msg, callback, hint, text) {
     }
     
     msgboxMessage.textContent = msg;
+    msgboxIcon.style.display = "none";
     msgboxBtn2.style.display = "block";
     msgboxInput.style.display = "block";
     msgboxInput.placeholder = hint || "";
@@ -804,9 +837,11 @@ function playSound(sound) {
     if (!localStorage.madesktopAlertSndMuted) {
         switch (sound) {
             case "chord":
+                chord.currentTime = 0;
                 chord.play();
                 break;
             case "ding":
+                ding.currentTime = 0;
                 ding.play();
                 break;
         }
@@ -815,7 +850,6 @@ function playSound(sound) {
 
 function reset(res) {
     if (typeof res === "undefined" || res) {
-        playSound("chord");
         madConfirm("This will remove every configuration changes of ModernActiveDesktop you made. Are you sure you want to continue?", function (res) {
             if (res) {
                 localStorage.clear();

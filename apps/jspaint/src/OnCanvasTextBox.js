@@ -33,6 +33,17 @@ class OnCanvasTextBox extends OnCanvasObject {
 
 		edit_textarea.value = starting_text || "";
 
+		// MAD Additions
+		edit_textarea.addEventListener("click", function() {
+			if (parent.runningMode === 1) {
+				madPrompt("Enter value :", function (res) {
+					if (res === null) return;
+					edit_textarea.value = res;
+					edit_textarea.dispatchEvent(new Event('input'));
+				}, '', edit_textarea.value);
+			}
+		});
+
 		this.canvas = make_canvas(width, height);
 		this.canvas.style.pointerEvents = "none";
 		this.$el.append(this.canvas);

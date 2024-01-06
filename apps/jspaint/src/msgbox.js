@@ -12,6 +12,10 @@
 				.then(response => response.arrayBuffer())
 				.then(array_buffer => audioContext.decodeAudioData(array_buffer))
 		var play_chord = async function () {
+			if (localStorage.madesktopAlertSndMuted) {
+				return;
+			}
+			
 			audioContext.resume(); // in case it was not allowed to start until a user interaction
 			// Note that this should be before waiting for the audio buffer,
 			// so that it works the first time.

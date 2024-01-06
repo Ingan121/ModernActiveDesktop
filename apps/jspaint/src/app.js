@@ -124,6 +124,8 @@ let enable_palette_loading_from_indexed_images = false;
 // There are cases where 0-byte files are created, which is either a serious problem,
 // it's just from canceling saving when the file name has a problem, and it needs to be cleaned up.
 // Also, while I've implemented most of the UI, it'd be nice to release this with recent files support.
+// MAD Notes: This doesn't work in WE Either
+// showSaveFilePicker works but createWritable returns NotAllowedError
 let enable_fs_access_api = false;
 
 // The methods in systemHooks can be overridden by a containing page like 98.js.org which hosts jspaint in a same-origin iframe.
@@ -135,6 +137,43 @@ window.systemHookDefaults = {
 	// named to be distinct from various platform APIs (showSaveFilePicker, saveAs, electron's showSaveDialog; and saveFile is too ambiguous)
 	// could call it saveFileAs maybe but then it'd be weird that you don't pass in the file directly
 	showSaveFileDialog: async ({ formats, defaultFileName, defaultPath, defaultFileFormatID, getBlob, savedCallbackUnreliable, dialogTitle }) => {
+		if (madDeskMover) {
+			if (localStorage.sysplugIntegration) {
+				const { newFileFormatID } = await save_as_prompt({ dialogTitle, defaultFileName, defaultFileFormatID, formats, promptForName: false });
+				const new_format = formats.find((format) => format.formatID === newFileFormatID);
+				const blob = await getBlob(new_format && new_format.formatID);
+				let noErrors = true;
+				const res = await fetch("http://localhost:3031/save", {
+					method: "POST",
+					body: blob,
+					headers: {
+						"X-Format-Name": new_format.name,
+						"X-Format-Extension": new_format.extensions.map((extension) => "." + extension)
+					}
+				}).catch((err) => {
+					show_error_message("System plugin is not running. Please make sure you have installed it properly.");
+					madOpenWindow("SysplugSetupGuide.md", true);
+					noErrors = false;
+				});
+				if (!noErrors) return;
+				if (res.ok) {
+					const newFileName = await res.text();
+					savedCallbackUnreliable && savedCallbackUnreliable({
+						newFileName: newFileName,
+						newFileFormatID: new_format && new_format.formatID,
+						newFileHandle: null,
+						newBlob: blob,
+					});
+				} else {
+					const result = await res.text();
+					if (result !== "Aborted") {
+						show_error_message("An error occurred while saving the file: " + result);
+					}
+				}
+			} else {
+				show_error_message("Sorry, you must enable the system plugin integration in the ModernActiveDesktop properties to use this feature.");
+			}
+		}
 		// Note: showSaveFilePicker currently doesn't support suggesting a filename,
 		// or retrieving which file type was selected in the dialog (you have to get it (guess it) from the file name)
 		// In particular, some formats are ambiguous with the file name, e.g. different bit depths of BMP files.
@@ -146,7 +185,7 @@ window.systemHookDefaults = {
 		// but at least in chrome, there's a "Downloads Blocked" icon with a popup where you can say Always Allow.
 		// I can't detect when it's allowed or blocked, but `saveAs` has a better chance of working,
 		// so in Speech Recognition and Eye Gaze Mode, I set a global flag temporarily to disable File System Access API (window.untrusted_gesture).
-		if (window.showSaveFilePicker && !window.untrusted_gesture && enable_fs_access_api) {
+		else if (window.showSaveFilePicker && !window.untrusted_gesture && enable_fs_access_api) {
 			// We can't get the selected file type, not even from newHandle.getFile()
 			// so limit formats shown to a set that can all be used by their unique file extensions
 			// formats = formats_unique_per_file_extension(formats);

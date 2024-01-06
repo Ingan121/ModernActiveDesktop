@@ -55,8 +55,8 @@
 			const $img = $(E("img")).attr({ src: imgSrc }).addClass("thumbnail-img");
 			const $remove = $(E("button")).text("Remove").addClass("remove-button").attr("type", "button");
 			const href = `#${k.replace("image#", "local:")}`;
-			const $open_link = $(E("a")).attr({ href, target: "_blank" }).text(localize("Open"));
-			const $thumbnail_open_link = $(E("a")).attr({ href, target: "_blank" }).addClass("thumbnail-container");
+			const $open_link = $(E("a")).attr({ href }).text(localize("Open"));
+			const $thumbnail_open_link = $(E("a")).attr({ href }).addClass("thumbnail-container");
 			$thumbnail_open_link.append($img);
 			$(E("td")).append($thumbnail_open_link).appendTo($tr);
 			$(E("td")).append($open_link).appendTo($tr);
