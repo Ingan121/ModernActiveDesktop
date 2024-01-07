@@ -18,30 +18,53 @@
         </menu>
         <div class="window" role="tabpanel">
             <div class="window-body">
-                <div>
+                <!--
                     <label>
                         <p>BG Color:</p>
                         <input id="colorPicker" type="color" value="#008080" onchange="parent.changeBgColor(this.value)">
                     </label>
+                -->
+                <div id="previewArea">
+                    <img src="images/monitor.png">
+                    <iframe id="preview" src="wp_preview.html"></iframe>
                 </div>
-                <div>
-                    <p>BG Image:</p>
-                    <label class="button">
-                        <p>Choose a file</p>
-                        <input id="imgInput" type="file" accept="image/*" onchange="loadBgImg()">
-                    </label>
-                    | <p class="button" onclick="removeImage()">Remove</p>
-                </div>
-                <div>
-                    <form name="imgModeSelector">
-                        <p>BG Style:</p>
-                        <input id="radcenter" type="radio" name="imgMode" value="center" checked><label for="radcenter">Center</label>
-                        <input id="radgrid" type="radio" name="imgMode" value="grid"><label for="radgrid">Tile</label>
-                        <input id="radhorizfit" type="radio" name="imgMode" value="horizfit"><label for="radhorizfit">Fit horizontally</label>
-                        <input id="radvertfit" type="radio" name="imgMode" value="vertfit"><label for="radvertfit">Fit vertically</label>
-                        <input id="radscale" type="radio" name="imgMode" value="scale"><label for="radscale">Stretch</label>
-                    </form>
-                </div>
+                <fieldset>
+                    <legend>Wallpaper</legend>
+                    <p>Select an HTML Document or a picture.</p>
+                    <div class="field-row">
+                        <ul id="wpChooser" class="tree-view">
+                            <li><img src="images/none.png"><div class="mask mask-none"></div><span>(None)</span></li>
+                            <li><img src="images/image.png"><div class="mask"></div><span>1stboot</span></li>
+                            <li><img src="images/image.png"><div class="mask"></div><span>Black Thatch</span></li>
+                            <li><img src="images/image.png"><div class="mask"></div><span>Blue Rivets</span></li>
+                            <li><img src="images/image.png"><div class="mask"></div><span>Bubbles</span></li>
+                            <li><img src="images/image.png"><div class="mask"></div><span>Carved Stone</span></li>
+                            <li><img src="images/image.png"><div class="mask"></div><span>Circles</span></li>
+                            <li><img src="images/image.png"><div class="mask"></div><span>Houndstooth</span></li>
+                            <li><img src="images/image.png"><div class="mask"></div><span>Pinstripe</span></li>
+                            <li><img src="images/image.png"><div class="mask"></div><span>Setup</span></li>
+                            <li><img src="images/image.png"><div class="mask"></div><span>Straw Mat</span></li>
+                            <li><img src="images/image.png"><div class="mask"></div><span>Tiles</span></li>
+                            <li><img src="images/image.png"><div class="mask"></div><span>Triangles</span></li>
+                            <li><img src="images/html.png"><div class="mask mask-html"></div><span>Windows 98</span></li>
+                            <li id="customImgItem"><img src="images/image.png"><div class="mask"></div><span>Current Image</span></li>
+                            <li id="videoImgItem"><img src="images/video.png"><div class="mask"></div><span>Video Loaded from Wallpaper Engine</span></li>
+                        </ul>
+                        <div>
+                            <button id="wpBrowseBtn"><u>B</u>rowse...</button><br>
+                            <button id="wpEnterUrlBtn"><u>E</u>nter URL...</button><br>
+                            <span id="displayLabel"><u>D</u>isplay:</span><br>
+                            <select id="imgModeSelector" disabled>
+                                <option value="center">Center</option>
+                                <option value="grid">Tile</option>
+                                <option value="horizfit">Fit horizontally</option>
+                                <option value="vertfit">Fit vertically</option>
+                                <option value="scale">Stretch</option>
+                            </select>
+                        </div>
+                    </div>
+                </fieldset>
+                
             </div>
         </div>
         <section class="topmargin field-row" style="justify-content: flex-end;">

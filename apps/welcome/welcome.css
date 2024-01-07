@@ -26,16 +26,14 @@
     100% {
         transform: translateX(0);
     }
-
 }
 
 body {
-    width: 476px;
-    height: 288px;
     overflow: hidden;
     background-color: white;
-    background-image: url(background.bmp);
+    background-image: url(resources/background.png);
     background-repeat: no-repeat;
+    background-size: 476px 288px;
     color: black;
 }
 
@@ -59,19 +57,67 @@ body {
     top: 19px;
     left: 42px;
     font-size: 22px;
-    font-weight: bold;
     font-family: sans-serif;
+}
+
+#ver {
+    letter-spacing: -1px;
 }
 
 #bar {
     position: absolute;
     top: 44px;
     left: 0;
+    width: 476px;
+    height: 1px;
     animation: barAnim 0.25s;
     animation-timing-function: linear;
 }
 
-#contentsTitle {
+#bar > * {
+    position: absolute;
+    top: 0;
+    width: 96px;
+    height: 1px;
+}
+
+#red {
+    left: 0;
+    background-color: #ff3100;
+}
+
+#yellow {
+    left: 96px;
+    background-color: #ffcc00;
+}
+
+#green {
+    left: 192px;
+    background-color: #6bce39;
+}
+
+#blue {
+    left: 288px;
+    width: 83px;
+    background-color: #009cff;
+}
+
+#gradient {
+    left: 371px;
+    width: 105px;
+    background-image: linear-gradient(to right, #009cff, white);
+}
+
+.offscreen {
+    position: absolute;
+    left: -1000px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+#itemsTitle {
     position: absolute;
     top: 81px;
     left: 0;
@@ -79,13 +125,27 @@ body {
     height: 15px;
     font-size: 12px;
     background-color: black;
-    animation: appear 0.5s;
+    animation: appear 0.3s;
 }
 
-#contentsTitle img {
+#itemsTitle img {
     position: absolute;
     top: 4px;
     left: 13px;
+    image-rendering: pixelated;
+}
+
+#itemsTitle span {
+    position: absolute;
+    top: 2px;
+    left: 13px;
+    width: 72px;
+    height: 7px;
+    color: white;
+    font-size: 10px;
+    letter-spacing: 4px;
+    font-family: monospace;
+    display: none;
 }
 
 .items {
@@ -96,6 +156,18 @@ body {
     font-family: "Pixelated MS Sans Serif";
     font-weight: bold;
     margin-top: 2px;
+    background-position: -4px 0;
+    background-repeat: no-repeat;
+}
+
+.items:before {
+    content: "";
+    position: absolute;
+    top: 1px;
+    left: 0;
+    width: 180px;
+    height: 26px;
+    z-index: 3;
 }
 
 .items .itemText {
@@ -110,22 +182,62 @@ body {
     animation: appear 1.5s;
 }
 
+#item1:hover {
+    background-image: linear-gradient(to right, #84ceff, white);
+}
+
+#item1:active {
+    background-image: linear-gradient(to right, #009cff, white);
+}
+
 #item2 {
     top: 120px;
     border-left: solid 4px #ff3100;
-    animation: appear 1.75s;
+    animation: appear 1.6s;
+}
+
+#item2:hover {
+    background-image: linear-gradient(to right, #ff9c84, white);
+}
+
+#item2:active {
+    background-image: linear-gradient(to right, #ff3100, white);
 }
 
 #item3 {
     top: 146px;
     border-left: solid 4px #6bce39;
-    animation: appear 2s;
+    animation: appear 1.7s;
+}
+
+#item3:hover {
+    background-image: linear-gradient(to right, #b5e79c, white);
+}
+
+#item3:active {
+    background-image: linear-gradient(to right, #6bce39, white);
 }
 
 #item4 {
     top: 172px;
     border-left: solid 4px #ffcc00;
-    animation: appear 2.25s;
+    animation: appear 1.8s;
+}
+
+#item4:hover {
+    background-image: linear-gradient(to right, #ffe784, white);
+}
+
+#item4:active {
+    background-image: linear-gradient(to right, #ffcc00, white);
+}
+
+.checkmark {
+    position: absolute;
+    top: 4px;
+    right: 5px;
+    color: #330066;
+    display: none;
 }
 
 .lines {
@@ -134,7 +246,8 @@ body {
     width: 180px;
     height: 2px;
     background-color: #c0c0c0;
-    animation: 0.5s linear 0.75s borderAnim both;
+    animation: 0.5s linear 0.4s borderAnim both;
+    z-index: 2;
 }
 
 #line1 {
@@ -157,14 +270,55 @@ body {
     top: 200px;
 }
 
+.contents {
+    position: absolute;
+    top: 63px;
+    left: 180px;
+    font-family: "Pixelated MS Sans Serif";
+    animation: appear 1.9s;
+    display: none;
+}
+
+.contentsTitle {
+    position: relative;
+    top: 8px;
+    left: 15px;
+    font-weight: bold;
+    font-size: 16px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.contentsText {
+    position: relative;
+    top: 3px;
+    left: 15px;
+    width: 260px;
+    font-size: 13px;
+    line-height: 1.25;
+}
+
+#content0 {
+    display: block;
+}
+
+#bgImg {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    animation: appear 1.9s;
+}
+
 label[for="showWelcome"] {
     position: absolute !important;
     left: 12px;
     bottom: 9px;
+    animation: appear 1.9s;
 }
 
 #closeBtn {
     position: absolute;
     right: 9px;
     bottom: 6px;
+    animation: appear 1.9s;
 }

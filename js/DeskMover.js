@@ -1,5 +1,5 @@
 class DeskMover {
-    constructor(windowContainer, numStr, openDoc, temp, width, height, style, reinit) {
+    constructor(windowContainer, numStr, openDoc, temp, width, height, style, reinit, centered) {
         this.numStr = numStr;
         this.temp = temp;
 
@@ -178,7 +178,7 @@ class DeskMover {
 
             this.confMenuItems[8].addEventListener('click', () => { // Properties button
                 this.closeContextMenu();
-                openWindow("apps/madconf/appearance.html", true, "500px", "450px", "wnd");
+                openWindow("apps/madconf/background.html", true);
             });
 
             this.windowCloseBtn.addEventListener('click', this.closeWindow.bind(this));
@@ -245,8 +245,13 @@ class DeskMover {
             if (this.numStr !== "") {
                 let url = "placeholder.html";
                 if ((typeof openDoc === "string" || openDoc instanceof String) && !reinit) {
-                    this.windowElement.width = width || '800px';
-                    this.windowElement.height = height || '600px';
+                    if (openDoc.startsWith("apps/madconf/")) {
+                        this.windowElement.width = width || '470px';
+                        this.windowElement.height = height || '420px';
+                    } else {
+                        this.windowElement.width = width || '800px';
+                        this.windowElement.height = height || '600px';
+                    }
                     this.windowContainer.style.left = (parseInt(localStorage.madesktopChanViewLeftMargin) || 75) + 250 + 'px';
                     this.windowContainer.style.top = '150px';
                     url = openDoc.endsWith(".html") ? openDoc : `docs/index.html?src=${openDoc}`;
@@ -258,6 +263,12 @@ class DeskMover {
                     this.windowContainer.style.top = '200px';
                 }
                 this.#adjustElements();
+
+                if (centered) {
+                    this.windowContainer.style.left = (vWidth - this.windowContainer.offsetWidth) / 2 + 'px';
+                    this.windowContainer.style.top = (vHeight - this.windowContainer.offsetHeight) / 2 + 'px';
+                }
+
                 this.#keepInside();
                 this.#saveConfig();
                 
@@ -291,7 +302,6 @@ class DeskMover {
             }
             delete deskMovers[this.numStr];
         } else {
-            playSound("ding");
             let msg = "";
             switch (window.runningMode) {
                 case WE:
@@ -314,6 +324,7 @@ class DeskMover {
         this.contextMenuBg.style.display = "block";
         this.boundCloseContextMenu = this.closeContextMenu.bind(this);
 
+        // Prevent the context menu from immediately closing when opening the menu
         this.contextMenuOpening = null;
         setTimeout(() => {
             this.contextMenuOpening = this.posInContainer;
@@ -331,11 +342,11 @@ class DeskMover {
     closeContextMenu() {
         log(`contextMenuOpening: ${this.contextMenuOpening}`);
         if (this.contextMenuOpening) {
-            if (this.contextMenuOpening === this.posInContainer)
+            if (this.contextMenuOpening === this.posInContainer && this.config.style === "wnd")
             {
                 this.closeWindow();
-                return;
             }
+            return;
         }
         if (this.contextMenuOpening === null) {
             return;
@@ -605,11 +616,16 @@ class DeskMover {
     #reset() {
         this.closeContextMenu();
         if (this.temp) {
-            playSound("ding");
-            madAlert("This window is temporary, so it cannot be reset. Just close it.");
+            if (this.config.src === "apps/welcome/index.html") {
+                localStorage.removeItem("madesktopCheckedChanges");
+                localStorage.removeItem("madesktopCheckedConfigs");
+                localStorage.removeItem("madesktopCheckedGithub");
+                this.windowElement.contentWindow.location.reload();
+            } else {
+                madAlert("This window is temporary, so it cannot be reset. Just close it.");
+            }
             return;
         }
-        playSound("chord");
         madConfirm("Are you sure you want to reset this window?", res => {
             if (res) {
                 this.#clearConfig();

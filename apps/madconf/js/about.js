@@ -5,7 +5,7 @@ icon.addEventListener("click", () => {
     debugReady = true;
 });
 
-window.apply = function() {
+window.apply = function () {
     if (debugReady && !localStorage.madesktopDebugMode) {
         madConfirm("Enable debug mode?", function(res) {
             if (res) {

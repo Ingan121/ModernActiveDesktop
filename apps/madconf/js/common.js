@@ -10,7 +10,6 @@ const textboxes = document.querySelectorAll("input[type=text]");
 for (const tab of tabs) {
     tab.addEventListener("click", function() {
         if (this.dataset.pagename === "background" && parent.runningMode === 1 && false) {
-            madPlaySound("ding");
             madAlert("Please use the Wallpaper Engine properties panel to configure the background.");
         } else {
             madLocReplace(`apps/madconf/${this.dataset.pagename}.html`);

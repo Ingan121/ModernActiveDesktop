@@ -1,6 +1,6 @@
 {
   "name": "madsysplug",
-  "version": "2.4.0",
+  "version": "3.0.0",
   "description": "ModernActiveDesktop System Plugin",
   "main": "main.js",
   "scripts": {

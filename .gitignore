@@ -7,6 +7,9 @@ images
 !docs/images
 sounds
 systemplugin/resources/app/images
+apps/welcome/resources/*
+!apps/welcome/resources/contents.png
+wallpapers
 
 # electron binary files
 systemplugin/*

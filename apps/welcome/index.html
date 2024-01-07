@@ -9,43 +9,133 @@
     <link id="font" rel="stylesheet" href="">
     <style id="style"></style>
 </head>
-<body>
+<body id="madWelcome">
     <p id="author">Ingan121</p>
     <img id="logo" src="../../icon.ico">
-    <img id="bar" src="bar.bmp">
-    <p id="title">ModernActiveDesktop</p>
-
-    <div id="contentsTitle">
-        <img src="contents.png" alt="CONTENTS">
+    <div id="bar">
+        <div id="red"></div>
+        <div id="yellow"></div>
+        <div id="green"></div>
+        <div id="blue"></div>
+        <div id="gradient"></div>
     </div>
+    <p id="title">
+        <b>ModernActiveDesktop</b><span id="ver">3.0</span>
+    </p>
+
+    <div id="itemsTitle">
+        <img id="itemsTitleImage" src="resources/contents.png" alt="CONTENTS">
+        <span id="itemsTitleText">CONTENTS</span>
+    </div>
+
     <div id="line1" class="lines"></div>
     <div id="item1" class="items">
         <div class="itemText">
-            Configure MAD
+            What's New
         </div>
+        <div class="checkmark">✓</div>
     </div>
     <div id="line2" class="lines"></div>
     <div id="item2" class="items">
         <div class="itemText">
-            Setup System Plugin
+            Customize Desktop
         </div>
+        <div class="checkmark">✓</div>
     </div>
     <div id="line3" class="lines"></div>
     <div id="item3" class="items">
         <div class="itemText">
-            Discover MAD
+            Setup System Plugin
         </div>
+        <div class="checkmark">✓</div>
     </div>
     <div id="line4" class="lines"></div>
     <div id="item4" class="items">
         <div class="itemText">
             Get Help
         </div>
+        <div class="checkmark">✓</div>
     </div>
     <div id="line5" class="lines"></div>
 
-    <input type="checkbox" id="showWelcome" checked>
+    <div id="content0" class="contents">
+        <p class="contentsTitle">
+            Welcome
+        </p>
+        <p class="contentsText">
+            Welcome to the exciting new world of ModernActiveDesktop, where your modern desktop meets the classic experience!
+            <br><br>
+            Sit back and relax as you take a brief tour of the options available on this screen.
+            <br><br>
+            If you want to explore an option, just click it.
+        </p>
+    </div>
+
+    <div id="content1" class="contents">
+        <p class="contentsTitle">
+            What's New
+        </p>
+        <p class="contentsText">
+            ModernActiveDesktop 3.0 brings a lot of new features and improvements to your experience.
+            <br><br>
+            * Added new "Window" styling
+            <br>
+            * Added a dedicated configuration page with a lot of different color schemes
+            <br>
+            * Added various apps for your desktop
+            <br><br>
+            Click for more information.
+        </p>
+    </div>
+
+    <div id="content2" class="contents">
+        <p class="contentsTitle">
+            Customize Desktop
+        </p>
+        <p class="contentsText">
+            ModernActiveDesktop provides a variety of options to customize your experience.
+            <br><br>
+            You can change the color scheme, the wallpaper, and more.
+            <br><br>
+            Click to configure ModernActiveDesktop.
+        </p>
+    </div>
+
+    <div id="content3" class="contents">
+        <p class="contentsTitle">
+            Setup System Plugin
+        </p>
+        <p class="contentsText">
+            For better usability, it is highly recommended to install the system plugin.
+            <br><br>
+            It allows a better integration between your system and the wallpaper, such as opening a new browser window from the wallpaper.
+            <br><br>
+            Click for more information, including the setup instructions.
+        </p>
+    </div>
+
+    <div id="content4" class="contents">
+        <p class="contentsTitle">
+            Get Help
+        </p>
+        <p class="contentsText">
+            ModernActiveDesktop is a open source project, so you can get help from the community.
+            <br><br>
+            If you have any problems, you can report them on the GitHub issues page.
+            <br><br>
+            ModernActiveDesktop is licensed under the MIT License.
+            <br><br>
+            Click to open the GitHub repository.
+        </p>
+    </div>
+
+    <img id="bgImg" src="resources/computer.png">
+
+    <input id="showWelcome" type="checkbox" checked>
     <label for="showWelcome">Show this screen each time ModernActiveDesktop starts.</label>
     <button id="closeBtn"><u>C</u>lose</button>
+
+    <script src="../../js/libmad.js"></script>
+    <script src="welcome.js"></script>
 </body>
 </html>

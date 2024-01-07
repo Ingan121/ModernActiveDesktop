@@ -1,9 +1,31 @@
 @import '../../../css/marlett.css';
 
+:root {
+    --hilight-inverted: #FFFF7F;
+}
+
 body {
     background-color: var(--button-face);
-    padding: 2px;
+    margin: 0;
     line-height: 16px;
+}
+
+menu[role="tablist"] a {
+    margin-left: 9px !important;
+    margin-right: 7px !important;
+    line-height: 10px;
+}
+
+menu[role="tablist"]:nth-child(1) a {
+    margin-left: 8px !important;
+}
+
+menu[role="tablist"]:nth-child(2) a {
+    margin-left: 7px !important;
+}
+
+menu[role="tablist"]:nth-child(3) a {
+    margin-left: 6px !important;
 }
 
 p {

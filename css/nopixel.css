@@ -8,6 +8,8 @@ table,
 ul.tree-view,
 .window,
 .title-bar,
+#madWelcome .items,
+#madWelcome .contents,
 li[role=tab] {
   font-family: sans-serif;
 }

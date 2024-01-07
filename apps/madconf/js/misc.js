@@ -201,7 +201,7 @@ function checkSysplug() {
     fetch("http://localhost:3031/connecttest")
         .then(response => response.text())
         .then(responseText => {
-            if (responseText != "OK") {
+            if (responseText !== "OK") {
                 connectionStatus.textContent = "An error occurred while connecting with the system plugin.";
                 madAlert("An error occurred!\nSystem plugin response: " + responseText, null, "error");
             } else {

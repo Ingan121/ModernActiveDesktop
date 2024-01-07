@@ -26,13 +26,13 @@ const toggleModeBtn = document.getElementById("toggleModeBtn");
 
 const chord = new Audio("sounds/chord.wav");
 const ding = new Audio("sounds/ding.wav");
-const startup = new Audio("sounds/The Microsoft Sound.wav");
 
 const NO_SYSPLUG_ALERT = "System plugin is not running. Please make sure you have installed it properly. If you don't want to use it, please disable the system plugin integration option.";
 
 let lastZIndex = localStorage.madesktopItemCount || 0;
 let isContextMenuOpen = false;
 let activeWindow = 0;
+let startupRan = false;
 
 const WE = 1; // Wallpaper Engine
 const LW = 2; // Lively Wallpaper
@@ -49,6 +49,11 @@ window.deskMovers = {};
 let debugLog = false;
 
 // Load configs
+if (!localStorage.madesktopItemCount) {
+    localStorage.madesktopItemCount = 1;
+    localStorage.madesktopOpenWindows = "0";
+}
+
 if (localStorage.madesktopBgColor) document.body.style.backgroundColor = localStorage.madesktopBgColor;
 changeBgType(localStorage.madesktopBgType || "image");
 changeBgImgMode(localStorage.madesktopBgImgMode || "center");
@@ -76,6 +81,7 @@ if (localStorage.madesktopDestroyedItems) {
     for (let i = 1; i < localStorage.madesktopItemCount; i++) {
         if (!localStorage.madesktopDestroyedItems.includes(`|${i}|`)) {
             openWindows[openWindows.length] = i;
+        } else {
             localStorage.removeItem(`madesktopItemWidth${i}`);
             localStorage.removeItem(`madesktopItemHeight${i}`);
             localStorage.removeItem(`madesktopItemXPos${i}`);
@@ -90,28 +96,30 @@ if (localStorage.madesktopDestroyedItems) {
     }
     localStorage.madesktopOpenWindows = openWindows;
     localStorage.removeItem("madesktopDestroyedItems");
-}
-
-if (localStorage.madesktopItemCount) {
-    if (localStorage.madesktopItemCount > 1) {
-        // Check if the deskitem we're trying to initialize is open or not
-        // Skip for deskitem 0 (the ChannelBar) - this design is to maintain backwards compatibility with old versions
-        // which supported only one deskitem
-        for (const i of localStorage.madesktopOpenWindows.split(',').slice(1)) {
-            createNewDeskItem(i.toString());
-        }
+} else if (!localStorage.madesktopOpenWindows) {
+    let openWindows = [0];
+    for (let i = 1; i < localStorage.madesktopItemCount; i++) {
+        openWindows[openWindows.length] = i;
     }
-} else {
-    localStorage.madesktopItemCount = 1;
-    localStorage.madesktopOpenWindows = "0";
+    localStorage.madesktopOpenWindows = openWindows;
 }
 
-if ((localStorage.madesktopLastVer || "").startsWith("2.") && localStorage.madesktopLastVer != "2.4") { // Update from 2.x
-    openWindow("Updated.md");
-} else if (localStorage.madesktopLastVer != "2.4") { // First run or update from 1.x
-    openWindow("README.md");
+if (localStorage.madesktopItemCount > 1) {
+    // Check if the deskitem we're trying to initialize is open or not
+    // Skip for deskitem 0 (the ChannelBar) - this design is to maintain backwards compatibility with old versions
+    // which supported only one deskitem
+    for (const i of localStorage.madesktopOpenWindows.split(',').slice(1)) {
+        createNewDeskItem(i.toString());
+    }
 }
-localStorage.madesktopLastVer = "2.4";
+
+if (localStorage.madesktopLastVer != "3.0") { // First run or update from previous versions
+    localStorage.removeItem("madesktopHideWelcome");
+    localStorage.removeItem("madesktopCheckedChanges");
+    localStorage.removeItem("madesktopCheckedConfigs");
+    startup();
+}
+localStorage.madesktopLastVer = "3.0";
 
 if (localStorage.madesktopItemVisible == "false") {
     windowContainers[0].style.display = "none";
@@ -150,7 +158,7 @@ window.addEventListener('contextmenu', function (event) {
 mainMenuItems[0].addEventListener('click', openWindow); // New button
 
 mainMenuItems[1].addEventListener('click', function() { // Properties button
-    openWindow("apps/madconf/background.html", true, "500px", "450px", "wnd")
+    openWindow("apps/madconf/background.html", true)
 });
 
 msgboxBg.addEventListener('click', flashDialog);
@@ -166,8 +174,12 @@ window.wallpaperPropertyListener = {
     applyUserProperties: function(properties) {
         log(properties);
 
-        // Ignore if this is a startup event
         if (properties.bgtype && properties.bgcolor) {
+            // Proper startup detection for Wallpaper Engine
+            // Otherwise entering and leaving ChannelViewer etc will trigger this
+            startup();
+
+            // Do not apply WE configs if this is a startup event
             return;
         }
 
@@ -221,7 +233,7 @@ window.wallpaperPropertyListener = {
             openWindow();
         }
         if (properties.openproperties) {
-            openWindow("apps/madconf/appearance.html", true, "500px", "450px", "wnd");
+            openWindow("apps/madconf/background.html", true);
         }
     }
 };
@@ -237,7 +249,7 @@ function livelyPropertyListener(name, val) {
             changeBgColor(val);
             break;
         case "properties":
-            openWindow("apps/madconf/appearance.html", false, "388px", "168px");
+            openWindow("apps/madconf/background.html", true);
             break;
         default:
             wallpaperPropertyListener.applyUserProperties({ [name]: { value: val } });
@@ -275,8 +287,15 @@ function changeBgColor(str) {
 
 function loadBgImgConf() {
     if (localStorage.madesktopBgImg) {
-        if (localStorage.madesktopBgImg.startsWith("file:///")) document.body.style.backgroundImage = "url('" + localStorage.madesktopBgImg + "')"; // Set in WE
-        else document.body.style.backgroundImage = "url('data:image/png;base64," + localStorage.madesktopBgImg + "')"; // Set in madconf
+        if (localStorage.madesktopBgImg.startsWith("file:///") || // Set in WE
+            localStorage.madesktopBgImg.startsWith("wallpapers/")) // Built-in wallpapers set in madconf
+        {
+            document.body.style.backgroundImage = "url('" + localStorage.madesktopBgImg + "')";
+        } else {
+            document.body.style.backgroundImage = "url('data:image/png;base64," + localStorage.madesktopBgImg + "')"; // Set in madconf
+        }
+    } else {
+        document.body.style.backgroundImage = "none";
     }
 }
 
@@ -472,15 +491,15 @@ function padZero(str, len) {
 }
 
 // Create a new ActiveDesktop item and initialize it
-function createNewDeskItem(numStr, openDoc, temp, width, height, style) {
+function createNewDeskItem(numStr, openDoc, temp, width, height, style, centered) {
     const newContainer = windowContainers[0].cloneNode(true);
     document.body.appendChild(newContainer);
     windowContainers = document.getElementsByClassName("windowContainer");
-    deskMovers[numStr] = new DeskMover(newContainer, numStr, openDoc, temp, width, height, style, false);
+    deskMovers[numStr] = new DeskMover(newContainer, numStr, openDoc, temp, width, height, style, false, centered);
 }
 
 // Create a new AD item, initialize, and increase the saved window count
-function openWindow(openDoc, temp, width, height, style) {
+function openWindow(openDoc, temp, width, height, style, centered) {
     if (localStorage.madesktopItemVisible == "false" && !(typeof openDoc === "string" || openDoc instanceof String)) {
         windowContainers[0].style.display = "block";
         localStorage.removeItem("madesktopItemVisible");
@@ -491,10 +510,10 @@ function openWindow(openDoc, temp, width, height, style) {
         }
         if (localStorage.madesktopItemVisible == "false") {
             windowContainers[0].style.display = "block";
-            createNewDeskItem(localStorage.madesktopItemCount, openDoc, temp, width, height, style || (openDoc ? "wnd" : "ad"));
+            createNewDeskItem(localStorage.madesktopItemCount, openDoc, temp, width, height, style || (openDoc ? "wnd" : "ad"), centered);
             windowContainers[0].style.display = "none";
         } else {
-            createNewDeskItem(localStorage.madesktopItemCount, openDoc, temp, width, height, style || (openDoc ? "wnd" : "ad"))
+            createNewDeskItem(localStorage.madesktopItemCount, openDoc, temp, width, height, style || (openDoc ? "wnd" : "ad"), centered);
         }
         activateWindow(localStorage.madesktopItemCount);
         localStorage.madesktopItemCount++;
@@ -706,11 +725,11 @@ function madAlert(msg, callback, icon = "info") {
     }
     function close() {
         msgboxBg.style.display = "none";
-        if (callback) callback();
         document.removeEventListener('keyup', keyup);
         msgboxBtn1.removeEventListener('click', close);
         msgboxCloseBtn.removeEventListener('click', close);
         deskMovers[activeWindow].windowTitlebar.classList.remove("inactive");
+        if (callback) callback();
     }
 }
 
@@ -741,13 +760,13 @@ function madConfirm(msg, callback) {
     }
     function ok() {
         msgboxBg.style.display = "none";
-        if (callback) callback(true);
         removeEvents();
+        if (callback) callback(true);
     }
     function close() {
         msgboxBg.style.display = "none";
-        if (callback) callback(false);
         removeEvents();
+        if (callback) callback(false);
     }
     function removeEvents() {
         document.removeEventListener('keyup', keyup);
@@ -790,13 +809,13 @@ function madPrompt(msg, callback, hint, text) {
     }
     function ok() {
         msgboxBg.style.display = "none";
-        if (callback) callback(msgboxInput.value);
         removeEvents();
+        if (callback) callback(msgboxInput.value);
     }
     function close() {
         msgboxBg.style.display = "none";
-        if (callback) callback(null);
         removeEvents();
+        if (callback) callback(null);
     }
     function removeEvents() {
         document.removeEventListener('keyup', keyup);
@@ -939,9 +958,34 @@ function showErrors() {
     errorWnd.style.display = "block";
 }
 
+function startup() {
+    if (startupRan) {
+        return;
+    }
+
+    if (!localStorage.madesktopStartSndMuted) {
+        new Audio("sounds/The Microsoft Sound.wav").play();
+
+        if (!localStorage.madesktopHideWelcome) {
+            setTimeout(function () {
+                openWindow("apps/welcome/index.html", true, "476px", "322px", "wnd", true);
+            }, 5000);
+        }
+    } else {
+        if (!localStorage.madesktopHideWelcome) {
+            openWindow("apps/welcome/index.html", true, "476px", "322px", "wnd", true);
+        }
+    }
+    startupRan = true;
+}
+
 // Initialization complete
 document.getElementById("location").textContent = location.href;
-if (runningMode == WE) runningModeLabel.textContent = "Wallpaper Engine";
+if (runningMode === WE) {
+    runningModeLabel.textContent = "Wallpaper Engine";
+} else {
+    startup();
+}
 origRunningMode = runningMode;
-if (!localStorage.madesktopStartSndMuted) startup.play();
+
 errorWnd.style.display = "none";

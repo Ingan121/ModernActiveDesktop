@@ -1,7 +1,26 @@
 @import 'common.css';
 
+.window-body {
+    text-align: center;
+}
+
 #title {
     font-size: 24px;
     font-weight: bold;
     font-family: sans-serif;
+    margin-top: 25px;
+    margin-bottom: 15px;
+}
+
+img {
+    margin-bottom: 15px;
+}
+
+.buttons {
+    display: inline;
+}
+
+.buttons button {
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
