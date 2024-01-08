@@ -233,9 +233,9 @@ function hookIframeSize(iframe) {
                 fetch("http://localhost:3031/open", { method: "POST", body: url })
                     .then(response => response.text())
                     .then(responseText => {
-                        if (responseText != "OK") {
-                        alert("An error occured!\nSystem plugin response: " + responseText);
-                        copyPrompt(url);
+                        if (responseText !== "OK") {
+                            alert("An error occured!\nSystem plugin response: " + responseText);
+                            copyPrompt(url);
                         }
                     })
                     .catch(error => {

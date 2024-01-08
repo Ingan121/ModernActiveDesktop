@@ -1,0 +1,34 @@
+/* Plus! Science */
+:root {
+    --active-border: #8399B1;
+    --active-title: #008080;
+    --app-workspace: #808080;
+    --background: #4F657D;
+    --button-alternate-face: #B5B5B5;
+    --button-dk-shadow: #000000;
+    --button-face: #8399B1;
+    --button-hilight: #C1CCD9;
+    --button-light: #8399B1;
+    --button-shadow: #4F657D;
+    --button-text: #000000;
+    --gradient-active-title: #008080;
+    --gradient-inactive-title: #A0A0A4;
+    --gray-text: #4F657D;
+    --hilight: #008080;
+    --hilight-text: #FFFFFF;
+    --hot-tracking-color: #000080;
+    --inactive-border: #8399B1;
+    --inactive-title: #A0A0A4;
+    --inactive-title-text: #C1CCD9;
+    --info-text: #000000;
+    --info-window: #C1CCD9;
+    --menu: #8399B1;
+    --menu-bar: #D4D0C8;
+    --menu-highlight: #0A246A;
+    --menu-text: #000000;
+    --scrollbar: #C1CCD9;
+    --title-text: #FFFFFF;
+    --window: #FFFFFF;
+    --window-frame: #000000;
+    --window-text: #000000;
+}

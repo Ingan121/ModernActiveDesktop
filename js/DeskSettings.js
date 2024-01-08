@@ -1,3 +1,5 @@
+'use strict';
+
 let windowContainers = document.getElementsByClassName("windowContainer");
 const bgHtmlContainer = document.getElementById("bgHtmlContainer");
 const bgHtmlView = document.getElementById("bgHtmlView");
@@ -174,7 +176,7 @@ window.wallpaperPropertyListener = {
     applyUserProperties: function(properties) {
         log(properties);
 
-        if (properties.bgtype && properties.bgcolor) {
+        if (properties.bgcolor && properties.bgvideo) {
             // Proper startup detection for Wallpaper Engine
             // Otherwise entering and leaving ChannelViewer etc will trigger this
             startup();
@@ -183,51 +185,40 @@ window.wallpaperPropertyListener = {
             return;
         }
 
-        if (properties.bgtype) {
-            changeBgType(properties.bgtype.value);
-            localStorage.madesktopBgType = properties.bgtype.value;
-        }
         if (properties.bgcolor) {
             changeBgColor(parseWallEngColorProp(properties.bgcolor.value));
         }
         if (properties.bgimg) {
             if (properties.bgimg.value) {
+                changeBgType("image");
                 const path = "file:///" + properties.bgimg.value;
                 document.body.style.backgroundImage = "url('" + path + "')";
                 localStorage.madesktopBgImg = path;
+                localStorage.madesktopBgWeImg = path;
+                localStorage.madesktopBgType = "image";
             } else {
-                document.body.style.backgroundImage = 'none';
-                localStorage.removeItem('madesktopBgImg');
+                if (localStorage.madesktopBgWeImg === localStorage.madesktopBgImg) {
+                    document.body.style.backgroundImage = 'none';
+                    delete localStorage.madesktopBgImg;
+                }
+                delete localStorage.madesktopBgWeImg;
             }
-        }
-        if (properties.bgimgmode) {
-            changeBgImgMode(properties.bgimgmode.value);
-            localStorage.madesktopBgImgMode = properties.bgimgmode.value;
         }
         if (properties.bgvideo) {
             if (properties.bgvideo.value) {
+                changeBgType("video");
                 const path = "file:///" + properties.bgvideo.value;
                 bgVideoView.src = path;
+                document.body.style.backgroundImage = "none";
+                delete localStorage.madesktopBgImg;
                 localStorage.madesktopBgVideo = path;
+                localStorage.madesktopBgType = "video";
             } else {
+                changeBgType("image");
                 bgVideoView.src = "";
-                localStorage.removeItem('madesktopBgVideo');
+                delete localStorage.madesktopBgVideo;
+                localStorage.madesktopBgType = "image";
             }
-        }
-        if (properties.bgvideomute) {
-            if (properties.bgvideomute.value) {
-                bgVideoView.muted = true;
-                localStorage.madesktopBgVideoMuted = true;
-            } else {
-                bgVideoView.muted = false;
-                localStorage.removeItem('madesktopBgVideoMuted');
-            }
-        }
-        if (properties.bghtmlurl) {
-            const url = properties.bghtmlurl.value || "bghtml/index.html";
-            if (url == "index.html") return; // This could cause untended behaviors
-            bgHtmlView.src = url;
-            localStorage.madesktopBgHtmlSrc = url;
         }
         if (properties.additem) {
             openWindow();
@@ -402,14 +393,8 @@ function changeFont(isPixel) {
 // Change the 'open with' option of the system plugin, by sending a POST request to the system plugin
 function updateSysplugOpenOpt(option) {
     fetch("http://localhost:3031/config", { method: "POST", body: `{"openWith": ${option}}` })
-        .then(response => response.text())
-        .then(responseText => {
-            if (responseText != "OK") {
-                madAlert("An error occurred!\nSystem plugin response: " + responseText, null, "error");
-            }
-        })
         .catch(error => {
-            madAlert("Failed to change the open option because system plugin is not running. Please install it first then try again.", function() {
+            madAlert("Failed to change the open option because system plugin is not running. Please install it first then try again.", function () {
                 openWindow("SysplugSetupGuide.md", true);
             }, "warning");
         });
@@ -705,7 +690,7 @@ function madAlert(msg, callback, icon = "info") {
         playSound("ding");
     }
 
-    msgboxMessage.textContent = msg;
+    msgboxMessage.innerHTML = msg;
     msgboxIcon.style.display = "block";
     msgboxIcon.src = `images/${icon}.png`;
     msgboxBtn2.style.display = "none";
@@ -736,7 +721,7 @@ function madAlert(msg, callback, icon = "info") {
 function madConfirm(msg, callback) {
     playSound("chord");
 
-    msgboxMessage.textContent = msg;
+    msgboxMessage.innerHTML = msg;
     msgboxIcon.style.display = "block";
     msgboxIcon.src = "images/question.png";
     msgboxBtn2.style.display = "block";
@@ -783,7 +768,7 @@ function madPrompt(msg, callback, hint, text) {
         return;
     }
     
-    msgboxMessage.textContent = msg;
+    msgboxMessage.innerHTML = msg;
     msgboxIcon.style.display = "none";
     msgboxBtn2.style.display = "block";
     msgboxInput.style.display = "block";
@@ -869,7 +854,11 @@ function playSound(sound) {
 
 function reset(res) {
     if (typeof res === "undefined" || res) {
-        madConfirm("This will remove every configuration changes of ModernActiveDesktop you made. Are you sure you want to continue?", function (res) {
+        let msg = "This will remove every configuration change of ModernActiveDesktop you made. Are you sure you want to continue?";
+        if (runningMode === WE) {
+            msg += "<br>Do note that this won't reset the Wallpaper Engine properties panel, and you will need to unload and reload a video wallpaper if you have one set.";
+        }
+        madConfirm(msg, function (res) {
             if (res) {
                 localStorage.clear();
                 location.reload(true);

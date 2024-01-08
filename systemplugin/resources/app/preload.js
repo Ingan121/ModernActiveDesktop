@@ -11,6 +11,7 @@ const config = new Proxy({}, {
     target = JSON.parse(fs.readFileSync(configPath));
     target[key] = value;
     fs.writeFileSync(configPath, JSON.stringify(target));
+    return true;
   }
 });
 

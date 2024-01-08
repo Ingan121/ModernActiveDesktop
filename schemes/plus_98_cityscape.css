@@ -1,0 +1,34 @@
+/* Plus! 98 Cityscape */
+:root {
+    --active-border: #C0C0C0;
+    --active-title: #000098;
+    --app-workspace: #CDA252;
+    --background: #4E509A;
+    --button-alternate-face: #C0C0C0;
+    --button-dk-shadow: #000000;
+    --button-face: #C0C0C0;
+    --button-hilight: #FFFFFF;
+    --button-light: #E0E0E0;
+    --button-shadow: #808080;
+    --button-text: #000000;
+    --gradient-active-title: #90A8FF;
+    --gradient-inactive-title: #98A8D8;
+    --gray-text: #808080;
+    --hilight: #5878F0;
+    --hilight-text: #FFFFFF;
+    --hot-tracking-color: #000080;
+    --inactive-border: #C0C0C0;
+    --inactive-title: #100048;
+    --inactive-title-text: #FFFFFF;
+    --info-text: #000000;
+    --info-window: #FFFFE1;
+    --menu: #C0C0C0;
+    --menu-bar: #C0C0C0;
+    --menu-highlight: #000080;
+    --menu-text: #000000;
+    --scrollbar: #C0C0C0;
+    --title-text: #FFFFFF;
+    --window: #FFFFFF;
+    --window-frame: #000000;
+    --window-text: #000000;
+}

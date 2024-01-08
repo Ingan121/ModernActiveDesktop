@@ -454,7 +454,7 @@
 
 				input.addEventListener("click", function() {
 					if (parent.runningMode === 1) {
-						madPrompt("Enter value :", function (res) {
+						madPrompt("Enter value", function (res) {
 							if (res === null) return;
 							input.value = res;
 							handle_input(input);

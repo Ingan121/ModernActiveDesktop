@@ -1,3 +1,5 @@
+'use strict';
+
 const items = document.querySelectorAll(".items");
 const contents = document.querySelectorAll(".contents");
 const bgImg = document.getElementById("bgImg");
@@ -112,7 +114,7 @@ new MutationObserver(function(mutations) {
 setInterval(checkSysplug, 2000);
 
 function switchItemTitleDisplay() {
-    if (madScaleFactor > 1) {
+    if (madScaleFactor !== 1) {
         itemsTitleImage.style.display = "none";
         itemsTitleText.style.display = "block";
     } else {
@@ -125,7 +127,7 @@ function checkSysplug() {
     fetch("http://localhost:3031/connecttest")
         .then(response => response.text())
         .then(responseText => {
-            if (responseText === "OK") {
+            if (responseText === localStorage.madesktopLastVer + ".0") {
                 checkmarks[2].style.display = "block";
             } else {
                 checkmarks[2].style.display = "none";

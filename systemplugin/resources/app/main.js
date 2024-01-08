@@ -1,3 +1,5 @@
+'use strict';
+
 // Modules to control application life and create native browser window
 const { app, BrowserView, BrowserWindow, ipcMain, shell, dialog, session, clipboard, systemPreferences, protocol, Menu, Tray } = require('electron');
 const path = require('path');
@@ -43,6 +45,7 @@ const config = new Proxy({}, {
     target = JSON.parse(fs.readFileSync(configPath));
     target[key] = value;
     fs.writeFileSync(configPath, JSON.stringify(target));
+    return true;
   }
 });
 
@@ -394,8 +397,8 @@ function onRequest(req, res) {
           res.end('OK');
         });
       } else {
-        res.writeHead(406, {'Content-Type':'text/html'});
-        res.end('<h1>406 Not Acceptable</h1><p>Usage: send a POST request with a URL in the request body</p>')
+        res.writeHead(405, {'Content-Type': 'text/html'});
+        res.end('<h1>405 Method Not Allowed</h1><p>Usage: send a POST request with a URL in the request body</p>')
       }
       break;
     
@@ -408,7 +411,7 @@ function onRequest(req, res) {
             const options = {
               defaultPath : app.getPath('pictures'),
               filters : [
-                  {name: req.headers['x-format-name'], extensions: [req.headers['x-format-extension'].slice(1)]},
+                  {name: req.headers['x-format-name'], extensions: req.headers['x-format-extension'].split(',')},
                   {name: 'All Files', extensions: ['*']}
               ]
             };
@@ -426,6 +429,9 @@ function onRequest(req, res) {
           res.writeHead(500)
           res.end(e);
         }
+      } else {
+        res.writeHead(405, {'Content-Type': 'text/html'});
+        res.end('<h1>405 Method Not Allowed</h1><p>Usage: send a POST request with a file in the request body</p>')
       }
       break;
 
@@ -448,8 +454,8 @@ function onRequest(req, res) {
           res.end('OK');
         });
       } else {
-        res.writeHead(406, {'Content-Type':'text/html'});
-        res.end('<h1>406 Not Acceptable</h1><p>Usage: send a POST request with a JSON with the following format:<br><pre>{"openWith": number}</pre><br>0: Classic style channel viewer<br>1: Classic style channel viewer (fullscreen)<br>2: System default browser</p>')
+        res.writeHead(405, {'Content-Type': 'text/html'});
+        res.end('<h1>405 Method Not Allowed</h1><p>Usage: send a POST request with a JSON with the following format:<br><pre>{"openWith": number}</pre><br>0: Classic style channel viewer<br>1: Classic style channel viewer (fullscreen)<br>2: System default browser</p>')
       }
       break;
 
@@ -460,7 +466,7 @@ function onRequest(req, res) {
       
     case '/connecttest':
       res.writeHead(200, {'Content-Type':'text/html'});
-      res.end('OK');
+      res.end(app.getVersion());
       break;
 
     case '/debugger':
@@ -476,7 +482,14 @@ function onRequest(req, res) {
 
     case '/':
       res.writeHead(200, {'Content-Type':'text/html'});
-      res.end(`<h1>ModernActiveDesktop System Plugin ${app.getVersion()} Web Interface</h1><p>Available pages:<br><a href="/open">/open</a><br><a href="/config">/config</a><br><a href="/systemscheme">/systemscheme</a><br><a href="/connecttest">/connecttest</a><br><a href="/debugger">/debugger</a></p>`)
+      res.end(`<h1>ModernActiveDesktop System Plugin ${app.getVersion()} Web Interface</h1>
+      <p>Available pages:<br>
+      <a href="/open">/open</a><br>
+      <a href="/save">/save</a><br>
+      <a href="/config">/config</a><br>
+      <a href="/systemscheme">/systemscheme</a><br>
+      <a href="/connecttest">/connecttest</a><br>
+      <a href="/debugger">/debugger</a></p>`)
       break;
 
     default:

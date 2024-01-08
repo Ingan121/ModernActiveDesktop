@@ -1,0 +1,34 @@
+/* Plus! The Golden Era */
+:root {
+    --active-border: #B8C8B8;
+    --active-title: #D87060;
+    --app-workspace: #708F70;
+    --background: #000000;
+    --button-alternate-face: #B5B5B5;
+    --button-dk-shadow: #000000;
+    --button-face: #B8C8B8;
+    --button-hilight: #DCE4DC;
+    --button-light: #B8C8B8;
+    --button-shadow: #708F70;
+    --button-text: #000000;
+    --gradient-active-title: #D87060;
+    --gradient-inactive-title: #708F70;
+    --gray-text: #708F70;
+    --hilight: #8088A8;
+    --hilight-text: #FFF8E0;
+    --hot-tracking-color: #000080;
+    --inactive-border: #B8C8B8;
+    --inactive-title: #708F70;
+    --inactive-title-text: #000000;
+    --info-text: #000000;
+    --info-window: #FFFFE1;
+    --menu: #B8C8B8;
+    --menu-bar: #D4D0C8;
+    --menu-highlight: #0A246A;
+    --menu-text: #000000;
+    --scrollbar: #DCE4DC;
+    --title-text: #FFF8E0;
+    --window: #FFF8E0;
+    --window-frame: #000000;
+    --window-text: #000000;
+}

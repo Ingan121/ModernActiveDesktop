@@ -1,0 +1,34 @@
+/* Plus! Space */
+:root {
+    --active-border: #809098;
+    --active-title: #000000;
+    --app-workspace: #536066;
+    --background: #000000;
+    --button-alternate-face: #B5B5B5;
+    --button-dk-shadow: #000000;
+    --button-face: #809098;
+    --button-hilight: #C0C8D0;
+    --button-light: #809098;
+    --button-shadow: #506068;
+    --button-text: #000000;
+    --gradient-active-title: #000000;
+    --gradient-inactive-title: #506068;
+    --gray-text: #506068;
+    --hilight: #000000;
+    --hilight-text: #00FF00;
+    --hot-tracking-color: #000080;
+    --inactive-border: #809098;
+    --inactive-title: #506068;
+    --inactive-title-text: #C0C0C0;
+    --info-text: #000000;
+    --info-window: #FFFFFF;
+    --menu: #809098;
+    --menu-bar: #D4D0C8;
+    --menu-highlight: #0A246A;
+    --menu-text: #000000;
+    --scrollbar: #C0C8D0;
+    --title-text: #00FF00;
+    --window: #FFFFFF;
+    --window-frame: #000000;
+    --window-text: #000000;
+}

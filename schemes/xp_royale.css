@@ -1,0 +1,34 @@
+/* Windows XP Royale */
+:root {
+    --active-border: #D4D0C8;
+    --active-title: #335EA8;
+    --app-workspace: #808080;
+    --background: #000040;
+    --button-alternate-face: #B5B5B5;
+    --button-dk-shadow: #85878C;
+    --button-face: #EBE9ED;
+    --button-hilight: #FFFFFF;
+    --button-light: #DCDFE4;
+    --button-shadow: #A7A6AA;
+    --button-text: #000000;
+    --gradient-active-title: #70B1EB;
+    --gradient-inactive-title: #83B7E3;
+    --gray-text: #A7A6AA;
+    --hilight: #335EA8;
+    --hilight-text: #FFFFFF;
+    --hot-tracking-color: #000080;
+    --inactive-border: #D4D0C8;
+    --inactive-title: #6FA1D9;
+    --inactive-title-text: #FFFFFF;
+    --info-text: #000000;
+    --info-window: #FFFFE1;
+    --menu: #FFFFFF;
+    --menu-bar: #EBE9ED;
+    --menu-highlight: #335EA8;
+    --menu-text: #000000;
+    --scrollbar: #D4D0C8;
+    --title-text: #FFFFFF;
+    --window: #FFFFFF;
+    --window-frame: #000000;
+    --window-text: #000000;
+}

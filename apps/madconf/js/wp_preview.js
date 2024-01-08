@@ -1,19 +1,26 @@
+'use strict';
+
 window.bgHtmlContainer = document.getElementById("bgHtmlContainer");
 window.bgHtmlView = document.getElementById("bgHtmlView");
 window.bgVideoView = document.getElementById("bgVideo");
 window.bgType = localStorage.madesktopBgType || "image";
 window.bgImgMode = localStorage.madesktopBgImgMode || "center";
+let bgSize = "auto";
 
 let scale = (localStorage.madesktopScaleFactor || 1) * 0.0625;
 document.body.style.zoom = scale;
 
-if (localStorage.madesktopBgColor) document.body.style.backgroundColor = localStorage.madesktopBgColor;
 changeBgType(bgType);
 changeBgImgMode(bgImgMode);
-if (localStorage.madesktopBgHtmlSrc) bgHtmlView.src = localStorage.madesktopBgHtmlSrc;
+if (localStorage.madesktopBgColor) {
+    document.body.style.backgroundColor = localStorage.madesktopBgColor;
+}
+if (localStorage.madesktopBgHtmlSrc) {
+    bgHtmlView.src = localStorage.madesktopBgHtmlSrc;
+}
 document.getElementById("scheme").href = parent.parent.document.getElementById("scheme").href;
 
-bgHtmlView.addEventListener("load", function() {
+bgHtmlView.addEventListener("load", function () {
     bgHtmlView.contentWindow.document.body.style.zoom = scale;
 });
 
@@ -52,27 +59,40 @@ function changeBgType(type) {
 
 function loadBgImgConf() {
     if (localStorage.madesktopBgImg) {
-        if (localStorage.madesktopBgImg.startsWith("file:///") || // Set in WE
-            localStorage.madesktopBgImg.startsWith("wallpapers/")) // Built-in wallpapers set in madconf
-        {
+        if (localStorage.madesktopBgImg.startsWith("file:///")) { // Set in WE
             document.body.style.backgroundImage = "url('" + localStorage.madesktopBgImg + "')";
+        } else if (localStorage.madesktopBgImg.startsWith("wallpapers/")) { // Built-in wallpapers set in madconf
+            document.body.style.backgroundImage = "url('../../" + localStorage.madesktopBgImg + "')";
         } else {
             document.body.style.backgroundImage = "url('data:image/png;base64," + localStorage.madesktopBgImg + "')"; // Set in madconf
         }
+        updateImageSize();
     } else {
         document.body.style.backgroundImage = "none";
+    }
+}
+
+function updateImageSize() {
+    // Setting image size explicitly is required for the image to be scaled down correctly
+    if (document.body.style.backgroundImage && (bgImgMode == "center" || bgImgMode == "grid")) {
+        const image = new Image();
+        image.onload = function () {
+            bgSize = image.width + "px " + image.height + "px";
+            document.body.style.backgroundSize = bgSize;
+        }
+        image.src = document.body.style.backgroundImage.slice(5, -2);
     }
 }
 
 function changeBgImgMode(value) {
     switch (value) {
         case "center": // Center
-            document.body.style.backgroundSize = "auto";
+            document.body.style.backgroundSize = bgSize;
             document.body.style.backgroundRepeat = "no-repeat";
             document.body.style.backgroundPosition = "center center";
             break;
         case "grid": // Tile
-            document.body.style.backgroundSize = "auto";
+            document.body.style.backgroundSize = bgSize;
             document.body.style.backgroundRepeat = "repeat";
             document.body.style.backgroundPosition = "left top";
             break;

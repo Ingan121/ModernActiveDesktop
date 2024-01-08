@@ -1,3 +1,5 @@
+'use strict';
+
 class DeskMover {
     constructor(windowContainer, numStr, openDoc, temp, width, height, style, reinit, centered) {
         this.numStr = numStr;
@@ -36,7 +38,7 @@ class DeskMover {
         let tempConfigStorage = {};
         this.config = new Proxy(tempConfigStorage, {
             get(target, key) {
-                if (temp) {
+                if (temp) { // Do not save configs for temporary windows
                     return target[key];
                 }
                 return localStorage.getItem("madesktopItem" + key[0].toUpperCase() + key.slice(1) + numStr);
@@ -247,7 +249,11 @@ class DeskMover {
                 if ((typeof openDoc === "string" || openDoc instanceof String) && !reinit) {
                     if (openDoc.startsWith("apps/madconf/")) {
                         this.windowElement.width = width || '470px';
-                        this.windowElement.height = height || '420px';
+                        if (localStorage.madesktopColorScheme === 'xpcss4mad') {
+                            this.windowElement.height = height || '470px';
+                        } else {
+                            this.windowElement.height = height || '420px';
+                        }
                     } else {
                         this.windowElement.width = width || '800px';
                         this.windowElement.height = height || '600px';
@@ -301,6 +307,7 @@ class DeskMover {
                 localStorage.madesktopOpenWindows = openWindows;
             }
             delete deskMovers[this.numStr];
+            this.windowContainer.remove();
         } else {
             let msg = "";
             switch (window.runningMode) {
@@ -324,7 +331,7 @@ class DeskMover {
         this.contextMenuBg.style.display = "block";
         this.boundCloseContextMenu = this.closeContextMenu.bind(this);
 
-        // Prevent the context menu from immediately closing when opening the menu
+        // Prevent the context menu from immediately closing when clicking the menu button
         this.contextMenuOpening = null;
         setTimeout(() => {
             this.contextMenuOpening = this.posInContainer;
@@ -357,7 +364,7 @@ class DeskMover {
         document.removeEventListener('click', this.boundCloseContextMenu);
         this.closeConfMenu();
         iframeClickEventCtrl(true);
-        isContextMenuOpen = false;
+        window.isContextMenuOpen = false;
     }
     
     openConfMenu() {
@@ -432,6 +439,8 @@ class DeskMover {
                 this.confMenuItems[2].classList.add("activeStyle");
         }
         this.config.style = style;
+        this.windowContainer.dataset.style = style;
+        this.#adjustElements();
     }
 
     locReplace(url) {
@@ -711,9 +720,14 @@ class DeskMover {
     
     // Adjust all elements to windowElement
     #adjustElements() {
-        this.windowContainer.style.height = this.windowElement.offsetHeight + 21 + 'px';
+        if (localStorage.madesktopColorScheme === 'xpcss4mad' && this.config.style === 'wnd') {
+            this.windowContainer.style.height = this.windowElement.offsetHeight + 22 + 'px';
+            this.windowContainer.style.width = this.windowElement.offsetWidth + 4 + 'px';
+        } else {
+            this.windowContainer.style.height = this.windowElement.offsetHeight + 21 + 'px';
+            this.windowContainer.style.width = this.windowElement.offsetWidth - 2 + 'px';
+        }
         this.windowFrame.style.height = this.windowElement.offsetHeight + 'px';
-        this.windowContainer.style.width = this.windowElement.offsetWidth - 2 + 'px';
         this.windowFrame.style.width = this.windowElement.offsetWidth + 'px';
         switch (this.config.style) {
             case "ad":
@@ -785,7 +799,8 @@ class DeskMover {
         } else if (this.config.style === "ad") {
             // Won't happen in WE; but required in normal browsers
             // I use Chrome/Edge for some debugging as mouse hovering doesn't work well in WE with a debugger attached
-            // Edit: Well it now works well at the time of writing (MAD 2.4)
+            // Edit: Well it now works well at the time of writing (MAD 3.0)
+            // if you use chrome://inspect instead of going directly to localhost:port
             this.windowFrame.style.borderColor = "var(--button-face)";
             this.windowFrame.style.backgroundColor = "var(--button-face)";
             this.windowTitlebar.style.display = this.config.style === "wnd" ? "flex" : "block";
@@ -796,7 +811,7 @@ class DeskMover {
 function initSimpleMover(container, titlebar, exclusions) {
     let offset = [0, 0], isDown = false, mouseOverWndBtns = false;
     
-    titlebar.addEventListener('mousedown', function() {
+    titlebar.addEventListener('mousedown', function () {
         if (!mouseOverWndBtns) {
             isDown = true;
             iframeClickEventCtrl(false);
@@ -807,7 +822,7 @@ function initSimpleMover(container, titlebar, exclusions) {
         }
     });
     
-    document.addEventListener('mouseup', function() {
+    document.addEventListener('mouseup', function () {
         isDown = false;
         iframeClickEventCtrl(true);
         
@@ -818,7 +833,7 @@ function initSimpleMover(container, titlebar, exclusions) {
         if (container.offsetTop + 50 > vHeight) container.style.top = vHeight - 50 + 'px';
     });
     
-    document.addEventListener('mousemove', function() {
+    document.addEventListener('mousemove', function (event) {
         if (isDown) {
             container.style.left = (Math.ceil(event.clientX / scaleFactor) + offset[0]) + 'px';
             container.style.top  = (Math.ceil(event.clientY / scaleFactor) + offset[1]) + 'px';

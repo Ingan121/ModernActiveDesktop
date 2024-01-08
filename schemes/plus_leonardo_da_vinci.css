@@ -1,0 +1,34 @@
+/* Plus! Leonardo da Vinci */
+:root {
+    --active-border: #BFA59F;
+    --active-title: #800000;
+    --app-workspace: #8B655C;
+    --background: #8B655C;
+    --button-alternate-face: #B5B5B5;
+    --button-dk-shadow: #000000;
+    --button-face: #BFA59F;
+    --button-hilight: #DFD2D0;
+    --button-light: #BFA59F;
+    --button-shadow: #8B655C;
+    --button-text: #000000;
+    --gradient-active-title: #800000;
+    --gradient-inactive-title: #8B655C;
+    --gray-text: #8B655C;
+    --hilight: #800000;
+    --hilight-text: #FFFFFF;
+    --hot-tracking-color: #000080;
+    --inactive-border: #BFA59F;
+    --inactive-title: #8B655C;
+    --inactive-title-text: #DFD2D0;
+    --info-text: #000000;
+    --info-window: #FFFFFF;
+    --menu: #BFA59F;
+    --menu-bar: #D4D0C8;
+    --menu-highlight: #0A246A;
+    --menu-text: #000000;
+    --scrollbar: #DFD2D0;
+    --title-text: #FFFFFF;
+    --window: #FFFFFF;
+    --window-frame: #000000;
+    --window-text: #000000;
+}

@@ -9,8 +9,8 @@
 			"additem" : 
 			{
 				"condition" : "additem.value = false; true",
-				"index" : 7,
-				"order" : 107,
+				"index" : 3,
+				"order" : 103,
 				"text" : "Add a new ActiveDesktop item",
 				"type" : "bool",
 				"value" : false
@@ -23,103 +23,30 @@
 				"type" : "color",
 				"value" : "0 0.5019607843137255 0.5019607843137255"
 			},
-			"bghtmlurl" : 
-			{
-				"condition" : "bgtype.value == \"web\"",
-				"index" : 6,
-				"order" : 106,
-				"text" : "BG URL",
-				"type" : "textinput",
-				"value" : ""
-			},
 			"bgimg" : 
 			{
-				"condition" : "bgtype.value == \"image\"",
-				"index" : 2,
-				"order" : 102,
-				"text" : "BG image",
+				"condition" : "",
+				"index" : 1,
+				"order" : 101,
+				"text" : "BG Image",
 				"type" : "file",
 				"value" : ""
 			},
-			"bgimgmode" : 
-			{
-				"condition" : "bgtype.value == \"image\" && bgimg.value",
-				"index" : 3,
-				"options" : 
-				[
-					{
-						"label" : "Center",
-						"value" : "center"
-					},
-					{
-						"label" : "Tile",
-						"value" : "grid"
-					},
-					{
-						"label" : "Fit horizontally",
-						"value" : "horizfit"
-					},
-					{
-						"label" : "Fit vertically",
-						"value" : "vertfit"
-					},
-					{
-						"label" : "Stretch",
-						"value" : "scale"
-					}
-				],
-				"order" : 103,
-				"text" : "BG image style",
-				"type" : "combo",
-				"value" : "center"
-			},
-			"bgtype" : 
-			{
-				"index" : 1,
-				"options" : 
-				[
-					{
-						"label" : "Image",
-						"value" : "image"
-					},
-					{
-						"label" : "Video",
-						"value" : "video"
-					},
-					{
-						"label" : "Web",
-						"value" : "web"
-					}
-				],
-				"order" : 101,
-				"text" : "Background type",
-				"type" : "combo",
-				"value" : "image"
-			},
 			"bgvideo" : 
 			{
-				"condition" : "bgtype.value == \"video\"",
+				"condition" : "",
 				"fileType" : "video",
-				"index" : 4,
-				"order" : 104,
+				"index" : 2,
+				"order" : 102,
 				"text" : "BG video",
 				"type" : "file",
 				"value" : ""
 			},
-			"bgvideomute" : 
-			{
-				"condition" : "bgtype.value == \"video\"",
-				"index" : 5,
-				"order" : 105,
-				"text" : "Mute video",
-				"type" : "bool",
-				"value" : false
-			},
 			"openproperties" : 
 			{
 				"condition" : "openproperties.value = false; true",
-				"index" : 8,
-				"order" : 108,
+				"index" : 4,
+				"order" : 104,
 				"text" : "Show more options",
 				"type" : "bool",
 				"value" : false

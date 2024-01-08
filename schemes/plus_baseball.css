@@ -1,0 +1,34 @@
+/* Plus! Baseball */
+:root {
+    --active-border: #D0A870;
+    --active-title: #FF0000;
+    --app-workspace: #9F7335;
+    --background: #8A664F;
+    --button-alternate-face: #B5B5B5;
+    --button-dk-shadow: #000000;
+    --button-face: #D0A870;
+    --button-hilight: #E8D0B8;
+    --button-light: #D0A870;
+    --button-shadow: #A07038;
+    --button-text: #000000;
+    --gradient-active-title: #FF0000;
+    --gradient-inactive-title: #A07038;
+    --gray-text: #A07038;
+    --hilight: #FF0000;
+    --hilight-text: #FFFFFF;
+    --hot-tracking-color: #000080;
+    --inactive-border: #D0A870;
+    --inactive-title: #A07038;
+    --inactive-title-text: #D0A870;
+    --info-text: #800000;
+    --info-window: #E1E0D2;
+    --menu: #D0A870;
+    --menu-bar: #D4D0C8;
+    --menu-highlight: #0A246A;
+    --menu-text: #000000;
+    --scrollbar: #E8D0B8;
+    --title-text: #FFFFFF;
+    --window: #FFFFFF;
+    --window-frame: #000000;
+    --window-text: #000000;
+}

@@ -18,12 +18,6 @@
         </menu>
         <div class="window" role="tabpanel">
             <div class="window-body">
-                <!--
-                    <label>
-                        <p>BG Color:</p>
-                        <input id="colorPicker" type="color" value="#008080" onchange="parent.changeBgColor(this.value)">
-                    </label>
-                -->
                 <div id="previewArea">
                     <img src="images/monitor.png">
                     <iframe id="preview" src="wp_preview.html"></iframe>
@@ -33,7 +27,7 @@
                     <p>Select an HTML Document or a picture.</p>
                     <div class="field-row">
                         <ul id="wpChooser" class="tree-view">
-                            <li><img src="images/none.png"><div class="mask mask-none"></div><span>(None)</span></li>
+                            <li data-active><img src="images/none.png"><div class="mask mask-none"></div><span>(None)</span></li>
                             <li><img src="images/image.png"><div class="mask"></div><span>1stboot</span></li>
                             <li><img src="images/image.png"><div class="mask"></div><span>Black Thatch</span></li>
                             <li><img src="images/image.png"><div class="mask"></div><span>Blue Rivets</span></li>
@@ -48,7 +42,9 @@
                             <li><img src="images/image.png"><div class="mask"></div><span>Triangles</span></li>
                             <li><img src="images/html.png"><div class="mask mask-html"></div><span>Windows 98</span></li>
                             <li id="customImgItem"><img src="images/image.png"><div class="mask"></div><span>Current Image</span></li>
-                            <li id="videoImgItem"><img src="images/video.png"><div class="mask"></div><span>Video Loaded from Wallpaper Engine</span></li>
+                            <li id="customWebImgItem"><img src="images/html.png"><div class="mask mask-html"></div><span>Current Webpage</span></li>
+                            <li id="weImgItem"><img src="images/image.png"><div class="mask"></div><span>Wallpaper loaded from Wallpaper Engine</span></li>
+                            <li id="videoImgItem"><img src="images/video.png"><div class="mask mask-video"></div><span>Video Wallpaper</span></li>
                         </ul>
                         <div>
                             <button id="wpBrowseBtn"><u>B</u>rowse...</button><br>
@@ -61,10 +57,11 @@
                                 <option value="vertfit">Fit vertically</option>
                                 <option value="scale">Stretch</option>
                             </select>
+                            <input id="wpVideoMuteChkBox" type="checkbox">
+                            <label for="wpVideoMuteChkBox">Mute video</label>
                         </div>
                     </div>
                 </fieldset>
-                
             </div>
         </div>
         <section class="topmargin field-row" style="justify-content: flex-end;">

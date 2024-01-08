@@ -1,3 +1,5 @@
+'use strict';
+
 const dpiSlider = document.getElementById('dpiSlider');
 const dpiSelector = document.getElementById('dpiSelector');
 const dpiSelectorOptions = dpiSelector.options;
@@ -94,7 +96,7 @@ if (config.noDisable) {
 leftIconArea.value = config.leftIcon;
 rightIconArea.value = config.rightIcon;
 
-window.apply = function() {
+window.apply = function () {
     parent.changeScale(config.dpi);
     localStorage.madesktopScaleFactor = config.dpi;
 
@@ -133,12 +135,12 @@ window.apply = function() {
     localStorage.madesktopChanViewRightMargin = config.rightIcon;
 }
 
-dpiSlider.addEventListener('input', function() {
+dpiSlider.addEventListener('input', function () {
     dpiSelector.selectedIndex = this.value;
     config.dpi = dpiSelector.value;
 });
 
-dpiSelector.addEventListener('change', function() {
+dpiSelector.addEventListener('change', function () {
     dpiSlider.value = this.selectedIndex;
     if (this.value === 'custom') {
         madPrompt("Enter scale (%) :", res => {
@@ -152,7 +154,7 @@ dpiSelector.addEventListener('change', function() {
     }
 });
 
-sysplugChkBox.addEventListener('change', function() {
+sysplugChkBox.addEventListener('change', function () {
     config.sysplug = this.checked;
     if (this.checked) {
         checkSysplug();
@@ -162,48 +164,45 @@ sysplugChkBox.addEventListener('change', function() {
     }
 });
 
-sysplugOpenOptSelector.addEventListener('change', function() {
+sysplugOpenOptSelector.addEventListener('change', function () {
     config.sysplugOpenOpt = this.selectedIndex;
 });
 
-startSoundChkBox.addEventListener('change', function() {
+startSoundChkBox.addEventListener('change', function () {
     config.startSound = this.checked;
 });
 
-alertSoundChkBox.addEventListener('change', function() {
+alertSoundChkBox.addEventListener('change', function () {
     config.alertSound = this.checked;
 });
 
-noDisableChkBox.addEventListener('change', function() {
+noDisableChkBox.addEventListener('change', function () {
     config.noDisable = this.checked;
 });
 
-leftIconArea.addEventListener('change', function() {
+leftIconArea.addEventListener('change', function () {
     config.leftIcon = this.value;
 });
 
-rightIconArea.addEventListener('change', function() {
+rightIconArea.addEventListener('change', function () {
     config.rightIcon = this.value;
 });
 
 connectTestBtn.addEventListener('click', checkSysplug);
 
-showGuideBtn.addEventListener('click', function() {
+showGuideBtn.addEventListener('click', function () {
     madOpenWindow("SysplugSetupGuide.md", true);
 });
 
-resetBtn.addEventListener('click', function() {
-    madConfirm("If you want to reset all the configurations completely, first click the big red Reset button in the Wallpaper Engine properties panel, then click OK.", parent.reset);
-});
+resetBtn.addEventListener('click', parent.reset);
 
 function checkSysplug() {
     connectionStatus.textContent = "Checking system plugin connectivity...";
     fetch("http://localhost:3031/connecttest")
         .then(response => response.text())
         .then(responseText => {
-            if (responseText !== "OK") {
-                connectionStatus.textContent = "An error occurred while connecting with the system plugin.";
-                madAlert("An error occurred!\nSystem plugin response: " + responseText, null, "error");
+            if (responseText !== localStorage.madesktopLastVer + ".0") {
+                connectionStatus.textContent = "System plugin version mismatch! Please update the system plugin with the guide.";
             } else {
                 connectionStatus.textContent = "System plugin connection successful!";
             }

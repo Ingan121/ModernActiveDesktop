@@ -7,6 +7,8 @@
 			"aria-label": "Font Family",
 			"aria-description": localize("Selects the font used by the text."),
 		});
+		$family[0].addEventListener("click", madOpenDropdown.bind($family[0], $family[0]));
+		
 		const $size = $(E("input")).addClass("inset-deep").attr({
 			type: "number",
 			min: 8,
@@ -30,7 +32,7 @@
 
 		$size.on("click", () => {
 			if (parent.runningMode === 1) {
-				madPrompt("Enter value :", function (res) {
+				madPrompt("Enter value", function (res) {
 					if (res === null) return;
 					$size.val(res);
 					$size.trigger("input");

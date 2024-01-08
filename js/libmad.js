@@ -1,3 +1,5 @@
+'use strict';
+
 (function() {
     const parentSchemeElement = parent.document.getElementById("scheme");
     const parentFontElement = parent.document.getElementById("font");
@@ -6,7 +8,6 @@
     const styleElement = document.getElementById("style");
     const deskMoverNum = frameElement.dataset.num || 0;
     const deskMover = parent.deskMovers[deskMoverNum];
-    const windowContainer = deskMover.windowContainer;
     const dropdownBg = deskMover.dropdownBg;
     const dropdown = deskMover.dropdown;
     const config = deskMover.config;
@@ -104,7 +105,7 @@
             if (config.unscaled) {
                 return 1;
             } else {
-                return parent.scaleFactor;
+                return parseFloat(parent.scaleFactor);
             }
         }
     });
@@ -115,7 +116,9 @@
             canvas.toBlob((blob) => {
                 const reader = new FileReader();
                 reader.onload = function () {
+                    parent.changeBgType("image");
                     parent.changeBgImgMode("grid");
+                    localStorage.madesktopBgType = "image";
                     localStorage.madesktopBgImgMode = "grid";
                     const b64str = reader.result.split(";base64,")[1];
                     parent.document.body.style.backgroundImage = "url('data:image/png;base64," + b64str + "')";
@@ -128,7 +131,9 @@
             canvas.toBlob((blob) => {
                 const reader = new FileReader();
                 reader.onload = function () {
+                    parent.changeBgType("image");
                     parent.changeBgImgMode("center");
+                    localStorage.madesktopBgType = "image";
                     localStorage.madesktopBgImgMode = "center";
                     const b64str = reader.result.split(";base64,")[1];
                     parent.document.body.style.backgroundImage = "url('data:image/png;base64," + b64str + "')";
@@ -144,6 +149,7 @@
     window.madOpenDropdown = function(elem) {
         const dummy = dropdownBg.querySelector(".dropdownItem");
         const options = elem.options;
+        let optionCnt = 0;
 
         if (dropdown.childElementCount > 1) {
             for (let i = dropdown.childElementCount - 1; i > 0; i--) {
@@ -153,7 +159,6 @@
 
         for (const option of options) {
             if (option.hidden) {
-                delete option;
                 continue;
             }
             const item = dummy.cloneNode(dummy, true);
@@ -165,6 +170,7 @@
                 closeDropdown();
             });
             dropdown.appendChild(item);
+            optionCnt++;
         }
         
         // Set these first to ensure the item height is retrieved correctly
@@ -181,11 +187,11 @@
         }
         dropdown.style.width = dropdownBg.style.width;
 
-        if (options.length >= 35) {
+        if (optionCnt >= 30) {
             dropdownBg.style.height = "490px";
         } else {
             const itemHeight = dropdown.children[1].getBoundingClientRect().height;
-            dropdownBg.style.height = itemHeight * options.length + "px";
+            dropdownBg.style.height = itemHeight * optionCnt + "px";
         }
         dropdown.style.height = dropdownBg.style.height;
 

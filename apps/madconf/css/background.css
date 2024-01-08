@@ -75,7 +75,14 @@
     mask-image: url('../images/html.png');
 }
 
+.mask-video {
+    -webkit-mask-image: url('../images/video.png');
+    mask-image: url('../images/video.png');
+}
+
 #customImgItem,
+#customWebImgItem,
+#weImgItem,
 #videoImgItem {
     display: none;
 }
@@ -96,4 +103,10 @@
 
 #imgModeSelector {
     margin-top: 2px;
+}
+
+label[for=wpVideoMuteChkBox] {
+    display: none;
+    top: -16px;
+    height: 0;
 }

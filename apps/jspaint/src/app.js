@@ -148,7 +148,7 @@ window.systemHookDefaults = {
 					body: blob,
 					headers: {
 						"X-Format-Name": new_format.name,
-						"X-Format-Extension": new_format.extensions.map((extension) => "." + extension)
+						"X-Format-Extension": new_format.extensions.toString()
 					}
 				}).catch((err) => {
 					show_error_message("System plugin is not running. Please make sure you have installed it properly.");

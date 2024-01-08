@@ -1,4 +1,4 @@
-/* Windows 95 */
+/* Windows Classic 95 */
 :root {
     --active-border: #C0C0C0;
     --active-title: #000080;
@@ -8,7 +8,7 @@
     --button-dk-shadow: #000000;
     --button-face: #C0C0C0;
     --button-hilight: #FFFFFF;
-    --button-light: #DFDFDF;
+    --button-light: #C0C0C0;
     --button-shadow: #808080;
     --button-text: #000000;
     --gradient-active-title: #000080;
@@ -16,7 +16,7 @@
     --gray-text: #808080;
     --hilight: #000080;
     --hilight-text: #FFFFFF;
-    --hot-tracking-color: #0000FF;
+    --hot-tracking-color: #000080;
     --inactive-border: #C0C0C0;
     --inactive-title: #808080;
     --inactive-title-text: #C0C0C0;

@@ -1,24 +1,33 @@
 import sys, re, textwrap
 
+# Python script to parse WinClassicThemeConfig scheme reg files into CSS variables
+# WinClassicThemeConfig: https://gitlab.com/ftortoriello/WinClassicThemeConfig/-/releases
+
 def main():
-    d = {}
+    reg_texts = {}
+    filename_map = {}
     f = open(sys.argv[1], 'r', encoding='utf-8')
     cnt = -1
     name = ''
     for line in f:
         if cnt != -1:
-            d[name] += line
+            reg_texts[name] += line
             #print(line, end='')
             cnt += 1
         if cnt == 31:
             cnt = -1
-            map(d[name], name, name.split(' (')[0].replace(' ', '_').lower().replace('#', '').replace(',', '').replace('_-_', '_').replace('__', '_'))
+            filename = name.split(' (')[0].replace(' ', '_').lower().replace('#', '').replace(',', '').replace('_-_', '_').replace('__', '_').replace('!', '').replace('win_', 'win')
+            filename_map[filename] = name
+            mapper(reg_texts[name], name, filename)
         if line[0] == '[':
             if line.count('\\') == 4:
                 cnt = 0
                 name = re.match('\[.*\\\\(.*)\]', line)[1]
-                d[name] = ''
+                reg_texts[name] = ''
                 print(name)
+    f.close()
+    print()
+    print_html(filename_map)
 
 def parse(string):
     reverse_color = re.match('.*:00(.*)', string)[1]
@@ -27,9 +36,9 @@ def parse(string):
     color = ''.join(color_list)
     return color.upper()
 
-def map(string, name, filename):
+def mapper(string, name, filename):
     lines = string.split('\n')
-    a = f'''/* {name} */
+    css = f'''/* {name} */
 :root {{
     --active-border: #{parse(lines[10])};
     --active-title: #{parse(lines[2])};
@@ -63,9 +72,15 @@ def map(string, name, filename):
     --window-frame: #{parse(lines[6])};
     --window-text: #{parse(lines[8])};
 }}'''
-    print(a)
+    print(css)
     f = open(f'{filename}.css', 'wb')
-    f.write(bytes(a, 'utf-8'))
+    f.write(bytes(css, 'utf-8'))
     f.close()
+
+def print_html(filename_map):
+    html = ''
+    for filename in filename_map:
+        html += f'<option value="{filename}">{filename_map[filename]}</option>\n'
+    print(html)
 
 main()

@@ -1,3 +1,5 @@
+'use strict';
+
 const icon = document.querySelector("img");
 let debugReady = false;
 

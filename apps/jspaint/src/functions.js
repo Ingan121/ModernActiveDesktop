@@ -413,7 +413,7 @@ function show_custom_zoom_window() {
 
 	$really_custom_input.closest("label").on("click", (event) => {
 		if (parent.runningMode === 1) {
-			madPrompt("Enter value :", function (res) {
+			madPrompt("Enter value", function (res) {
 				if (res === null) return;
 				$really_custom_input.val(res);
 				$really_custom_input.trigger("input");
@@ -1003,7 +1003,7 @@ function file_load_from_url() {
 	const $input = $w.$main.find("#url-input");
 	$input.on("click", () => {
 		if (parent.runningMode === 1) {
-			madPrompt("Enter value :", function (res) {
+			madPrompt("Enter value", function (res) {
 				if (res === null) return;
 				$input.val(res);
 				$input.trigger("input");
@@ -2873,7 +2873,7 @@ function image_attributes() {
 	for (const elem of [$width, $height]) {
 		elem.on("click", () => {
 			if (parent.runningMode === 1) {
-				madPrompt("Enter value :", function (res) {
+				madPrompt("Enter value", function (res) {
 					if (res === null) return;
 					elem.val(res);
 					elem.trigger("input");
@@ -3161,7 +3161,7 @@ function image_flip_and_rotate() {
 	const $arbitrary = $fieldset.find("input[name='rotate-by-arbitrary-angle']");
 	$arbitrary.on("click", () => {
 		if (parent.runningMode === 1) {
-			madPrompt("Enter value :", function (res) {
+			madPrompt("Enter value", function (res) {
 				if (res === null) return;
 				$arbitrary.val(res);
 				$arbitrary.trigger("input");
@@ -3255,7 +3255,7 @@ function image_stretch_and_skew() {
 	for (const elem of [stretch_x, stretch_y, skew_x, skew_y]) {
 		elem.on("click", () => {
 			if (parent.runningMode === 1) {
-				madPrompt("Enter value :", function (res) {
+				madPrompt("Enter value", function (res) {
 					if (res === null) return;
 					elem.val(res);
 					elem.trigger("input");
@@ -3398,7 +3398,7 @@ function save_as_prompt({
 		// MAD Additions
 		$file_name.on("click", () => {
 			if (parent.runningMode === 1) {
-				madPrompt("Enter value :", function (res) {
+				madPrompt("Enter value", function (res) {
 					if (res === null) return;
 					$file_name.val(res);
 					$file_name.trigger("input");

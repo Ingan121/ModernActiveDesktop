@@ -1,0 +1,34 @@
+/* Plus! Travel */
+:root {
+    --active-border: #908070;
+    --active-title: #404878;
+    --app-workspace: #5F5449;
+    --background: #000000;
+    --button-alternate-face: #B5B5B5;
+    --button-dk-shadow: #000000;
+    --button-face: #908070;
+    --button-hilight: #C8C0B8;
+    --button-light: #908070;
+    --button-shadow: #605848;
+    --button-text: #000000;
+    --gradient-active-title: #404878;
+    --gradient-inactive-title: #605848;
+    --gray-text: #605848;
+    --hilight: #486050;
+    --hilight-text: #E0E0D8;
+    --hot-tracking-color: #000080;
+    --inactive-border: #908070;
+    --inactive-title: #605848;
+    --inactive-title-text: #908070;
+    --info-text: #404878;
+    --info-window: #FFFFFF;
+    --menu: #908070;
+    --menu-bar: #D4D0C8;
+    --menu-highlight: #0A246A;
+    --menu-text: #000000;
+    --scrollbar: #C8C0B8;
+    --title-text: #E0E0D8;
+    --window: #D8D0C8;
+    --window-frame: #000000;
+    --window-text: #000000;
+}

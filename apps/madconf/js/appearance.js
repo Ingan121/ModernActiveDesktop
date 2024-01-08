@@ -1,3 +1,5 @@
+'use strict';
+
 main();
 
 async function main() {
@@ -12,24 +14,24 @@ async function main() {
 
     colorPicker.value = scheme[options[selector.selectedIndex].value];
 
-    schemeSelector.addEventListener("change", async function() {
+    schemeSelector.addEventListener("change", async function () {
         scheme = parseCssScheme(await getSchemeText(`../../schemes/${schemeSelector.value}.css`));
-        applyPreview(scheme);
+        applyPreview(scheme, fontSmoothingChkBox.checked);
         selector.dispatchEvent(new Event("change"));
     });
 
-    selector.addEventListener("change", function() {
+    selector.addEventListener("change", function () {
         const option = options[selector.selectedIndex].value;
         colorPicker.value = scheme[option];
     });
 
-    colorPicker.addEventListener("change", function() {
+    colorPicker.addEventListener("change", function () {
         const option = options[selector.selectedIndex].value;
         scheme[option] = colorPicker.value;
         applyPreview(scheme, fontSmoothingChkBox.checked);
     });
 
-    systemColorChhkBox.addEventListener("change", async function() {
+    systemColorChhkBox.addEventListener("change", async function () {
         if (systemColorChhkBox.checked) {
             schemeSelector.disabled = true;
             selector.disabled = true;
@@ -43,21 +45,35 @@ async function main() {
         }
     });
 
-    fontSmoothingChkBox.addEventListener("change", function() {
+    fontSmoothingChkBox.addEventListener("change", function () {
         applyPreview(scheme, fontSmoothingChkBox.checked);
     });
 
-    importBtn.addEventListener("click", async function() {
-        [fileHandle] = await window.showOpenFilePicker();
+    importBtn.addEventListener("click", async function () {
+        const pickerOpts = {
+            types: [{
+                description: "CSS Files",
+                accept: {
+                    "text/css": [".css"],
+                },
+            }],
+            excludeAcceptAllOption: false,
+            multiple: false,
+        };
+        const [fileHandle] = await window.showOpenFilePicker(pickerOpts);
         const file = await fileHandle.getFile();
         const text = await file.text();
         parent.changeColorScheme(text);
         localStorage.madesktopColorScheme = "custom";
+        location.reload();
     });
 
-    window.apply = function() {
+    window.apply = function () {
         if (systemColorChhkBox.checked) {
             applyScheme("sys");
+        } else if (schemeSelector.value === "xpcss4mad") {
+            parent.changeColorScheme("xpcss4mad");
+            localStorage.madesktopColorScheme = "xpcss4mad";
         } else {
             applyScheme(scheme);
         }

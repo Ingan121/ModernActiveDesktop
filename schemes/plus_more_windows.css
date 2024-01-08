@@ -1,0 +1,34 @@
+/* Plus! More Windows */
+:root {
+    --active-border: #9098A0;
+    --active-title: #000000;
+    --app-workspace: #5C656D;
+    --background: #000000;
+    --button-alternate-face: #B5B5B5;
+    --button-dk-shadow: #000000;
+    --button-face: #9098A0;
+    --button-hilight: #C8D0D0;
+    --button-light: #9098A0;
+    --button-shadow: #606870;
+    --button-text: #000000;
+    --gradient-active-title: #000000;
+    --gradient-inactive-title: #606870;
+    --gray-text: #606870;
+    --hilight: #F0D030;
+    --hilight-text: #000000;
+    --hot-tracking-color: #000080;
+    --inactive-border: #9098A0;
+    --inactive-title: #606870;
+    --inactive-title-text: #C8C8D0;
+    --info-text: #000000;
+    --info-window: #F0D030;
+    --menu: #9098A0;
+    --menu-bar: #D4D0C8;
+    --menu-highlight: #0A246A;
+    --menu-text: #000000;
+    --scrollbar: #C8D0D0;
+    --title-text: #F0D030;
+    --window: #FFFFFF;
+    --window-frame: #000000;
+    --window-text: #000000;
+}

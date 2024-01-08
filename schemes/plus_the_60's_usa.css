@@ -1,0 +1,34 @@
+/* Plus! The 60's USA */
+:root {
+    --active-border: #D068D8;
+    --active-title: #000080;
+    --app-workspace: #800080;
+    --background: #A030A8;
+    --button-alternate-face: #B5B5B5;
+    --button-dk-shadow: #000000;
+    --button-face: #D068D8;
+    --button-hilight: #E8B8F0;
+    --button-light: #D068D8;
+    --button-shadow: #A030A8;
+    --button-text: #000000;
+    --gradient-active-title: #000080;
+    --gradient-inactive-title: #A030A8;
+    --gray-text: #A030A8;
+    --hilight: #00FF00;
+    --hilight-text: #000000;
+    --hot-tracking-color: #000080;
+    --inactive-border: #D068D8;
+    --inactive-title: #A030A8;
+    --inactive-title-text: #E8B8F0;
+    --info-text: #000000;
+    --info-window: #FFFF00;
+    --menu: #D068D8;
+    --menu-bar: #D4D0C8;
+    --menu-highlight: #0A246A;
+    --menu-text: #000000;
+    --scrollbar: #E8B8F0;
+    --title-text: #FFFFFF;
+    --window: #FFFFFF;
+    --window-frame: #000000;
+    --window-text: #000000;
+}
