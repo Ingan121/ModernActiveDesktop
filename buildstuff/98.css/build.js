@@ -31,6 +31,7 @@ function buildCSS(preserveVariables) {
       mkdirp.sync("dist");
       fs.writeFileSync(destination, result.css);
       fs.writeFileSync(destination + ".map", result.map.toString());
+      fs.copyFileSync(destination, "../../css/98.css");
     });
 }
 

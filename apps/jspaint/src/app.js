@@ -137,7 +137,7 @@ window.systemHookDefaults = {
 	// named to be distinct from various platform APIs (showSaveFilePicker, saveAs, electron's showSaveDialog; and saveFile is too ambiguous)
 	// could call it saveFileAs maybe but then it'd be weird that you don't pass in the file directly
 	showSaveFileDialog: async ({ formats, defaultFileName, defaultPath, defaultFileFormatID, getBlob, savedCallbackUnreliable, dialogTitle }) => {
-		if (madDeskMover) {
+		if (madRunningMode !== 0) {
 			if (localStorage.sysplugIntegration) {
 				const { newFileFormatID } = await save_as_prompt({ dialogTitle, defaultFileName, defaultFileFormatID, formats, promptForName: false });
 				const new_format = formats.find((format) => format.formatID === newFileFormatID);

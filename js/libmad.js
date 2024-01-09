@@ -1,6 +1,39 @@
 'use strict';
 
 (function() {
+    if (!frameElement) {
+        window.madScaleFactor = 1;
+        window.madRunningMode = 0;
+        window.madOpenDropdown = function (elem) {
+            return;
+        }
+        window.madLocReplace = function (url) {
+            if (url.startsWith("apps/")) {
+                url = "../../" + url;
+            }
+            location.replace(url);
+        }
+        window.madAlert = function (msg, callback, icon) {
+            alert(msg);
+            if (callback) {
+                callback();
+            }
+        }
+        window.madConfirm = function (msg, callback) {
+            const result = confirm(msg);
+            if (callback) {
+                callback(result);
+            }
+        }
+        window.madPrompt = function (msg, callback, hint, text) {
+            const result = prompt(msg, text);
+            if (callback) {
+                callback(result);
+            }
+        }
+        return;
+    }
+
     const parentSchemeElement = parent.document.getElementById("scheme");
     const parentFontElement = parent.document.getElementById("font");
     const schemeElement = document.getElementById("scheme");
@@ -61,7 +94,7 @@
         }
         schemeElement.href = parentSchemeElement.href;
 
-        if (fontElement) {
+        if (fontElement && localStorage.madesktopNoPixelFonts) {
             fontElement.href = parentFontElement.href;
         }
 
@@ -110,6 +143,12 @@
         }
     });
 
+    Object.defineProperty(window, "madRunningMode", {
+        get: function() {
+            return parent.runningMode;
+        }
+    });
+
     // jspaint stuff
     window.systemHooks = {
         setWallpaperTiled: (canvas) => {
@@ -145,6 +184,7 @@
     };
 
     window.madDeskMover = deskMover;
+    window.madOpenWindow = parent.openWindow;
 
     window.madOpenDropdown = function(elem) {
         const dummy = dropdownBg.querySelector(".dropdownItem");
@@ -176,13 +216,14 @@
         // Set these first to ensure the item height is retrieved correctly
         dropdownBg.style.display = "block";
         
+        const clientRect = elem.getBoundingClientRect();
         if (config.unscaled) {
-            dropdownBg.style.left = elem.getBoundingClientRect().left / parent.scaleFactor + "px";
-            dropdownBg.style.top = (elem.getBoundingClientRect().top + elem.offsetHeight) / parent.scaleFactor + "px";
+            dropdownBg.style.left = clientRect.left / parent.scaleFactor + "px";
+            dropdownBg.style.top = (clientRect.top + elem.offsetHeight) / parent.scaleFactor + "px";
             dropdownBg.style.width = elem.offsetWidth / parent.scaleFactor + "px";
         } else {
-            dropdownBg.style.left = elem.getBoundingClientRect().left + "px";
-            dropdownBg.style.top = elem.getBoundingClientRect().top + elem.offsetHeight + "px";
+            dropdownBg.style.left = clientRect.left + "px";
+            dropdownBg.style.top = clientRect.top + elem.offsetHeight + "px";
             dropdownBg.style.width = elem.offsetWidth + "px";
         }
         dropdown.style.width = dropdownBg.style.width;
@@ -209,7 +250,14 @@
         parent.iframeClickEventCtrl(true);
     }
 
-    window.madOpenWindow = parent.openWindow;
+    window.madOpenColorPicker = function (initialColor, expand, callback) {
+        window.madColorPickerCallback = callback;
+        if (expand) {
+            initialColor += "&expand=1";
+        }
+        madOpenWindow(`apps/colorpicker/index.html?caller=${deskMoverNum}${initialColor}`, true, "219px", "298px", "wnd");
+    }
+
     window.madLocReplace = deskMover.locReplace.bind(deskMover);
     window.madResizeTo = deskMover.resizeTo.bind(deskMover);
     window.madMoveTo = deskMover.moveTo.bind(deskMover);

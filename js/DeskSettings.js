@@ -595,6 +595,10 @@ function hookIframeSize(iframe, num) {
                 }
             }
         }
+
+        iframe.contentWindow.close = function () {
+            deskMovers[num].closeWindow();
+        }
     }
 
     // Listen for title changes
@@ -649,6 +653,7 @@ function activateWindow(num = activeWindow || 0) {
 
 async function getFavicon(iframe) {
     try {
+        const madBase = location.href.split('/').slice(0, -1).join('/') + '/';
         const loc = iframe.contentWindow.location.href;
         const doc = iframe.contentDocument;
         const url = new URL(loc);
@@ -658,8 +663,8 @@ async function getFavicon(iframe) {
         let path = iconElem.href;
         log('Favicon path from page: ' + path);
 
-        // Use the MAD icon for local files and data URLs
-        if (loc.startsWith("file:///") || loc.startsWith("data:")) {
+        // Use the MAD icon for local/MAD files and data URLs
+        if (loc.startsWith("file:///") || loc.startsWith("data:") || loc.startsWith(madBase)) {
             if (iconElem.notFound) {
                 return 'icon.ico';
             } else {
@@ -822,8 +827,9 @@ function showDialog() {
         deskMovers[activeWindow].windowTitlebar.classList.add("inactive");
     }
     msgboxBg.style.display = "block";
-    msgbox.style.top = vHeight / 2 - msgbox.offsetHeight / 2 + "px";
-    msgbox.style.left = vWidth / 2 - msgbox.offsetWidth / 2 + "px";
+    msgbox.style.top = (vHeight - msgbox.offsetHeight) / 2 + "px";
+    msgbox.style.left = (vWidth - msgbox.offsetWidth) / 2 + "px";
+    msgboxBtn1.focus();
 }
 
 function flashDialog() {
@@ -897,6 +903,9 @@ function activateDebugMode() {
     styleElement.textContent = `
         .debug { display: block; }
         .contextMenuBg { height: 85px; }`;
+    debugMenu.style.top = 0;
+    debugMenu.style.right = 0;
+    debugMenu.style.left = "auto";
     localStorage.madesktopDebugMode = true;
 }
 
@@ -974,6 +983,9 @@ if (runningMode === WE) {
     runningModeLabel.textContent = "Wallpaper Engine";
 } else {
     startup();
+    if (location.href.startsWith("file:///") && runningMode === BROWSER) {
+        madAlert("You are running ModernActiveDesktop as a local file. Please use a web server to host it for full functionality.", null, "warning");
+    }
 }
 origRunningMode = runningMode;
 

@@ -166,7 +166,11 @@
                         <option value="window-frame">Window Frame</option>
                         <option value="window-text">Window Text</option>
                     </select>
-                    <input id="colorPicker" type="color" value="#008080">
+                    <button class="colorPicker">
+                        <div class="colorPicker-color"></div>
+                        <div class="colorPicker-bar"></div>
+                        <div class="colorPicker-expandMark">⏷</div>
+                    </button>
 
                     <input id="systemColorChkBox" type="checkbox" disabled>
                     <label for="systemColorChkBox">Use system colors (system plugin required)</label><br>
@@ -182,6 +186,33 @@
             <button id="cancelBtn">Cancel</button>
             <button id="applyBtn">Apply</button>
         </section>
+    </div>
+
+    <div id="miniPicker" class="window">
+        <div id="miniPickerColors">
+            <div class="color" style="background-color: #FFFFFF"></div>
+            <div class="color" style="background-color: #000000"></div>
+            <div class="color" style="background-color: #C0C0C0"></div>
+            <div class="color" style="background-color: #808080"></div>
+            <div class="color" style="background-color: #FF0000"></div>
+            <div class="color" style="background-color: #800000"></div>
+            <div class="color" style="background-color: #FFFF00"></div>
+            <div class="color" style="background-color: #808000"></div>
+            <div class="color" style="background-color: #00FF00"></div>
+            <div class="color" style="background-color: #008000"></div>
+            <div class="color" style="background-color: #00FFFF"></div>
+            <div class="color" style="background-color: #008080"></div>
+            <div class="color" style="background-color: #0000FF"></div>
+            <div class="color" style="background-color: #000080"></div>
+            <div class="color" style="background-color: #FF00FF"></div>
+            <div class="color" style="background-color: #800080"></div>
+            <div class="color" style="background-color: #C0DCC0"></div>
+            <div class="color" style="background-color: #A6CAF0"></div>
+            <div class="color" style="background-color: #F0FBFF"></div>
+            <div class="color" style="background-color: #A0A0A4"></div>
+        </div>
+        <hr>
+        <button id="openColorPickerBtn"><u>O</u>ther...</button>
     </div>
     
     <script src="../../js/libmad.js"></script>

@@ -23,7 +23,7 @@ for (const dropdown of dropdowns) {
 
 for (const textbox of textboxes) {
     textbox.addEventListener("click", function () {
-        if (parent.runningMode === 1) {
+        if (madRunningMode === 1) {
             madPrompt("Enter value", function (res) {
                 if (res === null) return;
                 textbox.value = res;

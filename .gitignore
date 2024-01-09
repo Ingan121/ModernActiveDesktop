@@ -1,6 +1,5 @@
 # nonfree
-bghtml/*
-!bghtml/readme.txt
+bghtml
 channels-en
 channels-ko
 images
@@ -19,5 +18,9 @@ systemplugin/*
 systemplugin/resources/app/bootstrap
 systemplugin/resources/app/bootstrap-icons
 systemplugin/resources/app/node_modules
+
+# nginx files
+buildstuff/nginx/*
+!buildstuff/nginx/conf
 
 *.zip

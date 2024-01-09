@@ -374,7 +374,18 @@ http.createServer(onRequest).listen(args.port || 3031, args.listen || '127.0.0.1
 function onRequest(req, res) {
   console.log('serve: ' + req.url);
   res.setHeader('Access-Control-Allow-Origin', args.cors || 'https://www.ingan121.com');
-  
+
+  if (req.headers.origin && req.headers.origin !== 'null') {
+    if (new URL(req.headers.origin).hostname.match(/^(localhost|127(.[0-9]{1,3}){3})$/)) {
+      res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
+    }
+  }
+
+  if (req.method === 'OPTIONS') {
+    res.end();
+    return;
+  }
+
   switch (req.url) {
     case '/open':
       if (req.method === 'POST') {

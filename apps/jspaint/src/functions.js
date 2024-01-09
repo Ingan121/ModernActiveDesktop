@@ -412,7 +412,7 @@ function show_custom_zoom_window() {
 	const $really_custom_input = $fieldset.find("input[name='really-custom-zoom-input']");
 
 	$really_custom_input.closest("label").on("click", (event) => {
-		if (parent.runningMode === 1) {
+		if (madRunningMode === 1) {
 			madPrompt("Enter value", function (res) {
 				if (res === null) return;
 				$really_custom_input.val(res);
@@ -1002,7 +1002,7 @@ function file_load_from_url() {
 	`);
 	const $input = $w.$main.find("#url-input");
 	$input.on("click", () => {
-		if (parent.runningMode === 1) {
+		if (madRunningMode === 1) {
 			madPrompt("Enter value", function (res) {
 				if (res === null) return;
 				$input.val(res);
@@ -2872,7 +2872,7 @@ function image_attributes() {
 
 	for (const elem of [$width, $height]) {
 		elem.on("click", () => {
-			if (parent.runningMode === 1) {
+			if (madRunningMode === 1) {
 				madPrompt("Enter value", function (res) {
 					if (res === null) return;
 					elem.val(res);
@@ -3160,7 +3160,7 @@ function image_flip_and_rotate() {
 
 	const $arbitrary = $fieldset.find("input[name='rotate-by-arbitrary-angle']");
 	$arbitrary.on("click", () => {
-		if (parent.runningMode === 1) {
+		if (madRunningMode === 1) {
 			madPrompt("Enter value", function (res) {
 				if (res === null) return;
 				$arbitrary.val(res);
@@ -3254,7 +3254,7 @@ function image_stretch_and_skew() {
 
 	for (const elem of [stretch_x, stretch_y, skew_x, skew_y]) {
 		elem.on("click", () => {
-			if (parent.runningMode === 1) {
+			if (madRunningMode === 1) {
 				madPrompt("Enter value", function (res) {
 					if (res === null) return;
 					elem.val(res);
@@ -3397,7 +3397,7 @@ function save_as_prompt({
 
 		// MAD Additions
 		$file_name.on("click", () => {
-			if (parent.runningMode === 1) {
+			if (madRunningMode === 1) {
 				madPrompt("Enter value", function (res) {
 					if (res === null) return;
 					$file_name.val(res);

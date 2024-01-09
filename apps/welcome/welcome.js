@@ -137,3 +137,5 @@ function checkSysplug() {
             checkmarks[2].style.display = "none";
         });
 }
+
+closeBtn.focus();

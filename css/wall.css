@@ -313,6 +313,7 @@ body {
     animation-timing-function: linear;
     display: none;
     pointer-events: auto !important;
+    cursor: default !important;
 }
 
 .dropdown {

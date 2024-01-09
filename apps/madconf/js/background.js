@@ -133,7 +133,7 @@ wpEnterUrlBtn.addEventListener('click', function () {
     });
 });
 
-if (parent.runningMode === 1) {
+if (madRunningMode === 1) {
     videoImgItem.style.display = 'block';
 }
 
@@ -238,7 +238,7 @@ window.apply = function () {
             } catch (e) {
                 if (e.name === 'QuotaExceededError') {
                     let msg = "Failed to set the image as wallpaper due to the large size of the image. Please use a smaller image";
-                    if (parent.runningMode === 1) {
+                    if (madRunningMode === 1) {
                         msg += " or use the Wallpaper Engine properties panel to set the image as wallpaper";
                     }
                     madAlert(msg + '.', null, 'error');

@@ -1,0 +1,155 @@
+body {
+    margin: 0;
+    overflow: hidden;
+}
+
+.window-body {
+    margin: 0;
+    margin-left: 1px;
+}
+
+.window-content > form {
+    display: flex;
+    flex-flow: row;
+}
+
+.edit-colors-window .left-side label {
+    display: block;
+    margin-top: 7px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+}
+
+.edit-colors-window .color-grid {
+    width: 222px;
+    display: grid;
+    grid-template-columns: repeat(8, 16px);
+    grid-gap: 5px 9px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    margin-left: 8px;
+}
+
+.edit-colors-window .swatch {
+    outline: none;
+}
+.edit-colors-window .swatch {
+    width: 16px;
+    height: 13px;
+    display: flex;
+}
+
+.edit-colors-window .swatch.selected {
+    outline: black solid 1px;
+    outline-offset: 0px;
+}
+
+.edit-colors-window .left-side label:nth-of-type(2) {
+    margin-top: 18px;
+    margin-bottom: 7px;
+}
+
+.edit-colors-window .left-side label {
+    display: block;
+    margin-top: 7px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+}
+
+.edit-colors-window .window-content .define-custom-colors-button {
+    margin-top: 13px;
+    width: 210px;
+}
+.edit-colors-window .window-content .define-custom-colors-button, .edit-colors-window .window-content .button-group button:first-of-type {
+    margin-left: 5px;
+}
+.edit-colors-window .window-content button {
+    height: 23px;
+    box-sizing: border-box;
+    padding: 0;
+    margin-left: 3px;
+}
+
+.edit-colors-window .window-content .button-group {
+    display: flex;
+    flex-flow: row;
+}
+.edit-colors-window .window-content .define-custom-colors-button, .edit-colors-window .window-content .button-group button:first-of-type {
+    margin-left: 5px;
+}
+.edit-colors-window .window-content .button-group button {
+    min-width: 66px;
+    margin: 3px;
+}
+.edit-colors-window .window-content .left-right-split {
+    display: flex;
+    flex-flow: row;
+}
+.edit-colors-window .window-content .right-side {
+    width: 218px;
+    position: relative;
+    padding-top: 7px;
+    padding-left: 10px;
+    margin-left: -13px;
+}
+
+.edit-colors-window .window-content {
+    font-family: Tahoma, sans-serif;
+    font-size: 12px;
+}
+
+.edit-colors-window .window-content .add-to-custom-colors-button {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    width: 213px;
+}
+.edit-colors-window .window-content button {
+    height: 23px;
+    box-sizing: border-box;
+    padding: 0;
+    margin-left: 3px;
+}
+
+.edit-colors-window .luminosity-canvas {
+    margin-left: 15px;
+}
+
+.edit-colors-window .result-color-canvas {
+    margin-top: 4px;
+}
+
+.inset-deep {
+    border-style: solid;
+    border-width: 1px;
+    border-color: var(--button-shadow) var(--button-hilight) var(--button-hilight) var(--button-hilight);
+    background-color: var(--button-face);
+    color: var(--button-text);
+    position: relative;
+    border-image: url("data:image/svg+xml,%3Csvg%20version%3D%221.1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22256px%22%20height%3D%22256px%22%20viewBox%3D%220%200%20256%20256%22%3E%0A%09%09%09%0A%09%09%3Cpath%20d%3D%22M0%200h224v32h-192v192h-32v-224z%22%20fill%3D%22%20rgb(0%2C%200%2C%200)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M224%200h32v256h-256v-32h224v-224z%22%20fill%3D%22%20rgb(255%2C%20255%2C%20255)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M32%2032h160v32h-128v128h-32v-160z%22%20fill%3D%22%20rgb(128%2C%20128%2C%20128)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M192%2032h32v192h-192v-32h160v-160z%22%20fill%3D%22%20rgb(223%2C%20223%2C%20223)%22%2F%3E%0A%09%09%3Cpath%20d%3D%22M64%2064h128v128h-128v-128z%22%20fill%3D%22%20rgb(192%2C%20192%2C%20192)%22%2F%3E%0A%09%0A%09%09%3C%2Fsvg%3E") 64 / 2px;
+    border-color: var(--button-shadow);
+    border-style: solid;
+    border-width: 2px 2px;
+}
+
+.inset-shallow {
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(128, 128, 128) rgb(255, 255, 255) rgb(255, 255, 255) rgb(128, 128, 128);
+    border-color: var(--button-shadow) var(--button-hilight) var(--button-hilight) var(--button-shadow);
+    background-color: rgb(192, 192, 192);
+    background-color: var(--button-face);
+    color: var(--button-text);
+}
+
+input[type=text].inset-deep, input[type=url].inset-deep, input[type=search].inset-deep, input[type=number].inset-deep, select.inset-deep {
+    outline: none;
+}
+input[type=text], input[type=url], input[type=search], input[type=number], input[type=text].inset-deep, input[type=url].inset-deep, input[type=search].inset-deep, input[type=number].inset-deep, select.inset-deep {
+    background-color: var(--window);
+    color: var(--window-text);
+    box-sizing: revert;
+    margin-top: -4px;
+}

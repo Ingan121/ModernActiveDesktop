@@ -31,7 +31,7 @@
 		$fb.append($family, $size, $button_group);
 
 		$size.on("click", () => {
-			if (parent.runningMode === 1) {
+			if (madRunningMode === 1) {
 				madPrompt("Enter value", function (res) {
 					if (res === null) return;
 					$size.val(res);

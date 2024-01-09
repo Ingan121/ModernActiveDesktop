@@ -7,28 +7,58 @@ async function main() {
     const schemeSelector = document.getElementById("schemeSelector");
     const selector = document.getElementById("selector");
     const options = selector.options;
-    const colorPicker = document.getElementById("colorPicker");
+    const colorPicker = document.querySelector(".colorPicker");
+    const colorPickerColor = document.querySelector(".colorPicker-color");
+    const miniPicker = document.getElementById("miniPicker");
+    const miniPickerColors = document.querySelectorAll(".color");
+    const openColorPickerBtn = document.getElementById("openColorPickerBtn");
     const systemColorChhkBox = document.getElementById("systemColorChkBox");
     const fontSmoothingChkBox = document.getElementById("fontSmoothingChkBox");
     const importBtn = document.getElementById("importBtn");
 
-    colorPicker.value = scheme[options[selector.selectedIndex].value];
+    colorPickerColor.style.backgroundColor = scheme[options[selector.selectedIndex].value];
 
     schemeSelector.addEventListener("change", async function () {
         scheme = parseCssScheme(await getSchemeText(`../../schemes/${schemeSelector.value}.css`));
         applyPreview(scheme, fontSmoothingChkBox.checked);
         selector.dispatchEvent(new Event("change"));
+        if (schemeSelector.value === "xpcss4mad") {
+            selector.disabled = true;
+            colorPicker.disabled = true;
+        } else {
+            selector.disabled = false;
+            colorPicker.disabled = false;
+        }
     });
 
     selector.addEventListener("change", function () {
         const option = options[selector.selectedIndex].value;
-        colorPicker.value = scheme[option];
+        colorPickerColor.style.backgroundColor  = scheme[option];
     });
 
-    colorPicker.addEventListener("change", function () {
+    colorPicker.addEventListener("click", function () {
+        miniPicker.style.top = `${colorPicker.getBoundingClientRect().top + colorPicker.offsetHeight}px`;
+        miniPicker.style.left = `${colorPicker.offsetLeft}px`;
+        miniPicker.style.display = "block";
+    });
+
+    function changeColor(color) {
         const option = options[selector.selectedIndex].value;
-        scheme[option] = colorPicker.value;
+        scheme[option] = color;
+        colorPickerColor.style.backgroundColor = color;
         applyPreview(scheme, fontSmoothingChkBox.checked);
+    }
+
+    for (const miniPickerColor of miniPickerColors) {
+        miniPickerColor.addEventListener("click", function () {
+            changeColor(this.style.backgroundColor);
+            miniPicker.style.display = "none";
+        });
+    }
+
+    openColorPickerBtn.addEventListener("click", function () {
+        const color = scheme[options[selector.selectedIndex].value];
+        madOpenColorPicker(color, true, changeColor);
     });
 
     systemColorChhkBox.addEventListener("change", async function () {
@@ -69,6 +99,7 @@ async function main() {
     });
 
     window.apply = function () {
+        parent.changeFont(fontSmoothingChkBox.checked);
         if (systemColorChhkBox.checked) {
             applyScheme("sys");
         } else if (schemeSelector.value === "xpcss4mad") {
@@ -77,18 +108,25 @@ async function main() {
         } else {
             applyScheme(scheme);
         }
-        parent.changeFont(fontSmoothingChkBox.checked);
 
         if (fontSmoothingChkBox.checked) {
             localStorage.madesktopNoPixelFonts = true;
         } else {
             delete localStorage.madesktopNoPixelFonts;
         }
+
+        parent.document.dispatchEvent(new Event("mouseup"));
     }
 
     if (localStorage.madesktopColorScheme === "sys") {
         systemColorChhkBox.checked = true;
         schemeSelector.disabled = true;
+        selector.disabled = true;
+        colorPicker.disabled = true;
+    }
+
+    if (localStorage.madesktopColorScheme === "xpcss4mad") {
+        schemeSelector.value = "xpcss4mad";
         selector.disabled = true;
         colorPicker.disabled = true;
     }

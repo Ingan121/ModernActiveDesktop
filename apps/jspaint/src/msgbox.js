@@ -8,7 +8,7 @@
 		// And Web Audio API is better for playing SFX anyway because it can play a sound overlapping with itself.
 		window.audioContext = window.audioContext || new AudioContext();
 		const audio_buffer_promise =
-			fetch("audio/chord.wav")
+			fetch("../../sounds/chord.wav")
 				.then(response => response.arrayBuffer())
 				.then(array_buffer => audioContext.decodeAudioData(array_buffer))
 		var play_chord = async function () {

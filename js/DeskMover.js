@@ -260,7 +260,7 @@ class DeskMover {
                     }
                     this.windowContainer.style.left = (parseInt(localStorage.madesktopChanViewLeftMargin) || 75) + 250 + 'px';
                     this.windowContainer.style.top = '150px';
-                    url = openDoc.endsWith(".html") ? openDoc : `docs/index.html?src=${openDoc}`;
+                    url = openDoc.includes(".html") ? openDoc : `docs/index.html?src=${openDoc}`;
                 } else {
                     this.windowElement.width = width || '250px';
                     this.windowElement.height = height || '150px';
@@ -619,7 +619,7 @@ class DeskMover {
         if (!this.config.unscaled) {
             this.windowElement.contentDocument.body.style.zoom = window.scaleFactor;
         }
-        hookIframeSize(this.windowElement, this.numStr);
+        hookIframeSize(this.windowElement, this.numStr || 0);
     }
 
     #reset() {
@@ -638,7 +638,7 @@ class DeskMover {
         madConfirm("Are you sure you want to reset this window?", res => {
             if (res) {
                 this.#clearConfig();
-                deskMovers[this.numStr] = new DeskMover(this.windowContainer, this.numStr, false, undefined, undefined, undefined, undefined, true);
+                deskMovers[this.numStr || 0] = new DeskMover(this.windowContainer, this.numStr, false, undefined, undefined, undefined, undefined, true);
             }
         });
     }
@@ -724,10 +724,10 @@ class DeskMover {
             this.windowContainer.style.height = this.windowElement.offsetHeight + 22 + 'px';
             this.windowContainer.style.width = this.windowElement.offsetWidth + 4 + 'px';
         } else {
-            this.windowContainer.style.height = this.windowElement.offsetHeight + 21 + 'px';
+            this.windowContainer.style.height = this.windowElement.offsetHeight + 19 + 'px';
             this.windowContainer.style.width = this.windowElement.offsetWidth - 2 + 'px';
         }
-        this.windowFrame.style.height = this.windowElement.offsetHeight + 'px';
+        this.windowFrame.style.height = this.windowElement.offsetHeight - 2 + 'px';
         this.windowFrame.style.width = this.windowElement.offsetWidth + 'px';
         switch (this.config.style) {
             case "ad":
@@ -811,7 +811,7 @@ class DeskMover {
 function initSimpleMover(container, titlebar, exclusions) {
     let offset = [0, 0], isDown = false, mouseOverWndBtns = false;
     
-    titlebar.addEventListener('mousedown', function () {
+    titlebar.addEventListener('mousedown', function (event) {
         if (!mouseOverWndBtns) {
             isDown = true;
             iframeClickEventCtrl(false);
