@@ -4,6 +4,12 @@
     if (!frameElement) {
         window.madScaleFactor = 1;
         window.madRunningMode = 0;
+        window.madOpenWindow = function (url, temp, width, height, style) {
+            if (url.startsWith("apps/")) {
+                url = "../../" + url;
+            }
+            window.open(url, "_blank", `width=${width},height=${height}`);
+        }
         window.madOpenDropdown = function (elem) {
             return;
         }
@@ -94,8 +100,12 @@
         }
         schemeElement.href = parentSchemeElement.href;
 
-        if (fontElement && localStorage.madesktopNoPixelFonts) {
-            fontElement.href = parentFontElement.href;
+        if (fontElement) {
+            if (localStorage.madesktopNoPixelFonts) {
+                fontElement.href = parentFontElement.href;
+            } else {
+                fontElement.href = "";
+            }
         }
 
         try {
@@ -228,10 +238,10 @@
         }
         dropdown.style.width = dropdownBg.style.width;
 
-        if (optionCnt >= 30) {
-            dropdownBg.style.height = "490px";
+        const itemHeight = dropdown.children[1].getBoundingClientRect().height;
+        if (optionCnt >= 25) {
+            dropdownBg.style.height = itemHeight * 25 + "px";
         } else {
-            const itemHeight = dropdown.children[1].getBoundingClientRect().height;
             dropdownBg.style.height = itemHeight * optionCnt + "px";
         }
         dropdown.style.height = dropdownBg.style.height;
@@ -251,11 +261,14 @@
     }
 
     window.madOpenColorPicker = function (initialColor, expand, callback) {
-        window.madColorPickerCallback = callback;
-        if (expand) {
-            initialColor += "&expand=1";
+        if (initialColor.startsWith("rgb(")) {
+            initialColor = parent.rgbToHex(initialColor);
         }
-        madOpenWindow(`apps/colorpicker/index.html?caller=${deskMoverNum}${initialColor}`, true, "219px", "298px", "wnd");
+        const colorPicker = madOpenWindow("apps/colorpicker/index.html", true, expand ? "447px" : "219px", "298px", "wnd");
+        const colorPickerWindow = colorPicker.windowElement.contentWindow;
+        colorPickerWindow.addEventListener("load", () => {
+            colorPickerWindow.choose_color(initialColor, expand, callback);
+        });
     }
 
     window.madLocReplace = deskMover.locReplace.bind(deskMover);

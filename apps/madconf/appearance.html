@@ -10,9 +10,9 @@
     <style id="style"></style>
 </head>
 <body>
-    <div class="window-body">
+    <div id="madconf" class="window-body">
         <menu role="tablist">
-            <li class="tab" role="tab" data-pagename="background"><a id="generalBtn" href="#tabs">Background</a></li>
+            <li class="tab" role="tab" data-pagename="background"><a href="#tabs">Background</a></li>
             <li class="tab" role="tab" data-pagename="appearance" aria-selected="true"><a href="#tabs">Appearance</a></li>
             <li class="tab" role="tab" data-pagename="misc"><a href="#tabs">Miscellaneous</a></li>
             <li class="tab" role="tab" data-pagename="about"><a href="#tabs">About</a></li>
@@ -171,13 +171,21 @@
                         <div class="colorPicker-bar"></div>
                         <div class="colorPicker-expandMark">⏷</div>
                     </button>
-
+                </div>
+                <div id="checkboxes">
                     <input id="systemColorChkBox" type="checkbox" disabled>
                     <label for="systemColorChkBox">Use system colors (system plugin required)</label><br>
                     <input id="fontSmoothingChkBox" type="checkbox">
                     <label for="fontSmoothingChkBox">Do not use pixelated fonts</label>
+                    <section class="field-row">
+                        <input id="enableAnimationsChkBox" type="checkbox" checked>
+                        <label for="enableAnimationsChkBox">Use the following transition effect for menus:</label>
+                        <select id="animationSelector">
+                            <option value="slide">Slide effect</option>
+                            <option value="fade">Fade effect</option>
+                        </select>
+                    </section>
                 </div>
-                <div id="notice">* Switch to any other window (non-MAD one) if the color picker does not show.</div>
             </div>
         </div>
         <section class="topmargin field-row" style="justify-content: flex-end;">
@@ -188,7 +196,7 @@
         </section>
     </div>
 
-    <div id="miniPicker" class="window">
+    <div id="miniPicker" class="window" tabindex="-1">
         <div id="miniPickerColors">
             <div class="color" style="background-color: #FFFFFF"></div>
             <div class="color" style="background-color: #000000"></div>

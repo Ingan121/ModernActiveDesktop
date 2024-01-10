@@ -6,13 +6,17 @@
     background-color: var(--background);
     margin: 0 auto;
     pointer-events: none;
+    box-shadow: inset -1px -1px var(--button-hilight),
+        inset 1px 1px var(--button-shadow),
+        inset -2px -2px var(--button-light),
+        inset 2px 2px var(--button-dk-shadow);
 }
 
 #inactiveWindow {
     position: absolute;
     width: 380px;
     height: 150px;
-    top: 20px;
+    top: 21px;
     left: 50%;
     transform: translateX(-200px);
     z-index: 1;
@@ -25,8 +29,8 @@
 #activeWindow {
     position: absolute;
     width: 400px;
-    height: 140px;
-    top: 46px;
+    height: 129px;
+    top: 47px;
     left: 50%;
     transform: translateX(-196px);
     z-index: 2;
@@ -54,9 +58,10 @@
 }
 
 textarea {
-    width: 100%;
-    height: 98px;
-    margin: 0;
+    width: 398px;
+    height: 86px;
+    margin: 1px;
+    margin-top: 0;
     resize: none;
     font-size: 12px;
     font-weight: bold;
@@ -69,13 +74,18 @@ textarea {
     width: 260px;
     top: 120px;
     left: 50%;
-    transform: translateX(-186px);
+    transform: translateX(-188px);
     z-index: 3;
 }
 
 #conf {
     padding-top: 15px;
     width: 260px;
+    margin: 0 auto;
+}
+
+#checkboxes {
+    width: 320px;
     margin: 0 auto;
 }
 
@@ -89,12 +99,12 @@ textarea {
 }
 
 .colorPicker {
-    min-width: auto;
+    min-width: auto !important;
     min-height: auto;
     width: 42px;
     height: 21px;
     position: relative;
-    top: 14px;
+    top: 13.5px;
     margin-top: -10px;
     margin-left: -1px;
 }
@@ -130,12 +140,6 @@ textarea {
 
 label[for=systemColorChkBox] {
     margin-top: 10px;
-}
-
-#notice {
-    font-size: 12px;
-    margin-top: 5px;
-    text-align: center;
 }
 
 .title-bar-controls button:before {

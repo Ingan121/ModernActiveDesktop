@@ -66,6 +66,7 @@ changeScale(localStorage.madesktopScaleFactor);
 if (localStorage.madesktopDebugMode) activateDebugMode();
 if (localStorage.madesktopDebugLog) toggleDebugLog();
 changeFont(localStorage.madesktopNoPixelFonts);
+changeCmAnimation(localStorage.madesktopCmAnimation || "slide");
 
 deskMovers[0] = new DeskMover(windowContainers[0], "");
 initSimpleMover(msgbox, msgboxTitlebar, [msgboxCloseBtn]);
@@ -105,6 +106,7 @@ if (localStorage.madesktopDestroyedItems) {
     }
     localStorage.madesktopOpenWindows = openWindows;
 }
+localStorage.removeItem("madesktopLastCustomScale");
 
 if (localStorage.madesktopItemCount > 1) {
     // Check if the deskitem we're trying to initialize is open or not
@@ -390,6 +392,23 @@ function changeFont(isPixel) {
     }
 }
 
+// Change context menu animation
+function changeCmAnimation(type) {
+    switch(type) {
+        case "none":
+            mainMenuBg.style.animation = "none";
+            break;
+        case "fade":
+            mainMenuBg.style.animation = "fade 0.2s";
+            break;
+        case "slide":
+            mainMenuBg.style.animation = "cmDropdown 0.25s linear";
+    }
+    for (const i in deskMovers) {
+        deskMovers[i].changeCmAnimation(type);
+    }
+}
+
 // Change the 'open with' option of the system plugin, by sending a POST request to the system plugin
 function updateSysplugOpenOpt(option) {
     fetch("http://localhost:3031/config", { method: "POST", body: `{"openWith": ${option}}` })
@@ -480,29 +499,34 @@ function createNewDeskItem(numStr, openDoc, temp, width, height, style, centered
     const newContainer = windowContainers[0].cloneNode(true);
     document.body.appendChild(newContainer);
     windowContainers = document.getElementsByClassName("windowContainer");
-    deskMovers[numStr] = new DeskMover(newContainer, numStr, openDoc, temp, width, height, style, false, centered);
+    const deskMover = new DeskMover(newContainer, numStr, openDoc, temp, width, height, style, false, centered);
+    deskMovers[numStr] = deskMover;
+    return deskMover;
 }
 
 // Create a new AD item, initialize, and increase the saved window count
 function openWindow(openDoc, temp, width, height, style, centered) {
+    let deskMover;
     if (localStorage.madesktopItemVisible == "false" && !(typeof openDoc === "string" || openDoc instanceof String)) {
         windowContainers[0].style.display = "block";
         localStorage.removeItem("madesktopItemVisible");
         activateWindow(0);
+        deskMover = deskMovers[0];
     } else {
         if (!temp) {
             localStorage.madesktopOpenWindows += `,${localStorage.madesktopItemCount}`;
         }
         if (localStorage.madesktopItemVisible == "false") {
             windowContainers[0].style.display = "block";
-            createNewDeskItem(localStorage.madesktopItemCount, openDoc, temp, width, height, style || (openDoc ? "wnd" : "ad"), centered);
+            deskMover = createNewDeskItem(localStorage.madesktopItemCount, openDoc, temp, width, height, style || (openDoc ? "wnd" : "ad"), centered);
             windowContainers[0].style.display = "none";
         } else {
-            createNewDeskItem(localStorage.madesktopItemCount, openDoc, temp, width, height, style || (openDoc ? "wnd" : "ad"), centered);
+            deskMover = createNewDeskItem(localStorage.madesktopItemCount, openDoc, temp, width, height, style || (openDoc ? "wnd" : "ad"), centered);
         }
         activateWindow(localStorage.madesktopItemCount);
         localStorage.madesktopItemCount++;
     }
+    return deskMover;
 }
 
 function closeMainMenu() {

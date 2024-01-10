@@ -1,0 +1,17 @@
+body {
+    background-color: var(--button-face);
+    margin: 0;
+    margin-left: 8px;
+    overflow: hidden;
+}
+
+img {
+    width: 40px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    border: solid 1px transparent;
+}
+
+img[data-active] {
+    outline: solid 2px var(--hilight);
+}

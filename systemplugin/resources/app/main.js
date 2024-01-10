@@ -375,6 +375,7 @@ function onRequest(req, res) {
   console.log('serve: ' + req.url);
   res.setHeader('Access-Control-Allow-Origin', args.cors || 'https://www.ingan121.com');
 
+  // Allow CORS for localhost
   if (req.headers.origin && req.headers.origin !== 'null') {
     if (new URL(req.headers.origin).hostname.match(/^(localhost|127(.[0-9]{1,3}){3})$/)) {
       res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
@@ -470,6 +471,11 @@ function onRequest(req, res) {
       }
       break;
 
+    case '/config/openwith':
+      res.writeHead(200, {'Content-Type':'application/json'});
+      res.end(JSON.stringify({openWith: config.openWith}));
+      break;
+
     case '/systemscheme':
       res.writeHead(200, {'Content-Type':'text/css'});
       res.end(generateCssScheme());
@@ -498,6 +504,7 @@ function onRequest(req, res) {
       <a href="/open">/open</a><br>
       <a href="/save">/save</a><br>
       <a href="/config">/config</a><br>
+      <a href="/config/openwith">/config/openwith</a><br>
       <a href="/systemscheme">/systemscheme</a><br>
       <a href="/connecttest">/connecttest</a><br>
       <a href="/debugger">/debugger</a></p>`)

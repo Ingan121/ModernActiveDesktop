@@ -1,23 +1,35 @@
 @import 'common.css';
 
-.window-body {
-    text-align: center;
-}
-
 #title {
-    font-size: 24px;
+    font-size: 20px;
     font-weight: bold;
     font-family: sans-serif;
-    margin-top: 25px;
+    text-align: left;
+    margin-top: 26px;
+    margin-left: 50px;
     margin-bottom: 15px;
 }
 
-img {
-    margin-bottom: 15px;
+#logo {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 32px;
+    height: 32px;
 }
 
-.buttons {
-    display: inline;
+p {
+    margin-left: 8px;
+}
+
+#credits {
+    text-align: left;
+}
+
+ul {
+    margin: 0;
+    height: 100px;
+    overflow-y: auto;
 }
 
 .buttons button {

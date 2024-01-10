@@ -234,6 +234,7 @@ class DeskMover {
         this.#adjustElements();
         this.#keepInside();
         this.closeContextMenu();
+        this.changeCmAnimation(localStorage.madesktopCmAnimation || "slide");
         this.windowContainer.style.zIndex = this.config.zIndex || ++lastZIndex;
         if (!this.config.active && !localStorage.madesktopNoDeactivate) this.windowTitlebar.classList.add("inactive");
         else this.windowTitlebar.classList.remove("inactive");
@@ -441,6 +442,26 @@ class DeskMover {
         this.config.style = style;
         this.windowContainer.dataset.style = style;
         this.#adjustElements();
+    }
+
+    changeCmAnimation(type) {
+        switch(type) {
+            case "none":
+                this.contextMenuBg.style.animation = "none";
+                this.confMenuBg.style.animation = "none";
+                this.dropdownBg.style.animation = "none";
+                break;
+            case "fade":
+                this.contextMenuBg.style.animation = "fade 0.2s";
+                this.confMenuBg.style.animation = "fade 0.2s";
+                this.dropdownBg.style.animation = "cmDropdown 0.25s linear";
+                break;
+            case "slide":
+                this.contextMenuBg.style.animation = "cmDropdown 0.25s linear";
+                this.confMenuBg.style.animation = "cmDropright 0.25s linear";
+                this.dropdownBg.style.animation = "cmDropdown 0.25s linear";
+                break;
+        }
     }
 
     locReplace(url) {
@@ -659,7 +680,11 @@ class DeskMover {
 
     #changeUrl() {
         this.closeContextMenu();
-        const urlToShow = this.config.src || "";
+        let urlToShow = this.config.src || "";
+        if (urlToShow === "placeholder.html") {
+            urlToShow = "";
+        }
+        
         madPrompt("Enter URL (leave empty to reset)", url => {
             if (url === null) return;
             if (url == "!debugmode") {
@@ -711,10 +736,18 @@ class DeskMover {
     
     // Keep the deskitem inside the visible area
     #keepInside() {
-        if (this.windowContainer.offsetLeft < -this.windowContainer.offsetWidth + 60) this.windowContainer.style.left = -this.windowTitlebar.offsetWidth + 60 + 'px';
-        if (this.windowContainer.offsetTop < 0) this.windowContainer.style.top = 0;
-        if (this.windowContainer.offsetLeft + 60 > vWidth) this.windowContainer.style.left = vWidth - 60 + 'px';
-        if (this.windowContainer.offsetTop + 50 > vHeight) this.windowContainer.style.top = vHeight - 50 + 'px';
+        if (this.windowContainer.offsetLeft < -this.windowContainer.offsetWidth + 60) {
+            this.windowContainer.style.left = -this.windowTitlebar.offsetWidth + 60 + 'px';
+        }
+        if (this.windowContainer.offsetTop < 0) {
+            this.windowContainer.style.top = 0;
+        }
+        if (this.windowContainer.offsetLeft + 60 > vWidth) {
+            this.windowContainer.style.left = vWidth - 60 + 'px';
+        }
+        if (this.windowContainer.offsetTop + 50 > vHeight) {
+            this.windowContainer.style.top = vHeight - 50 + 'px';
+        }
         this.#updatePrevOffset();
     }
     

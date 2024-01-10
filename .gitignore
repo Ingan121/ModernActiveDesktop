@@ -9,6 +9,7 @@ systemplugin/resources/app/images
 apps/welcome/resources/*
 !apps/welcome/resources/contents.png
 wallpapers
+apps/solitaire/cards
 
 # electron binary files
 systemplugin/*

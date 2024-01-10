@@ -1,7 +1,6 @@
 'use strict';
 
 const tabs = document.querySelectorAll(".tab");
-const generalBtn = document.getElementById("generalBtn");
 const okBtn = document.getElementById("okBtn");
 const cancelBtn = document.getElementById("cancelBtn");
 const applyBtn = document.getElementById("applyBtn");

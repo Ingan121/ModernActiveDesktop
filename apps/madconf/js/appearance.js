@@ -14,21 +14,22 @@ async function main() {
     const openColorPickerBtn = document.getElementById("openColorPickerBtn");
     const systemColorChhkBox = document.getElementById("systemColorChkBox");
     const fontSmoothingChkBox = document.getElementById("fontSmoothingChkBox");
+    const enableAnimationsChkBox = document.getElementById("enableAnimationsChkBox");
+    const animationSelector = document.getElementById("animationSelector");
     const importBtn = document.getElementById("importBtn");
 
     colorPickerColor.style.backgroundColor = scheme[options[selector.selectedIndex].value];
 
     schemeSelector.addEventListener("change", async function () {
         scheme = parseCssScheme(await getSchemeText(`../../schemes/${schemeSelector.value}.css`));
-        applyPreview(scheme, fontSmoothingChkBox.checked);
-        selector.dispatchEvent(new Event("change"));
         if (schemeSelector.value === "xpcss4mad") {
+            selector.selectedIndex = 11; // background
             selector.disabled = true;
-            colorPicker.disabled = true;
         } else {
             selector.disabled = false;
-            colorPicker.disabled = false;
         }
+        selector.dispatchEvent(new Event("change"));
+        applyPreview(scheme, fontSmoothingChkBox.checked);
     });
 
     selector.addEventListener("change", function () {
@@ -37,17 +38,28 @@ async function main() {
     });
 
     colorPicker.addEventListener("click", function () {
-        miniPicker.style.top = `${colorPicker.getBoundingClientRect().top + colorPicker.offsetHeight}px`;
-        miniPicker.style.left = `${colorPicker.offsetLeft}px`;
+        const clientRect = colorPicker.getBoundingClientRect();
+        let top = clientRect.top + colorPicker.offsetHeight;
+        let left = clientRect.left;
+
+        if (left + 78 > window.innerWidth) {
+            left = window.innerWidth - 78;
+        }
+        if (top + 121 > window.innerHeight) {
+            top = window.innerHeight - 121;
+        }
+
+        miniPicker.style.top = `${top}px`;
+        miniPicker.style.left = `${left}px`;
         miniPicker.style.display = "block";
+        miniPicker.focus();
     });
 
-    function changeColor(color) {
-        const option = options[selector.selectedIndex].value;
-        scheme[option] = color;
-        colorPickerColor.style.backgroundColor = color;
-        applyPreview(scheme, fontSmoothingChkBox.checked);
-    }
+    miniPicker.addEventListener("focusout", function (event) {
+        if (event.relatedTarget !== colorPicker && event.relatedTarget !== openColorPickerBtn) {
+            miniPicker.style.display = "none";
+        }
+    });
 
     for (const miniPickerColor of miniPickerColors) {
         miniPickerColor.addEventListener("click", function () {
@@ -79,6 +91,14 @@ async function main() {
         applyPreview(scheme, fontSmoothingChkBox.checked);
     });
 
+    enableAnimationsChkBox.addEventListener("change", function () {
+        if (enableAnimationsChkBox.checked) {
+            animationSelector.disabled = false;
+        } else {
+            animationSelector.disabled = true;
+        }
+    });
+
     importBtn.addEventListener("click", async function () {
         const pickerOpts = {
             types: [{
@@ -105,6 +125,7 @@ async function main() {
         } else if (schemeSelector.value === "xpcss4mad") {
             parent.changeColorScheme("xpcss4mad");
             localStorage.madesktopColorScheme = "xpcss4mad";
+            parent.changeBgColor(colorPickerColor.style.backgroundColor);
         } else {
             applyScheme(scheme);
         }
@@ -114,6 +135,13 @@ async function main() {
         } else {
             delete localStorage.madesktopNoPixelFonts;
         }
+
+        if (enableAnimationsChkBox.checked) {
+            localStorage.madesktopCmAnimation = animationSelector.value;
+        } else {
+            localStorage.madesktopCmAnimation = "none";
+        }
+        parent.changeCmAnimation(localStorage.madesktopCmAnimation);
 
         parent.document.dispatchEvent(new Event("mouseup"));
     }
@@ -128,7 +156,8 @@ async function main() {
     if (localStorage.madesktopColorScheme === "xpcss4mad") {
         schemeSelector.value = "xpcss4mad";
         selector.disabled = true;
-        colorPicker.disabled = true;
+        colorPickerColor.style.backgroundColor = localStorage.madesktopBgColor;
+        applyPreview(scheme, fontSmoothingChkBox.checked);
     }
 
     if (localStorage.sysplugIntegration) {
@@ -139,8 +168,22 @@ async function main() {
         fontSmoothingChkBox.checked = true;
     }
 
+    if (localStorage.madesktopCmAnimation === "none") {
+        enableAnimationsChkBox.checked = false;
+        animationSelector.disabled = true;
+    } else if (localStorage.madesktopCmAnimation === "fade") {
+        animationSelector.selectedIndex = 1;
+    }
+
     if (localStorage.madesktopDebugMode) {
         importBtn.style.display = "block";
+    }
+
+    function changeColor(color) {
+        const option = options[selector.selectedIndex].value;
+        scheme[option] = color;
+        colorPickerColor.style.backgroundColor = color;
+        applyPreview(scheme, fontSmoothingChkBox.checked);
     }
 }
 
@@ -190,9 +233,11 @@ async function getSchemeText(scheme = parent.document.getElementById("scheme").h
 }
 
 function applyPreview(scheme, nopixel = false) {
+    const preview = document.getElementById("preview");
     const styleElement = document.getElementById("style");
     const schemeText = generateCssScheme(scheme, "#preview");
     styleElement.textContent = schemeText;
+
     if (nopixel) {
         styleElement.textContent += `
             #preview * {
@@ -206,19 +251,24 @@ function applyPreview(scheme, nopixel = false) {
             }
         `;
     }
+
+    if (schemeSelector.value === "xpcss4mad") {
+        preview.style.backgroundColor = document.querySelector(".colorPicker-color").style.backgroundColor;
+    } else {
+        preview.style.backgroundColor = scheme["background"];
+    }
 }
 
 function applyScheme(scheme) {
     if (scheme === "sys") {
         parent.changeColorScheme("sys");
-        parent.changeBgColor("var(--background)");
         localStorage.madesktopColorScheme = "sys";
     } else {
         const schemeText = generateCssScheme(scheme, ":root");
         parent.changeColorScheme(schemeText);
-        parent.changeBgColor("var(--background)");
         localStorage.madesktopColorScheme = "custom";
     }
+    parent.changeBgColor("var(--background)");
 }
 
 function parseCssScheme(schemeText) {

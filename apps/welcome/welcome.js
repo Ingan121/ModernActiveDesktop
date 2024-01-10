@@ -68,7 +68,7 @@ items[3].addEventListener("click", function() {
 });
 
 closeBtn.addEventListener("click", function() {
-    madCloseWindow();
+    window.close();
 });
 
 closeBtn.addEventListener("animationend", function() {
@@ -114,7 +114,7 @@ new MutationObserver(function(mutations) {
 setInterval(checkSysplug, 2000);
 
 function switchItemTitleDisplay() {
-    if (madScaleFactor !== 1) {
+    if (madScaleFactor * window.devicePixelRatio !== 1) {
         itemsTitleImage.style.display = "none";
         itemsTitleText.style.display = "block";
     } else {

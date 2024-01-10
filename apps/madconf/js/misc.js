@@ -77,6 +77,7 @@ dpiSlider.value = dpiSelector.selectedIndex;
 if (config.sysplug) {
     sysplugChkBox.checked = true;
     sysplugOpenOptSelector.disabled = false;
+    getSysplugOWConfig();
 }
 
 sysplugOpenOptSelector.selectedIndex = config.sysplugOpenOpt;
@@ -159,6 +160,7 @@ sysplugChkBox.addEventListener('change', function () {
     if (this.checked) {
         checkSysplug();
         sysplugOpenOptSelector.disabled = false;
+        getSysplugOWConfig();
     } else {
         sysplugOpenOptSelector.disabled = true;
     }
@@ -209,5 +211,13 @@ function checkSysplug() {
         })
         .catch(error => {
             connectionStatus.textContent = "System plugin is not running. Please install the system plugin with the guide.";
+        });
+}
+
+function getSysplugOWConfig() {
+    fetch("http://localhost:3031/config/openwith")
+        .then(response => response.json())
+        .then(responseJson => {
+            sysplugOpenOptSelector.selectedIndex = responseJson.openWith;
         });
 }

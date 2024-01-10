@@ -8,6 +8,7 @@ body {
     background-color: var(--button-face);
     margin: 0;
     line-height: 16px;
+    image-rendering: pixelated;
 }
 
 menu[role="tablist"] a {

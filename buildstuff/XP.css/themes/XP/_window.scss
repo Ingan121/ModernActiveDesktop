@@ -3,17 +3,20 @@
 \*-------------------------------------------*/
 
 .windowContainer[data-style="wnd"],
-#inactiveWindow,
-#activeWindow,
-#msgbox {
+#madconf #preview #inactiveWindow,
+#madconf #preview #activeWindow,
+#msgbox,
+.os-window {
     box-shadow: inset -1px -1px #00138c, inset 1px 1px #0831d9, inset -2px -2px #001ea0, inset 2px 2px #166aee,
         inset -3px -3px #003bda, inset 3px 3px #0855dd;
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
-    padding: 0 0 3px 0;
+    padding: 0 0 3px 0 !important;
     -webkit-font-smoothing: antialiased;
+    border: none !important;
 }
-.title-bar {
+.title-bar,
+.os-window > .window-titlebar:not(#JustHereToGiveItPriority) {
     font-family: "Trebuchet MS";
     background: linear-gradient(
         180deg,
@@ -37,7 +40,8 @@
     height: 21px;
 }
 
-.title-bar-text {
+.title-bar-text,
+.os-window > .window-title:not(#JustHereToGiveItPriority) {
     padding-left: 3px;
 }
 
@@ -109,6 +113,80 @@
     }
 }
 
+/* For OS-GUI */
+.window-button:not(#JustHereToGiveItPriority) {
+    min-width: 21px;
+    min-height: 21px;
+    margin-left: 2px;
+    background-repeat: no-repeat;
+    background-position: center;
+    box-shadow: none;
+    background-color: #0050ee;
+    transition: background 100ms;
+    border: none;
+    &:active,
+    &:hover,
+    &:focus {
+        box-shadow: none !important;
+    }
+}
+
+.window-minimize-button:not(#JustHereToGiveItPriority) {
+    background-image: svg-load("./icon/minimize.svg");
+    &:hover {
+        background-image: svg-load("./icon/minimize-hover.svg");
+    }
+    &:not(:disabled):active {
+        background-image: svg-load("./icon/minimize-active.svg");
+    }
+}
+.window-action-maximize:not(#JustHereToGiveItPriority) {
+    background-image: svg-load("./icon/maximize.svg");
+    &:hover {
+        background-image: svg-load("./icon/maximize-hover.svg");
+    }
+    &:not(:disabled):active {
+        background-image: svg-load("./icon/maximize-active.svg");
+    }
+}
+.window-action-restore:not(#JustHereToGiveItPriority) {
+    background-image: svg-load("./icon/restore.svg");
+    &:hover {
+        background-image: svg-load("./icon/restore-hover.svg");
+    }
+    &:not(:disabled):active {
+        background-image: svg-load("./icon/restore-active.svg");
+    }
+}
+.window-help-button:not(#JustHereToGiveItPriority) {
+    background-image: svg-load("./icon/help.svg");
+    &:hover {
+        background-image: svg-load("./icon/help-hover.svg");
+    }
+    &:not(:disabled):active {
+        background-image: svg-load("./icon/help-active.svg");
+    }
+}
+.window-close-button:not(#JustHereToGiveItPriority) {
+    background-image: svg-load("./icon/close.svg");
+    &:hover {
+        background-image: svg-load("./icon/close-hover.svg");
+    }
+    &:not(:disabled):active {
+        background-image: svg-load("./icon/close-active.svg");
+    }
+    margin-right: 0;
+}
+.window-button-icon {
+    display: none;
+}
+
+.os-window.maximized > .window-titlebar:not(#JustHereToGiveItPriority) {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    margin-top: -2px;
+}
+
 .status-bar {
     margin: 0 3px;
     box-shadow: inset 0px 1px 2px var(--button-shadow);
@@ -148,6 +226,26 @@
     background-color: white; /* var(--menu); */
 }
 
-#preview {
+/* madconf adjustments */
+#madconf #preview {
     top: 39px;
+}
+
+#madconf #preview textarea {
+    width: 389px;
+    margin-left: 3px;
+    height: 81px;
+}
+
+#madconf #preview #inactiveWindow {
+    width: 375px;
+}
+
+#madconf #preview #activeWindow {
+    width: 395px;
+}
+
+#madconf #logo {
+    top: 31px;
+    left: 31px;
 }

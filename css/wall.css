@@ -12,6 +12,15 @@
     }
 }
 
+@keyframes fade {
+    0% {
+        opacity: 0.3;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
 @keyframes cmDropdown {
     0% {
         height: 0;
@@ -322,7 +331,7 @@ body {
     left: 0;
     bottom: 0;
     margin: 0;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .dropdownItem:first-child {
@@ -415,6 +424,7 @@ body {
 #msgbox-buttons {
     margin-top: 14px;
     margin-bottom: 12px;
+    justify-content: center;
 }
 
 #errorWnd {

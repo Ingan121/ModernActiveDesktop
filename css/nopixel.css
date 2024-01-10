@@ -10,6 +10,11 @@ ul.tree-view,
 .title-bar,
 #madWelcome .items,
 #madWelcome .contents,
+#placeholder,
 li[role=tab] {
   font-family: sans-serif !important;
+}
+
+#madconf #checkboxes {
+  width: 340px;
 }

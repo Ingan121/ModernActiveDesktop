@@ -150,9 +150,6 @@
 
 				madResizeTo(447, 298);
 			});
-		if (expand) {
-			$define_custom_colors_button.click();
-		}
 
 		const $color_solid_label = $(`<label for="color-solid-canvas">${display_hotkey("Color|S&olid")}</label>`);
 		$color_solid_label.css({
@@ -517,6 +514,11 @@
 
 		set_color(initial_color);
 		update_inputs("hslrgb");
+
+		if (expand) {
+			$define_custom_colors_button.click();
+			$w.trigger("pointerup"); // to force the custom colors to render
+		}
 	}
 
 	function display_hotkey(text) {
@@ -526,11 +528,3 @@
 	exports.choose_color = choose_color;
 
 })(window);
-
-const url = new URL(location.href);
-const caller = parent.deskMovers[url.searchParams.get("caller")];
-const expand = url.searchParams.get("expand");
-const initialColor = `#${url.hash}`;
-choose_color(initialColor, expand, (color) => {
-	caller.windowElement.contentWindow.madColorPickerCallback(color);
-});

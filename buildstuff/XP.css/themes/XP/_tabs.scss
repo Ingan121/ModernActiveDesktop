@@ -8,7 +8,7 @@
 }
 
 menu[role="tablist"] {
-    button {
+    button, li:not(#JustHereToGiveItPriority) {
         background: linear-gradient(
             180deg,
             rgba(255, 255, 255, 1) 0%,
@@ -48,6 +48,25 @@ menu[role="tablist"] {
                     border-left: var(--tab-border);
                 }
             }
+            a {
+                margin-top: 2.3px !important;
+            }
+        }
+    }
+    li {
+        min-height: 23px;
+        font-size: 11px;
+        box-sizing: border-box;
+        border: 1px solid #003c74;
+        display: block;
+        color: #222;
+        text-decoration: none;
+        min-width: unset;
+        box-shadow: none;
+        a:not(#JustHereToGiveItPriority) {
+            margin: 0 !important;
+            margin-top: 1px !important;
+            line-height: 16px;
         }
     }
 }

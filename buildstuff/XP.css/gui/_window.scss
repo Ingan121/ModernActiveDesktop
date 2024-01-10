@@ -5,10 +5,12 @@
 :root {
     --title-bar-bg: black;
 }
+
 .windowContainer[data-style="wnd"],
-#inactiveWindow,
-#activeWindow,
-#msgbox {
+#madconf #preview #inactiveWindow,
+#madconf #preview #activeWindow,
+#msgbox,
+.os-window {
     font-size: 11px;
     box-shadow: var(--border-window-outer), var(--border-window-inner);
     background: var(--surface);
@@ -17,7 +19,8 @@
         margin-bottom: 9px;
     }
 }
-.title-bar {
+.title-bar,
+.os-window > .window-titlebar:not(#JustHereToGiveItPriority) {
     font-size: 11px;
     background: var(--title-bar-bg);
     padding: 3px 2px 3px 3px;
@@ -25,7 +28,8 @@
     justify-content: space-between;
     align-items: center;
 }
-.title-bar-text {
+.title-bar-text,
+.os-window > .window-title:not(#JustHereToGiveItPriority) {
     font-weight: bold;
     color: white;
     letter-spacing: 0;

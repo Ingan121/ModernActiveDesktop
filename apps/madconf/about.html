@@ -10,9 +10,9 @@
     <style id="style"></style>
 </head>
 <body>
-    <div class="window-body">
+    <div id="madconf" class="window-body">
         <menu role="tablist">
-            <li class="tab" role="tab" data-pagename="background"><a id="generalBtn" href="#tabs">Background</a></li>
+            <li class="tab" role="tab" data-pagename="background"><a href="#tabs">Background</a></li>
             <li class="tab" role="tab" data-pagename="appearance"><a href="#tabs">Appearance</a></li>
             <li class="tab" role="tab" data-pagename="misc"><a href="#tabs">Miscellaneous</a></li>
             <li class="tab" role="tab" data-pagename="about" aria-selected="true"><a href="#tabs">About</a></li>
@@ -20,17 +20,28 @@
         <div class="window" role="tabpanel">
             <div class="window-body">
                 <p id="title">ModernActiveDesktop</p>
-                <img src="../../icon.ico" style="width: 32px; height: 32px;">
-                <br>
-                <p>Version: 3.0 Pre-release 10</p>
+                <img id="logo" src="../../icon.ico">
+                <p>Version: 3.0 Pre-release 11</p>
                 <p>Made by Ingan121 - <a href="#github" onclick="window.open('https://www.ingan121.com/')">www.ingan121.com</a></p>
                 <br>
                 <p><a href="#license" onclick="madOpenWindow('../license.txt', true)">Licensed under the MIT License</a></p>
-                <p><a href="#github" onclick="window.open('https://github.com/Ingan121/ModernActiveDesktop')">GitHub repository</a></p>
+                <fieldset id="credits">
+                    <legend>Credits</legend>
+                    <p>ModernActiveDesktop uses the following projects:</p>
+                    <ul>
+                        <li><a href="#98css" onclick="window.open('https://jdan.github.io/98.css/')"><b>98.css</b></a> - A CSS library for building interfaces that look like Windows 98</li>
+                        <li><a href="#xpcss" onclick="window.open('https://botoxparty.github.io/XP.css/')"><b>XP.css</b></a> - Used for the experimental Windows XP style</li>
+                        <li><a href="#jspaint" onclick="window.open('https://jspaint.app/')"><b>JS Paint</b></a> - A web-based remake of MS Paint</li>
+                        <li><a href="#marked" onclick="window.open('https://github.com/markedjs/marked')"><b>marked</b></a> - A JavaScript library for parsing markdown docs</li>
+                        <li><a href="#electron" onclick="window.open('https://www.electronjs.org/')"><b>Electron</b></a> - Used for the system plugin</li>
+                        <li>And many assets from Windows 98 by Microsoft</li>
+                    </ul>
+                </fieldset>
                 <section class="buttons field-row">
                     <button onclick="madOpenWindow('apps/welcome/index.html', true, '476px', '322px', 'wnd', true)">Show welcome</button>
                     <button onclick="madOpenWindow('README.md', true)">Show readme</button>
                     <button onclick="madOpenWindow('Updated.md', true)">Show changelog</button>
+                    <button onclick="window.open('https://github.com/Ingan121/ModernActiveDesktop')">GitHub</button>
                 </section>
             </div>
         </div>

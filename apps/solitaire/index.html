@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Solitaire</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../../css/98.css">
+    <link rel="stylesheet" href="solitaire.css">
+    <link id="scheme" rel="stylesheet" href="data:text/css,">
+    <link id="font" rel="stylesheet" href="">
+    <style id="style"></style>
+</head>
+<body style="display: none">
+    <div class="background">
+        <div id="menu">
+            <div id="gameMenuBtn"><u>G</u>ame</div>
+            <div id="helpMenuBtn"><u>H</u>elp</div>
+        </div>
+        <div class="solitaire" id="js-solitaire">
+            <div class="deck">
+                <div id="js-deck-pile" class="deck__pile"></div>
+                <div id="js-deck-deal" class="deck__deal"></div>
+                <div id="deck-placeholder" class="seven"></div>
+            </div>
+            <div id="js-board" class="board-deck"></div>
+        </div>
+    </div>
+
+    <div id="gameMenuBg" class="window">
+        <div id="gameMenu" class="window-body">
+            <div class="contextMenuItem"><p><u>D</u>eal</p></div>
+            <div class="contextMenuItem"><p>De<u>c</u>k...</p></div>
+            <div class="contextMenuItem"><p>E<u>x</u>it</p></div>
+        </div>
+    </div>
+    <div id="helpMenuBg" class="window">
+        <div id="helpMenu" class="window-body">
+            <div class="contextMenuItem"><p><u>A</u>bout Solitaire</p></div>
+        </div>
+    </div>
+    <script src="../../js/libmad.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
