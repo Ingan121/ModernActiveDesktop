@@ -12,6 +12,11 @@ img {
     border: solid 1px transparent;
 }
 
+img:active {
+    outline: solid 2px var(--hilight);
+    filter: invert(1);
+}
+
 img[data-active] {
     outline: solid 2px var(--hilight);
 }

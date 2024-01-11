@@ -238,7 +238,8 @@ input[type="checkbox"][disabled] {
 }
 input[type="text"],
 input[type="password"],
-input[type="email"] {
+input[type="email"],
+input[type="number"] {
     padding: 3px 4px;
     border: solid #7f9db9 1px;
     background-color: var(--button-highlight);

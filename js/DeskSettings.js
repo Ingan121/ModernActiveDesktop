@@ -32,6 +32,7 @@ const ding = new Audio("sounds/ding.wav");
 const NO_SYSPLUG_ALERT = "System plugin is not running. Please make sure you have installed it properly. If you don't want to use it, please disable the system plugin integration option.";
 
 let lastZIndex = localStorage.madesktopItemCount || 0;
+let lastAoTZIndex = lastZIndex + 50000;
 let isContextMenuOpen = false;
 let activeWindow = 0;
 let startupRan = false;
@@ -79,12 +80,15 @@ if (localStorage.madesktopNonADStyle) {
     location.reload();
     throw new Error("Refreshing...");
 }
+// Convert destryoedItems to openWindows
+// Only save open windows instead of all destroyed windows
 if (localStorage.madesktopDestroyedItems) {
     let openWindows = [0];
     for (let i = 1; i < localStorage.madesktopItemCount; i++) {
         if (!localStorage.madesktopDestroyedItems.includes(`|${i}|`)) {
             openWindows[openWindows.length] = i;
         } else {
+            // Clean up configs of destroyed deskitems
             localStorage.removeItem(`madesktopItemWidth${i}`);
             localStorage.removeItem(`madesktopItemHeight${i}`);
             localStorage.removeItem(`madesktopItemXPos${i}`);
@@ -151,13 +155,13 @@ window.addEventListener('contextmenu', function (event) {
     mainMenuBg.style.left = event.clientX + "px";
     mainMenuBg.style.top = event.clientY + "px";
     mainMenuBg.style.display = "block";
-    setTimeout(function () {
-        document.addEventListener('click', closeMainMenu);
-        iframeClickEventCtrl(false);
-    }, 100);
+    iframeClickEventCtrl(false);
     isContextMenuOpen = true;
     event.preventDefault();
+    mainMenuBg.focus();
 }, false);
+
+mainMenuBg.addEventListener('focusout', closeMainMenu);
 
 mainMenuItems[0].addEventListener('click', openWindow); // New button
 
@@ -495,17 +499,17 @@ function padZero(str, len) {
 }
 
 // Create a new ActiveDesktop item and initialize it
-function createNewDeskItem(numStr, openDoc, temp, width, height, style, centered) {
+function createNewDeskItem(numStr, openDoc, temp, width, height, style, centered, top, left) {
     const newContainer = windowContainers[0].cloneNode(true);
     document.body.appendChild(newContainer);
     windowContainers = document.getElementsByClassName("windowContainer");
-    const deskMover = new DeskMover(newContainer, numStr, openDoc, temp, width, height, style, false, centered);
+    const deskMover = new DeskMover(newContainer, numStr, openDoc, temp, width, height, style, false, centered, top, left);
     deskMovers[numStr] = deskMover;
     return deskMover;
 }
 
 // Create a new AD item, initialize, and increase the saved window count
-function openWindow(openDoc, temp, width, height, style, centered) {
+function openWindow(openDoc, temp, width, height, style, centered, top, left) {
     let deskMover;
     if (localStorage.madesktopItemVisible == "false" && !(typeof openDoc === "string" || openDoc instanceof String)) {
         windowContainers[0].style.display = "block";
@@ -518,10 +522,10 @@ function openWindow(openDoc, temp, width, height, style, centered) {
         }
         if (localStorage.madesktopItemVisible == "false") {
             windowContainers[0].style.display = "block";
-            deskMover = createNewDeskItem(localStorage.madesktopItemCount, openDoc, temp, width, height, style || (openDoc ? "wnd" : "ad"), centered);
+            deskMover = createNewDeskItem(localStorage.madesktopItemCount, openDoc, temp, width, height, style || (openDoc ? "wnd" : "ad"), centered, top, left);
             windowContainers[0].style.display = "none";
         } else {
-            deskMover = createNewDeskItem(localStorage.madesktopItemCount, openDoc, temp, width, height, style || (openDoc ? "wnd" : "ad"), centered);
+            deskMover = createNewDeskItem(localStorage.madesktopItemCount, openDoc, temp, width, height, style || (openDoc ? "wnd" : "ad"), centered, top, left);
         }
         activateWindow(localStorage.madesktopItemCount);
         localStorage.madesktopItemCount++;
@@ -531,7 +535,6 @@ function openWindow(openDoc, temp, width, height, style, centered) {
 
 function closeMainMenu() {
     mainMenuBg.style.display = "none";
-    document.removeEventListener('click', closeMainMenu);
     isContextMenuOpen = false;
 }
 
@@ -655,6 +658,7 @@ function saveZOrder() {
 }
 
 function activateWindow(num = activeWindow || 0) {
+    delete deskMovers[num].windowContainer.dataset.inactive;
     deskMovers[num].windowTitlebar.classList.remove("inactive");
     activeWindow = num;
 
@@ -665,8 +669,10 @@ function activateWindow(num = activeWindow || 0) {
     for (const i in deskMovers) {
         if (i != num) {
             if (localStorage.madesktopNoDeactivate) {
+                delete deskMovers[num].windowContainer.dataset.inactive;
                 deskMovers[i].windowTitlebar.classList.remove("inactive");
             } else {
+                deskMovers[i].windowContainer.dataset.inactive = true;
                 deskMovers[i].windowTitlebar.classList.add("inactive");
                 deskMovers[i].config.active = false;
             }
@@ -674,6 +680,31 @@ function activateWindow(num = activeWindow || 0) {
     }
 }
 
+// Prevent windows from being created in the same position
+function cascadeWindow(x, y) {
+    x = parseInt(x);
+    y = parseInt(y);
+    if (isWindowInPosition(x, y)) {
+        return cascadeWindow(x + 4, y + 24);
+    } else {
+        return [x + "px", y + "px"];
+    }
+}
+
+function isWindowInPosition(x, y) {
+    if (typeof x === "number") {
+        x = x + "px";
+    }
+    if (typeof y === "number") {
+        y = y + "px";
+    }
+    for (const i in deskMovers) {
+        if (deskMovers[i].config.xPos === x && deskMovers[i].config.yPos === y) {
+            return true;
+        }
+    }
+    return false;
+}
 
 async function getFavicon(iframe) {
     try {
@@ -700,14 +731,14 @@ async function getFavicon(iframe) {
         await fetch(path).then(response => {
             if (!response.ok) {
                 log('Favicon not found, using generic icon', 'log', 'getFavicon');
-                path = 'images/html.ico';
+                path = 'images/html.png';
             }
         });
         return path;
     } catch (e) {
         log('Error getting favicon');
         console.log(e);
-        return 'images/html.ico';
+        return 'images/html.png';
     }
 }
 
@@ -860,9 +891,16 @@ function flashDialog() {
     playSound("ding");
     let cnt = 1;
     let interval = setInterval(function () {
-        if (cnt == 18) clearInterval(interval);
-        if (cnt % 2) msgboxTitlebar.classList.add("inactive");
-        else msgboxTitlebar.classList.remove("inactive");
+        if (cnt == 18) {
+            clearInterval(interval);
+        }
+        if (cnt % 2) {
+            msgbox.dataset.inactive = true;
+            msgboxTitlebar.classList.add("inactive");
+        } else {
+            delete msgbox.dataset.inactive;
+            msgboxTitlebar.classList.remove("inactive");
+        }
         cnt++;
     }, 60);
 }
@@ -1001,7 +1039,6 @@ function startup() {
     startupRan = true;
 }
 
-// Initialization complete
 document.getElementById("location").textContent = location.href;
 if (runningMode === WE) {
     runningModeLabel.textContent = "Wallpaper Engine";
@@ -1013,4 +1050,9 @@ if (runningMode === WE) {
 }
 origRunningMode = runningMode;
 
+window.addEventListener('load', function () {
+    document.dispatchEvent(new Event("mouseup")); // Re-calculate title bar height after loading scheme css
+});
+
+// Initialization complete
 errorWnd.style.display = "none";

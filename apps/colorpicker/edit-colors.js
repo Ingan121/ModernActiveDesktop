@@ -528,3 +528,5 @@
 	exports.choose_color = choose_color;
 
 })(window);
+
+madSetIcon(false);

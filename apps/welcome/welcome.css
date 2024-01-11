@@ -34,7 +34,7 @@ body {
     background-image: url(resources/background.png);
     background-repeat: no-repeat;
     background-size: 476px 288px;
-    color: black;
+    color: black !important;
 }
 
 #author {

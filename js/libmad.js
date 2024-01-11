@@ -94,6 +94,20 @@
                     --WindowFrame: var(--window-frame);
                     --WindowText: var(--window-text);
                 }`;
+                // jspaint dark theme stuff
+                if (isDarkColor(getComputedStyle(parent.document.documentElement).getPropertyValue('--button-face'))) {
+                    styleElement.textContent += `
+                        .tool-icon {
+                            background-image: url("images/dark/tools.png");
+                            background-repeat: no-repeat;
+                            background-position: calc(-16px * var(--icon-index)) 0; /* same as classic theme, but couldn't hurt */
+                        }
+                        .tool-icon.use-svg {
+                            background-image: url("images/dark/tools.svg");
+                            background-position: calc(-16px * (var(--icon-index) * 2 + 1)) -16px; /* same as classic theme, but couldn't hurt */
+                        }
+                    `;
+                }
             } else {
                 styleElement.textContent = "";
             }
@@ -158,6 +172,22 @@
             return parent.runningMode;
         }
     });
+
+    // http://stackoverflow.com/questions/12043187/how-to-check-if-hex-color-is-too-black
+    function isDarkColor(color) {
+        const c = color.substring(2);  // strip " #"
+        const rgb = parseInt(c, 16);   // convert rrggbb to decimal
+        const r = (rgb >> 16) & 0xff;  // extract red
+        const g = (rgb >>  8) & 0xff;  // extract green
+        const b = (rgb >>  0) & 0xff;  // extract blue
+
+        const luma = 0.2126 * r + 0.7152 * g + 0.0722 * b; // per ITU-R BT.709
+
+        if (luma < 40) {
+            return true;
+        }
+        return false;
+    }
 
     // jspaint stuff
     window.systemHooks = {
@@ -261,10 +291,9 @@
     }
 
     window.madOpenColorPicker = function (initialColor, expand, callback) {
-        if (initialColor.startsWith("rgb(")) {
-            initialColor = parent.rgbToHex(initialColor);
-        }
-        const colorPicker = madOpenWindow("apps/colorpicker/index.html", true, expand ? "447px" : "219px", "298px", "wnd");
+        const left = parseInt(madDeskMover.config.xPos) + 4 + 'px';
+        const top = parseInt(madDeskMover.config.yPos) + 26 + 'px';
+        const colorPicker = madOpenWindow("apps/colorpicker/index.html", true, expand ? "447px" : "219px", "298px", "wnd", false, top, left);
         const colorPickerWindow = colorPicker.windowElement.contentWindow;
         colorPickerWindow.addEventListener("load", () => {
             colorPickerWindow.choose_color(initialColor, expand, callback);
@@ -274,6 +303,7 @@
     window.madLocReplace = deskMover.locReplace.bind(deskMover);
     window.madResizeTo = deskMover.resizeTo.bind(deskMover);
     window.madMoveTo = deskMover.moveTo.bind(deskMover);
+    window.madSetIcon = deskMover.setIcon.bind(deskMover);
     window.madChangeWndStyle = deskMover.changeWndStyle.bind(deskMover);
     window.madCloseWindow = deskMover.closeWindow.bind(deskMover);
 

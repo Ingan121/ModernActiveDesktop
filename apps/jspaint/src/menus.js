@@ -819,7 +819,7 @@
 					},
 				},
 				description: localize("Draws randomly with different tools."),
-			},*/
+			},*//*
 			{
 				item: "👥 " + localize("&Multi-User"),
 				submenu: [
@@ -910,10 +910,10 @@
 						description: localize("Starts a new multi-user session from an empty document."),
 					},
 				]
-			},
+			},*/
 			{
 				item: "💄 " + localize("&Themes"),
-				submenu: [
+				/*submenu: [
 					{
 						item: "🔙 " + localize("&Classic"),
 						speech_recognition: [
@@ -1034,7 +1034,10 @@
 						enabled: () => get_theme() != "occult.css",
 						description: localize("Starts the ritual."),
 					},
-				]
+				]*/
+				action: () => {
+					madOpenWindow("apps/madconf/appearance.html", true);
+				}
 			},
 			{
 				item: "🌍 " + localize("&Language"),

@@ -1,0 +1,36 @@
+/* Blue */
+/* Source: https://www.deviantart.com/tpenguinltg/art/Blue-525167751 */
+/* License: https://creativecommons.org/licenses/by-sa/3.0/ */
+:root {
+	--active-title: rgb(0, 0, 128);
+	--background: rgb(58, 110, 165);
+	--hilight: rgb(51, 153, 255);
+	--hilight-text: rgb(255, 255, 255);
+	--title-text: rgb(255, 255, 255);
+	--window: rgb(255, 255, 255);
+	--window-text: rgb(0, 0, 0);
+	--scrollbar: rgb(211, 228, 248);
+	--inactive-title: rgb(49, 131, 221);
+	--menu: rgb(166, 202, 240);
+	--window-frame: rgb(0, 0, 0);
+	--menu-text: rgb(0, 0, 0);
+	--active-border: rgb(166, 202, 240);
+	--inactive-border: rgb(166, 202, 240);
+	--app-workspace: rgb(49, 131, 221);
+	--button-face: rgb(166, 202, 240);
+	--button-shadow: rgb(49, 131, 221);
+	--gray-text: rgb(49, 131, 221);
+	--button-text: rgb(0, 0, 0);
+	--inactiveTitle-text: rgb(0, 0, 128);
+	--button-hilight: rgb(211, 228, 248);
+	--buttonDk-shadow: rgb(0, 0, 0);
+	--button-light: rgb(166, 202, 240);
+	--info-text: rgb(0, 0, 0);
+	--info-window: rgb(225, 225, 255);
+	--gradientActive-title: rgb(16, 132, 208);
+	--gradientInactive-title: rgb(49, 131, 221);
+	--buttonAlternate-face: rgb(192, 192, 192);
+	--hotTracking-color: rgb(0, 0, 128);
+	--menu-hilight: rgb(0, 0, 128);
+	--menu-bar: rgb(166, 202, 240);
+}

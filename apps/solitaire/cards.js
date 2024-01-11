@@ -1,5 +1,7 @@
 const cards = document.querySelectorAll('img');
 
+madSetIcon(false);
+
 for (const card of cards) {
     card.addEventListener('click', function () {
         const activeCard = document.querySelector('img[data-active]');

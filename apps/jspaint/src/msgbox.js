@@ -2,30 +2,14 @@
 	// Note that this API must be kept in sync with the version in 98.js.org.
 
 	try {
-		// <audio> element is simpler for sound effects,
-		// but in iOS/iPad it shows up in the Control Center, as if it's music you'd want to play/pause/etc.
-		// It's very silly. Also, on subsequent plays, it only plays part of the sound.
-		// And Web Audio API is better for playing SFX anyway because it can play a sound overlapping with itself.
-		window.audioContext = window.audioContext || new AudioContext();
-		const audio_buffer_promise =
-			fetch("../../sounds/chord.wav")
-				.then(response => response.arrayBuffer())
-				.then(array_buffer => audioContext.decodeAudioData(array_buffer))
+		const chord = new Audio("sounds/chord.wav");
 		var play_chord = async function () {
 			if (localStorage.madesktopAlertSndMuted) {
 				return;
 			}
 			
-			audioContext.resume(); // in case it was not allowed to start until a user interaction
-			// Note that this should be before waiting for the audio buffer,
-			// so that it works the first time.
-			// (This only works if the message box is opened during a user gesture.)
-
-			const audio_buffer = await audio_buffer_promise;
-			const source = audioContext.createBufferSource();
-			source.buffer = audio_buffer;
-			source.connect(audioContext.destination);
-			source.start();
+			chord.currentTime = 0;
+			chord.play();
 		};
 	} catch (error) {
 		console.log("AudioContext not supported", error);

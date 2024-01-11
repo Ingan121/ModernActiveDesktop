@@ -1,7 +1,7 @@
 'use strict';
 
 class DeskMover {
-    constructor(windowContainer, numStr, openDoc, temp, width, height, style, reinit, centered) {
+    constructor(windowContainer, numStr, openDoc, temp, width, height, style, reinit, centered, top, left) {
         this.numStr = numStr;
         this.temp = temp;
 
@@ -28,7 +28,8 @@ class DeskMover {
         this.isDown = false, this.resizingMode = "none", this.mouseOverWndBtns = false;
 
         this.timeout; // for handling ActiveDesktop style window frame hiding
-        this.timeout2; // for handling context menu auto closing
+        this.timeout2; // for handling context menu auto opening
+        this.timeout3; // for handling context menu auto closing
 
         this.contextMenuOpening = false;
         this.shouldNotCloseConfMenu = false;
@@ -74,6 +75,8 @@ class DeskMover {
             this.confMenuBg.addEventListener('mousedown', preventDefault);
             this.confMenuBg.addEventListener('mouseup', preventDefault);
             this.confMenuBg.addEventListener('mousemove', preventDefault);
+
+            this.contextMenuBg.addEventListener('focusout', this.closeContextMenu.bind(this));
 
             this.windowContainer.addEventListener('mousedown', this.#wcMouseDown.bind(this));
             document.addEventListener('mouseup', this.#docMouseUp.bind(this));
@@ -143,6 +146,7 @@ class DeskMover {
 
             this.confMenuBg.addEventListener('mouseover', () => {
                 this.shouldNotCloseConfMenu = true;
+                clearTimeout(this.timeout3);
                 this.contextMenuItems[0].dataset.active = true;
             });
             this.confMenuBg.addEventListener('mouseleave', () => {
@@ -165,20 +169,21 @@ class DeskMover {
             });
             
             this.confMenuItems[3].addEventListener('click', this.#toggleScale.bind(this)); // Scale contents button
-            this.confMenuItems[4].addEventListener('click', this.#changeUrl.bind(this)); // Change URL button
-            this.confMenuItems[5].addEventListener('click', this.#changeTitle.bind(this)); // Change title button
+            this.confMenuItems[4].addEventListener('click', this.#toggleAoT.bind(this)); // Always on top button
+            this.confMenuItems[5].addEventListener('click', this.#changeUrl.bind(this)); // Change URL button
+            this.confMenuItems[6].addEventListener('click', this.#changeTitle.bind(this)); // Change title button
             
-            this.confMenuItems[6].addEventListener('click', () => { // New window button
+            this.confMenuItems[7].addEventListener('click', () => { // New window button
                 this.closeContextMenu();
                 openWindow();
             });
 
-            this.confMenuItems[7].addEventListener('click', () => { // Reload wallpaper button
+            this.confMenuItems[8].addEventListener('click', () => { // Reload wallpaper button
                 this.closeContextMenu();
                 location.reload();
             });
 
-            this.confMenuItems[8].addEventListener('click', () => { // Properties button
+            this.confMenuItems[9].addEventListener('click', () => { // Properties button
                 this.closeContextMenu();
                 openWindow("apps/madconf/background.html", true);
             });
@@ -230,14 +235,25 @@ class DeskMover {
         this.changeWndStyle(this.config.style || style || "ad");
         if (this.config.unscaled) this.confMenuItems[3].classList.remove("checkedItem");
         else this.confMenuItems[3].classList.add("checkedItem");
+        if (this.config.alwaysOnTop) {
+            this.windowContainer.style.zIndex = (this.config.zIndex + 50000) || ++lastAoTZIndex;
+            this.confMenuItems[4].classList.add("checkedItem");
+        } else {
+            this.windowContainer.style.zIndex = this.config.zIndex || ++lastZIndex;
+            this.confMenuItems[4].classList.remove("checkedItem");
+        }
         this.windowTitleText.textContent = this.config.title || "ModernActiveDesktop";
         this.#adjustElements();
         this.#keepInside();
         this.closeContextMenu();
         this.changeCmAnimation(localStorage.madesktopCmAnimation || "slide");
-        this.windowContainer.style.zIndex = this.config.zIndex || ++lastZIndex;
-        if (!this.config.active && !localStorage.madesktopNoDeactivate) this.windowTitlebar.classList.add("inactive");
-        else this.windowTitlebar.classList.remove("inactive");
+        if (!this.config.active && !localStorage.madesktopNoDeactivate) {
+            this.windowContainer.dataset.inactive = true;
+            this.windowTitlebar.classList.add("inactive");
+        } else {
+            delete this.windowContainer.dataset.inactive;
+            this.windowTitlebar.classList.remove("inactive");
+        }
         
         if (this.config.src) {
             this.windowElement.src = this.config.src;
@@ -247,6 +263,8 @@ class DeskMover {
             }
             if (this.numStr !== "") {
                 let url = "placeholder.html";
+                let defaultLeft = vWidth - this.windowContainer.offsetWidth - (parseInt(localStorage.madesktopChanViewRightMargin) || 0) - 200 + 'px';
+                let defaultTop = '200px';
                 if ((typeof openDoc === "string" || openDoc instanceof String) && !reinit) {
                     if (openDoc.startsWith("apps/madconf/")) {
                         this.windowElement.width = width || '470px';
@@ -259,16 +277,17 @@ class DeskMover {
                         this.windowElement.width = width || '800px';
                         this.windowElement.height = height || '600px';
                     }
-                    this.windowContainer.style.left = (parseInt(localStorage.madesktopChanViewLeftMargin) || 75) + 250 + 'px';
-                    this.windowContainer.style.top = '150px';
+                    defaultLeft = left || (parseInt(localStorage.madesktopChanViewLeftMargin) || 75) + 250 + 'px';
+                    defaultTop = top || '150px';
                     url = openDoc.includes(".html") ? openDoc : `docs/index.html?src=${openDoc}`;
                 } else {
                     this.windowElement.width = width || '250px';
                     this.windowElement.height = height || '150px';
                     this.#adjustElements();
-                    this.windowContainer.style.left = vWidth - this.windowContainer.offsetWidth - (parseInt(localStorage.madesktopChanViewRightMargin) || 0) - 200 + 'px';
-                    this.windowContainer.style.top = '200px';
                 }
+                [defaultLeft, defaultTop] = cascadeWindow(defaultLeft, defaultTop);
+                this.windowContainer.style.left = defaultLeft;
+                this.windowContainer.style.top = defaultTop;
                 this.#adjustElements();
 
                 if (centered) {
@@ -330,21 +349,18 @@ class DeskMover {
     
     openContextMenu(event) {
         this.contextMenuBg.style.display = "block";
-        this.boundCloseContextMenu = this.closeContextMenu.bind(this);
 
-        // Prevent the context menu from immediately closing when clicking the menu button
-        this.contextMenuOpening = null;
+        // For handling window icon double click
+        // Note: dblclick doesn't fire in WE
+        this.contextMenuOpening = this.posInContainer;
         setTimeout(() => {
-            this.contextMenuOpening = this.posInContainer;
-        }, 1);
-        setTimeout(() => {
-            this.contextMenuOpening = false;
+            this.contextMenuOpening = null;
         }, 500);
 
-        document.addEventListener('click', this.boundCloseContextMenu);
         iframeClickEventCtrl(false);
         isContextMenuOpen = true;
         event.preventDefault();
+        this.contextMenuBg.focus();
     }
     
     closeContextMenu() {
@@ -356,13 +372,9 @@ class DeskMover {
             }
             return;
         }
-        if (this.contextMenuOpening === null) {
-            return;
-        }
 
         this.shouldNotCloseConfMenu = false;
         this.contextMenuBg.style.display = "none";
-        document.removeEventListener('click', this.boundCloseContextMenu);
         this.closeConfMenu();
         iframeClickEventCtrl(true);
         window.isContextMenuOpen = false;
@@ -386,7 +398,16 @@ class DeskMover {
         if (typeof delay !== "number") {
             delay = 300;
         }
-        setTimeout(this.closeConfMenu.bind(this), delay);
+        this.timeout3 = setTimeout(this.closeConfMenu.bind(this), delay);
+    }
+
+    setIcon(icon) {
+        if (icon) {
+            this.windowTitlebar.classList.remove("noIcon");
+            this.windowIcon.src = icon;
+        } else {
+            this.windowTitlebar.classList.add("noIcon");
+        }
     }
 
     changeWndStyle(style) {
@@ -431,7 +452,7 @@ class DeskMover {
                 this.windowTitlebar.style.top = "3px";
                 this.contextMenuBg.style.top = "24px";
                 this.confMenuBg.style.top = "24px";
-                this.windowTitlebar.style.width = this.windowElement.offsetWidth - 7 + 'px';
+                this.windowTitlebar.style.width = 'auto';
                 this.windowElement.style.borderColor = "transparent";
                 this.windowFrame.style.borderColor = "transparent";
                 this.windowFrame.style.backgroundColor = "transparent";
@@ -470,8 +491,9 @@ class DeskMover {
     }
 
     moveTo(x, y) {
-        this.windowContainer.style.left = x + 'px';
-        this.windowContainer.style.top = y + 'px';
+        [x, y] = cascadeWindow(x, y);
+        this.windowContainer.style.left = x;
+        this.windowContainer.style.top = y;
         this.#keepInside();
         this.#saveConfig();
     }
@@ -485,7 +507,7 @@ class DeskMover {
     }
 
     #wcMouseDown(event) {
-        this.windowContainer.style.zIndex = ++lastZIndex; // bring to top
+        this.windowContainer.style.zIndex = this.config.alwaysOnTop ? ++lastAoTZIndex : ++lastZIndex; // bring to top
         activateWindow(this.numStr || 0);
         saveZOrder();
         if ((this.windowFrame.style.borderColor != "transparent" || this.config.style !== "ad") && !this.mouseOverWndBtns) {
@@ -678,6 +700,19 @@ class DeskMover {
         this.windowElement.contentWindow.dispatchEvent(new Event("resize"));
     }
 
+    #toggleAoT() {
+        this.closeContextMenu();
+        if (this.config.alwaysOnTop) {
+            this.windowContainer.style.zIndex = ++lastZIndex;
+            this.confMenuItems[4].classList.remove("checkedItem");
+            this.config.alwaysOnTop = false;
+        } else {
+            this.windowContainer.style.zIndex = ++lastAoTZIndex;
+            this.confMenuItems[4].classList.add("checkedItem");
+            this.config.alwaysOnTop = true;
+        }
+    }
+
     #changeUrl() {
         this.closeContextMenu();
         let urlToShow = this.config.src || "";
@@ -724,7 +759,7 @@ class DeskMover {
     }
 
     #weConMouseDown () {
-        this.windowContainer.style.zIndex = ++lastZIndex;
+        this.windowContainer.style.zIndex = this.config.alwaysOnTop ? ++lastAoTZIndex : ++lastZIndex;
         activateWindow(this.numStr || 0);
         saveZOrder();
     }
@@ -753,12 +788,16 @@ class DeskMover {
     
     // Adjust all elements to windowElement
     #adjustElements() {
+        const extraTitleHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--extra-title-height'));
+        const extraBorderWidth = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--extra-border-width'));
+        const extraBorderHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--extra-border-height'));
         if (localStorage.madesktopColorScheme === 'xpcss4mad' && this.config.style === 'wnd') {
-            this.windowContainer.style.height = this.windowElement.offsetHeight + 22 + 'px';
-            this.windowContainer.style.width = this.windowElement.offsetWidth + 4 + 'px';
+            this.windowContainer.style.height = this.windowElement.offsetHeight + 22 + extraTitleHeight + extraBorderHeight + 'px';
+            this.windowContainer.style.width = this.windowElement.offsetWidth + 4 + extraBorderWidth * 2 + 'px';
+            this.windowTitlebar.style.width = this.windowElement.offsetWidth - 7 + 'px';
         } else {
-            this.windowContainer.style.height = this.windowElement.offsetHeight + 19 + 'px';
-            this.windowContainer.style.width = this.windowElement.offsetWidth - 2 + 'px';
+            this.windowContainer.style.height = this.windowElement.offsetHeight + 19 + extraTitleHeight + extraBorderHeight + 'px';
+            this.windowContainer.style.width = this.windowElement.offsetWidth - 2 + extraBorderWidth * 2 + 'px';
         }
         this.windowFrame.style.height = this.windowElement.offsetHeight - 2 + 'px';
         this.windowFrame.style.width = this.windowElement.offsetWidth + 'px';
@@ -767,7 +806,7 @@ class DeskMover {
                 this.windowTitlebar.style.width = this.windowElement.offsetWidth + 4 + 'px';
                 break;
             case "wnd":
-                this.windowTitlebar.style.width = this.windowElement.offsetWidth - 7 + 'px';
+                this.windowTitlebar.style.width = 'auto';
                 break;
             case "nonad":
                 this.windowTitlebar.style.width = this.windowElement.offsetWidth + 'px';
@@ -797,6 +836,7 @@ class DeskMover {
         this.config.title = null;
         this.config.zIndex = null;
         this.config.active = null;
+        this.config.alwaysOnTop = null;
     }
     
     // Update the visibility of window components based on the cursor's position

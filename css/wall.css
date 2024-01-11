@@ -35,6 +35,9 @@
 
 :root {
     --hilight-inverted: #FFFF7F;
+    --extra-title-height: 0px;
+    --extra-border-width: 0px;
+    --extra-border-height: 0px;
 }
 
 html, body {
@@ -130,7 +133,7 @@ body {
     display: none;
 }
 
-.windowContainer .title-bar-text {
+.windowContainer > .title-bar:not(.noIcon) > .title-bar-text {
     margin-left: 18px;
 }
 
@@ -138,8 +141,8 @@ body {
     height: 471px;
     width: 86px;
     position: absolute;
-    top: 21px;
-    left: 0;
+    top: calc(21px + var(--extra-title-height));
+    left: var(--extra-border-width);
     border: solid 2px transparent;
     border-bottom-width: 4px;
     background-color: transparent;
@@ -192,6 +195,10 @@ body {
     display: block;
 }
 
+.title-bar.noIcon .windowIcon {
+    display: none;
+}
+
 .title-bar .windowCloseBtnAlt {
     display: block !important;
 }
@@ -217,6 +224,10 @@ body {
     overflow: hidden;
     animation: cmDropdown 0.25s;
     animation-timing-function: linear;
+}
+
+.contextMenuBg:focus {
+    outline: none;
 }
 
 .contextMenu {
@@ -299,6 +310,10 @@ body {
     animation-timing-function: linear;
 }
 
+#confMenuBg:focus {
+    outline: none;
+}
+
 .confMenu {
     width: 198px;
     position: absolute;
@@ -362,6 +377,10 @@ body {
     animation: cmDropdown 0.125s;
     animation-timing-function: linear;
     z-index: 99998;
+}
+
+#mainMenuBg:focus {
+    outline: none;
 }
 
 #mainMenu {

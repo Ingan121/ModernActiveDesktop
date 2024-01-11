@@ -5,6 +5,7 @@ main();
 async function main() {
     let scheme = parseCssScheme(await getSchemeText());
     const schemeSelector = document.getElementById("schemeSelector");
+    const schemeSelectorOptions = schemeSelector.options;
     const selector = document.getElementById("selector");
     const options = selector.options;
     const colorPicker = document.querySelector(".colorPicker");
@@ -22,7 +23,7 @@ async function main() {
 
     schemeSelector.addEventListener("change", async function () {
         scheme = parseCssScheme(await getSchemeText(`../../schemes/${schemeSelector.value}.css`));
-        if (schemeSelector.value === "xpcss4mad") {
+        if (schemeSelectorOptions[schemeSelector.selectedIndex].dataset.inconfigurable) {
             selector.selectedIndex = 11; // background
             selector.disabled = true;
         } else {
@@ -122,9 +123,9 @@ async function main() {
         parent.changeFont(fontSmoothingChkBox.checked);
         if (systemColorChhkBox.checked) {
             applyScheme("sys");
-        } else if (schemeSelector.value === "xpcss4mad") {
-            parent.changeColorScheme("xpcss4mad");
-            localStorage.madesktopColorScheme = "xpcss4mad";
+        } else if (selector.disabled) {
+            parent.changeColorScheme(schemeSelector.value);
+            localStorage.madesktopColorScheme = schemeSelector.value;
             parent.changeBgColor(colorPickerColor.style.backgroundColor);
         } else {
             applyScheme(scheme);
@@ -151,10 +152,8 @@ async function main() {
         schemeSelector.disabled = true;
         selector.disabled = true;
         colorPicker.disabled = true;
-    }
-
-    if (localStorage.madesktopColorScheme === "xpcss4mad") {
-        schemeSelector.value = "xpcss4mad";
+    } else if (localStorage.madesktopColorScheme !== "custom" && localStorage.madesktopColorScheme !== "98" && localStorage.madesktopColorScheme) {
+        schemeSelector.value = localStorage.madesktopColorScheme;
         selector.disabled = true;
         colorPickerColor.style.backgroundColor = localStorage.madesktopBgColor;
         applyPreview(scheme, fontSmoothingChkBox.checked);
@@ -252,7 +251,7 @@ function applyPreview(scheme, nopixel = false) {
         `;
     }
 
-    if (schemeSelector.value === "xpcss4mad") {
+    if (selector.disabled) {
         preview.style.backgroundColor = document.querySelector(".colorPicker-color").style.backgroundColor;
     } else {
         preview.style.backgroundColor = scheme["background"];

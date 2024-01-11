@@ -40,7 +40,6 @@ body {
   border-radius: 4px;
   user-select: none;
   margin: -1px;
-  box-shadow: 1px -1px 0px #000;
 }
 .card--h-1 {
   background-position: -1px -1px;
@@ -328,26 +327,28 @@ body {
     }
 }
 
-#menu {
+.menu {
     display: flex;
-    margin-top: 1px;
+    margin-top: 0;
+    margin-left: 0;
     margin-bottom: 1px;
+    font-family: "Pixelated MS Sans Serif";
+    font-size: 11px;
 }
 
-#menu > div {
-    padding-left: 5px;
-    padding-right: 5px;
+.menu > div {
+    padding: 2px 5px 2px 5px;
     border: solid 1px transparent;
     user-select: none;
     cursor: default;
 }
 
-#menu > div:hover {
+.menu > div:hover {
     border-color: var(--button-hilight) var(--button-shadow) var(--button-shadow) var(--button-hilight);
 }
 
-#menu > div:active,
-#menu > div[data-active] {
+.menu > div:active,
+.menu > div[data-active] {
     border-color: var(--button-shadow) var(--button-hilight) var(--button-hilight) var(--button-shadow);
 }
 
@@ -363,6 +364,10 @@ body {
     animation-timing-function: linear;
 }
 
+#gameMenuBg:focus {
+    outline: none;
+}
+
 #gameMenu {
     width: 98px;
     height: auto;
@@ -370,6 +375,10 @@ body {
     bottom: 3px;
     margin: 0 !important;
     margin-right: 3px;
+}
+
+#helpMenuBtn {
+  margin-left: 3px;
 }
 
 #helpMenuBg {
@@ -382,6 +391,10 @@ body {
     overflow: hidden;
     animation: cmDropdown 0.25s;
     animation-timing-function: linear;
+}
+
+#helpMenuBg:focus {
+    outline: none;
 }
 
 #helpMenu {

@@ -11,6 +11,7 @@ ul.tree-view,
 #madWelcome .items,
 #madWelcome .contents,
 #placeholder,
+.menu,
 li[role=tab] {
   font-family: sans-serif !important;
 }

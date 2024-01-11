@@ -1,0 +1,151 @@
+/* Windose */
+/* CSS Theming Demo inspired by Needy Girl Overdose */
+
+/* Wanna apply custom CSS themes? */
+/* Enable the debug mode by going to the About menu, clicking the logo, and then clicking Apply. */
+/* And then you can import one in the Appearance properties menu. */
+
+:root {
+    --extra-border-width: 1px;
+    --extra-border-height: 2px;
+    --active-border: #90F4E3;
+    --active-title: #F0D0F1;
+    --app-workspace: #FDF1FD;
+    --background: #F9E2FD;
+    --button-alternate-face: #815CDC;
+    --button-dk-shadow: #815CDC;
+    --button-face: #FCF1FF;
+    --button-hilight: #FDF1FD;
+    --button-light: #FDF1FD;
+    --button-shadow: #815CDC;
+    --button-text: #815CDC;
+    --gradient-active-title: #F0D0F1;
+    --gradient-inactive-title: #E2E2E1;
+    --gray-text: #AAA6C3;
+    --hilight: #CCECFC;
+    --hilight-text: #4D23CD;
+    --hot-tracking-color: #815CDC;
+    --inactive-border: #E2E2E1;
+    --inactive-title: #E2E2E1;
+    --inactive-title-text: #4D22CD;
+    --info-text: #815CDC;
+    --info-window: #FCF1FF;
+    --menu: #FCF1FF;
+    --menu-bar: #FCF1FF;
+    --menu-highlight: #4D22CD;
+    --menu-text: #815CDC;
+    --scrollbar: #FCF1FF;
+    --title-text: #4D22CD;
+    --window: #FFFFFF;
+    --window-frame: #815CDC;
+    --window-text: #815CDC;
+    --close-button: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAAA9SURBVChTY/BVPvufgQCAq8GnGEMOm2KcBiBL4LMFDEAKsCligtKkAaKsxiaBIYZTNxDA5fApggFf5bP/AXzIKDv8Ugw8AAAAAElFTkSuQmCC");
+    --maximize-button: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAAAsSURBVChTYyAWMIIIX+Wz/8E8HGDzXWOwOrwKYXJMYB4RYCgoJC14CAMGBgDOaAyFpn35/AAAAABJRU5ErkJggg==");
+    --minimize-button: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAAAgSURBVChTYxgFVAGMUJrBV/nsfygTDDbfNYbLkQAYGAADuwQCu9bgFwAAAABJRU5ErkJggg==");
+    --help-button: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAAA0SURBVChTYyAWMEJpMPBVPvsfygSDzXeNUeTBAF0RCGATwwqIUki2IiYoTWNAtG8xAQMDAA0+EWzSc838AAAAAElFTkSuQmCC")
+}
+
+.windowContainer[data-style="wnd"],
+#madconf #activeWindow,
+#msgbox {
+    box-shadow: #4D23CD -1px -1px inset, #4D23CD 1px 1px inset, #90F3E1 -3px -3px inset, #90F3E1 3px 3px inset;
+}
+
+.windowContainer[data-style="wnd"][data-inactive],
+#madconf #inactiveWindow,
+#msgbox[data-inactive] {
+    box-shadow: #4D23CD -1px -1px inset, #4D23CD 1px 1px inset, #E2E2E1 -3px -3px inset, #E2E2E1 3px 3px inset;
+}
+
+.title-bar {
+    box-shadow: #4D23CD -1px -1px inset, #4D23CD 1px 1px inset;
+    border-bottom: 2px solid #90F3E1;
+}
+
+.title-bar.inactive {
+    border-bottom: 2px solid #E2E2E1;
+}
+
+.title-bar-controls button {
+    box-shadow: #4D23CD -1px -1px inset, #4D23CD 1px 1px inset;
+    background: transparent;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    width: 12px;
+    height: 12px;
+    margin-right: 2px;
+}
+
+.title-bar-controls button:before {
+    top: 1px;
+    image-rendering: pixelated;
+    content: var(--close-button);
+}
+
+.title-bar-controls button:active {
+    box-shadow: #4D23CD -1px -1px inset, #4D23CD 1px 1px inset;
+}
+
+.windowIcon {
+    top: 4px;
+    margin-left: 2px;
+}
+
+.windowContainer[data-style="wnd"] .windowElement {
+    border-color: #4D23CD !important;
+}
+
+#madconf #activeWindow textarea {
+    height: 85px;
+}
+
+/* For OS-GUI (JSPaint) */
+.os-window {
+    box-shadow: #4D23CD -1px -1px inset, #4D23CD 1px 1px inset, #90F3E1 -3px -3px inset, #90F3E1 3px 3px inset !important;
+    border: none !important;
+}
+
+.window-titlebar {
+    box-shadow: #4D23CD -1px -1px inset, #4D23CD 1px 1px inset !important;
+    border-bottom: 2px solid #90F3E1 !important;
+}
+
+body > .window-titlebar,
+.minimized-without-taskbar > .window-titlebar {
+    border-bottom: none !important;
+}
+
+.window-button {
+    box-shadow: #4D23CD -1px -1px inset, #4D23CD 1px 1px inset !important;
+    background: transparent !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    width: 12px !important;
+    height: 12px !important;
+    border: none !important;
+    background-position: 1px 1px !important;
+    background-repeat: no-repeat !important;
+    margin-right: 2px !important;
+    image-rendering: pixelated !important;
+}
+
+.window-minimize-button {
+    background-image: var(--minimize-button) !important;
+}
+.window-action-maximize {
+    background-image: var(--maximize-button) !important;
+}
+.window-action-restore {
+    background-image: var(--maximize-button) !important;
+}
+.window-help-button {
+    background-image: var(--help-button) !important;
+}
+.window-close-button {
+    background-image: var(--close-button) !important;
+    margin-left: 0 !important;
+    margin-right: 4px !important;
+}
+.window-button-icon {
+    display: none !important;
+}

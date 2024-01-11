@@ -70,7 +70,7 @@ function buildXPCSS() {
       mkdirp.sync("dist");
       fs.writeFileSync("dist/XP.css", result.css);
       fs.writeFileSync("dist/XP.css.map", result.map.toString());
-      fs.copyFileSync("../../schemes/xp.css", "../../schemes/xpcss4mad.css");
+      fs.copyFileSync("base.css", "../../schemes/xpcss4mad.css");
       fs.appendFileSync("../../schemes/xpcss4mad.css", result.css);
     });
 }

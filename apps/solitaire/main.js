@@ -330,8 +330,8 @@ function restartDeal() {
 
 function getMousePosition(event) {
     return {
-        x: event.pageX,
-        y: event.pageY
+        x: event.pageX / madScaleFactor,
+        y: event.pageY / madScaleFactor
     };
 }
 
@@ -730,23 +730,13 @@ const helpMenuBg = document.getElementById('helpMenuBg');
 const helpMenu = document.getElementById('helpMenu');
 const helpMenuItem = helpMenu.querySelector('.contextMenuItem');
 
-gameMenuBtn.addEventListener('click', () => {
-    switch (localStorage.madesktopCmAnimation) {
-        case 'none':
-            gameMenuBg.style.animation = 'none';
-            break;
-        case 'slide':
-            gameMenuBg.style.animation = 'cmDropdown 0.25s linear';
-            break;
-        case 'fade':
-            gameMenuBg.style.animation = 'fade 0.2s';
+gameMenuBtn.addEventListener('pointerdown', (event) => {
+    if (gameMenuBtn.dataset.active) {
+        closeGameMenu();
+        return;
     }
-    gameMenuBg.style.display = 'block';
-    gameMenuBtn.dataset.active = true;
-
-    setTimeout(() => {
-        document.addEventListener('click', closeGameMenu);
-    }, 0);
+    openGameMenu();
+    event.preventDefault();
 });
 
 gameMenuItems[0].addEventListener('click', () => { // Deal button
@@ -757,7 +747,9 @@ gameMenuItems[0].addEventListener('click', () => { // Deal button
 gameMenuItems[1].addEventListener('click', (event) => { // Deck button
     event.stopPropagation();
     closeGameMenu();
-    const backPicker = madOpenWindow('apps/solitaire/cards.html', true, '323px', '295px', 'wnd');
+    const left = parseInt(madDeskMover.config.xPos) + 25 + 'px';
+    const top = parseInt(madDeskMover.config.yPos) + 80 + 'px';
+    const backPicker = madOpenWindow('apps/solitaire/cards.html', true, '323px', '295px', 'wnd', false, top, left);
     backPicker.windowElement.addEventListener('load', () => {
         backPicker.windowElement.contentWindow.okBtn.addEventListener('click', () => {
             document.documentElement.style.setProperty('--card-back', backPicker.windowElement.contentWindow.backFile || randomBack());
@@ -771,19 +763,59 @@ gameMenuItems[2].addEventListener('click', () => { // Exit button
 });
 
 gameMenuBtn.addEventListener('mouseover', () => {
-    if (helpMenuBg.style.display === 'block') {
+    if (helpMenuBtn.dataset.active) {
         closeHelpMenu();
-        gameMenuBtn.click();
+        openGameMenu();
     }
 });
+
+gameMenuBg.addEventListener('focusout', (event) => {
+    closeGameMenu();
+});
+
+function openGameMenu() {
+    switch (localStorage.madesktopCmAnimation) {
+        case 'none':
+            gameMenuBg.style.animation = 'none';
+            break;
+        case 'slide':
+            gameMenuBg.style.animation = 'cmDropdown 0.25s linear';
+            break;
+        case 'fade':
+            gameMenuBg.style.animation = 'fade 0.2s';
+    }
+    gameMenuBg.style.display = 'block';
+    gameMenuBtn.dataset.active = true;
+    gameMenuBg.focus();
+}
 
 function closeGameMenu() {
     gameMenuBg.style.display = 'none';
     delete gameMenuBtn.dataset.active;
-    document.removeEventListener('click', closeGameMenu);
+    gameMenuBtn.removeEventListener('click', closeGameMenu);
 }
 
-helpMenuBtn.addEventListener('click', () => {
+helpMenuBtn.addEventListener('pointerdown', (event) => {
+    if (helpMenuBtn.dataset.active) {
+        closeHelpMenu();
+        return;
+    }
+    openHelpMenu();
+    event.preventDefault();
+});
+
+helpMenuBtn.addEventListener('mouseover', () => {
+    if (gameMenuBtn.dataset.active) {
+        closeGameMenu();
+        openHelpMenu();
+    }
+});
+
+helpMenuBg.addEventListener('focusout', (event) => {
+    closeHelpMenu();
+});
+
+function openHelpMenu() {
     switch (localStorage.madesktopCmAnimation) {
         case 'none':
             helpMenuBg.style.animation = 'none';
@@ -796,29 +828,14 @@ helpMenuBtn.addEventListener('click', () => {
     }
     helpMenuBg.style.display = 'block';
     helpMenuBtn.dataset.active = true;
-
-    setTimeout(() => {
-        document.addEventListener('mousedown', closeHelpMenu);
-    }, 0);
-});
-
-helpMenuBtn.addEventListener('mouseover', () => {
-    if (gameMenuBg.style.display === 'block') {
-        closeGameMenu();
-        helpMenuBtn.click();
-    }
-});
+    helpMenuBg.focus();
+}
 
 function closeHelpMenu() {
     helpMenuBg.style.display = 'none';
     delete helpMenuBtn.dataset.active;
-    document.removeEventListener('click', closeHelpMenu);
+    helpMenuBtn.removeEventListener('click', closeHelpMenu);
 }
-
-window.addEventListener('blur', () => {
-    closeGameMenu();
-    closeHelpMenu();
-});
 
 helpMenuItem.addEventListener('click', () => {
     window.open('https://github.com/rjanjic/js-solitaire/', '_blank');

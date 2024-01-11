@@ -820,7 +820,7 @@
 	}
 
 	const base_language = "en";
-	const available_languages = ["en"];
+	const available_languages = ["ar", "cs", "da", "de", "el", "en", "es", "fi", "fr", "he", "hu", "it", "ja", "ko", "nl", "no", "pl", "pt", "pt-br", "ru", "sk", "sl", "sv", "tr", "zh", "zh-simplified"];
 	// spell-checker:disable
 	const language_names = {
 		// "639-1": [["ISO language name"], ["Native name (endonym)"]],
@@ -1091,8 +1091,8 @@
 	}
 	function set_language(language) {
 		showMessageBox({
-			title: "Localization disabled",
-			message: "Localization has been removed in the MAD version of jspaint due to the large size of the localization files. Please use the online version at https://www.ingan121.com/mad/apps/jspaint/ for full localization support.",
+			title: "Reload Required",
+			message: "The application needs to reload to change the language.",
 			buttons: [
 				{ label: localize("OK"), value: "reload", default: true },
 				{ label: localize("Cancel"), value: "cancel" },
@@ -1103,7 +1103,13 @@
 		}).then((result) => {
 			if (result === "reload") {
 				are_you_sure(() => {
-					madLocReplace("https://www.ingan121.com/mad/apps/jspaint/");
+					try {
+						localStorage[language_storage_key] = language;
+						exit_fullscreen_if_ios();
+						parent.location.reload();
+					} catch (error) {
+						show_error_message("Failed to store language preference. Make sure cookies / local storage is enabled in your browser settings.", error);
+					}
 				});
 			}
 		});
