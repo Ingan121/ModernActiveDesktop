@@ -1,5 +1,11 @@
 'use strict';
 
+if (parent === window) {
+    alert("This page is not meant to be opened directly. Please open it from ModernActiveDesktop.");
+} else if (!frameElement) {
+    alert("MADConf is being cross-origin restricted. Please run ModernActiveDesktop with a web server.");
+}
+
 const tabs = document.querySelectorAll(".tab");
 const okBtn = document.getElementById("okBtn");
 const cancelBtn = document.getElementById("cancelBtn");

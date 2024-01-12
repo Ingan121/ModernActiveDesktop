@@ -545,11 +545,6 @@ const gameFinish = () => {
     win(width, height, left, top);
 };
 
-window.win = () => {
-    const { width, height, left, top } = gameEl.getBoundingClientRect();
-    win(width, height, left, top);
-};
-
 const win = (canvasWidth, canvasHeight, canvasLeft, canvasTop) => {
     const image = document.createElement('img');
     image.src = 'sprite.png';
@@ -769,9 +764,7 @@ gameMenuBtn.addEventListener('mouseover', () => {
     }
 });
 
-gameMenuBg.addEventListener('focusout', (event) => {
-    closeGameMenu();
-});
+gameMenuBg.addEventListener('focusout', closeGameMenu);
 
 function openGameMenu() {
     switch (localStorage.madesktopCmAnimation) {
@@ -811,9 +804,7 @@ helpMenuBtn.addEventListener('mouseover', () => {
     }
 });
 
-helpMenuBg.addEventListener('focusout', (event) => {
-    closeHelpMenu();
-});
+helpMenuBg.addEventListener('focusout', closeHelpMenu);
 
 function openHelpMenu() {
     switch (localStorage.madesktopCmAnimation) {
@@ -838,6 +829,7 @@ function closeHelpMenu() {
 }
 
 helpMenuItem.addEventListener('click', () => {
+    closeHelpMenu();
     window.open('https://github.com/rjanjic/js-solitaire/', '_blank');
 });
 

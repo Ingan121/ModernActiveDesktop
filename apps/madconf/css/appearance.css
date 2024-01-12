@@ -87,6 +87,7 @@ textarea {
 #checkboxes {
     width: 320px;
     margin: 0 auto;
+    margin-bottom: 12px;
 }
 
 #selector {

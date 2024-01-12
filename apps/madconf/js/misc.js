@@ -145,7 +145,12 @@ dpiSelector.addEventListener('change', function () {
     dpiSlider.value = this.selectedIndex;
     if (this.value === 'custom') {
         madPrompt("Enter scale (%) :", res => {
-            if (res === null) return;
+            if (res === null) {
+                dpiSelector.value = config.dpi;
+                dpiSlider.value = dpiSelector.selectedIndex;
+                dpiSelectorCustom.textContent = "Custom";
+                return;
+            }
             config.dpi = res / 100;
             dpiSelectorCustom.textContent = res + "%";
         });

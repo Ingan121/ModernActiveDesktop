@@ -35,6 +35,7 @@ let lastZIndex = localStorage.madesktopItemCount || 0;
 let lastAoTZIndex = lastZIndex + 50000;
 let isContextMenuOpen = false;
 let activeWindow = 0;
+let prevActiveWindow = 0;
 let startupRan = false;
 
 const WE = 1; // Wallpaper Engine
@@ -121,7 +122,7 @@ if (localStorage.madesktopItemCount > 1) {
     }
 }
 
-if (localStorage.madesktopLastVer != "3.0") { // First run or update from previous versions
+if (localStorage.madesktopLastVer !== "3.0") { // First run or update from previous versions
     localStorage.removeItem("madesktopHideWelcome");
     localStorage.removeItem("madesktopCheckedChanges");
     localStorage.removeItem("madesktopCheckedConfigs");
@@ -129,7 +130,7 @@ if (localStorage.madesktopLastVer != "3.0") { // First run or update from previo
 }
 localStorage.madesktopLastVer = "3.0";
 
-if (localStorage.madesktopItemVisible == "false") {
+if (localStorage.madesktopItemVisible === "false") {
     windowContainers[0].style.display = "none";
 }
 
@@ -146,7 +147,7 @@ if (typeof wallpaperOnVideoEnded === "function") { // Check if running in Wallpa
 // Press Ctrl+Shift+Y to activate the debug mode
 // Wont work in WE so enter !debugmode in the Change URL window
 document.addEventListener('keypress', function(event) {
-    if (event.ctrlKey && event.shiftKey && event.code == 'KeyY') activateDebugMode();
+    if (event.ctrlKey && event.shiftKey && event.code === 'KeyY') activateDebugMode();
 });
 
 // Main context menu things (only for browser uses)
@@ -165,7 +166,7 @@ mainMenuBg.addEventListener('focusout', closeMainMenu);
 
 mainMenuItems[0].addEventListener('click', openWindow); // New button
 
-mainMenuItems[1].addEventListener('click', function() { // Properties button
+mainMenuItems[1].addEventListener('click', function () { // Properties button
     openWindow("apps/madconf/background.html", true)
 });
 
@@ -329,12 +330,16 @@ function changeBgImgMode(value) {
 function changeColorScheme(scheme) {
     if (scheme === "98") {
         schemeElement.href = "data:text/css,";
+        delete localStorage.madesktopCustomColor;
+        delete localStorage.madesktopSysColorCache;
     } else if (scheme === "custom") {
         schemeElement.href = localStorage.madesktopCustomColor;
+        delete localStorage.madesktopSysColorCache;
     } else if (scheme.split('\n').length > 1) {
         const dataURL = `data:text/css,${encodeURIComponent(scheme)}`;
         schemeElement.href = dataURL;
         localStorage.madesktopCustomColor = dataURL;
+        delete localStorage.madesktopSysColorCache;
     } else if (scheme === "sys") {
         if (localStorage.madesktopSysColorCache) {
             schemeElement.href = localStorage.madesktopSysColorCache;
@@ -350,8 +355,12 @@ function changeColorScheme(scheme) {
             .catch(error => {
                 // Ignore it as SysPlug startup is slower than high priority WE startup
             })
+
+        delete localStorage.madesktopCustomColor;
     } else {
         schemeElement.href = `schemes/${scheme}.css`;
+        delete localStorage.madesktopCustomColor;
+        delete localStorage.madesktopSysColorCache;
     }
     
     try {
@@ -511,7 +520,7 @@ function createNewDeskItem(numStr, openDoc, temp, width, height, style, centered
 // Create a new AD item, initialize, and increase the saved window count
 function openWindow(openDoc, temp, width, height, style, centered, top, left) {
     let deskMover;
-    if (localStorage.madesktopItemVisible == "false" && !(typeof openDoc === "string" || openDoc instanceof String)) {
+    if (localStorage.madesktopItemVisible === "false" && !(typeof openDoc === "string" || openDoc instanceof String)) {
         windowContainers[0].style.display = "block";
         localStorage.removeItem("madesktopItemVisible");
         activateWindow(0);
@@ -520,7 +529,7 @@ function openWindow(openDoc, temp, width, height, style, centered, top, left) {
         if (!temp) {
             localStorage.madesktopOpenWindows += `,${localStorage.madesktopItemCount}`;
         }
-        if (localStorage.madesktopItemVisible == "false") {
+        if (localStorage.madesktopItemVisible === "false") {
             windowContainers[0].style.display = "block";
             deskMover = createNewDeskItem(localStorage.madesktopItemCount, openDoc, temp, width, height, style || (openDoc ? "wnd" : "ad"), centered, top, left);
             windowContainers[0].style.display = "none";
@@ -575,7 +584,7 @@ function updateIframeScale() {
 function hookIframeSize(iframe, num) {
     Object.defineProperty(iframe.contentWindow, "innerWidth", {
         get: function () {
-            if (typeof num != "undefined" && deskMovers[num].config.unscaled) {
+            if (typeof num !== "undefined" && deskMovers[num].config.unscaled) {
                 return iframe.clientWidth * scaleFactor;
             }
             return iframe.clientWidth;
@@ -583,7 +592,7 @@ function hookIframeSize(iframe, num) {
     });
     Object.defineProperty(iframe.contentWindow, "innerHeight", {
         get: function () {
-            if (typeof num != "undefined" && deskMovers[num].config.unscaled) {
+            if (typeof num !== "undefined" && deskMovers[num].config.unscaled) {
                 return iframe.clientHeight * scaleFactor;
             }
             return iframe.clientHeight;
@@ -592,13 +601,13 @@ function hookIframeSize(iframe, num) {
 
     // Also hook window.open as this doesn't work in WE
     // Try to use sysplug, and if unavailable, just prompt for URL copy
-    if (runningMode != BROWSER) {
+    if (runningMode !== BROWSER) {
         iframe.contentWindow.open = function (url) {
             if (localStorage.sysplugIntegration) {
                 fetch("http://localhost:3031/open", { method: "POST", body: url })
                     .then(response => response.text())
                     .then(responseText => {
-                        if (responseText != "OK") {
+                        if (responseText !== "OK") {
                             madAlert("An error occured!\nSystem plugin response: " + responseText, function () {
                                 copyPrompt(url);
                             }, "error");
@@ -646,7 +655,7 @@ function saveZOrder() {
     
     zOrders.sort(function(a, b) {
         if (+a[1] > +b[1]) return 1;
-        else if (+a[1] == +b[1]) return 0;
+        else if (+a[1] === +b[1]) return 0;
         else return -1;
     });
     
@@ -658,16 +667,21 @@ function saveZOrder() {
 }
 
 function activateWindow(num = activeWindow || 0) {
+    log(num);
     delete deskMovers[num].windowContainer.dataset.inactive;
     deskMovers[num].windowTitlebar.classList.remove("inactive");
-    activeWindow = num;
+
+    if (num !== activeWindow) {
+        prevActiveWindow = activeWindow;
+        activeWindow = num;
+    }
 
     if (!localStorage.madesktopNoDeactivate) {
         deskMovers[num].config.active = true;
     }
 
     for (const i in deskMovers) {
-        if (i != num) {
+        if (i !== num) {
             if (localStorage.madesktopNoDeactivate) {
                 delete deskMovers[num].windowContainer.dataset.inactive;
                 deskMovers[i].windowTitlebar.classList.remove("inactive");
@@ -682,10 +696,12 @@ function activateWindow(num = activeWindow || 0) {
 
 // Prevent windows from being created in the same position
 function cascadeWindow(x, y) {
+    const extraTitleHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--extra-title-height'));
+    const extraBorderWidth = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--extra-border-width'));
     x = parseInt(x);
     y = parseInt(y);
     if (isWindowInPosition(x, y)) {
-        return cascadeWindow(x + 4, y + 24);
+        return cascadeWindow(x + 4 + extraBorderWidth, y + 24 + extraTitleHeight);
     } else {
         return [x + "px", y + "px"];
     }
@@ -740,6 +756,45 @@ async function getFavicon(iframe) {
         console.log(e);
         return 'images/html.png';
     }
+}
+
+function adjustAllElements(extraTitleHeight, extraBorderWidth, extraBorderHeight) {
+    log({extraTitleHeight, extraBorderWidth, extraBorderHeight});
+    for (const i in deskMovers) {
+        deskMovers[i].adjustElements(extraTitleHeight, extraBorderWidth, extraBorderHeight);
+    }
+}
+
+async function flashElement(elem, isContextMenu) {
+    if (isContextMenu) {
+        elem.dataset.active = true;
+        await asyncTimeout(100);
+        delete elem.dataset.active;
+        await asyncTimeout(100);
+        elem.dataset.active = true;
+        await asyncTimeout(100);
+        delete elem.dataset.active;
+    } else {
+        elem.style.animation = "flash 0.5s linear";
+        await asyncTimeout(500);
+        elem.style.animation = "";
+    }
+    return;
+}
+
+async function waitForAnim(elem) {
+    if (elem.style.animation.includes("none")) return;
+    return new Promise(resolve => {
+        elem.addEventListener('animationend', function () {
+            resolve();
+        });
+    });
+}
+
+async function asyncTimeout(ms) {
+    return new Promise(resolve => {
+        setTimeout(resolve, ms);
+    });
 }
 
 // Lively Wallpaper doesn't work well with alert/confirm/prompt, so replace these with custom ones
@@ -823,7 +878,7 @@ function madConfirm(msg, callback) {
 }
 
 function madPrompt(msg, callback, hint, text) {
-    if (runningMode == WE) { // Wallpaper Engine normally does not support keyboard input
+    if (runningMode === WE) { // Wallpaper Engine normally does not support keyboard input
         callback(prompt(msg, text));
         return;
     }
@@ -891,7 +946,7 @@ function flashDialog() {
     playSound("ding");
     let cnt = 1;
     let interval = setInterval(function () {
-        if (cnt == 18) {
+        if (cnt === 18) {
             clearInterval(interval);
         }
         if (cnt % 2) {
@@ -975,7 +1030,7 @@ function deactivateDebugMode() {
     styleElement.textContent = "";
     localStorage.removeItem("madesktopDebugMode");
     if (debugLog) toggleDebugLog();
-    if (runningMode != origRunningMode) {
+    if (runningMode !== origRunningMode) {
         runningMode = origRunningMode;
         simulatedModeLabel.textContent = "";
     }
@@ -1008,7 +1063,7 @@ function toggleRunningMode() {
             simulatedModeLabel.textContent = ", simulating browser behavior"
             break;
     }
-    if (runningMode == origRunningMode) simulatedModeLabel.textContent = "";
+    if (runningMode === origRunningMode) simulatedModeLabel.textContent = "";
 }
 
 function showErrors() {

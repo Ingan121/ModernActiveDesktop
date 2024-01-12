@@ -15,6 +15,15 @@
     -webkit-font-smoothing: antialiased;
     border: none !important;
 }
+
+.windowContainer[data-style="wnd"][data-inactive],
+#madconf #preview #inactiveWindow,
+#msgbox[data-inactive],
+.os-window:not(.focused) {
+    box-shadow: inset -1px -1px #4f53bc, inset 1px 1px #7480dc, inset -2px -2px #6d74cd, inset 2px 2px #758cdd,
+        inset -3px -3px #7586dc, inset 3px 3px #758cdc;
+}
+
 .title-bar,
 .os-window > .window-titlebar:not(#JustHereToGiveItPriority) {
     font-family: "Trebuchet MS";
@@ -43,6 +52,25 @@
 .title-bar-text,
 .os-window > .window-title:not(#JustHereToGiveItPriority) {
     padding-left: 3px;
+}
+
+.title-bar.inactive,
+.os-window:not(.focused) > .window-titlebar:not(#JustHereToGiveItPriority) {
+    background: linear-gradient(
+        180deg,
+        #98b2e8 0%,
+        #7ea2e4 8%,
+        #7a96df 40%,
+        #80a5e7 88%,
+        #80a5e7 93%,
+        #7e9de5 95%,
+        #7a93df 96%,
+        #7a93df 100%    
+    );
+    border-top: 1px solid #5b68cd;
+    border-left: 1px solid #5b68cd;
+    border-right: 1px solid #001ea0;
+    text-shadow: none;
 }
 
 .title-bar-controls {
@@ -187,6 +215,25 @@
     margin-top: -2px;
 }
 
+.menus {
+    background-color: #ECE9D8 !important; /* enforced in XP by visual styles & flat menus */
+}
+
+.menu-button {
+    background-color: #ECE9D8 !important;
+}
+
+.menu-button:hover,
+.menu-button.active {
+    border: none !important; /* var(--hilight) */
+    color: #FFFFFF !important; /* var(--hilight-text) */
+    background-color: #316AC5 !important; /* var(--menu-highlight) */
+}
+
+.menu-button:after {
+    display: none !important;
+}
+
 .status-bar {
     margin: 0 3px;
     box-shadow: inset 0px 1px 2px var(--button-shadow);
@@ -221,11 +268,12 @@
 .contextMenuBg,
 .confMenuBg,
 .mainMenuBg,
-.gameMenuBg,
-.helpMenuBg {
-    box-shadow: none;
-    border: 1px solid #ACA899; /* var(--button-shadow); */
-    background-color: white; /* var(--menu); */
+#gameMenuBg,
+#helpMenuBg,
+.menu-popup {
+    box-shadow: none !important;
+    border: 1px solid #ACA899 !important; /* var(--button-shadow); */
+    background-color: white !important; /* var(--menu); */
 }
 
 /* madconf adjustments */

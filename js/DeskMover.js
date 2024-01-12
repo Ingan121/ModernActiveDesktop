@@ -96,7 +96,7 @@ class DeskMover {
             for (let i = 0; i < this.contextMenuItems.length; i++) {
                 const elem = this.contextMenuItems[i];
                 elem.onmouseover = () => {
-                    if (elem != this.contextMenuItems[0]) {
+                    if (elem !== this.contextMenuItems[0]) {
                         delete this.contextMenuItems[0].dataset.active;
                     }
                 }
@@ -243,7 +243,7 @@ class DeskMover {
             this.confMenuItems[4].classList.remove("checkedItem");
         }
         this.windowTitleText.textContent = this.config.title || "ModernActiveDesktop";
-        this.#adjustElements();
+        this.adjustElements();
         this.#keepInside();
         this.closeContextMenu();
         this.changeCmAnimation(localStorage.madesktopCmAnimation || "slide");
@@ -269,7 +269,7 @@ class DeskMover {
                     if (openDoc.startsWith("apps/madconf/")) {
                         this.windowElement.width = width || '470px';
                         if (localStorage.madesktopColorScheme === 'xpcss4mad') {
-                            this.windowElement.height = height || '470px';
+                            this.windowElement.height = height || '455px';
                         } else {
                             this.windowElement.height = height || '420px';
                         }
@@ -283,12 +283,12 @@ class DeskMover {
                 } else {
                     this.windowElement.width = width || '250px';
                     this.windowElement.height = height || '150px';
-                    this.#adjustElements();
+                    this.adjustElements();
                 }
                 [defaultLeft, defaultTop] = cascadeWindow(defaultLeft, defaultTop);
                 this.windowContainer.style.left = defaultLeft;
                 this.windowContainer.style.top = defaultTop;
-                this.#adjustElements();
+                this.adjustElements();
 
                 if (centered) {
                     this.windowContainer.style.left = (vWidth - this.windowContainer.offsetWidth) / 2 + 'px';
@@ -305,7 +305,7 @@ class DeskMover {
                     this.windowContainer.style.top = '200px';
                     this.windowElement.width = '84px';
                     this.windowElement.height = '471px';
-                    this.#adjustElements();
+                    this.adjustElements();
                     this.windowElement.src = "ChannelBar.html";
                 }
                 if (!localStorage.madesktopItemXPos) {
@@ -328,6 +328,7 @@ class DeskMover {
             }
             delete deskMovers[this.numStr];
             this.windowContainer.remove();
+            activateWindow(prevActiveWindow);
         } else {
             let msg = "";
             switch (window.runningMode) {
@@ -347,7 +348,7 @@ class DeskMover {
         }
     }
     
-    openContextMenu(event) {
+    openContextMenu() {
         this.contextMenuBg.style.display = "block";
 
         // For handling window icon double click
@@ -359,7 +360,6 @@ class DeskMover {
 
         iframeClickEventCtrl(false);
         isContextMenuOpen = true;
-        event.preventDefault();
         this.contextMenuBg.focus();
     }
     
@@ -369,8 +369,8 @@ class DeskMover {
             if (this.contextMenuOpening === this.posInContainer && this.config.style === "wnd")
             {
                 this.closeWindow();
+                return;
             }
-            return;
         }
 
         this.shouldNotCloseConfMenu = false;
@@ -462,7 +462,7 @@ class DeskMover {
         }
         this.config.style = style;
         this.windowContainer.dataset.style = style;
-        this.#adjustElements();
+        this.adjustElements();
     }
 
     changeCmAnimation(type) {
@@ -501,7 +501,7 @@ class DeskMover {
     resizeTo(width, height) {
         this.windowElement.width = width + 'px';
         this.windowElement.height = height + 'px';
-        this.#adjustElements();
+        this.adjustElements();
         this.#keepInside();
         this.#saveConfig();
     }
@@ -510,7 +510,7 @@ class DeskMover {
         this.windowContainer.style.zIndex = this.config.alwaysOnTop ? ++lastAoTZIndex : ++lastZIndex; // bring to top
         activateWindow(this.numStr || 0);
         saveZOrder();
-        if ((this.windowFrame.style.borderColor != "transparent" || this.config.style !== "ad") && !this.mouseOverWndBtns) {
+        if ((this.windowFrame.style.borderColor !== "transparent" || this.config.style !== "ad") && !this.mouseOverWndBtns) {
             iframeClickEventCtrl(false);
             this.isDown = true;
             this.offset = [
@@ -542,12 +542,12 @@ class DeskMover {
         iframeClickEventCtrl(true);
         this.isDown = false;
         
-        if (this.windowContainer.style.display == "none") return; // offsets are always 0 when hidden, causing unexpected behaviors
+        if (this.windowContainer.style.display === "none") return; // offsets are always 0 when hidden, causing unexpected behaviors
         // Minimum size
         if (this.windowElement.offsetWidth < 60) this.windowElement.width = "60px";
         if (this.windowElement.offsetHeight < 15) this.windowElement.height = "15px";
         this.#keepInside();
-        this.#adjustElements();
+        this.adjustElements();
         this.#saveConfig();
         
         this.resizingMode = "none";
@@ -620,7 +620,7 @@ class DeskMover {
             }
             if (this.resizingMode !== "none") {
                 // Now adjust the others
-                this.#adjustElements();
+                this.adjustElements();
             }
         }
     }
@@ -632,14 +632,14 @@ class DeskMover {
             y : Math.ceil(event.clientY / window.scaleFactor) - this.windowContainer.offsetTop,
         }
         // Change the mouse cursor - although this is useless in WE
-        if (this.resizingMode == "none" && (this.windowElement.style.borderColor != "transparent" || this.config.style !== "ad")) {
+        if (this.resizingMode === "none" && (this.windowElement.style.borderColor !== "transparent" || this.config.style !== "ad")) {
             if (this.posInContainer.x <= 3) {
                 document.body.style.cursor = "ew-resize";
             } else if (this.posInContainer.x >= this.windowContainer.offsetWidth - 3) {
                 document.body.style.cursor = "ew-resize";
-            } else if (this.posInContainer.y <= 3 && this.config.style !== "ad" && this.windowTitlebar.style.display != "none") {
+            } else if (this.posInContainer.y <= 3 && this.config.style !== "ad" && this.windowTitlebar.style.display !== "none") {
                 document.body.style.cursor = "ns-resize";
-            } else if (this.posInContainer.y <= 9 && this.posInContainer.y >= 6 && this.config.style === "ad" && this.windowTitlebar.style.display != "none") {
+            } else if (this.posInContainer.y <= 9 && this.posInContainer.y >= 6 && this.config.style === "ad" && this.windowTitlebar.style.display !== "none") {
                 document.body.style.cursor = "ns-resize";
             } else if (this.posInContainer.y >= 30) {
                 document.body.style.cursor = "ns-resize";
@@ -722,10 +722,6 @@ class DeskMover {
         
         madPrompt("Enter URL (leave empty to reset)", url => {
             if (url === null) return;
-            if (url == "!debugmode") {
-                activateDebugMode();
-                return;
-            }
             if (!url) {
                 if (this.numStr === "") url = "ChannelBar.html";
                 else url = "placeholder.html";
@@ -787,17 +783,27 @@ class DeskMover {
     }
     
     // Adjust all elements to windowElement
-    #adjustElements() {
-        const extraTitleHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--extra-title-height'));
-        const extraBorderWidth = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--extra-border-width'));
-        const extraBorderHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--extra-border-height'));
+    adjustElements(extraTitleHeight, extraBorderWidth, extraBorderHeight) {
+        if (typeof extraTitleHeight === 'undefined') {
+            extraTitleHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--extra-title-height'));
+        }
+        if (typeof extraBorderWidth === 'undefined') {
+            extraBorderWidth = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--extra-border-width'));
+        }
+        if (typeof extraBorderHeight === 'undefined') {
+            extraBorderHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--extra-border-height'));
+        }
+        log({extraTitleHeight, extraBorderWidth, extraBorderHeight}, 'debug');
         if (localStorage.madesktopColorScheme === 'xpcss4mad' && this.config.style === 'wnd') {
             this.windowContainer.style.height = this.windowElement.offsetHeight + 22 + extraTitleHeight + extraBorderHeight + 'px';
             this.windowContainer.style.width = this.windowElement.offsetWidth + 4 + extraBorderWidth * 2 + 'px';
             this.windowTitlebar.style.width = this.windowElement.offsetWidth - 7 + 'px';
-        } else {
+        } else if (this.config.style === 'wnd') {
             this.windowContainer.style.height = this.windowElement.offsetHeight + 19 + extraTitleHeight + extraBorderHeight + 'px';
             this.windowContainer.style.width = this.windowElement.offsetWidth - 2 + extraBorderWidth * 2 + 'px';
+        } else {
+            this.windowContainer.style.height = this.windowElement.offsetHeight + 19 + 'px';
+            this.windowContainer.style.width = this.windowElement.offsetWidth - 2 + 'px';
         }
         this.windowFrame.style.height = this.windowElement.offsetHeight - 2 + 'px';
         this.windowFrame.style.width = this.windowElement.offsetWidth + 'px';
@@ -837,6 +843,7 @@ class DeskMover {
         this.config.zIndex = null;
         this.config.active = null;
         this.config.alwaysOnTop = null;
+        this.config.jspaintHash = null;
     }
     
     // Update the visibility of window components based on the cursor's position

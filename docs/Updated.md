@@ -1,14 +1,42 @@
-# ModernActiveDesktop has been updated to 2.3
+# Changelog
 
-## New features
+## 3.0
+* Added a new 'Window' styling
+* Improved the configuration UI
+    * Added a lot of color schemes and themes, including an XP theme
+    * Added the ability to customize color schemes fully
+    * Added an option to use non-pixel fonts
+    * Added an option to change or disable the animation effects
+* Added various apps for your desktop experience
+    * JS Paint and Solitaire are currently included
+    * Both are optimized for use within ModernActiveDesktop and Wallpaper Engine
+* Added a new welcome screen
+* Added an option to keep a window on top of other windows
+* Added a basic support for CSS themes
+* Windows won't be created in the same position over and over anymore
+* 'Reload' in the main window context menu will only reload that window
+    * Use Configure -> Reload wallpaper to reload the whole wallpaper
+* Overhauled the general code base
+    * Optimized the configuration saving mechanism
+    * Unused configs are automatically cleaned up
+    * Allows accessing DeskMover functions globally
+    * Improved the context menu opening and closing mechanism
+    * Various codes are simplified
+* Updated dependencies
+    * Fixed security vulnerabilities found in old components (Electron, minimist)
+* System plugin now only accepts connection from localhost
+    * Provides safety for devices that are connected to the internet without a router
+    * Can be overridden with --listen argument but is not recommended
+* Added devtools support in the system plugin ChannelViewer
+    * Click the toolbar first then press F12
+
+## 2.3
 * Added an option to disable scaling per window
 * Fixed some websites (e. g. YouTube embed) not displaying properly when scaled
 * Made the window configuration context menu look better
 * Updated dependencies
 
-## Previous changelog
-
-### 2.2
+## 2.2
 * Added support for video and web backgrounds
     * Configurable in the properties panel
 * Windows can now be placed off-screen, as long as its title bar is still visible
@@ -23,14 +51,14 @@
 * Added advanced debugging features
 * Major code improvements
 
-### 2.1
+## 2.1
 * Added a scaling feature for high DPI displays
     * Configurable in the properties panel
 <br><img src="images/MADScale.webp" width="360px" height="384px" title="Scaling screenshot">
 * Added error handling
 * Code improvements
 
-### 2.0
+## 2.0
 * Added a system plugin for better usability
     * Open pages with ChannelViewer in a new window or with your default browser
     * Use system color scheme for theming the wallpaper

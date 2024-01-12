@@ -143,8 +143,7 @@ async function main() {
             localStorage.madesktopCmAnimation = "none";
         }
         parent.changeCmAnimation(localStorage.madesktopCmAnimation);
-
-        parent.document.dispatchEvent(new Event("mouseup"));
+        parent.adjustAllElements(parseInt(scheme["extra-title-height"]) || 0, parseInt(scheme["extra-border-width"]) || 0, parseInt(scheme["extra-border-height"]) || 0);
     }
 
     if (localStorage.madesktopColorScheme === "sys") {
@@ -220,7 +219,7 @@ async function getSchemeText(scheme = parent.document.getElementById("scheme").h
         --window: #ffffff;
         --window-frame: #000000;
         --window-text: #000000;
-    `;
+    }`;
     if (scheme === "../../schemes/98.css" || scheme === "data:text/css,") {
         return schemeText;
     } else {

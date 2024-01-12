@@ -12,6 +12,36 @@
     }
 }
 
+@keyframes flash {
+    0% {
+        filter: invert(1);
+    }
+    24% {
+        filter: invert(1);
+    }
+    25% {
+        filter: invert(0);
+    }
+    49% {
+        filter: invert(0);
+    }
+    50% {
+        filter: invert(1);
+    }
+    74% {
+        filter: invert(1);
+    }
+    75% {
+        filter: invert(0);
+    }
+    99% {
+        filter: invert(0);
+    }
+    100% {
+        filter: invert(1);
+    }
+}
+
 @keyframes fade {
     0% {
         opacity: 0.3;
@@ -35,9 +65,9 @@
 
 :root {
     --hilight-inverted: #FFFF7F;
-    --extra-title-height: 0px;
-    --extra-border-width: 0px;
-    --extra-border-height: 0px;
+    --extra-title-height: 0px; /* top */
+    --extra-border-width: 0px; /* left and right */
+    --extra-border-height: 0px; /* bottom */
 }
 
 html, body {
@@ -141,11 +171,16 @@ body {
     height: 471px;
     width: 86px;
     position: absolute;
-    top: calc(21px + var(--extra-title-height));
-    left: var(--extra-border-width);
+    top: 21px;
+    left: 0;
     border: solid 2px transparent;
     border-bottom-width: 4px;
     background-color: transparent;
+}
+
+.windowContainer[data-style="wnd"] > .windowFrame {
+    top: calc(21px + var(--extra-title-height));
+    left: var(--extra-border-width);
 }
 
 .windowElement {
@@ -301,7 +336,7 @@ body {
 .confMenuBg {
     display: none;
     width: 200px;
-    height: 180px;
+    height: 197px;
     position: absolute;
     top: 24px;
     left: 103px;

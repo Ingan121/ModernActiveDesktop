@@ -1,6 +1,6 @@
 'use strict';
 
-(function() {
+(function () {
     if (!frameElement) {
         window.madScaleFactor = 1;
         window.madRunningMode = 0;
@@ -37,6 +37,7 @@
                 callback(result);
             }
         }
+        window.madCloseWindow = window.close;
         return;
     }
 
@@ -51,7 +52,7 @@
     const dropdown = deskMover.dropdown;
     const config = deskMover.config;
 
-    applyScheme();
+    applyScheme(true);
 
     window.addEventListener("message", (event) => {
         if (event.data.type === "scheme-updated") {
@@ -59,7 +60,7 @@
         }
     });
 
-    function applyScheme() {
+    function applyScheme(startup) {
         if (styleElement && window.osguiCompatRequired) {
             if (parentSchemeElement.href !== "data:text/css,") {
                 // OS-GUI Compatibility
@@ -95,18 +96,12 @@
                     --WindowText: var(--window-text);
                 }`;
                 // jspaint dark theme stuff
-                if (isDarkColor(getComputedStyle(parent.document.documentElement).getPropertyValue('--button-face'))) {
-                    styleElement.textContent += `
-                        .tool-icon {
-                            background-image: url("images/dark/tools.png");
-                            background-repeat: no-repeat;
-                            background-position: calc(-16px * var(--icon-index)) 0; /* same as classic theme, but couldn't hurt */
-                        }
-                        .tool-icon.use-svg {
-                            background-image: url("images/dark/tools.svg");
-                            background-position: calc(-16px * (var(--icon-index) * 2 + 1)) -16px; /* same as classic theme, but couldn't hurt */
-                        }
-                    `;
+                if (!startup) { // Do this on onload instead, as non-dataurl schemes loads slowly
+                    if (parentSchemeElement.href.startsWith("file:///")) {
+                        // Well these load slower, so let's just use the light theme on theme change as current two css themes are light ones
+                    } else {
+                        processJSPaintDarkTheme();
+                    }
                 }
             } else {
                 styleElement.textContent = "";
@@ -126,6 +121,26 @@
             document.documentElement.style.setProperty('--hilight-inverted', invertColor(getComputedStyle(document.documentElement).getPropertyValue('--hilight')));
         } catch {
             document.documentElement.style.setProperty('--hilight-inverted', 'var(--hilight-text)');
+        }
+    }
+
+    if (styleElement && window.osguiCompatRequired) {
+        window.onload = processJSPaintDarkTheme;
+    }
+
+    function processJSPaintDarkTheme() {
+        if (isDarkColor(getComputedStyle(parent.document.documentElement).getPropertyValue('--button-face'))) {
+            styleElement.textContent += `
+                .tool-icon {
+                    background-image: url("images/dark/tools.png");
+                    background-repeat: no-repeat;
+                    background-position: calc(-16px * var(--icon-index)) 0;
+                }
+                .tool-icon.use-svg {
+                    background-image: url("images/dark/tools.svg");
+                    background-position: calc(-16px * (var(--icon-index) * 2 + 1)) -16px;
+                }
+            `;
         }
     }
     
@@ -157,22 +172,6 @@
         return (zeros + str).slice(-len);
     }
 
-    Object.defineProperty(window, "madScaleFactor", {
-        get: function() {
-            if (config.unscaled) {
-                return 1;
-            } else {
-                return parseFloat(parent.scaleFactor);
-            }
-        }
-    });
-
-    Object.defineProperty(window, "madRunningMode", {
-        get: function() {
-            return parent.runningMode;
-        }
-    });
-
     // http://stackoverflow.com/questions/12043187/how-to-check-if-hex-color-is-too-black
     function isDarkColor(color) {
         const c = color.substring(2);  // strip " #"
@@ -183,11 +182,27 @@
 
         const luma = 0.2126 * r + 0.7152 * g + 0.0722 * b; // per ITU-R BT.709
 
-        if (luma < 40) {
+        if (luma < 50) {
             return true;
         }
         return false;
     }
+
+    Object.defineProperty(window, "madScaleFactor", {
+        get: function () {
+            if (config.unscaled) {
+                return 1;
+            } else {
+                return parseFloat(parent.scaleFactor);
+            }
+        }
+    });
+
+    Object.defineProperty(window, "madRunningMode", {
+        get: function () {
+            return parent.runningMode;
+        }
+    });
 
     // jspaint stuff
     window.systemHooks = {
@@ -244,7 +259,7 @@
             const item = dummy.cloneNode(dummy, true);
             item.textContent = option.textContent;
             item.dataset.value = option.value;
-            item.addEventListener('click', function() {
+            item.addEventListener('click', function () {
                 elem.value = this.dataset.value;
                 elem.dispatchEvent(new Event('change'));
                 closeDropdown();

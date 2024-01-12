@@ -452,7 +452,7 @@
 				});
 				$right.append(label, input);
 
-				input.addEventListener("click", function() {
+				input.addEventListener("click", function () {
 					if (madRunningMode === 1) {
 						madPrompt("Enter value", function (res) {
 							if (res === null) return;

@@ -22,6 +22,10 @@
       <img src="images/sol.png" width="32" height="32"><br>
       <div>Solitaire</div>
     </div>
+    <div class="icon" onclick="openYoutube()">
+      <img src="images/youtube.svg" width="32" height="32"><br>
+      <div>YouTube</div>
+    </div>
     <script src="js/libmad.js"></script>
     <script>
         function openApp(app) {
@@ -38,6 +42,36 @@
               madChangeWndStyle("wnd");
               madLocReplace("apps/solitaire/index.html");
               return;
+          }
+        }
+
+        function openYoutube() {
+          madPrompt("Enter a YouTube URL", function (url) {
+            if (url == null) return;
+            const id = parseVideoId(url);
+            if (id == null) {
+              madAlert("Invalid URL", null, "error");
+              return;
+            }
+            madResizeTo(560, 315);
+            madMoveTo(250, 150);
+            madChangeWndStyle("wnd");
+            madLocReplace("https://www.youtube.com/embed/" + id);
+          }, 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', '');
+        }
+
+        function parseVideoId(url) {
+          try {
+            const urlObj = new URL(url);
+            if (urlObj.hostname == "youtu.be") {
+              return urlObj.pathname.substring(1);
+            }
+            if (urlObj.hostname.includes("youtube")) {
+              return urlObj.searchParams.get("v");
+            }
+            return null;
+          } catch {
+            return null;
           }
         }
     </script>
