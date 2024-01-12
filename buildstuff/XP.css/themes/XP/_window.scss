@@ -228,10 +228,19 @@
     border: none !important; /* var(--hilight) */
     color: #FFFFFF !important; /* var(--hilight-text) */
     background-color: #316AC5 !important; /* var(--menu-highlight) */
+    margin-right: 0 !important;
 }
 
 .menu-button:after {
     display: none !important;
+}
+
+.menu > div:hover,
+.menu > div:active,
+.menu > div[data-active] {
+    border-color: #316AC5 !important; /* var(--menu-highlight) */
+    background-color: #316AC5 !important; /* var(--menu-highlight) */
+    color: #FFFFFF !important; /* var(--hilight-text) */
 }
 
 .status-bar {

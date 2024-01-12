@@ -83,7 +83,7 @@ items[3].addEventListener("click", function () {
 });
 
 closeBtn.addEventListener("click", function () {
-    window.close();
+    madCloseWindow();
 });
 
 closeBtn.addEventListener("animationend", function () {

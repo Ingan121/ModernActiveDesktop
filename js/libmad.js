@@ -242,6 +242,10 @@
     window.madOpenWindow = parent.openWindow;
 
     window.madOpenDropdown = function(elem) {
+        // Suppress the original dropdown
+        elem.blur();
+        elem.focus();
+
         const dummy = dropdownBg.querySelector(".dropdownItem");
         const options = elem.options;
         let optionCnt = 0;
@@ -293,10 +297,6 @@
 
         parent.addEventListener('click', closeDropdown);
         parent.iframeClickEventCtrl(false);
-
-        // Suppress the original dropdown
-        elem.blur();
-        elem.focus();
     }
 
     function closeDropdown() {

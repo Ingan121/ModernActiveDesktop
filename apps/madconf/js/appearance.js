@@ -153,9 +153,11 @@ async function main() {
         colorPicker.disabled = true;
     } else if (localStorage.madesktopColorScheme !== "custom" && localStorage.madesktopColorScheme !== "98" && localStorage.madesktopColorScheme) {
         schemeSelector.value = localStorage.madesktopColorScheme;
-        selector.disabled = true;
-        colorPickerColor.style.backgroundColor = localStorage.madesktopBgColor;
-        applyPreview(scheme, fontSmoothingChkBox.checked);
+        if (schemeSelectorOptions[schemeSelector.selectedIndex].dataset.inconfigurable) {
+            selector.disabled = true;
+            colorPickerColor.style.backgroundColor = localStorage.madesktopBgColor;
+            applyPreview(scheme, fontSmoothingChkBox.checked);
+        }
     }
 
     if (localStorage.sysplugIntegration) {

@@ -224,5 +224,6 @@ function getSysplugOWConfig() {
         .then(response => response.json())
         .then(responseJson => {
             sysplugOpenOptSelector.selectedIndex = responseJson.openWith;
+            config.sysplugOpenOpt = responseJson.openWith;
         });
 }
