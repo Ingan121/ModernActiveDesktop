@@ -1,0 +1,327 @@
+﻿@charset "utf-8";
+
+@import '../../css/marlett.css';
+
+@keyframes fade {
+    0% {
+        opacity: 0.3;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes cmDropdown {
+    0% {
+        height: 0;
+    }
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--button-face);
+}
+
+iframe {
+    border: none;
+    height: 100%;
+    width: 100%;
+    pointer-events: none;
+    background-color: black;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.menu {
+    display: flex;
+    margin-top: 0;
+    margin-left: 0;
+    margin-bottom: 1px;
+    font-family: "Pixelated MS Sans Serif";
+    font-size: 11px;
+    background-color: var(--button-face);
+    width: 100%;
+}
+
+.menu:hover,
+.menu[data-active] {
+    opacity: 1 !important;
+}
+
+.menu > div {
+    padding: 2px 5px 2px 5px;
+    border: solid 1px transparent;
+    user-select: none;
+    cursor: default;
+}
+
+.menu > div:hover {
+    border-color: var(--button-hilight) var(--button-shadow) var(--button-shadow) var(--button-hilight);
+}
+
+.menu > div:active,
+.menu > div[data-active] {
+    border-color: var(--button-shadow) var(--button-hilight) var(--button-hilight) var(--button-shadow);
+}
+
+.contextMenuBg {
+    display: none;
+    position: absolute;
+    top: 18px;
+    overflow: hidden;
+    animation: cmDropright 0.25s linear;
+}
+
+.contextMenuBg:focus {
+    outline: none;
+}
+
+.contextMenu {
+    position: absolute;
+    bottom: 3px;
+    margin: 0 !important;
+    margin-right: 3px;
+}
+
+#visMenuBg {
+    width: 160px;
+    height: 51px;
+}
+
+#visMenu {
+    width: 158px;
+}
+
+#viewMenuBg {
+    width: 140px;
+    height: 51px;
+    left: 56px;
+}
+
+#viewMenu {
+    width: 138px;
+}
+
+#optMenuBg {
+    width: 160px;
+    height: 17px;
+    left: 93px;
+}
+
+#optMenu {
+    width: 158px;
+}
+
+#helpMenuBg {
+    width: 100px;
+    height: 17px;
+    left: 140px;
+}
+
+#helpMenu {
+    width: 98px;
+}
+
+.contextMenuItem {
+    width: 100%;
+    height: 17px;
+    font-size: 11px;
+    padding-left: 2px;
+    pointer-events: auto !important;
+}
+
+.contextMenuItem p {
+    margin: 0;
+    padding-top: 2px;
+}
+
+.contextMenuItem:not(.hasIcon):not(.activeStyle):not(.checkedItem) > p {
+    padding-left: 15px;
+}
+
+#visMenu > .contextMenuItem:not(.hasIcon):not(.activeStyle):not(.checkedItem) > p,
+#viewMenu > .contextMenuItem:not(.hasIcon):not(.activeStyle):not(.checkedItem) > p {
+    padding-left: 20px;
+}
+
+.contextMenuItem.activeStyle p,
+.contextMenuItem.checkedItem p {
+    line-height: 10px;
+}
+
+.contextMenuItem.activeStyle p::before {
+    content: "●";
+    font-size: 15px;
+    margin-left: 4px;
+    margin-right: 7px;
+}
+
+.contextMenuItem.checkedItem p::before {
+    font-family: "marlett-icons";
+    content: "\e903";
+    font-size: 15px;
+    position: relative;
+    top: 2px;
+    left: 1px;
+    margin-right: 5px;
+}
+
+.contextMenuItem:hover,
+.contextMenuItem[data-active] {
+    background-color: var(--hilight);
+    color: var(--hilight-text);
+}
+
+.contextMenuItem:hover u,
+.contextMenuItem[data-active] u {
+    border-bottom-color: var(--hilight-text);
+}
+
+#statusArea {
+    background-color: var(--button-face);
+    color: var(--button-text);
+    display: none;
+    margin-bottom: 6px;
+}
+
+.statusButton {
+    width: 19px;
+    height: 19px;
+    border: solid 1px transparent;
+    position: relative;
+    top: 3px;
+    left: 2px;
+    font-family: 'Segoe UI Symbol';
+}
+
+#play {
+    left: 3px;
+}
+
+#pause {
+    left: 4px;
+}
+
+#stop {
+    left: 5px;
+}
+
+.statusButton p {
+    position: relative;
+}
+
+#play p {
+    top: -16px;
+    left: 3px;
+    font-size: 14px;
+}
+
+#pause p {
+    top: -17px;
+    left: 2px;
+    font-size: 15px;
+}
+
+#stop p {
+    top: -13px;
+    left: 4px;
+    font-size: 13px;
+}
+
+.statusButton[data-active] {
+    border-color: var(--button-shadow) var(--button-hilight) var(--button-hilight) var(--button-shadow);
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdib3g9IjAgMCAyIDIiIHdpZHRoPSIyIiBoZWlnaHQ9IjIiPjxyZWN0IGZpbGw9IndoaXRlIiB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIi8+PHJlY3QgZmlsbD0idHJhbnNwYXJlbnQiIHg9IjEiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiLz48cmVjdCBmaWxsPSJ3aGl0ZSIgeD0iMSIgeT0iMSIgd2lkdGg9IjEiIGhlaWdodD0iMSIvPjxyZWN0IGZpbGw9InRyYW5zcGFyZW50IiB4PSIwIiB5PSIxIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIi8+PC9zdmc+');
+}
+
+#play[data-active] p {
+    top: -15px;
+    left: 4px;
+}
+
+#seekBar {
+    width: calc(100% - 88px);
+    height: 5px;
+    border: solid 1px;
+    border-color: var(--button-shadow) var(--button-hilight) var(--button-hilight) var(--button-shadow);
+    position: relative;
+    top: 10px;
+    left: 14px;
+}
+
+#seekHandle {
+    width: 13px;
+    height: 15px;
+    background-image: url('seekHandle.png');
+    position: relative;
+    top: -5px;
+    left: calc(0% - 6px);
+    display: none;
+}
+
+#infoArea {
+    background-color: black;
+    color: white;
+    border: solid 1px;
+    border-color: gray white white gray;
+    margin: 1px;
+    margin-top: 0;
+    font-family: "Pixelated MS Sans Serif";
+    display: none;
+}
+
+#infoMainArea {
+    display: flex;
+    line-height: 3px;
+    padding: 0;
+}
+
+#leftArea {
+    width: 85px;
+}
+
+#leftArea .infoItem {
+    text-align: right;
+}
+
+#rightArea {
+    margin-left: 25px;
+}
+
+#subtitle, #album, #albumArtist, #genre {
+    display: none;
+}
+
+#infoAreaSeparator {
+    height: 1px;
+    background-color: #808080;
+    border: none;
+    margin: 0;
+}
+
+#statusBar {
+    display: flex;
+    line-height: 0;
+}
+
+#statusText {
+    margin-left: 25px;
+    flex: 1;
+}
+
+#timeText {
+    margin-left: auto;
+    margin-right: 9px;
+    display: none;
+}
+
+#speaker {
+    width: 20px;
+    height: 11px;
+    margin-top: 5px;
+    margin-right: 8px;
+}

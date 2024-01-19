@@ -1,7 +1,11 @@
+// DeskMover.js for ModernActiveDesktop
+// Made by Ingan121
+// Licensed under the MIT License
+
 'use strict';
 
 class DeskMover {
-    constructor(windowContainer, numStr, openDoc, temp, width, height, style, reinit, centered, top, left) {
+    constructor(windowContainer, numStr, openDoc, temp, width, height, style, reinit, centered, top, left, aot) {
         this.numStr = numStr;
         this.temp = temp;
 
@@ -77,6 +81,7 @@ class DeskMover {
             this.confMenuBg.addEventListener('mousemove', preventDefault);
 
             this.contextMenuBg.addEventListener('focusout', this.closeContextMenu.bind(this));
+            this.dropdownBg.addEventListener('focusout', this.closeDropdown.bind(this));
 
             this.windowContainer.addEventListener('mousedown', this.#wcMouseDown.bind(this));
             document.addEventListener('mouseup', this.#docMouseUp.bind(this));
@@ -230,7 +235,7 @@ class DeskMover {
         if (this.config.width) this.windowElement.width = this.config.width;
         if (this.config.height) this.windowElement.height = this.config.height;
         if (this.config.xPos) this.windowContainer.style.left = this.config.xPos;
-        else this.windowContainer.style.left = vWidth - this.windowContainer.offsetWidth - 100 + 'px';
+        else this.windowContainer.style.left = window.vWidth - this.windowContainer.offsetWidth - 100 + 'px';
         if (this.config.yPos) this.windowContainer.style.top = this.config.yPos;
         this.changeWndStyle(this.config.style || style || "ad");
         if (this.config.unscaled) this.confMenuItems[3].classList.remove("checkedItem");
@@ -263,7 +268,7 @@ class DeskMover {
             }
             if (this.numStr !== "") {
                 let url = "placeholder.html";
-                let defaultLeft = vWidth - this.windowContainer.offsetWidth - (parseInt(localStorage.madesktopChanViewRightMargin) || 0) - 200 + 'px';
+                let defaultLeft = window.vWidth - this.windowContainer.offsetWidth - (parseInt(localStorage.madesktopChanViewRightMargin) || 0) - 200 + 'px';
                 let defaultTop = '200px';
                 if ((typeof openDoc === "string" || openDoc instanceof String) && !reinit) {
                     if (openDoc.startsWith("apps/madconf/")) {
@@ -280,6 +285,9 @@ class DeskMover {
                     defaultLeft = left || (parseInt(localStorage.madesktopChanViewLeftMargin) || 75) + 250 + 'px';
                     defaultTop = top || '150px';
                     url = openDoc.includes(".html") ? openDoc : `docs/index.html?src=${openDoc}`;
+                    if (aot) {
+                        this.#toggleAoT();
+                    }
                 } else {
                     this.windowElement.width = width || '250px';
                     this.windowElement.height = height || '150px';
@@ -291,8 +299,8 @@ class DeskMover {
                 this.adjustElements();
 
                 if (centered) {
-                    this.windowContainer.style.left = (vWidth - this.windowContainer.offsetWidth) / 2 + 'px';
-                    this.windowContainer.style.top = (vHeight - this.windowContainer.offsetHeight) / 2 + 'px';
+                    this.windowContainer.style.left = (window.vWidth - this.windowContainer.offsetWidth) / 2 + 'px';
+                    this.windowContainer.style.top = (window.vHeight - this.windowContainer.offsetHeight) / 2 + 'px';
                 }
 
                 this.#keepInside();
@@ -309,7 +317,7 @@ class DeskMover {
                     this.windowElement.src = "ChannelBar.html";
                 }
                 if (!localStorage.madesktopItemXPos) {
-                    this.windowContainer.style.left = vWidth - this.windowContainer.offsetWidth - (parseInt(localStorage.madesktopChanViewRightMargin) || 0) - 100 + 'px';
+                    this.windowContainer.style.left = window.vWidth - this.windowContainer.offsetWidth - (parseInt(localStorage.madesktopChanViewRightMargin) || 0) - 100 + 'px';
                 }
             }
         }
@@ -483,6 +491,79 @@ class DeskMover {
                 this.dropdownBg.style.animation = "cmDropdown 0.25s linear";
                 break;
         }
+    }
+
+    openDropdown(elem) {
+        // Suppress the original dropdown
+        elem.blur();
+        elem.focus();
+
+        const dummy = this.dropdownBg.querySelector(".dropdownItem");
+        const options = elem.options;
+        let optionCnt = 0;
+
+        if (this.dropdown.childElementCount > 1) {
+            for (let i = this.dropdown.childElementCount - 1; i > 0; i--) {
+                this.dropdown.removeChild(this.dropdown.children[i]);
+            }
+        }
+
+        for (const option of options) {
+            if (option.hidden) {
+                continue;
+            }
+            const item = dummy.cloneNode(dummy, true);
+            item.textContent = option.textContent;
+            item.dataset.value = option.value;
+            item.addEventListener('click', () => {
+                elem.value = item.dataset.value;
+                elem.dispatchEvent(new Event('change'));
+                this.closeDropdown();
+            });
+            this.dropdown.appendChild(item);
+            optionCnt++;
+        }
+        
+        // Set these first to ensure the item height is retrieved correctly
+        this.dropdownBg.style.display = "block";
+        
+        const clientRect = elem.getBoundingClientRect();
+        if (this.config.unscaled) {
+            this.dropdownBg.style.left = clientRect.left / window.scaleFactor + "px";
+            this.dropdownBg.style.top = (clientRect.top + elem.offsetHeight) / window.scaleFactor + "px";
+            this.dropdownBg.style.width = elem.offsetWidth / window.scaleFactor + "px";
+        } else {
+            this.dropdownBg.style.left = clientRect.left + "px";
+            this.dropdownBg.style.top = clientRect.top + elem.offsetHeight + "px";
+            this.dropdownBg.style.width = elem.offsetWidth + "px";
+        }
+        this.dropdown.style.width = this.dropdownBg.style.width;
+
+        const itemHeight = this.dropdown.children[1].getBoundingClientRect().height;
+        if (optionCnt >= 25) {
+            this.dropdownBg.style.height = itemHeight * 25 + "px";
+        } else {
+            this.dropdownBg.style.height = itemHeight * optionCnt + "px";
+        }
+        this.dropdown.style.height = this.dropdownBg.style.height;
+
+        iframeClickEventCtrl(false);
+        this.dropdownBg.focus();
+    }
+
+    closeDropdown() {
+        this.dropdownBg.style.display = "none";
+        iframeClickEventCtrl(true);
+    }
+
+    openColorPicker(initialColor, expand, callback) {
+        const left = parseInt(this.config.xPos) + 4 + 'px';
+        const top = parseInt(this.config.yPos) + 26 + 'px';
+        const colorPicker = openWindow("apps/colorpicker/index.html", true, expand ? "447px" : "219px", "298px", "wnd", false, top, left, true);
+        const colorPickerWindow = colorPicker.windowElement.contentWindow;
+        colorPickerWindow.addEventListener("load", () => {
+            colorPickerWindow.choose_color(initialColor, expand, callback);
+        });
     }
 
     locReplace(url) {
@@ -773,11 +854,11 @@ class DeskMover {
         if (this.windowContainer.offsetTop < 0) {
             this.windowContainer.style.top = 0;
         }
-        if (this.windowContainer.offsetLeft + 60 > vWidth) {
-            this.windowContainer.style.left = vWidth - 60 + 'px';
+        if (this.windowContainer.offsetLeft + 60 > window.vWidth) {
+            this.windowContainer.style.left = window.vWidth - 60 + 'px';
         }
-        if (this.windowContainer.offsetTop + 50 > vHeight) {
-            this.windowContainer.style.top = vHeight - 50 + 'px';
+        if (this.windowContainer.offsetTop + 50 > window.vHeight) {
+            this.windowContainer.style.top = window.vHeight - 50 + 'px';
         }
         this.#updatePrevOffset();
     }
@@ -909,8 +990,8 @@ function initSimpleMover(container, titlebar, exclusions) {
         // Keep the window inside the visible area
         if (container.offsetLeft < -container.offsetWidth + 60) container.style.left = -titlebar.offsetWidth + 60 + 'px';
         if (container.offsetTop < 0) container.style.top = 0;
-        if (container.offsetLeft + 60 > vWidth) container.style.left = vWidth - 60 + 'px';
-        if (container.offsetTop + 50 > vHeight) container.style.top = vHeight - 50 + 'px';
+        if (container.offsetLeft + 60 > window.vWidth) container.style.left = window.vWidth - 60 + 'px';
+        if (container.offsetTop + 50 > window.vHeight) container.style.top = window.vHeight - 50 + 'px';
     });
     
     document.addEventListener('mousemove', function (event) {

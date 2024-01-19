@@ -744,7 +744,7 @@ gameMenuItems[1].addEventListener('click', (event) => { // Deck button
     closeGameMenu();
     const left = parseInt(madDeskMover.config.xPos) + 25 + 'px';
     const top = parseInt(madDeskMover.config.yPos) + 80 + 'px';
-    const backPicker = madOpenWindow('apps/solitaire/cards.html', true, '323px', '295px', 'wnd', false, top, left);
+    const backPicker = madOpenWindow('apps/solitaire/cards.html', true, '323px', '295px', 'wnd', false, top, left, true);
     backPicker.windowElement.addEventListener('load', () => {
         backPicker.windowElement.contentWindow.okBtn.addEventListener('click', () => {
             document.documentElement.style.setProperty('--card-back', backPicker.windowElement.contentWindow.backFile || randomBack());
@@ -785,7 +785,6 @@ function openGameMenu() {
 function closeGameMenu() {
     gameMenuBg.style.display = 'none';
     delete gameMenuBtn.dataset.active;
-    gameMenuBtn.removeEventListener('click', closeGameMenu);
 }
 
 helpMenuBtn.addEventListener('pointerdown', (event) => {
@@ -825,7 +824,6 @@ function openHelpMenu() {
 function closeHelpMenu() {
     helpMenuBg.style.display = 'none';
     delete helpMenuBtn.dataset.active;
-    helpMenuBtn.removeEventListener('click', closeHelpMenu);
 }
 
 helpMenuItem.addEventListener('click', () => {

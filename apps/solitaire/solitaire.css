@@ -378,7 +378,7 @@ body {
 }
 
 #helpMenuBtn {
-  margin-left: 3px;
+    margin-left: 3px;
 }
 
 #helpMenuBg {
@@ -387,7 +387,7 @@ body {
     height: 17px;
     position: absolute;
     top: 18px;
-    left: 44px;
+    left: 42px;
     overflow: hidden;
     animation: cmDropdown 0.25s;
     animation-timing-function: linear;

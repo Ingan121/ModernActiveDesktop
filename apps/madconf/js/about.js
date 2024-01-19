@@ -4,7 +4,9 @@ const icon = document.querySelector("img");
 let debugReady = false;
 
 icon.addEventListener("click", () => {
-    debugReady = true;
+    if (!localStorage.madesktopDebugMode) {
+        debugReady = true;
+    }
 });
 
 window.apply = function () {

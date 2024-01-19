@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Visualization Settings</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../../../css/98.css">
+    <link rel="stylesheet" href="config.css">
+    <link id="scheme" rel="stylesheet" href="data:text/css,">
+    <link id="font" rel="stylesheet" href="">
+    <style id="style"></style>
+</head>
+<body id="madVisConf">
+    <div class="window-body">
+        <fieldset>
+            <legend>Colors</legend>
+            <form name="colorSelecor">
+                <input id="radDefault" type="radio" name="color" value="default" checked>
+                <label for="radDefault">Default</label><br>
+                <input id="radScheme" type="radio" name="color" value="scheme">
+                <label for="radScheme">Follow color scheme</label><br>
+                <input id="radCustom" type="radio" name="color" value="custom">
+                <label for="radCustom">Custom</label><br>
+                <input id="followAlbumArtChkBox" type="checkbox" name="followAlbumArt">
+                <label for="followAlbumArtChkBox">Follow album art colors if available</label>
+            </form>
+        </fieldset>
+        <fieldset>
+            <legend>Custom colors</legend>
+            <section id="customColors" class="field-row disabled">
+                Background:
+                <button id="bgColorPicker" class="colorPicker" disabled>
+                    <div class="colorPicker-color"></div>
+                    <div class="colorPicker-bar"></div>
+                    <div class="colorPicker-expandMark">⏷</div>
+                </button>
+                Bar:
+                <button id="barColorPicker" class="colorPicker" disabled>
+                    <div class="colorPicker-color" style="background-color: #a4eb0c;"></div>
+                    <div class="colorPicker-bar"></div>
+                    <div class="colorPicker-expandMark">⏷</div>
+                </button>
+                Top:
+                <button id="topColorPicker" class="colorPicker" disabled>
+                    <div class="colorPicker-color" style="background-color: #dfeaf7;"></div>
+                    <div class="colorPicker-bar"></div>
+                    <div class="colorPicker-expandMark">⏷</div>
+                </button>
+            </section>
+        </fieldset>
+        <fieldset>
+            <legend>Album art</legend>
+            <input id="albumArtChkBox" type="checkbox" name="albumArt">
+            <label for="albumArtChkBox">Show album art</label>
+        </fieldset>
+        <section class="topmargin field-row" style="justify-content: flex-end;">
+            <button id="okBtn">OK</button>
+            <button id="cancelBtn">Cancel</button>
+            <button id="applyBtn">Apply</button>
+        </section>
+    </div>
+
+    <div id="miniPicker" class="window" tabindex="-1">
+        <div id="miniPickerColors">
+            <div class="color" style="background-color: #FFFFFF"></div>
+            <div class="color" style="background-color: #000000"></div>
+            <div class="color" style="background-color: #C0C0C0"></div>
+            <div class="color" style="background-color: #808080"></div>
+            <div class="color" style="background-color: #FF0000"></div>
+            <div class="color" style="background-color: #800000"></div>
+            <div class="color" style="background-color: #FFFF00"></div>
+            <div class="color" style="background-color: #808000"></div>
+            <div class="color" style="background-color: #00FF00"></div>
+            <div class="color" style="background-color: #008000"></div>
+            <div class="color" style="background-color: #00FFFF"></div>
+            <div class="color" style="background-color: #008080"></div>
+            <div class="color" style="background-color: #0000FF"></div>
+            <div class="color" style="background-color: #000080"></div>
+            <div class="color" style="background-color: #FF00FF"></div>
+            <div class="color" style="background-color: #800080"></div>
+            <div class="color" style="background-color: #C0DCC0"></div>
+            <div class="color" style="background-color: #A6CAF0"></div>
+            <div class="color" style="background-color: #F0FBFF"></div>
+            <div class="color" style="background-color: #A0A0A4"></div>
+        </div>
+        <hr>
+        <button id="openColorPickerBtn"><u>O</u>ther...</button>
+    </div>
+
+    <script src="../../../js/libmad.js"></script>
+    <script src="config.js"></script>
+</body>
+</html>

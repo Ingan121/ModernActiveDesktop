@@ -1,3 +1,5 @@
+﻿@charset "utf-8";
+
 @import 'marlett.css';
 
 @keyframes appear {
@@ -196,6 +198,14 @@ body {
     top: 4px;
 }
 
+.windowMenuBtn {
+    left: 3px;
+}
+
+.windowCloseBtn {
+    right: 3px;
+}
+
 .windowBtnText {
     margin: 0;
     color: var(--window-text);
@@ -210,6 +220,7 @@ body {
     height: 16px;
     position: absolute;
     top: 5px;
+    left: 3px;
     margin-left: 1px;
     display: none;
 }
@@ -252,21 +263,18 @@ body {
 
 .contextMenuBg {
     display: none;
-    width: 100px;
-    height: 68px;
     position: absolute;
     top: 24px;
     overflow: hidden;
-    animation: cmDropdown 0.25s;
-    animation-timing-function: linear;
+    animation: cmDropright 0.25s linear;
 }
 
-.contextMenuBg:focus {
+.contextMenuBg:focus,
+.dropdownBg:focus {
     outline: none;
 }
 
 .contextMenu {
-    width: 98px;
     position: absolute;
     bottom: 3px;
     margin: 0 !important;
@@ -333,29 +341,39 @@ body {
     right: -2px;
 }
 
-.confMenuBg {
-    display: none;
-    width: 200px;
-    height: 197px;
-    position: absolute;
-    top: 24px;
-    left: 103px;
-    overflow: hidden;
-    animation: cmDropright 0.25s;
-    animation-timing-function: linear;
+.windowMenuBg {
+    width: 100px;
+    height: 68px;
 }
 
-#confMenuBg:focus {
-    outline: none;
+.confMenuBg {
+    width: 200px;
+    height: 197px;
+    left: 103px;
+}
+
+#mainMenuBg {
+    width: 100px;
+    height: 34px;
+    z-index: 99998;
+}
+
+.windowMenu {
+    width: 98px;
 }
 
 .confMenu {
     width: 198px;
-    position: absolute;
-    bottom: 3px;
     right: 5px;
-    margin: 0 !important;
-    margin-right: 3px;
+}
+
+.confMenu hr {
+    margin-top: 3px;
+    margin-bottom: 4px;
+}
+
+#mainMenu {
+    width: 98px;
 }
 
 .dropdownBg {
@@ -368,11 +386,14 @@ body {
     color: var(--window-text);
     border: solid 1px var(--window-frame);
     overflow: hidden;
-    animation: cmDropdown 0.25s;
-    animation-timing-function: linear;
+    animation: cmDropdown 0.25s linear;
     display: none;
     pointer-events: auto !important;
     cursor: default !important;
+}
+
+.dropdownBg:focus {
+    outline: none;
 }
 
 .dropdown {
@@ -396,34 +417,6 @@ body {
     background-color: var(--hilight);
     color: var(--hilight-text);
     border: dotted 1px var(--hilight-inverted);
-}
-
-.confMenu hr {
-    margin-top: 3px;
-    margin-bottom: 4px;
-}
-
-#mainMenuBg {
-    display: none;
-    width: 100px;
-    height: 34px;
-    position: absolute;
-    overflow: hidden;
-    animation: cmDropdown 0.125s;
-    animation-timing-function: linear;
-    z-index: 99998;
-}
-
-#mainMenuBg:focus {
-    outline: none;
-}
-
-#mainMenu {
-    width: 98px;
-    position: absolute;
-    bottom: 3px;
-    margin: 0 !important;
-    margin-right: 3px;
 }
 
 #bgHtmlContainer {
@@ -482,7 +475,7 @@ body {
 }
 
 #errorWnd {
-    min-width: 300px;
+    min-width: 500px;
     max-width: 1000px;
     position: absolute;
     top: 50%;

@@ -1,0 +1,119 @@
+body {
+    margin: 0;
+    overflow: hidden;
+}
+
+#madVisConf {
+    -webkit-font-smoothing: none;
+    font-family: "Pixelated MS Sans Serif",Arial;
+    font-size: 11px;
+}
+
+form {
+    line-height: 16px;
+}
+
+#customColors {
+    margin-top: 2px;
+    margin-bottom: 5px;
+}
+
+.colorPicker {
+    min-width: auto !important;
+    min-height: auto;
+    width: 42px;
+    height: 21px;
+    position: relative;
+    top: 13.5px;
+    margin-top: -25px;
+    margin-left: 5px;
+    margin-right: 10px;
+}
+
+.colorPicker-color {
+    width: 20px;
+    height: 11px;
+    background-color: black;
+    border: 1px solid var(--button-text);
+    position: relative;
+    top: 0;
+    left: -7px;
+    float: left
+}
+
+.colorPicker-bar {
+    width: 1px;
+    height: 13px;
+    background-color: var(--button-shadow);
+    border-right: solid 1px var(--button-hilight);
+    position: relative;
+    top: 0;
+    left: 18px;
+}
+
+.colorPicker-expandMark {
+    height: 0;
+    position: relative;
+    top: -15px;
+    left: 15px;
+    font-size: 10px;
+}
+
+#miniPicker {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 72px;
+    height: 115px;
+    z-index: 4;
+    display: none;
+}
+
+#miniPickerColors {
+    display: grid;
+    grid-template-columns: repeat(4, 16px);
+    gap: 2px;
+    margin-top: 1px;
+    margin-left: 1px;
+}
+
+.color {
+    width: 16px;
+    height: 16px;
+    box-shadow: inset -1px -1px var(--button-hilight),
+        inset 1px 1px var(--button-shadow),
+        inset -2px -2px var(--button-light),
+        inset 2px 2px var(--button-dk-shadow);
+}
+
+.color:hover {
+    width: 12px;
+    height: 12px;
+    margin-top: -1px;
+    margin-left: -1px;
+    margin-bottom: -1px;
+    box-shadow: none;
+    border-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3IDciIHdpZHRoPSI3IiBoZWlnaHQ9IjciPjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSI3IiBoZWlnaHQ9IjciIGZpbGw9ImJsYWNrIi8+PHJlY3QgeD0iMSIgeT0iMSIgd2lkdGg9IjUiIGhlaWdodD0iNSIgZmlsbD0id2hpdGUiLz48cmVjdCB4PSIyIiB5PSIyIiB3aWR0aD0iMyIgaGVpZ2h0PSIzIiBmaWxsPSJibGFjayIvPjwvc3ZnPg==") 3 / 3px;
+    border-style: solid;
+}
+
+#miniPicker hr {
+    margin-top: 3px;
+    margin-bottom: 2px;
+}
+
+#openColorPickerBtn {
+    min-width: auto;
+    min-height: auto;
+    width: 62px;
+    height: 18px;
+}
+
+.topmargin, fieldset {
+    margin-top: 5px;
+}
+
+.disabled {
+    color: var(--button-shadow);
+    text-shadow: 1px 1px 0 var(--button-hilight);
+}

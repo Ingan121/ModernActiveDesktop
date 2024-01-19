@@ -58,7 +58,8 @@
 				"type" : "color",
 				"value" : "0 0.5019607843137255 0.5019607843137255"
 			}
-		}
+		},
+		"supportsaudioprocessing" : true
 	},
 	"preview" : "preview.jpg",
 	"ratingsex" : "none",

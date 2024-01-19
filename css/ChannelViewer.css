@@ -177,7 +177,7 @@ html,body {
 }
 
 #errorWnd {
-    min-width: 300px;
+    min-width: 500px;
     max-width: 1000px;
     position: absolute;
     top: 50%;

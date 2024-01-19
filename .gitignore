@@ -6,12 +6,12 @@ images
 !docs/images
 !apps/jspaint/images
 sounds
-systemplugin/resources/app/images
 apps/welcome/resources/*
 !apps/welcome/resources/contents.png
 wallpapers
 apps/solitaire/cards
 apps/solitaire/icon.png
+apps/visualizer/speaker.png
 
 # electron binary files
 systemplugin/*

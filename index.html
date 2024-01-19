@@ -19,11 +19,11 @@
         <div class="windowTitlebar">
             <div class="title-bar-text">ModernActiveDesktop</div>
             <div class="title-bar-controls">
-                <div class="windowMenuBtn windowBtn" style="left: 3px;">
+                <div class="windowMenuBtn windowBtn">
                     <p class="windowBtnText">⏷</p>
                 </div>
-                <img class="windowIcon" src="icon.ico" style="left: 3px;">
-                <div class="windowCloseBtn windowBtn" style="right: 3px;">
+                <img class="windowIcon" src="icon.ico">
+                <div class="windowCloseBtn windowBtn">
                     <p class="windowBtnText">🗙</p>
                 </div>
                 <button class="windowCloseBtnAlt window-button"></button>
@@ -31,14 +31,14 @@
         </div>
         <div class="windowFrame">
             <iframe class="windowElement" name="DeskMovrW" src="ChannelBar.html" width="84px" height="471px"></iframe>
-            <div class="dropdownBg">
+            <div class="dropdownBg" tabindex="-1">
                 <div class="dropdown">
                     <div class="dropdownItem">Dummy</div>
                 </div>
             </div>
         </div>
-        <div class="contextMenuBg window" tabindex="-1">
-            <div class="contextMenu window-body">
+        <div class="windowMenuBg contextMenuBg window" tabindex="-1">
+            <div class="windowMenu contextMenu window-body">
                 <div class="contextMenuItem"><p>C<u>o</u>nfigure</p><p class="submenuMark">⏵</p></div>
                 <div class="contextMenuItem debug"><p><u>D</u>ebug <span class="windowNumber"></span></p></div>
                 <div class="contextMenuItem"><p>R<u>e</u>set</p></div>
@@ -46,8 +46,8 @@
                 <div class="contextMenuItem hasIcon"><b>🗙 <u>C</u>lose</b></div>
             </div>
         </div>
-        <div class="confMenuBg window" tabindex="-1">
-            <div class="confMenu window-body">
+        <div class="confMenuBg contextMenuBg window" tabindex="-1">
+            <div class="confMenu contextMenu window-body">
                 <div class="contextMenuItem"><p><u>A</u>ctive Desktop</p></div>
                 <div class="contextMenuItem"><p><u>N</u>on-ActiveDesktop Channel Bar</p></div>
                 <div class="contextMenuItem"><p><u>W</u>indow</p></div>
@@ -65,8 +65,8 @@
             </div>
         </div>
     </div>
-    <div id="mainMenuBg" class="window" tabindex="-1">
-        <div id="mainMenu" class="window-body">
+    <div id="mainMenuBg" class="contextMenuBg window" tabindex="-1">
+        <div id="mainMenu" class="contextMenu window-body">
             <div class="contextMenuItem"><p><u>N</u>ew</p></div>
             <div class="contextMenuItem"><p>P<u>r</u>operties</p></div>
         </div>
@@ -96,10 +96,10 @@
         <p id="errorMsg">ModernActiveDesktop failed to initialize because of an unknown error. Please consult the log below and report this to https://github.com/Ingan121/ModernActiveDesktop/issues.</p>
         <pre id="errorLog"></pre>
         <noscript>Please enable JavaScript!</noscript>
-        <button onclick="copyLog();">Copy log</button> <button onclick="location.reload(true);">Retry</button> <button onclick="errorWnd.style.display='none';">Ignore</button>
+        <button onclick="copyLog();">Copy log</button> <button onclick="localStorage.clear();location.reload(true);">Reset config</button> <button onclick="location.reload(true);">Retry</button> <button onclick="errorWnd.style.display='none';">Ignore</button>
     </div>
     <div id="debug" class="debug">
-        <span>ModernActiveDesktop 3.0</span><br>
+        <span>ModernActiveDesktop 3.1 Pre-release 1</span><br>
         <span>Loaded from <span id="location"></span></span><br>
         <span>Running in <span id="runmode">browser</span><span id="simmode"></span></span><br>
         <span>Debug mode</span><br>

@@ -1,0 +1,163 @@
+'use strict';
+
+const defaultRadBtn = document.getElementById('radDefault');
+const schemeRadBtn = document.getElementById('radScheme');
+const customRadBtn = document.getElementById('radCustom');
+const followAlbumArtChkBox = document.getElementById('followAlbumArtChkBox');
+
+const customColors = document.getElementById("customColors");
+const colorPickers = document.querySelectorAll(".colorPicker");
+const bgColorPicker = document.getElementById("bgColorPicker");
+const bgColorPickerColor = bgColorPicker.querySelector(".colorPicker-color");
+const barColorPicker = document.getElementById("barColorPicker");
+const barColorPickerColor = barColorPicker.querySelector(".colorPicker-color");
+const topColorPicker = document.getElementById("topColorPicker");
+const topColorPickerColor = topColorPicker.querySelector(".colorPicker-color");
+
+const albumArtChkBox = document.getElementById("albumArtChkBox");
+
+const miniPicker = document.getElementById("miniPicker");
+const miniPickerColors = document.querySelectorAll(".color");
+const openColorPickerBtn = document.getElementById("openColorPickerBtn");
+
+const okBtn = document.getElementById("okBtn");
+const cancelBtn = document.getElementById("cancelBtn");
+const applyBtn = document.getElementById("applyBtn");
+
+let openColorPicker = null;
+
+for (const colorPicker of colorPickers) {
+    colorPicker.addEventListener("click", function () {
+        openColorPicker = this;
+        const clientRect = colorPicker.getBoundingClientRect();
+        let top = clientRect.top + colorPicker.offsetHeight;
+        let left = clientRect.left;
+
+        if (left + 78 > window.innerWidth) {
+            left = window.innerWidth - 78;
+        }
+        if (top + 121 > window.innerHeight) {
+            top = window.innerHeight - 121;
+        }
+
+        miniPicker.style.top = `${top}px`;
+        miniPicker.style.left = `${left}px`;
+        miniPicker.style.display = "block";
+        miniPicker.focus();
+    });
+}
+
+miniPicker.addEventListener("focusout", function (event) {
+    if (Array.from(colorPickers).indexOf(event.relatedTarget) === -1 && event.relatedTarget !== openColorPickerBtn) {
+        miniPicker.style.display = "none";
+    }
+});
+
+for (const miniPickerColor of miniPickerColors) {
+    miniPickerColor.addEventListener("click", function () {
+        changeColor(this.style.backgroundColor);
+        miniPicker.style.display = "none";
+    });
+}
+
+openColorPickerBtn.addEventListener("click", function () {
+    madOpenColorPicker(openColorPicker.querySelector(".colorPicker-color").style.backgroundColor, true, changeColor);
+});
+
+function changeColor(color) {
+    openColorPicker.querySelector(".colorPicker-color").style.backgroundColor = color;
+}
+
+defaultRadBtn.addEventListener("click", () => {
+    bgColorPickerColor.style.backgroundColor = "#000000";
+    barColorPickerColor.style.backgroundColor = "#a4eb0c";
+    topColorPickerColor.style.backgroundColor = "#dfeaf7";
+    bgColorPicker.disabled = true;
+    barColorPicker.disabled = true;
+    topColorPicker.disabled = true;
+    customColors.classList.add("disabled");
+});
+
+schemeRadBtn.addEventListener("click", () => {
+    bgColorPickerColor.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--button-face');
+    barColorPickerColor.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--hilight');
+    topColorPickerColor.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--button-text');
+    bgColorPicker.disabled = true;
+    barColorPicker.disabled = true;
+    topColorPicker.disabled = true;
+    customColors.classList.add("disabled");
+});
+
+customRadBtn.addEventListener("click", () => {
+    bgColorPicker.disabled = false;
+    barColorPicker.disabled = false;
+    topColorPicker.disabled = false;
+    customColors.classList.remove("disabled");
+});
+
+window.apply = function () {
+    if (defaultRadBtn.checked) {
+        delete localStorage.madesktopVisBgColor;
+        delete localStorage.madesktopVisBarColor;
+        delete localStorage.madesktopVisTopColor;
+        delete localStorage.madesktopVisUseSchemeColors;
+    } else if (schemeRadBtn.checked) {
+        localStorage.madesktopVisUseSchemeColors = true;
+    } else {
+        localStorage.madesktopVisBgColor = bgColorPickerColor.style.backgroundColor;
+        localStorage.madesktopVisBarColor = barColorPickerColor.style.backgroundColor;
+        localStorage.madesktopVisTopColor = topColorPickerColor.style.backgroundColor;
+        delete localStorage.madesktopVisUseSchemeColors;
+    }
+
+    if (followAlbumArtChkBox.checked) {
+        localStorage.madesktopVisFollowAlbumArt = true;
+    } else {
+        delete localStorage.madesktopVisFollowAlbumArt;
+    }
+    if (albumArtChkBox.checked) {
+        localStorage.madesktopVisShowAlbumArt = true;
+    } else {
+        delete localStorage.madesktopVisShowAlbumArt;
+    }
+    window.targetDeskMover.windowElement.contentWindow.configChanged();
+}
+
+okBtn.addEventListener("click", () => {
+    window.apply();
+    madCloseWindow();
+});
+
+cancelBtn.addEventListener("click", () => {
+    madCloseWindow();
+});
+
+applyBtn.addEventListener("click", () => {
+    window.apply();
+});
+
+if (localStorage.madesktopVisUseSchemeColors) {
+    schemeRadBtn.checked = true;
+    bgColorPickerColor.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--button-face');
+    barColorPickerColor.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--hilight');
+    topColorPickerColor.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--button-text');
+} else if (localStorage.madesktopVisBgColor) {
+    customRadBtn.checked = true;
+    bgColorPickerColor.style.backgroundColor = localStorage.madesktopVisBgColor;
+    barColorPickerColor.style.backgroundColor = localStorage.madesktopVisBarColor;
+    topColorPickerColor.style.backgroundColor = localStorage.madesktopVisTopColor;
+    bgColorPicker.disabled = false;
+    barColorPicker.disabled = false;
+    topColorPicker.disabled = false;
+    customColors.classList.remove("disabled");
+}
+
+if (localStorage.madesktopVisFollowAlbumArt) {
+    followAlbumArtChkBox.checked = true;
+}
+
+if (localStorage.madesktopVisShowAlbumArt) {
+    albumArtChkBox.checked = true;
+}
+
+madSetIcon(false);

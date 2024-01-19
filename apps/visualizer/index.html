@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Visualization</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../../css/98.css">
+    <link rel="stylesheet" href="visualizer.css">
+    <link rel="shortcut icon" href="icon.png">
+    <link id="scheme" rel="stylesheet" href="data:text/css,">
+    <link id="font" rel="stylesheet" href="">
+    <style id="style"></style>
+</head>
+<body id="madVis">
+    <div id="menuBar" class="menu">
+        <div id="visMenuBtn">Vi<u>s</u>ualizer</div>
+        <div id="viewMenuBtn"><u>V</u>iew</div>
+        <div id="optMenuBtn"><u>O</u>ptions</div>
+        <div id="helpMenuBtn"><u>H</u>elp</div>
+    </div>
+    <iframe id="visualizer" src="wmpvis/wmpvis.html"></iframe>
+    <div id="statusArea">
+        <div id="play" class="statusButton"><p>▶</p></div>
+        <div id="pause" class="statusButton"><p>⏸</p></div>
+        <div id="stop" class="statusButton" data-active="1"><p>⏹</p></div>
+        <div id="seekBar" class="statusItem"><div id="seekHandle"></div></div>
+    </div>
+    <div id="infoArea">
+        <div id="infoMainArea">
+            <div id="leftArea">
+                <div id="title" class="infoItem"><p>Title:</p></div>
+                <div id="subtitle" class="infoItem"><p>Subtitle:</p></div>
+                <div id="artist" class="infoItem"><p>Artist:</p></div>
+                <div id="album" class="infoItem"><p>Album:</p></div>
+                <div id="albumArtist" class="infoItem"><p>Album Artist:</p></div>
+                <div id="genre" class="infoItem"><p>Genre:</p></div>
+            </div>
+            <div id="rightArea">
+                <div id="titleValue" class="infoItem"><p></p></div>
+                <div id="subtitleValue" class="infoItem"><p></p></div>
+                <div id="artistValue" class="infoItem"><p></p></div>
+                <div id="albumValue" class="infoItem"><p></p></div>
+                <div id="albumArtistValue" class="infoItem"><p></p></div>
+                <div id="genreValue" class="infoItem"><p></p></div>
+            </div>
+        </div>
+        <hr id="infoAreaSeparator">
+        <div id="statusBar">
+            <div id="statusText" class="infoItem"><p><span>Stopped</span></p></div>
+            <div id="timeText" class="infoItem"><p><span>00:00 / 00:00</span></p></div>
+            <img id="speaker" src="speaker.png">
+        </div>
+    </div>
+
+    <div id="visMenuBg" class="contextMenuBg window" tabindex="-1">
+        <div id="visMenu" class="contextMenu window-body">
+            <div class="contextMenuItem activeStyle"><p>WMP <u>B</u>ars and Waves</p></div>
+            <div class="contextMenuItem"><p><u>M</u>ilkDrop (ButterChurn)</p></div>
+            <div class="contextMenuItem"><p>E<u>x</u>it</p></div>
+        </div>
+    </div>
+    <div id="viewMenuBg" class="contextMenuBg window" tabindex="-1">
+        <div id="viewMenu" class="contextMenu window-body">
+            <div class="contextMenuItem"><p><u>A</u>utohide Menu Bar</p></div>
+            <div class="contextMenuItem"><p><u>I</u>nformation</p></div>
+            <div class="contextMenuItem"><p>Playback <u>S</u>tatus</p></div>
+        </div>
+    </div>
+    <div id="optMenuBg" class="contextMenuBg window" tabindex="-1">
+        <div id="optMenu" class="contextMenu window-body">
+            <div class="contextMenuItem"><p><u>C</u>onfigure Visualization</p></div>
+        </div>
+    </div>
+    <div id="helpMenuBg" class="contextMenuBg window" tabindex="-1">
+        <div id="helpMenu" class="contextMenu window-body">
+            <div class="contextMenuItem"><p><u>A</u>bout</p></div>
+        </div>
+    </div>
+    <script src="../../js/libmad.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>

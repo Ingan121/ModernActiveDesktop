@@ -1,3 +1,7 @@
+// DeskSettings.js for ModernActiveDesktop
+// Made by Ingan121
+// Licensed under the MIT License
+
 'use strict';
 
 let windowContainers = document.getElementsByClassName("windowContainer");
@@ -31,7 +35,7 @@ const ding = new Audio("sounds/ding.wav");
 
 const NO_SYSPLUG_ALERT = "System plugin is not running. Please make sure you have installed it properly. If you don't want to use it, please disable the system plugin integration option.";
 
-let lastZIndex = localStorage.madesktopItemCount || 0;
+let lastZIndex = parseInt(localStorage.madesktopItemCount) || 0;
 let lastAoTZIndex = lastZIndex + 50000;
 let isContextMenuOpen = false;
 let activeWindow = 0;
@@ -122,13 +126,13 @@ if (localStorage.madesktopItemCount > 1) {
     }
 }
 
-if (localStorage.madesktopLastVer !== "3.0") { // First run or update from previous versions
+if (localStorage.madesktopLastVer !== "3.1") { // First run or update from previous versions
     localStorage.removeItem("madesktopHideWelcome");
     localStorage.removeItem("madesktopCheckedChanges");
     localStorage.removeItem("madesktopCheckedConfigs");
     startup();
 }
-localStorage.madesktopLastVer = "3.0";
+localStorage.madesktopLastVer = "3.1";
 
 if (localStorage.madesktopItemVisible === "false") {
     windowContainers[0].style.display = "none";
@@ -508,17 +512,17 @@ function padZero(str, len) {
 }
 
 // Create a new ActiveDesktop item and initialize it
-function createNewDeskItem(numStr, openDoc, temp, width, height, style, centered, top, left) {
+function createNewDeskItem(numStr, openDoc, temp, width, height, style, centered, top, left, aot) {
     const newContainer = windowContainers[0].cloneNode(true);
     document.body.appendChild(newContainer);
     windowContainers = document.getElementsByClassName("windowContainer");
-    const deskMover = new DeskMover(newContainer, numStr, openDoc, temp, width, height, style, false, centered, top, left);
+    const deskMover = new DeskMover(newContainer, numStr, openDoc, temp, width, height, style, false, centered, top, left, aot);
     deskMovers[numStr] = deskMover;
     return deskMover;
 }
 
 // Create a new AD item, initialize, and increase the saved window count
-function openWindow(openDoc, temp, width, height, style, centered, top, left) {
+function openWindow(openDoc, temp, width, height, style, centered, top, left, aot) {
     let deskMover;
     if (localStorage.madesktopItemVisible === "false" && !(typeof openDoc === "string" || openDoc instanceof String)) {
         windowContainers[0].style.display = "block";
@@ -531,10 +535,10 @@ function openWindow(openDoc, temp, width, height, style, centered, top, left) {
         }
         if (localStorage.madesktopItemVisible === "false") {
             windowContainers[0].style.display = "block";
-            deskMover = createNewDeskItem(localStorage.madesktopItemCount, openDoc, temp, width, height, style || (openDoc ? "wnd" : "ad"), centered, top, left);
+            deskMover = createNewDeskItem(localStorage.madesktopItemCount, openDoc, temp, width, height, style || (openDoc ? "wnd" : "ad"), centered, top, left, aot);
             windowContainers[0].style.display = "none";
         } else {
-            deskMover = createNewDeskItem(localStorage.madesktopItemCount, openDoc, temp, width, height, style || (openDoc ? "wnd" : "ad"), centered, top, left);
+            deskMover = createNewDeskItem(localStorage.madesktopItemCount, openDoc, temp, width, height, style || (openDoc ? "wnd" : "ad"), centered, top, left, aot);
         }
         activateWindow(localStorage.madesktopItemCount);
         localStorage.madesktopItemCount++;
@@ -1019,7 +1023,7 @@ function activateDebugMode() {
     if (styleElement.textContent.length) return;
     styleElement.textContent = `
         .debug { display: block; }
-        .contextMenuBg { height: 85px; }`;
+        .windowMenuBg { height: 85px; }`;
     debugMenu.style.top = 0;
     debugMenu.style.right = 0;
     debugMenu.style.left = "auto";
