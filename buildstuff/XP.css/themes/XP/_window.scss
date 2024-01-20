@@ -228,29 +228,6 @@
     background-color: #ECE9D8 !important;
 }
 
-.menu-button:hover,
-.menu-button.active {
-    border: none !important; /* var(--hilight) */
-    color: #FFFFFF !important; /* var(--hilight-text) */
-    background-color: #316AC5 !important; /* var(--menu-highlight) */
-    margin-right: 0 !important;
-}
-
-.menu-button:after {
-    display: none !important;
-}
-
-.menu > div:hover,
-.menu > div:active,
-.menu > div[data-active] {
-    border-color: #316AC5 !important; /* var(--menu-highlight) */
-    background-color: #316AC5 !important; /* var(--menu-highlight) */
-    color: #FFFFFF !important; /* var(--hilight-text) */
-    u {
-        border-bottom-color: #FFFFFF !important; /* var(--hilight-text) */
-    }
-}
-
 .status-bar {
     margin: 0 3px;
     box-shadow: inset 0px 1px 2px var(--button-shadow);
@@ -279,14 +256,6 @@
 
 #activeWindow {
     top: 56px;
-}
-
-/* XP Flat Menus */
-.contextMenuBg,
-.menu-popup {
-    box-shadow: none !important;
-    border: 1px solid #ACA899 !important; /* var(--button-shadow); */
-    background-color: white !important; /* var(--menu); */
 }
 
 /* madconf adjustments */

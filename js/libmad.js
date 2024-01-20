@@ -42,9 +42,11 @@
     }
 
     const parentSchemeElement = parent.document.getElementById("scheme");
+    const parentMenuStyleElement = parent.document.getElementById("menuStyle");
     const parentFontElement = parent.document.getElementById("font");
     const schemeElement = document.getElementById("scheme");
     const fontElement = document.getElementById("font");
+    const menuStyleElement = document.getElementById("menuStyle");
     const styleElement = document.getElementById("style");
     const deskMoverNum = frameElement.dataset.num || 0;
     const deskMover = parent.deskMovers[deskMoverNum];
@@ -112,6 +114,15 @@
                 fontElement.href = parentFontElement.href;
             } else {
                 fontElement.href = "";
+            }
+        }
+
+        if (menuStyleElement) {
+            const menuConfig = localStorage.madesktopMenuStyle;
+            if (menuConfig) {
+                menuStyleElement.href = parentMenuStyleElement.href;
+            } else {
+                menuStyleElement.href = "";
             }
         }
 

@@ -11,12 +11,17 @@ topCanvas.width = window.innerWidth;
 const lastAud = new Array(128).fill(1);
 const lastBar = new Array(128).fill(0);
 const lastTop = new Array(128).fill(topCanvas.height);
+const topSpeed = new Array(128).fill(0);
 
 let updateCnt = 0;
 let triedRegistering = false;
 
 function wallpaperAudioListener(audioArray) {
+    updateCnt++;
+    triedRegistering = false;
+
     if (window.noupdate) return;
+
     // Clear the canvas
     mainCanvasCtx.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
 
@@ -41,10 +46,10 @@ function wallpaperAudioListener(audioArray) {
             lastBar[i] = height;
             mainCanvasCtx.fillRect(barWidth * i, mainCanvas.height - height, barWidth - gap, height);
         } else {
-            lastBar[i] -= 7;
+            lastBar[i] -= 3;
             const diff = audioArray[i] - lastAud[i];
             if (diff > 0.1) {
-                lastBar[i] += mainCanvas.height * diff * 0.25;
+                lastBar[i] += mainCanvas.height * diff * 0.15;
                 if (lastBar[i] > mainCanvas.height) {
                     lastBar[i] = mainCanvas.height;
                 }
@@ -55,15 +60,21 @@ function wallpaperAudioListener(audioArray) {
         if (topPos < lastTop[i]) {
             lastTop[i] = topPos;
             topCanvasCtx.fillRect(barWidth * i, topPos, barWidth - gap, 1);
+            topSpeed[i] = 0;
         } else if (lastTop[i] < topCanvas.height - 1) {
             topCanvasCtx.clearRect(barWidth * i, 0, barWidth - gap, topCanvas.height);
-            lastTop[i] += 4;
+            if (topSpeed[i] > 20) {
+                lastTop[i] += 4;
+            } else if (topSpeed[i] > 10) {
+                lastTop[i] += 2;
+                topSpeed[i] += 1;
+            } else {
+                topSpeed[i] += 1;
+            }
             topCanvasCtx.fillRect(barWidth * i, lastTop[i], barWidth - gap, 1);
         }
         lastAud[i] = audioArray[i];
     }
-    updateCnt++;
-    triedRegistering = false;
 }
 
 window.addEventListener('resize', () => {

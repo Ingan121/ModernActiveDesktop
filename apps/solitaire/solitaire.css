@@ -352,16 +352,33 @@ body {
     border-color: var(--button-shadow) var(--button-hilight) var(--button-hilight) var(--button-shadow);
 }
 
-#gameMenuBg {
+.menu > div:active > span,
+.menu > div[data-active] > span {
+    margin-top: 1px;
+    margin-left: 1px;
+    margin-right: -1px;
+}
+
+.contextMenuBg {
     display: none;
-    width: 100px;
-    height: 51px;
     position: absolute;
     top: 18px;
     left: 0;
     overflow: hidden;
-    animation: cmDropdown 0.25s;
-    animation-timing-function: linear;
+    animation: cmDropdown 0.25s linear;
+    background-color: var(--menu);
+}
+
+.contextMenu {
+    position: absolute;
+    bottom: 3px;
+    margin: 0 !important;
+    margin-right: 3px;
+}
+
+#gameMenuBg {
+    width: 100px;
+    height: 51px;
 }
 
 #gameMenuBg:focus {
@@ -370,11 +387,6 @@ body {
 
 #gameMenu {
     width: 98px;
-    height: auto;
-    position: absolute;
-    bottom: 3px;
-    margin: 0 !important;
-    margin-right: 3px;
 }
 
 #helpMenuBtn {
@@ -382,15 +394,9 @@ body {
 }
 
 #helpMenuBg {
-    display: none;
     width: 100px;
     height: 17px;
-    position: absolute;
-    top: 18px;
     left: 42px;
-    overflow: hidden;
-    animation: cmDropdown 0.25s;
-    animation-timing-function: linear;
 }
 
 #helpMenuBg:focus {
@@ -399,11 +405,6 @@ body {
 
 #helpMenu {
     width: 98px;
-    height: auto;
-    position: absolute;
-    bottom: 3px;
-    margin: 0 !important;
-    margin-right: 3px;
 }
 
 .contextMenuItem {

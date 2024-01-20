@@ -10,6 +10,7 @@ const bgHtmlView = document.getElementById("bgHtmlView");
 const bgVideoView = document.getElementById("bgVideo");
 const schemeElement = document.getElementById("scheme");
 const fontElement = document.getElementById("font");
+const menuStyleElement = document.getElementById("menuStyle");
 const styleElement = document.getElementById("style");
 const msgboxBg = document.getElementById("msgboxBg");
 const msgbox = document.getElementById("msgbox");
@@ -73,6 +74,7 @@ if (localStorage.madesktopDebugMode) activateDebugMode();
 if (localStorage.madesktopDebugLog) toggleDebugLog();
 changeFont(localStorage.madesktopNoPixelFonts);
 changeCmAnimation(localStorage.madesktopCmAnimation || "slide");
+changeMenuStyle(localStorage.madesktopMenuStyle);
 
 deskMovers[0] = new DeskMover(windowContainers[0], "");
 initSimpleMover(msgbox, msgboxTitlebar, [msgboxCloseBtn]);
@@ -373,6 +375,10 @@ function changeColorScheme(scheme) {
         document.documentElement.style.setProperty('--hilight-inverted', 'var(--hilight-text)');
     }
 
+    announceSchemeChange();
+}
+
+function announceSchemeChange() {
     try {
         bgHtmlView.contentWindow.postMessage({ type: "scheme-updated" }, "*");
     } catch {
@@ -424,6 +430,16 @@ function changeCmAnimation(type) {
     for (const i in deskMovers) {
         deskMovers[i].changeCmAnimation(type);
     }
+}
+
+// Change menu style
+function changeMenuStyle(style) {
+    if (!style) {
+        menuStyleElement.href = "";
+    } else {
+        menuStyleElement.href = `css/flatmenu-${style}.css`;
+    }
+    announceSchemeChange();
 }
 
 // Change the 'open with' option of the system plugin, by sending a POST request to the system plugin

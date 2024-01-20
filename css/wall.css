@@ -267,6 +267,7 @@ body {
     top: 24px;
     overflow: hidden;
     animation: cmDropright 0.25s linear;
+    background-color: var(--menu) !important;
 }
 
 .contextMenuBg:focus,

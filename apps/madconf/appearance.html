@@ -35,10 +35,10 @@
                                 <button class="window-button"></button>
                             </div>
                         </div>
-                        <div id="menu">
-                            <div id="normal">Normal</div>
-                            <div id="disabled">Disabled</div>
-                            <div id="selected">Selected</div>
+                        <div class="menu">
+                            <div>Normal</div>
+                            <div class="disabled">Disabled</div>
+                            <div data-active="1"><span>Selected</span></div>
                         </div>
                         <textarea>Window Text</textarea>
                     </div>
@@ -185,7 +185,16 @@
                     <label for="systemColorChkBox">Use system colors (system plugin required)</label><br>
                     <input id="fontSmoothingChkBox" type="checkbox">
                     <label for="fontSmoothingChkBox">Do not use pixelated fonts</label>
-                    <section class="field-row">
+                    <section id="flatMenuSelectorGroup" class="field-row">
+                        <input id="flatMenuChkBox" type="checkbox">
+                        <label for="flatMenuChkBox">Use flat menus for:</label>
+                        <select id="flatMenuSelector" disabled>
+                            <option value="mb">menu bars (95 / NT4)</option>
+                            <option value="cm">context menus</option>
+                            <option value="mbcm">menu bars and context menus (XP)</option>
+                        </select>
+                    </section>
+                    <section id="animationSelectorGroup" class="field-row">
                         <input id="enableAnimationsChkBox" type="checkbox" checked>
                         <label for="enableAnimationsChkBox">Use the following transition effect for menus:</label>
                         <select id="animationSelector">

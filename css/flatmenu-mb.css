@@ -1,0 +1,32 @@
+/* Flat menus for menu bars */
+.menu-button:hover,
+.menu-button.active {
+    border: none !important;
+    color: var(--hilight-text) !important;
+    background-color: var(--menu-highlight) !important;
+    margin-right: 0 !important;
+}
+
+.menu-button:after {
+    display: none !important;
+}
+
+.menu > div:hover,
+.menu > div:active,
+.menu > div[data-active] {
+    border-color: var(--menu-highlight) !important;
+    background-color: var(--menu-highlight) !important;
+    color: var(--hilight-text) !important;
+}
+
+.menu > div:hover span,
+.menu > div:active span,
+.menu > div[data-active] span {
+    margin: 0;
+}
+
+.menu > div:hover u,
+.menu > div:active u,
+.menu > div[data-active] u {
+    margin: 0;
+}

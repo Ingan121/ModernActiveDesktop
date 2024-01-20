@@ -480,7 +480,21 @@ function onRequest(req, res) {
       res.writeHead(200, {'Content-Type':'text/css'});
       res.end(generateCssScheme());
       break;
-      
+
+    case '/playpause':
+      const { exec } = require('child_process');
+      exec('"' + path.join(__dirname, 'MediaControl.exe') + '"', (err, stdout, stderr) => {
+        if (err) {
+          console.error(err);
+          res.writeHead(500);
+          res.end('Error');
+          return;
+        }
+        res.writeHead(200);
+        res.end('OK');
+      });
+      break;
+
     case '/connecttest':
       res.writeHead(200, {'Content-Type':'text/html'});
       res.end(app.getVersion());
@@ -506,6 +520,7 @@ function onRequest(req, res) {
       <a href="/config">/config</a><br>
       <a href="/config/openwith">/config/openwith</a><br>
       <a href="/systemscheme">/systemscheme</a><br>
+      <a href="/playpause">/playpause</a><br>
       <a href="/connecttest">/connecttest</a><br>
       <a href="/debugger">/debugger</a></p>`)
       break;

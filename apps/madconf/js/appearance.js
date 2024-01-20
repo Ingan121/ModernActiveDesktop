@@ -15,6 +15,8 @@ async function main() {
     const openColorPickerBtn = document.getElementById("openColorPickerBtn");
     const systemColorChhkBox = document.getElementById("systemColorChkBox");
     const fontSmoothingChkBox = document.getElementById("fontSmoothingChkBox");
+    const flatMenuChkBox = document.getElementById("flatMenuChkBox");
+    const flatMenuSelector = document.getElementById("flatMenuSelector");
     const enableAnimationsChkBox = document.getElementById("enableAnimationsChkBox");
     const animationSelector = document.getElementById("animationSelector");
     const importBtn = document.getElementById("importBtn");
@@ -30,7 +32,21 @@ async function main() {
             selector.disabled = false;
         }
         selector.dispatchEvent(new Event("change"));
-        applyPreview(scheme, fontSmoothingChkBox.checked);
+    
+        if (schemeSelector.value === "95") {
+            flatMenuChkBox.checked = true;
+            flatMenuSelector.disabled = false;
+            flatMenuSelector.selectedIndex = 0;
+        } else if (schemeSelector.value.startsWith("xp")) {
+            flatMenuChkBox.checked = true;
+            flatMenuSelector.disabled = false;
+            flatMenuSelector.selectedIndex = 2;
+        } else {
+            flatMenuChkBox.checked = false;
+            flatMenuSelector.disabled = true;
+        }
+
+        applyPreview();
     });
 
     selector.addEventListener("change", function () {
@@ -80,7 +96,7 @@ async function main() {
             selector.disabled = true;
             colorPicker.disabled = true;
             scheme = parseCssScheme(await getSchemeText("http://localhost:3031/systemscheme"));
-            applyPreview(scheme, fontSmoothingChkBox.checked);
+            applyPreview();
         } else {
             schemeSelector.disabled = false;
             selector.disabled = false;
@@ -89,7 +105,7 @@ async function main() {
     });
 
     fontSmoothingChkBox.addEventListener("change", function () {
-        applyPreview(scheme, fontSmoothingChkBox.checked);
+        applyPreview();
     });
 
     enableAnimationsChkBox.addEventListener("change", function () {
@@ -99,6 +115,17 @@ async function main() {
             animationSelector.disabled = true;
         }
     });
+
+    flatMenuChkBox.addEventListener("change", function () {
+        if (flatMenuChkBox.checked) {
+            flatMenuSelector.disabled = false;
+        } else {
+            flatMenuSelector.disabled = true;
+        }
+        applyPreview();
+    });
+
+    flatMenuSelector.addEventListener("change", applyPreview);
 
     importBtn.addEventListener("click", async function () {
         const pickerOpts = {
@@ -143,6 +170,14 @@ async function main() {
             localStorage.madesktopCmAnimation = "none";
         }
         parent.changeCmAnimation(localStorage.madesktopCmAnimation);
+
+        if (flatMenuChkBox.checked) {
+            localStorage.madesktopMenuStyle = flatMenuSelector.value;
+        } else {
+            delete localStorage.madesktopMenuStyle;
+        }
+        parent.changeMenuStyle(localStorage.madesktopMenuStyle);
+
         parent.adjustAllElements(parseInt(scheme["extra-title-height"]) || 0, parseInt(scheme["extra-border-width"]) || 0, parseInt(scheme["extra-border-height"]) || 0);
     }
 
@@ -156,7 +191,6 @@ async function main() {
         if (schemeSelectorOptions[schemeSelector.selectedIndex].dataset.inconfigurable) {
             selector.disabled = true;
             colorPickerColor.style.backgroundColor = localStorage.madesktopBgColor;
-            applyPreview(scheme, fontSmoothingChkBox.checked);
         }
     }
 
@@ -175,6 +209,23 @@ async function main() {
         animationSelector.selectedIndex = 1;
     }
 
+    if (localStorage.madesktopMenuStyle) {
+        flatMenuChkBox.checked = true;
+        flatMenuSelector.disabled = false;
+        switch (localStorage.madesktopMenuStyle) {
+            case "mb":
+                flatMenuSelector.selectedIndex = 0;
+                break;
+            case "cm":
+                flatMenuSelector.selectedIndex = 1;
+                break;
+            case "mbcm":
+                flatMenuSelector.selectedIndex = 2;
+        }
+    }
+
+    applyPreview();
+
     if (localStorage.madesktopDebugMode) {
         importBtn.style.display = "block";
     }
@@ -183,7 +234,47 @@ async function main() {
         const option = options[selector.selectedIndex].value;
         scheme[option] = color;
         colorPickerColor.style.backgroundColor = color;
-        applyPreview(scheme, fontSmoothingChkBox.checked);
+        applyPreview();
+    }
+
+    function applyPreview() {
+        const preview = document.getElementById("preview");
+        const styleElement = document.getElementById("style");
+        const schemeText = generateCssScheme(scheme, "#preview");
+        styleElement.textContent = schemeText;
+    
+        if (fontSmoothingChkBox.checked) {
+            styleElement.textContent += `
+                #preview * {
+                    font-family: 'Segoe UI', sans-serif !important;
+                }
+            `;
+        } else {
+            styleElement.textContent += `
+                #preview * {
+                    font-family: "Pixelated MS Sans Serif" !important;
+                }
+            `;
+        }
+    
+        if (flatMenuChkBox.checked && flatMenuSelector.selectedIndex !== 1) {
+            styleElement.textContent += `
+                .menu > div[data-active] {
+                    border-color: var(--menu-highlight) !important;
+                    background-color: var(--menu-highlight) !important;
+                    color: var(--hilight-text) !important;
+                }
+                .menu > div[data-active] span {
+                    margin: 0;
+                }
+            `;
+        }
+    
+        if (selector.disabled) {
+            preview.style.backgroundColor = document.querySelector(".colorPicker-color").style.backgroundColor;
+        } else {
+            preview.style.backgroundColor = scheme["background"];
+        }
     }
 }
 
@@ -229,33 +320,6 @@ async function getSchemeText(scheme = parent.document.getElementById("scheme").h
             schemeText = text;
         });
         return schemeText;
-    }
-}
-
-function applyPreview(scheme, nopixel = false) {
-    const preview = document.getElementById("preview");
-    const styleElement = document.getElementById("style");
-    const schemeText = generateCssScheme(scheme, "#preview");
-    styleElement.textContent = schemeText;
-
-    if (nopixel) {
-        styleElement.textContent += `
-            #preview * {
-                font-family: 'Segoe UI', sans-serif !important;
-            }
-        `;
-    } else {
-        styleElement.textContent += `
-            #preview * {
-                font-family: "Pixelated MS Sans Serif" !important;
-            }
-        `;
-    }
-
-    if (selector.disabled) {
-        preview.style.backgroundColor = document.querySelector(".colorPicker-color").style.backgroundColor;
-    } else {
-        preview.style.backgroundColor = scheme["background"];
     }
 }
 

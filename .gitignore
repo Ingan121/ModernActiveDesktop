@@ -27,3 +27,4 @@ buildstuff/nginx/*
 !buildstuff/nginx/conf
 
 *.zip
+*.exe

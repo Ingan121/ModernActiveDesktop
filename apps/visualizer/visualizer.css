@@ -69,12 +69,20 @@ iframe {
     border-color: var(--button-shadow) var(--button-hilight) var(--button-hilight) var(--button-shadow);
 }
 
+.menu > div:active > span,
+.menu > div[data-active] > span {
+    margin-top: 1px;
+    margin-left: 1px;
+    margin-right: -1px;
+}
+
 .contextMenuBg {
     display: none;
     position: absolute;
     top: 18px;
     overflow: hidden;
     animation: cmDropright 0.25s linear;
+    background-color: var(--menu);
 }
 
 .contextMenuBg:focus {

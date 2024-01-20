@@ -1,0 +1,10 @@
+/* Flat menus for context menus */
+.contextMenuBg {
+    box-shadow: var(--button-shadow) -1px -1px inset, var(--button-shadow) 1px 1px inset, var(--menu) -3px -3px inset, var(--menu) 3px 3px inset;
+}
+
+.menu-popup {
+    box-shadow: none !important;
+    border: 1px solid var(--button-shadow) !important;
+    background-color: var(--menu) !important;
+}
