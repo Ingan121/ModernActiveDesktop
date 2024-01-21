@@ -83,7 +83,7 @@ class DeskMover {
             this.contextMenuBg.addEventListener('focusout', this.closeContextMenu.bind(this));
             this.dropdownBg.addEventListener('focusout', this.closeDropdown.bind(this));
 
-            this.windowContainer.addEventListener('mousedown', this.#wcMouseDown.bind(this));
+            this.windowContainer.addEventListener('mousedown', this.wcMouseDown.bind(this));
             document.addEventListener('mouseup', this.#docMouseUp.bind(this));
             this.windowElement.addEventListener('mouseover', this.#weMouseOver.bind(this));
             this.windowContainer.addEventListener('mouseleave', this.#wcMouseLeave.bind(this));
@@ -333,6 +333,9 @@ class DeskMover {
                 let openWindows = localStorage.madesktopOpenWindows.split(',');
                 openWindows.splice(openWindows.indexOf(this.numStr), 1);
                 localStorage.madesktopOpenWindows = openWindows;
+            }
+            if (this.isVisualizer) {
+                window.visDeskMover = null;
             }
             delete deskMovers[this.numStr];
             this.windowContainer.remove();
@@ -587,11 +590,11 @@ class DeskMover {
         this.#saveConfig();
     }
 
-    #wcMouseDown(event) {
+    wcMouseDown(event) {
         this.windowContainer.style.zIndex = this.config.alwaysOnTop ? ++lastAoTZIndex : ++lastZIndex; // bring to top
         activateWindow(this.numStr || 0);
         saveZOrder();
-        if ((this.windowFrame.style.borderColor !== "transparent" || this.config.style !== "ad") && !this.mouseOverWndBtns) {
+        if (event && (this.windowFrame.style.borderColor !== "transparent" || this.config.style !== "ad") && !this.mouseOverWndBtns) {
             iframeClickEventCtrl(false);
             this.isDown = true;
             this.offset = [
@@ -622,7 +625,7 @@ class DeskMover {
     #docMouseUp() {
         iframeClickEventCtrl(true);
         this.isDown = false;
-        
+
         if (this.windowContainer.style.display === "none") return; // offsets are always 0 when hidden, causing unexpected behaviors
         // Minimum size
         if (this.windowElement.offsetWidth < 60) this.windowElement.width = "60px";
@@ -762,6 +765,10 @@ class DeskMover {
         madConfirm("Are you sure you want to reset this window?", res => {
             if (res) {
                 this.#clearConfig();
+                if (this.isVisualizer) {
+                    window.visDeskMover = null;
+                    
+                }
                 deskMovers[this.numStr || 0] = new DeskMover(this.windowContainer, this.numStr, false, undefined, undefined, undefined, undefined, true);
             }
         });
@@ -800,15 +807,27 @@ class DeskMover {
         if (urlToShow === "placeholder.html") {
             urlToShow = "";
         }
-        
+
         madPrompt("Enter URL (leave empty to reset)", url => {
             if (url === null) return;
             if (!url) {
                 if (this.numStr === "") url = "ChannelBar.html";
                 else url = "placeholder.html";
             }
+
+            if (this.isVisualizer) {
+                // make sure the visualizer is destroyed properly
+                // required for some cases like an invalid URL being entered
+                this.windowElement.contentWindow.document.write();
+            }
             this.windowElement.src = url;
             this.config.src = url;
+
+            if (!url.startsWith("apps/visualizer/")) {
+                this.#clearConfig(true);
+                this.isVisualizer = false;
+                window.visDeskMover = null;
+            }
         }, "", urlToShow);
     }
 
@@ -912,19 +931,36 @@ class DeskMover {
     }
 
     // Clear configs
-    #clearConfig() {
-        this.config.width = null;
-        this.config.height = null;
-        this.config.xPos = null;
-        this.config.yPos = null;
-        this.config.src = null;
-        this.config.style = null;
-        this.config.unscaled = null;
-        this.config.title = null;
-        this.config.zIndex = null;
-        this.config.active = null;
-        this.config.alwaysOnTop = null;
-        this.config.jspaintHash = null;
+    #clearConfig(visOnly) {
+        if (!visOnly) {
+            this.config.width = null;
+            this.config.height = null;
+            this.config.xPos = null;
+            this.config.yPos = null;
+            this.config.src = null;
+            this.config.style = null;
+            this.config.unscaled = null;
+            this.config.title = null;
+            this.config.zIndex = null;
+            this.config.active = null;
+            this.config.alwaysOnTop = null;
+            this.config.jspaintHash = null;
+        }
+
+        if (this.isVisualizer) {
+            delete localStorage.madesktopVisBgColor;
+            delete localStorage.madesktopVisBarColor;
+            delete localStorage.madesktopVisTopColor;
+            delete localStorage.madesktopVisUseSchemeColors;
+            delete localStorage.madesktopVisFollowAlbumArt;
+            delete localStorage.madesktopVisShowAlbumArt;
+            delete localStorage.madesktopVisDimAlbumArt;
+            delete localStorage.madesktopVisOnlyAlbumArt;
+            delete localStorage.madesktopVisMenuAutohide;
+            delete localStorage.madesktopVisInfoShown;
+            delete localStorage.madesktopVisStatusShown;
+            delete localStorage.madesktopVisMediaControls;
+        }
     }
     
     // Update the visibility of window components based on the cursor's position

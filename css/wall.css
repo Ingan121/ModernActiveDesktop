@@ -336,6 +336,11 @@ body {
     border-bottom-color: var(--hilight-text);
 }
 
+.contextMenu hr {
+    margin-top: 3px;
+    margin-bottom: 4px;
+}
+
 .submenuMark {
     position: absolute;
     top: -3px;
@@ -366,11 +371,6 @@ body {
 .confMenu {
     width: 198px;
     right: 5px;
-}
-
-.confMenu hr {
-    margin-top: 3px;
-    margin-bottom: 4px;
 }
 
 #mainMenu {
@@ -452,6 +452,7 @@ body {
     top: 50%;
     left: 50%;
     min-width: 300px;
+    max-width: 50%;
     z-index: 99997;
 }
 

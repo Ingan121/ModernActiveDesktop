@@ -1,3 +1,9 @@
+// wmpvis.js for ModernActiveDesktop Visualizer
+// Made by Ingan121
+// Licensed under the MIT License
+
+'use strict';
+
 const mainCanvas = document.getElementById('bar');
 const topCanvas = document.getElementById('top');
 const mainCanvasCtx = mainCanvas.getContext('2d');
@@ -20,7 +26,9 @@ function wallpaperAudioListener(audioArray) {
     updateCnt++;
     triedRegistering = false;
 
-    if (window.noupdate) return;
+    if (window.noupdate || localStorage.madesktopVisOnlyAlbumArt) {
+        return;
+    }
 
     // Clear the canvas
     mainCanvasCtx.clearRect(0, 0, mainCanvas.width, mainCanvas.height);

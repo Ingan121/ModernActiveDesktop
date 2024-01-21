@@ -1,3 +1,7 @@
+// config.js for ModernActiveDesktop Visualizer
+// Made by Ingan121
+// Licensed under the MIT License
+
 'use strict';
 
 const defaultRadBtn = document.getElementById('radDefault');
@@ -11,10 +15,13 @@ const bgColorPicker = document.getElementById("bgColorPicker");
 const bgColorPickerColor = bgColorPicker.querySelector(".colorPicker-color");
 const barColorPicker = document.getElementById("barColorPicker");
 const barColorPickerColor = barColorPicker.querySelector(".colorPicker-color");
+const barColorPickerLabel = document.getElementById("barColorPickerLabel");
 const topColorPicker = document.getElementById("topColorPicker");
 const topColorPickerColor = topColorPicker.querySelector(".colorPicker-color");
+const topColorPickerLabel = document.getElementById("topColorPickerLabel");
 
 const albumArtChkBox = document.getElementById("albumArtChkBox");
+const dimAlbumArtChkBox = document.getElementById("dimAlbumArtChkBox");
 
 const miniPicker = document.getElementById("miniPicker");
 const miniPickerColors = document.querySelectorAll(".color");
@@ -24,11 +31,11 @@ const okBtn = document.getElementById("okBtn");
 const cancelBtn = document.getElementById("cancelBtn");
 const applyBtn = document.getElementById("applyBtn");
 
-let openColorPicker = null;
+let openColorPickerColor = null;
 
 for (const colorPicker of colorPickers) {
     colorPicker.addEventListener("click", function () {
-        openColorPicker = this;
+        openColorPickerColor = this.querySelector(".colorPicker-color");
         const clientRect = colorPicker.getBoundingClientRect();
         let top = clientRect.top + colorPicker.offsetHeight;
         let left = clientRect.left;
@@ -61,11 +68,11 @@ for (const miniPickerColor of miniPickerColors) {
 }
 
 openColorPickerBtn.addEventListener("click", function () {
-    madOpenColorPicker(openColorPicker.querySelector(".colorPicker-color").style.backgroundColor, true, changeColor);
+    madOpenColorPicker(openColorPickerColor.style.backgroundColor, true, changeColor);
 });
 
 function changeColor(color) {
-    openColorPicker.querySelector(".colorPicker-color").style.backgroundColor = color;
+    openColorPickerColor.style.backgroundColor = color;
 }
 
 defaultRadBtn.addEventListener("click", () => {
@@ -90,9 +97,19 @@ schemeRadBtn.addEventListener("click", () => {
 
 customRadBtn.addEventListener("click", () => {
     bgColorPicker.disabled = false;
-    barColorPicker.disabled = false;
-    topColorPicker.disabled = false;
+    if (!localStorage.madesktopVisOnlyAlbumArt) {
+        barColorPicker.disabled = false;
+        topColorPicker.disabled = false;
+    }
     customColors.classList.remove("disabled");
+});
+
+albumArtChkBox.addEventListener("change", () => {
+    if (albumArtChkBox.checked) {
+        dimAlbumArtChkBox.disabled = false;
+    } else {
+        dimAlbumArtChkBox.disabled = true;
+    }
 });
 
 window.apply = function () {
@@ -119,6 +136,11 @@ window.apply = function () {
         localStorage.madesktopVisShowAlbumArt = true;
     } else {
         delete localStorage.madesktopVisShowAlbumArt;
+    }
+    if (dimAlbumArtChkBox.checked) {
+        localStorage.madesktopVisDimAlbumArt = true;
+    } else {
+        delete localStorage.madesktopVisDimAlbumArt;
     }
     window.targetDeskMover.windowElement.contentWindow.configChanged();
 }
@@ -158,6 +180,20 @@ if (localStorage.madesktopVisFollowAlbumArt) {
 
 if (localStorage.madesktopVisShowAlbumArt) {
     albumArtChkBox.checked = true;
+    dimAlbumArtChkBox.disabled = false;
+}
+
+if (localStorage.madesktopVisDimAlbumArt) {
+    dimAlbumArtChkBox.checked = true;
+}
+
+if (localStorage.madesktopVisOnlyAlbumArt) {
+    albumArtChkBox.disabled = true;
+    dimAlbumArtChkBox.disabled = true;
+    barColorPicker.disabled = true;
+    topColorPicker.disabled = true;
+    barColorPickerLabel.classList.add("disabled");
+    topColorPickerLabel.classList.add("disabled");
 }
 
 madSetIcon(false);

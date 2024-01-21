@@ -33,7 +33,10 @@ async function main() {
         }
         selector.dispatchEvent(new Event("change"));
     
-        if (schemeSelector.value === "95") {
+        if (schemeSelector.value === "95" || 
+            schemeSelector.value === "aero" ||
+            schemeSelector.value.startsWith("win"))
+        {
             flatMenuChkBox.checked = true;
             flatMenuSelector.disabled = false;
             flatMenuSelector.selectedIndex = 0;
@@ -340,7 +343,7 @@ function parseCssScheme(schemeText) {
     let scheme = {};
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i].trim();
-        if (line.startsWith("--")) {
+        if (line.startsWith("--") && line.length <= 50) {
             const [key, value] = line.split(":");
             scheme[key.trim().slice(2)] = value.trim().slice(0, -1);
         }

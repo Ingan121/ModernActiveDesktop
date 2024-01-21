@@ -30,12 +30,6 @@ iframe.addEventListener('load', function () {
 // Detect WE config change
 window.wallpaperPropertyListener = {
     applyUserProperties: function(properties) {
-        if (properties.bgtype) {
-            if (!properties.leftmargin) { // Ignore if this is a startup event
-                changeBgType(properties.bgtype.value);
-                localStorage.madesktopBgType = properties.bgtype.value;
-            }
-        }
         if (properties.bgcolor) {
             changeBgColor(parseWallEngColorProp(properties.bgcolor.value));
         }
@@ -49,12 +43,8 @@ window.wallpaperPropertyListener = {
                 localStorage.removeItem('madesktopBgImg');
             }
         }
-        if (properties.bgimgmode) {
-            changeBgImgMode(properties.bgimgmode.value);
-            localStorage.madesktopBgImgMode = properties.bgimgmode.value;
-        }
         if (properties.bgvideo) {
-            if (!properties.leftmargin) { // Ignore if this is a startup event
+            if (!properties.bgcolor) { // Ignore if this is a startup event
                 if (properties.bgvideo.value) {
                     localStorage.madesktopBgVideo = "file:///" + properties.bgvideo.value;
                 } else {
@@ -62,26 +52,16 @@ window.wallpaperPropertyListener = {
                 }
             }
         }
-        if (properties.bgvideomute) {
-            if (!properties.leftmargin) { // Ignore if this is a startup event
-                if (properties.bgvideomute.value) {
-                    localStorage.madesktopBgVideoMuted = true;
-                } else {
-                    localStorage.removeItem('madesktopBgVideoMuted');
-                }
-            }
-        }
-        if (properties.bghtmlurl) {
-            if (!properties.leftmargin) { // Ignore if this is a startup event
-                const url = properties.bghtmlurl.value || "bghtml/index.html";
-                if (url == "index.html") return; // This could cause untended behaviors
-                bgHtmlView.src = url;
-                localStorage.madesktopBgHtmlSrc = url;
-            }
-        }
         if (properties.additem || properties.openproperties) {
             if (!properties.bgcolor) { // Ignore if this is a startup event
                 alert("Please close ChannelViewer first then try again.");
+            }
+        }
+        if (properties.audioprocessing) {
+            if (properties.audioprocessing.value) {
+                delete localStorage.madesktopVisUnavailable;
+            } else {
+                localStorage.madesktopVisUnavailable = true;
             }
         }
     }

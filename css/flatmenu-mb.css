@@ -28,5 +28,5 @@
 .menu > div:hover u,
 .menu > div:active u,
 .menu > div[data-active] u {
-    margin: 0;
+    border-bottom-color: var(--hilight-text);
 }

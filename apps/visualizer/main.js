@@ -1,13 +1,43 @@
+// main.js for ModernActiveDesktop Visualizer
+// Made by Ingan121
+// Licensed under the MIT License
+
 'use strict';
+
+if (parent === window) {
+    alert("This page is not meant to be opened directly. Please open it from ModernActiveDesktop.");
+} else if (!frameElement) {
+    alert("MADVis is being cross-origin restricted. Please run ModernActiveDesktop with a web server.");
+} else if (madRunningMode !== 1) {
+    madAlert("Sorry, but the visualizer is only available for Wallpaper Engine.", null, "error");
+    madCloseWindow();
+} else if (parent.visDeskMover && parent.visDeskMover !== madDeskMover) {
+    madAlert("Only one instance of the visualizer can be open at a time.", null, "warning");
+    madCloseWindow();
+} else if (localStorage.madesktopVisUnavailable) {
+    // Although the media integration is available, it is not reliable to be used in MAD
+    // because we don't have a way to check if the media listener is invalidated or not
+    // This happens frequently when an iframe loads a page or gets closed
+    madAlert("Audio recording is not enabled. Please enable it in the Wallpaper Engine properties panel.", null, "error");
+    madCloseWindow();
+} else {
+    parent.visDeskMover = madDeskMover;
+    madDeskMover.isVisualizer = true;
+}
 
 const schemeElement = document.getElementById("scheme");
 const menuBar = document.getElementById('menuBar');
+
+const mainArea = document.getElementById('mainArea');
+const albumArt = document.getElementById('albumArt');
 const visualizer = document.getElementById('visualizer');
 
 const statusArea = document.getElementById('statusArea');
 const playIcon = document.getElementById('play');
 const pauseIcon = document.getElementById('pause');
 const stopIcon = document.getElementById('stop');
+const prevIcon = document.getElementById('prev');
+const nextIcon = document.getElementById('next');
 const seekBar = document.getElementById('seekBar');
 const seekHandle = document.getElementById('seekHandle');
 
@@ -53,6 +83,7 @@ const helpMenu = document.getElementById('helpMenu');
 const helpMenuItems = helpMenu.querySelectorAll('.contextMenuItem');
 
 let mouseOverMenu = false;
+let mediaIntegrationAvailable = true;
 
 for (const menuName of ['vis', 'view', 'opt', 'help']) {
     const menuBtn = document.getElementById(menuName + 'MenuBtn');
@@ -65,7 +96,8 @@ for (const menuName of ['vis', 'view', 'opt', 'help']) {
             return;
         }
         openMenu(menuName);
-        event.preventDefault();
+        event.preventDefault(); // Prevent focusout event
+        madDeskMover.wcMouseDown(); // But keep the window activation working
     });
 
     menuBg.addEventListener('focusout', () => {
@@ -83,6 +115,32 @@ for (const menuName of ['vis', 'view', 'opt', 'help']) {
         mouseOverMenu = false;
     });
 }
+
+playIcon.addEventListener('click', () => {
+    if (!playIcon.dataset.active) {
+        mediaControl('playpause');
+    }
+});
+
+pauseIcon.addEventListener('click', () => {
+    if (!pauseIcon.dataset.active) {
+        mediaControl('playpause');
+    }
+});
+
+stopIcon.addEventListener('click', () => {
+    if (!stopIcon.dataset.active) {
+        mediaControl('stop');
+    }
+});
+
+prevIcon.addEventListener('click', () => {
+    mediaControl('prev');
+});
+
+nextIcon.addEventListener('click', () => {
+    mediaControl('next');
+});
 
 if (localStorage.madesktopVisMenuAutohide) {
     viewMenuItems[0].classList.add('checkedItem');
@@ -116,7 +174,53 @@ if (localStorage.madesktopVisStatusShown) {
     }
 }
 
-visMenuItems[2].addEventListener('click', () => { // Exit button
+if (localStorage.sysplugIntegration) {
+    viewMenuItems[3].classList.remove('disabled');
+    if (localStorage.madesktopVisMediaControls) {
+        viewMenuItems[3].classList.add('checkedItem');
+        statusArea.dataset.controllable = true;
+    }
+} else {
+    delete localStorage.madesktopVisMediaControls;
+}
+
+if (localStorage.madesktopVisOnlyAlbumArt) {   
+    visMenuItems[0].classList.add('activeStyle');
+    visMenuItems[1].classList.remove('activeStyle');
+}
+
+visMenuItems[0].addEventListener('click', () => { // Album Art button
+    closeMenu('vis');
+    if (!mediaIntegrationAvailable) {
+        madAlert('Media integration support is disabled. Please enable it in Wallpaper Engine -> General -> Media integration support.');
+        return;
+    }
+
+    localStorage.madesktopVisOnlyAlbumArt = true;
+    visMenuItems[0].classList.add('activeStyle');
+    visMenuItems[1].classList.remove('activeStyle');
+    visMenuItems[2].classList.remove('activeStyle');
+    visualizer.style.opacity = '0';
+    albumArt.style.opacity = '1';
+    localStorage.madesktopVisShowAlbumArt = true;
+    delete localStorage.madesktopVisDimAlbumArt;
+    configChanged();
+});
+
+visMenuItems[1].addEventListener('click', () => { // WMP Bars button
+    closeMenu('vis');
+    delete localStorage.madesktopVisOnlyAlbumArt;
+    visMenuItems[0].classList.remove('activeStyle');
+    visMenuItems[1].classList.add('activeStyle');
+    visMenuItems[2].classList.remove('activeStyle');
+    visualizer.style.opacity = '1';
+});
+
+visMenuItems[2].addEventListener('click', () => { // MilkDrop button
+    closeMenu('vis');
+});
+
+visMenuItems[3].addEventListener('click', () => { // Exit button
     madCloseWindow();
 });
 
@@ -137,6 +241,11 @@ viewMenuItems[0].addEventListener('click', () => { // Autohide Menu Bar button
 
 viewMenuItems[1].addEventListener('click', () => { // Information button
     closeMenu('view');
+    if (!mediaIntegrationAvailable) {
+        madAlert('Media integration support is disabled. Please enable it in Wallpaper Engine -> General -> Media integration support.');
+        return;
+    }
+
     const currentWidth = parseInt(madDeskMover.config.width);
     const currentHeight = parseInt(madDeskMover.config.height);
     if (localStorage.madesktopVisInfoShown) {
@@ -182,6 +291,11 @@ viewMenuItems[1].addEventListener('click', () => { // Information button
 
 viewMenuItems[2].addEventListener('click', () => { // Playback Status button
     closeMenu('view');
+    if (!mediaIntegrationAvailable) {
+        madAlert('Media integration support is disabled. Please enable it in Wallpaper Engine -> General -> Media integration support.');
+        return;
+    }
+
     const currentWidth = parseInt(madDeskMover.config.width);
     const currentHeight = parseInt(madDeskMover.config.height);
     if (localStorage.madesktopVisStatusShown) {
@@ -203,6 +317,12 @@ viewMenuItems[2].addEventListener('click', () => { // Playback Status button
             statusAreaHeight /= parent.scaleFactor;
         }
         madResizeTo(currentWidth, currentHeight - statusAreaHeight);
+
+        if (localStorage.madesktopVisMediaControls) {
+            delete localStorage.madesktopVisMediaControls;
+            viewMenuItems[3].classList.remove('checkedItem');
+            delete statusArea.dataset.controllable;
+        }
     } else {
         localStorage.madesktopVisStatusShown = true;
         viewMenuItems[2].classList.add('checkedItem');
@@ -215,8 +335,9 @@ viewMenuItems[2].addEventListener('click', () => { // Playback Status button
             infoAreaSeparator.style.display = 'block';
             statusAreaHeight += statusBar.offsetHeight + 1;
         } else {
-            statusAreaHeight += infoArea.offsetHeight;
+            infoMainArea.style.display = 'none';
             infoAreaSeparator.style.display = 'none';
+            statusAreaHeight += infoArea.offsetHeight;
         }
 
         if (madDeskMover.config.unscaled) {
@@ -226,11 +347,38 @@ viewMenuItems[2].addEventListener('click', () => { // Playback Status button
     }
 });
 
+viewMenuItems[3].addEventListener('click', () => { // Enable Media Controls button
+    closeMenu('view');
+    if (!mediaIntegrationAvailable) {
+        madAlert('Media integration support is disabled. Please enable it in Wallpaper Engine -> General -> Media integration support.');
+        return;
+    }
+
+    if (localStorage.madesktopVisMediaControls) {
+        delete localStorage.madesktopVisMediaControls;
+        viewMenuItems[3].classList.remove('checkedItem');
+        delete statusArea.dataset.controllable;
+    } else {
+        if (localStorage.sysplugIntegration) {
+            localStorage.madesktopVisMediaControls = true;
+            viewMenuItems[3].classList.add('checkedItem');
+            statusArea.dataset.controllable = true;
+            if (!localStorage.madesktopVisStatusShown) {
+                viewMenuItems[2].click();
+            }
+        } else {
+            madAlert('This feature requires system plugin integration.', () => {
+                madOpenWindow('SysplugSetupGuide.md', true);
+            });
+        }
+    }
+});
+
 optMenuItems[0].addEventListener('click', () => { // Configure Visualization button
     closeMenu('opt');
     const left = parseInt(madDeskMover.config.xPos) + 25 + 'px';
     const top = parseInt(madDeskMover.config.yPos) + 80 + 'px';
-    const configWindow = madOpenWindow('apps/visualizer/wmpvis/config.html', true, '400px', '250px', 'wnd', false, top, left, true);
+    const configWindow = madOpenWindow('apps/visualizer/wmpvis/config.html', true, '400px', '260px', 'wnd', false, top, left, true);
     configWindow.windowElement.addEventListener('load', () => {
         configWindow.windowElement.contentWindow.targetDeskMover = madDeskMover;
     });
@@ -271,10 +419,73 @@ function closeMenu(menuName) {
     }
 }
 
-function wallpaperMediaStatusListener(event) {
-    if (!event.properties) {
-        madCloseWindow();
+function mediaControl(action, title = window.lastMusic.title) {
+    if (!localStorage.sysplugIntegration || !localStorage.madesktopVisMediaControls) {
+        return;
     }
+    fetch(`http://localhost:3031/${action}`, { method: 'POST', body: title })
+        .then(response => response.text())
+        .then(responseText => {
+            if (responseText !== 'OK') {
+                madAlert('An error occurred while processing the media control request.<br>' + responseText);
+            }
+        })
+        .catch(error => {
+            madAlert("System plugin is not running. Please make sure you have installed it properly.", function () {
+                madOpenWindow('SysplugSetupGuide.md', true);
+            }, "warning");
+        });
+}
+
+function wallpaperMediaStatusListener(event) {
+    if (!event.enabled) {
+        document.title = 'Visualization';
+        titleValue.textContent = '';
+        subtitleValue.textContent = '';
+        artistValue.textContent = '';
+        albumValue.textContent = '';
+        albumArtistValue.textContent = '';
+        genreValue.textContent = '';
+        subtitleText.style.display = 'none';
+        artistText.style.display = 'block';
+        albumText.style.display = 'none';
+        albumArtistText.style.display = 'none';
+        genreText.style.display = 'none';
+        statusText.textContent = 'Stopped';
+        delete playIcon.dataset.active;
+        delete pauseIcon.dataset.active;
+        stopIcon.dataset.active = true;
+        seekBar.style.backgroundColor = 'transparent';
+        seekHandle.style.display = 'none';
+        timeText.parentElement.style.display = 'none';
+        
+        if (localStorage.madesktopVisInfoShown) {
+            viewMenuItems[1].click();
+        }
+        if (localStorage.madesktopVisStatusShown) {
+            viewMenuItems[2].click();
+        }
+        if (localStorage.madesktopVisMediaControls) {
+            viewMenuItems[3].click();
+        }
+        viewMenuItems[1].classList.add('disabled');
+        viewMenuItems[2].classList.add('disabled');
+        viewMenuItems[3].classList.add('disabled');
+
+        delete localStorage.madesktopVisOnlyAlbumArt;
+        visMenuItems[0].classList.remove('activeStyle');
+        visMenuItems[1].classList.add('activeStyle');
+        visualizer.style.opacity = '1';
+        visMenuItems[0].classList.add('disabled');
+    } else {
+        viewMenuItems[1].classList.remove('disabled');
+        viewMenuItems[2].classList.remove('disabled');
+        if (localStorage.sysplugIntegration) {
+            viewMenuItems[3].classList.remove('disabled');
+        }
+        visMenuItems[0].classList.remove('disabled');
+    }
+    mediaIntegrationAvailable = event.enabled;
 }
 
 function wallpaperMediaPropertiesListener(event) {
@@ -305,7 +516,12 @@ function wallpaperMediaPropertiesListener(event) {
     if (artist.endsWith(' - Topic')) { // YT auto-generated stuff
         artist = artist.slice(0, -7);
     }
-    document.title = event.title + ' - ' + artist;
+    if (artist) {
+        document.title = event.title + ' - ' + artist;
+    } else {
+        document.title = event.title;
+    }
+
     titleValue.textContent = event.title;
     subtitleValue.textContent = event.subtitle;
     artistValue.textContent = artist;
@@ -401,38 +617,58 @@ function wallpaperMediaThumbnailListener(event) {
         return;
     }
     if (localStorage.madesktopVisShowAlbumArt) {
-        visualizer.style.backgroundImage = `url(${event.thumbnail})`;
+        albumArt.src = event.thumbnail;
     }
     if (localStorage.madesktopVisFollowAlbumArt) {
-        visualizer.style.backgroundColor = event.primaryColor;
+        mainArea.style.backgroundColor = event.primaryColor;
     }
     window.lastAlbumArt = event;
 }
 
 function configChanged() {
     if (localStorage.madesktopVisShowAlbumArt && window.lastAlbumArt) {
-        visualizer.style.backgroundImage = `url(${lastAlbumArt.thumbnail})`;
+        albumArt.src = lastAlbumArt.thumbnail;
     } else {
-        visualizer.style.backgroundImage = '';
+        albumArt.src = '';
     }
+
     if (localStorage.madesktopVisFollowAlbumArt && window.lastAlbumArt) {
-        visualizer.style.backgroundColor = lastAlbumArt.primaryColor;
+        mainArea.style.backgroundColor = lastAlbumArt.primaryColor;
     } else if (localStorage.madesktopVisUseSchemeColors) {
         updateSchemeColor();
     } else {
-        visualizer.style.backgroundColor = localStorage.madesktopVisBgColor || 'black';
+        mainArea.style.backgroundColor = localStorage.madesktopVisBgColor || 'black';
+    }
+
+    if (localStorage.madesktopVisDimAlbumArt) {
+        albumArt.style.opacity = '0.5';
+    } else {
+        albumArt.style.opacity = '1';
     }
 }
 
 window.addEventListener('load', updateSchemeColor);
 
 window.addEventListener("message", (event) => {
-    if (event.data.type === "scheme-updated") {
-        if (schemeElement.href.startsWith('file:///') && localStorage.madesktopVisUseSchemeColors && (!window.lastAlbumArt || !localStorage.madesktopVisFollowAlbumArt)) {
-            location.reload();
-        } else {
-            updateSchemeColor();
-        }
+    switch (event.data.type) {
+        case "scheme-updated":
+            if (schemeElement.href.startsWith('file:///') && localStorage.madesktopVisUseSchemeColors && (!window.lastAlbumArt || !localStorage.madesktopVisFollowAlbumArt)) {
+                location.reload();
+            } else {
+                updateSchemeColor();
+            }
+            break;
+        case "sysplug-option-changed":
+            if (localStorage.sysplugIntegration) {
+                viewMenuItems[3].classList.remove('disabled');
+            } else {
+                viewMenuItems[3].classList.add('disabled');
+                if (localStorage.madesktopVisMediaControls) {
+                    delete localStorage.madesktopVisMediaControls;
+                    viewMenuItems[3].classList.remove('checkedItem');
+                    delete statusArea.dataset.controllable;
+                }
+            }
     }
 });
 
@@ -440,7 +676,7 @@ function updateSchemeColor() {
     window.schemeBarColor = getComputedStyle(document.documentElement).getPropertyValue('--hilight');
     window.schemeTopColor = getComputedStyle(document.documentElement).getPropertyValue('--button-text');
     if (localStorage.madesktopVisUseSchemeColors && (!window.lastAlbumArt || !localStorage.madesktopVisFollowAlbumArt)) {
-        visualizer.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--button-face');
+        mainArea.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--button-face');
     }
 }
 

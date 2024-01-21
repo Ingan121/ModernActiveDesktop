@@ -27,19 +27,19 @@
         <fieldset>
             <legend>Custom colors</legend>
             <section id="customColors" class="field-row disabled">
-                Background:
+                <span id="bgColorPickerLabel">Background:</span>
                 <button id="bgColorPicker" class="colorPicker" disabled>
                     <div class="colorPicker-color"></div>
                     <div class="colorPicker-bar"></div>
                     <div class="colorPicker-expandMark">⏷</div>
                 </button>
-                Bar:
+                <span id="barColorPickerLabel">Bar:</span>
                 <button id="barColorPicker" class="colorPicker" disabled>
                     <div class="colorPicker-color" style="background-color: #a4eb0c;"></div>
                     <div class="colorPicker-bar"></div>
                     <div class="colorPicker-expandMark">⏷</div>
                 </button>
-                Top:
+                <span id="topColorPickerLabel">Top:</span>
                 <button id="topColorPicker" class="colorPicker" disabled>
                     <div class="colorPicker-color" style="background-color: #dfeaf7;"></div>
                     <div class="colorPicker-bar"></div>
@@ -50,7 +50,9 @@
         <fieldset>
             <legend>Album art</legend>
             <input id="albumArtChkBox" type="checkbox" name="albumArt">
-            <label for="albumArtChkBox">Show album art</label>
+            <label for="albumArtChkBox">Show album art</label><br>
+            <input id="dimAlbumArtChkBox" type="checkbox" name="albumArt" disabled>
+            <label for="dimAlbumArtChkBox">Dim album art</label>
         </fieldset>
         <section class="topmargin field-row" style="justify-content: flex-end;">
             <button id="okBtn">OK</button>

@@ -7,6 +7,7 @@ const http = require('http');
 const fs = require('fs');
 const url = require('url');
 const args = require('minimist')(process.argv);
+const { execFile } = require('child_process');
 
 if (args.help) {
   console.log(`ModernActiveDesktop System Plugin ${app.getVersion()} Help`);
@@ -482,17 +483,87 @@ function onRequest(req, res) {
       break;
 
     case '/playpause':
-      const { exec } = require('child_process');
-      exec('"' + path.join(__dirname, 'MediaControl.exe') + '"', (err, stdout, stderr) => {
-        if (err) {
-          console.error(err);
-          res.writeHead(500);
-          res.end('Error');
-          return;
+      if (req.method === 'POST') {
+        let body = '';
+
+        req.on('data', function (data) {
+          body += data;
+
+          // Too much POST data, kill the connection!
+          // 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
+          if (body.length > 1e6)
+            req.connection.destroy();
+        });
+
+        req.on('end', function () {
+          execMccAndRespond('playpause', body, res);
+        });
+      } else {
+        execMccAndRespond('playpause', undefined, res);
+      }
+      break;
+
+    case '/stop':
+        if (req.method === 'POST') {
+          let body = '';
+  
+          req.on('data', function (data) {
+            body += data;
+  
+            // Too much POST data, kill the connection!
+            // 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
+            if (body.length > 1e6)
+              req.connection.destroy();
+          });
+  
+          req.on('end', function () {
+            execMccAndRespond('stop', body, res);
+          });
+        } else {
+          execMccAndRespond('stop', undefined, res);
         }
-        res.writeHead(200);
-        res.end('OK');
-      });
+        break;
+
+    case '/prev':
+      if (req.method === 'POST') {
+        let body = '';
+
+        req.on('data', function (data) {
+          body += data;
+
+          // Too much POST data, kill the connection!
+          // 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
+          if (body.length > 1e6)
+            req.connection.destroy();
+        });
+
+        req.on('end', function () {
+          execMccAndRespond('prev', body, res);
+        });
+      } else {
+        execMccAndRespond('stop', undefined, res);
+      }
+      break;
+
+    case '/next':
+      if (req.method === 'POST') {
+        let body = '';
+
+        req.on('data', function (data) {
+          body += data;
+
+          // Too much POST data, kill the connection!
+          // 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
+          if (body.length > 1e6)
+            req.connection.destroy();
+        });
+
+        req.on('end', function () {
+          execMccAndRespond('next', body, res);
+        });
+      } else {
+        execMccAndRespond('next', undefined, res);
+      }
       break;
 
     case '/connecttest':
@@ -521,6 +592,9 @@ function onRequest(req, res) {
       <a href="/config/openwith">/config/openwith</a><br>
       <a href="/systemscheme">/systemscheme</a><br>
       <a href="/playpause">/playpause</a><br>
+      <a href="/stop">/stop</a><br>
+      <a href="/prev">/prev</a><br>
+      <a href="/next">/next</a><br>
       <a href="/connecttest">/connecttest</a><br>
       <a href="/debugger">/debugger</a></p>`)
       break;
@@ -529,4 +603,19 @@ function onRequest(req, res) {
       res.writeHead(404);
       res.end('404 Not Found', 'utf-8');
   }
+}
+
+function execMccAndRespond(command, title, res) {
+  const args = [command];
+  if (title) args.push(title);
+  execFile(path.join(__dirname, 'MediaControlCLI.exe'), args, (err) => {
+    if (err) {
+      console.error(err);
+      res.writeHead(500);
+      res.end(err.toString());
+      return;
+    }
+    res.writeHead(200);
+    res.end('OK');
+  });
 }

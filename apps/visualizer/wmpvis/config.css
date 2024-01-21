@@ -59,6 +59,10 @@ form {
     font-size: 10px;
 }
 
+label[for="dimAlbumArtChkBox"] {
+    margin-top: 3px;
+}
+
 #miniPicker {
     position: absolute;
     top: 0;

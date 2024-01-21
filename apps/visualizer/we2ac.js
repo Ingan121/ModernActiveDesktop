@@ -1,4 +1,4 @@
-// we2ac.js for ModernActiveDesktop
+// we2ac.js for ModernActiveDesktop Visualizer
 // Made by Ingan121
 // Licensed under the MIT License
 

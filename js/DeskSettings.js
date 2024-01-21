@@ -54,6 +54,7 @@ window.vWidth = window.innerWidth;
 window.vHeight = window.innerHeight;
 
 window.deskMovers = {};
+window.visDeskMover = null;
 
 let debugLog = false;
 
@@ -239,6 +240,19 @@ window.wallpaperPropertyListener = {
         if (properties.openproperties) {
             openWindow("apps/madconf/background.html", true);
         }
+        if (properties.audioprocessing) {
+            if (properties.audioprocessing.value) {
+                delete localStorage.madesktopVisUnavailable;
+                if (!visDeskMover) {
+                    openWindow("apps/visualizer/index.html", false, "480px", "380px", "wnd", false, "200px", "500px");
+                }
+            } else {
+                localStorage.madesktopVisUnavailable = true;
+                if (visDeskMover) {
+                    visDeskMover.closeWindow();
+                }
+            }
+        }
     }
 };
 
@@ -375,19 +389,19 @@ function changeColorScheme(scheme) {
         document.documentElement.style.setProperty('--hilight-inverted', 'var(--hilight-text)');
     }
 
-    announceSchemeChange();
+    announce("scheme-updated");
 }
 
-function announceSchemeChange() {
+function announce(type) {
     try {
-        bgHtmlView.contentWindow.postMessage({ type: "scheme-updated" }, "*");
+        bgHtmlView.contentWindow.postMessage({ type }, "*");
     } catch {
         // page did not load yet
     }
     for (let i = 0; i < windowContainers.length; i++) {
         try {
             const iframe = windowContainers[i].getElementsByClassName("windowElement")[0];
-            iframe.contentWindow.postMessage({ type: "scheme-updated" }, "*");
+            iframe.contentWindow.postMessage({ type }, "*");
         } catch {
             // attempting to do this on destroyed deskitems
             // or page did not load yet
@@ -439,7 +453,7 @@ function changeMenuStyle(style) {
     } else {
         menuStyleElement.href = `css/flatmenu-${style}.css`;
     }
-    announceSchemeChange();
+    announce("scheme-updated");
 }
 
 // Change the 'open with' option of the system plugin, by sending a POST request to the system plugin

@@ -134,6 +134,8 @@ window.apply = function () {
 
     localStorage.madesktopChanViewLeftMargin = config.leftIcon;
     localStorage.madesktopChanViewRightMargin = config.rightIcon;
+
+    parent.announce("sysplug-option-changed");
 }
 
 dpiSlider.addEventListener('input', function () {

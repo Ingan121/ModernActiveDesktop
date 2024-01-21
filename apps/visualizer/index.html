@@ -19,11 +19,17 @@
         <div id="optMenuBtn"><span><u>O</u>ptions</span></div>
         <div id="helpMenuBtn"><span><u>H</u>elp</span></div>
     </div>
-    <iframe id="visualizer" src="wmpvis/wmpvis.html"></iframe>
+    <div id="mainArea">
+        <img id="albumArt" src="">
+        <iframe id="visualizer" src="wmpvis/wmpvis.html"></iframe>
+    </div>
     <div id="statusArea">
         <div id="play" class="statusButton"><p>▶</p></div>
         <div id="pause" class="statusButton"><p>⏸</p></div>
         <div id="stop" class="statusButton" data-active="1"><p>⏹</p></div>
+        <div id="vertbar"></div>
+        <div id="prev" class="statusButton"><p>⏮</p></div>
+        <div id="next" class="statusButton"><p>⏭</p></div>
         <div id="seekBar" class="statusItem"><div id="seekHandle"></div></div>
     </div>
     <div id="infoArea">
@@ -57,7 +63,8 @@
         <div id="visMenu" class="contextMenu window-body">
             <div class="contextMenuItem"><p><u>A</u>lbum Art</p></div>
             <div class="contextMenuItem activeStyle"><p>WMP <u>B</u>ars</p></div>
-            <div class="contextMenuItem"><p><u>M</u>ilkDrop (ButterChurn)</p></div>
+            <div class="contextMenuItem"><p><u>M</u>ilkDrop (Butterchurn)</p></div>
+            <hr>
             <div class="contextMenuItem"><p>E<u>x</u>it</p></div>
         </div>
     </div>
@@ -66,6 +73,7 @@
             <div class="contextMenuItem"><p><u>A</u>utohide Menu Bar</p></div>
             <div class="contextMenuItem"><p><u>I</u>nformation</p></div>
             <div class="contextMenuItem"><p>Playback <u>S</u>tatus</p></div>
+            <div class="contextMenuItem disabled"><p><u>E</u>nable Media Controls</p></div>
         </div>
     </div>
     <div id="optMenuBg" class="contextMenuBg window" tabindex="-1">
