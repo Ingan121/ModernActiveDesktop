@@ -1,3 +1,7 @@
+// libmad.js for ModernActiveDesktop
+// Made by Ingan121
+// Licensed under the MIT License
+
 'use strict';
 
 (function () {
@@ -61,50 +65,12 @@
     });
 
     function applyScheme(startup) {
-        if (styleElement && window.osguiCompatRequired) {
-            if (parentSchemeElement.href !== "data:text/css,") {
-                // OS-GUI Compatibility
-                styleElement.textContent = `:root {
-                    --ActiveBorder: var(--active-border);
-                    --ActiveTitle: var(--active-title);
-                    --AppWorkspace: var(--app-workspace);
-                    --Background: var(--background);
-                    --ButtonAlternateFace: var(--button-alternate-face);
-                    --ButtonDkShadow: var(--button-dk-shadow);
-                    --ButtonFace: var(--button-face);
-                    --ButtonHilight: var(--button-hilight);
-                    --ButtonLight: var(--button-light);
-                    --ButtonShadow: var(--button-shadow);
-                    --ButtonText: var(--button-text);
-                    --GradientActiveTitle: var(--gradient-active-title);
-                    --GradientInactiveTitle: var(--gradient-inactive-title);
-                    --GrayText: var(--gray-text);
-                    --Hilight: var(--hilight);
-                    --HilightText: var(--hilight-text);
-                    --HotTrackingColor: var(--hot-tracking-color);
-                    --InactiveBorder: var(--inactive-border);
-                    --InactiveTitle: var(--inactive-title);
-                    --InactiveTitleText: var(--inactive-title-text);
-                    --InfoText: var(--info-text);
-                    --InfoWindow: var(--info-window);
-                    --Menu: var(--menu);
-                    --MenuText: var(--menu-text);
-                    --Scrollbar: var(--scrollbar);
-                    --TitleText: var(--title-text);
-                    --Window: var(--window);
-                    --WindowFrame: var(--window-frame);
-                    --WindowText: var(--window-text);
-                }`;
-                // jspaint dark theme stuff
-                if (!startup) { // Do this on onload instead, as non-dataurl schemes loads slowly
-                    if (parentSchemeElement.href.startsWith("file:///")) {
-                        // Well these load slower, so let's just use the light theme on theme change as current two css themes are light ones
-                    } else {
-                        processJSPaintDarkTheme();
-                    }
-                }
-            } else {
+        if (schemeElement && !startup) { // Do this on onload instead of startup, as non-dataurl schemes loads slowly
+            if (parentSchemeElement.href.startsWith("file:///")) {
+                // Well these load slower, so let's just use the light theme on theme change as current two css themes are light ones
                 styleElement.textContent = "";
+            } else {
+                processDarkTheme();
             }
         }
         schemeElement.href = parentSchemeElement.href;
@@ -133,23 +99,34 @@
         }
     }
 
-    if (styleElement && window.osguiCompatRequired) {
-        window.onload = processJSPaintDarkTheme;
+    if (styleElement) {
+        window.addEventListener("load", processDarkTheme);
     }
 
-    function processJSPaintDarkTheme() {
+    function processDarkTheme() {
         if (isDarkColor(getComputedStyle(parent.document.documentElement).getPropertyValue('--button-face'))) {
-            styleElement.textContent += `
-                .tool-icon {
-                    background-image: url("images/dark/tools.png");
-                    background-repeat: no-repeat;
-                    background-position: calc(-16px * var(--icon-index)) 0;
-                }
-                .tool-icon.use-svg {
-                    background-image: url("images/dark/tools.svg");
-                    background-position: calc(-16px * (var(--icon-index) * 2 + 1)) -16px;
+            styleElement.textContent = `
+                input[type=checkbox]:checked+label:after {
+                    filter: invert(1);
                 }
             `;
+            if (window.osguiCompatRequired) {
+                styleElement.textContent += `
+                    .tool-icon {
+                        background-image: url("images/dark/tools.png");
+                        background-repeat: no-repeat;
+                        background-position: calc(-16px * var(--icon-index)) 0;
+                    }
+                    .tool-icon.use-svg {
+                        background-image: url("images/dark/tools.svg");
+                        background-position: calc(-16px * (var(--icon-index) * 2 + 1)) -16px;
+                    }
+                `;
+            }
+            window.madIsDarkTheme = true;
+        } else {
+            styleElement.textContent = "";
+            window.madIsDarkTheme = false;
         }
     }
     

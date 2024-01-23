@@ -1,9 +1,15 @@
+// appearance.js for ModernActiveDesktop Configurator
+// Made by Ingan121
+// Licensed under the MIT License
+
 'use strict';
 
 main();
 
 async function main() {
     let scheme = parseCssScheme(await getSchemeText());
+    const preview = document.getElementById("preview");
+    const styleElement = document.getElementById("style2");
     const schemeSelector = document.getElementById("schemeSelector");
     const schemeSelectorOptions = schemeSelector.options;
     const selector = document.getElementById("selector");
@@ -32,15 +38,12 @@ async function main() {
             selector.disabled = false;
         }
         selector.dispatchEvent(new Event("change"));
-    
-        if (schemeSelector.value === "95" || 
-            schemeSelector.value === "aero" ||
-            schemeSelector.value.startsWith("win"))
-        {
+
+        if (schemeSelector.value === "95" || schemeSelector.value.startsWith("win")) {
             flatMenuChkBox.checked = true;
             flatMenuSelector.disabled = false;
             flatMenuSelector.selectedIndex = 0;
-        } else if (schemeSelector.value.startsWith("xp")) {
+        } else if (schemeSelector.value.startsWith("xp") || schemeSelector.value === "aero") {
             flatMenuChkBox.checked = true;
             flatMenuSelector.disabled = false;
             flatMenuSelector.selectedIndex = 2;
@@ -96,14 +99,14 @@ async function main() {
     systemColorChhkBox.addEventListener("change", async function () {
         if (systemColorChhkBox.checked) {
             schemeSelector.disabled = true;
-            selector.disabled = true;
-            colorPicker.disabled = true;
+            selector.selectedIndex = 11; // background
             scheme = parseCssScheme(await getSchemeText("http://localhost:3031/systemscheme"));
             applyPreview();
+            selector.disabled = true;
+            selector.dispatchEvent(new Event("change"));
         } else {
             schemeSelector.disabled = false;
             selector.disabled = false;
-            colorPicker.disabled = false;
         }
     });
 
@@ -152,7 +155,9 @@ async function main() {
     window.apply = function () {
         parent.changeFont(fontSmoothingChkBox.checked);
         if (systemColorChhkBox.checked) {
+            applyScheme(scheme); // Apply the cached one (for preview) first to give libmad a chance to load the system scheme at the right time
             applyScheme("sys");
+            parent.changeBgColor(colorPickerColor.style.backgroundColor);
         } else if (selector.disabled) {
             parent.changeColorScheme(schemeSelector.value);
             localStorage.madesktopColorScheme = schemeSelector.value;
@@ -188,7 +193,7 @@ async function main() {
         systemColorChhkBox.checked = true;
         schemeSelector.disabled = true;
         selector.disabled = true;
-        colorPicker.disabled = true;
+        colorPickerColor.style.backgroundColor = localStorage.madesktopBgColor;
     } else if (localStorage.madesktopColorScheme !== "custom" && localStorage.madesktopColorScheme !== "98" && localStorage.madesktopColorScheme) {
         schemeSelector.value = localStorage.madesktopColorScheme;
         if (schemeSelectorOptions[schemeSelector.selectedIndex].dataset.inconfigurable) {
@@ -241,25 +246,23 @@ async function main() {
     }
 
     function applyPreview() {
-        const preview = document.getElementById("preview");
-        const styleElement = document.getElementById("style");
         const schemeText = generateCssScheme(scheme, "#preview");
         styleElement.textContent = schemeText;
-    
+
         if (fontSmoothingChkBox.checked) {
             styleElement.textContent += `
-                #preview * {
-                    font-family: 'Segoe UI', sans-serif !important;
+                #preview *:not(.title-bar-text) {
+                    font-family: 'Segoe UI', sans-serif;
                 }
             `;
         } else {
             styleElement.textContent += `
-                #preview * {
-                    font-family: "Pixelated MS Sans Serif" !important;
+                #preview *:not(.title-bar-text) {
+                    font-family: "Pixelated MS Sans Serif";
                 }
             `;
         }
-    
+
         if (flatMenuChkBox.checked && flatMenuSelector.selectedIndex !== 1) {
             styleElement.textContent += `
                 .menu > div[data-active] {
@@ -272,7 +275,7 @@ async function main() {
                 }
             `;
         }
-    
+
         if (selector.disabled) {
             preview.style.backgroundColor = document.querySelector(".colorPicker-color").style.backgroundColor;
         } else {

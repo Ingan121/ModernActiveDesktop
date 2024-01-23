@@ -7,15 +7,18 @@ option,
 table,
 ul.tree-view,
 .window,
-.title-bar,
 #madWelcome .items,
 #madWelcome .contents,
 #placeholder,
 .menu,
 #madVis #infoArea,
-#madVisConf
+#madVisConf,
 li[role=tab] {
   font-family: sans-serif !important;
+}
+
+.title-bar {
+  font-family: sans-serif; /* Don't apply this with the XP style */
 }
 
 #madconf #checkboxes {

@@ -33,6 +33,16 @@ html, body {
     background-color: black;
 }
 
+#pausedAlert {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    display: none;
+    z-index: 3;
+}
+
 #albumArt {
     position: absolute;
     top: 50%;
@@ -40,12 +50,15 @@ html, body {
     transform: translate(-50%, -50%);
     max-width: 100%;
     max-height: 100%;
+    min-height: 35%;
+    object-fit: contain;
+    z-index: 1;
 }
 
 #visualizer {
     border: none;
-    height: 100%;
     width: 100%;
+    height: 100%;
     pointer-events: none;
     position: absolute;
     z-index: 2;
@@ -60,7 +73,7 @@ html, body {
     font-size: 11px;
     background-color: var(--button-face);
     width: 100%;
-    z-index: 3;
+    z-index: 4;
 }
 
 .menu:hover,
@@ -98,7 +111,7 @@ html, body {
     overflow: hidden;
     animation: cmDropdown 0.25s linear;
     background-color: var(--menu);
-    z-index: 4;
+    z-index: 5;
 }
 
 .contextMenuBg:focus {
@@ -113,12 +126,12 @@ html, body {
 }
 
 #visMenuBg {
-    width: 160px;
-    height: 77px;
+    width: 120px;
+    height: 60px;
 }
 
 #visMenu {
-    width: 158px;
+    width: 118px;
 }
 
 #viewMenuBg {
@@ -142,13 +155,13 @@ html, body {
 }
 
 #helpMenuBg {
-    width: 100px;
+    width: 130px;
     height: 17px;
     left: 140px;
 }
 
 #helpMenu {
-    width: 98px;
+    width: 128px;
 }
 
 .contextMenuItem {
@@ -369,6 +382,7 @@ html, body {
 }
 
 #seekHandle {
+    display: none;
     width: 13px;
     height: 15px;
     background-image: url('seekHandle.png');
@@ -404,6 +418,9 @@ html, body {
 
 #rightArea {
     margin-left: 25px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 #subtitle, #album, #albumArtist, #genre {

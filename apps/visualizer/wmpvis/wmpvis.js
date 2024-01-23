@@ -4,6 +4,7 @@
 
 'use strict';
 
+const pausedAlert = parent.document.getElementById('pausedAlert');
 const mainCanvas = document.getElementById('bar');
 const topCanvas = document.getElementById('top');
 const mainCanvasCtx = mainCanvas.getContext('2d');
@@ -21,10 +22,13 @@ const topSpeed = new Array(128).fill(0);
 
 let updateCnt = 0;
 let triedRegistering = false;
+let timeout;
 
 function wallpaperAudioListener(audioArray) {
     updateCnt++;
     triedRegistering = false;
+    clearTimeout(timeout);
+    pausedAlert.style.display = 'none';
 
     if (window.noupdate || localStorage.madesktopVisOnlyAlbumArt) {
         return;
@@ -46,7 +50,7 @@ function wallpaperAudioListener(audioArray) {
         mainCanvasCtx.fillStyle = parent.schemeBarColor;
         topCanvasCtx.fillStyle = parent.schemeTopColor;
     }
-    // Iterate over the first 64 array elements (0 - 63) for the left channel audio data
+
     for (var i = 0; i < audioArray.length; ++i) {
         // Create an audio bar with its hight depending on the audio volume level of the current frequency
         const height = mainCanvas.height * Math.min(audioArray[i], 1);
@@ -85,11 +89,19 @@ function wallpaperAudioListener(audioArray) {
     }
 }
 
-window.addEventListener('resize', () => {
+function updateSize() {
     mainCanvas.height = window.innerHeight;
     mainCanvas.width = window.innerWidth;
     topCanvas.height = window.innerHeight;
     topCanvas.width = window.innerWidth;
+}
+
+window.addEventListener('resize', updateSize);
+window.addEventListener('load', updateSize);
+
+pausedAlert.addEventListener('click', () => {
+    window.wallpaperRegisterAudioListener(wallpaperAudioListener);
+    parent.setupListeners();
 });
 
 // Register the audio listener provided by Wallpaper Engine.
@@ -106,6 +118,9 @@ setInterval(() => {
         // Only try once, as having a maximized window, etc also causes the update to stop
         // It will begin updating again when such conditions are no longer met
         triedRegistering = true;
+        timeout = setTimeout(() => {
+            pausedAlert.style.display = 'block';
+        }, 500);
     }
     updateCnt = 0;
 }, 200);

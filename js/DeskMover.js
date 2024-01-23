@@ -83,7 +83,7 @@ class DeskMover {
             this.contextMenuBg.addEventListener('focusout', this.closeContextMenu.bind(this));
             this.dropdownBg.addEventListener('focusout', this.closeDropdown.bind(this));
 
-            this.windowContainer.addEventListener('mousedown', this.wcMouseDown.bind(this));
+            this.windowContainer.addEventListener('mousedown', this.#wcMouseDown.bind(this));
             document.addEventListener('mouseup', this.#docMouseUp.bind(this));
             this.windowElement.addEventListener('mouseover', this.#weMouseOver.bind(this));
             this.windowContainer.addEventListener('mouseleave', this.#wcMouseLeave.bind(this));
@@ -264,11 +264,12 @@ class DeskMover {
             this.windowElement.src = this.config.src;
         } else {
             if (reinit) {
-                this.changeWndStyle("ad");
+                this.changeWndStyle("wnd");
             }
             if (this.numStr !== "") {
+                // Assign default values
                 let url = "placeholder.html";
-                let defaultLeft = window.vWidth - this.windowContainer.offsetWidth - (parseInt(localStorage.madesktopChanViewRightMargin) || 0) - 200 + 'px';
+                let defaultLeft = window.vWidth - this.windowContainer.offsetWidth - (parseInt(localStorage.madesktopChanViewRightMargin) || 0) - 500 + 'px';
                 let defaultTop = '200px';
                 if ((typeof openDoc === "string" || openDoc instanceof String) && !reinit) {
                     if (openDoc.startsWith("apps/madconf/")) {
@@ -289,8 +290,8 @@ class DeskMover {
                         this.#toggleAoT();
                     }
                 } else {
-                    this.windowElement.width = width || '250px';
-                    this.windowElement.height = height || '150px';
+                    this.windowElement.width = width || '300px';
+                    this.windowElement.height = height || '200px';
                     this.adjustElements();
                 }
                 [defaultLeft, defaultTop] = cascadeWindow(defaultLeft, defaultTop);
@@ -422,6 +423,12 @@ class DeskMover {
     }
 
     changeWndStyle(style) {
+        if (style === "noframes") {
+            style = "ad";
+            this.config.noFrames = true;
+        } else {
+            this.config.noFrames = false;
+        }
         switch (style) {
             case "nonad":
                 this.windowContainer.classList.add("window");
@@ -590,10 +597,8 @@ class DeskMover {
         this.#saveConfig();
     }
 
-    wcMouseDown(event) {
-        this.windowContainer.style.zIndex = this.config.alwaysOnTop ? ++lastAoTZIndex : ++lastZIndex; // bring to top
-        activateWindow(this.numStr || 0);
-        saveZOrder();
+    #wcMouseDown(event) {
+        this.bringToTop();
         if (event && (this.windowFrame.style.borderColor !== "transparent" || this.config.style !== "ad") && !this.mouseOverWndBtns) {
             iframeClickEventCtrl(false);
             this.isDown = true;
@@ -736,7 +741,7 @@ class DeskMover {
     
     async #weLoad () {
         this.windowElement.contentDocument.addEventListener('mousemove', this.#weConMouseMove.bind(this));
-        this.windowElement.contentDocument.addEventListener('mousedown', this.#weConMouseDown.bind(this));
+        this.windowElement.contentDocument.addEventListener('mousedown', this.bringToTop.bind(this));
         
         if (!this.config.title) {
             this.windowTitleText.textContent = this.windowElement.contentDocument.title || "ModernActiveDesktop";
@@ -854,7 +859,7 @@ class DeskMover {
         this.timeout = setTimeout(this.#updateWindowComponentVisibility.bind(this), 500);
     }
 
-    #weConMouseDown () {
+    bringToTop () {
         this.windowContainer.style.zIndex = this.config.alwaysOnTop ? ++lastAoTZIndex : ++lastZIndex;
         activateWindow(this.numStr || 0);
         saveZOrder();
@@ -966,14 +971,15 @@ class DeskMover {
     // Update the visibility of window components based on the cursor's position
     // Replicates the original ActiveDesktop behavior
     #updateWindowComponentVisibility() {
-        if (this.config.style === "ad") {
+        if (this.config.style === "ad" && !this.config.noFrames) {
             this.windowElement.style.borderColor = "var(--button-face)";
         }
         if (typeof this.posInWindow !== 'undefined') {
-            if (this.posInWindow.x <= 15 || 
+            if ((this.posInWindow.x <= 15 || 
                 this.posInWindow.x >= this.windowElement.offsetWidth - 15 || 
                 this.posInWindow.y <= 50 || 
-                this.posInWindow.y >= this.windowElement.offsetHeight - 15
+                this.posInWindow.y >= this.windowElement.offsetHeight - 15) &&
+                !this.config.noFrames
             ) {
                 if (this.config.style === "ad") {
                     this.windowFrame.style.borderColor = "var(--button-face)";

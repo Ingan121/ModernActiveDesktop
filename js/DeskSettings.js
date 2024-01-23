@@ -34,6 +34,7 @@ const toggleModeBtn = document.getElementById("toggleModeBtn");
 const chord = new Audio("sounds/chord.wav");
 const ding = new Audio("sounds/ding.wav");
 
+const isWin10 = navigator.userAgent.includes('Windows NT 10.0');
 const NO_SYSPLUG_ALERT = "System plugin is not running. Please make sure you have installed it properly. If you don't want to use it, please disable the system plugin integration option.";
 
 let lastZIndex = parseInt(localStorage.madesktopItemCount) || 0;
@@ -62,6 +63,10 @@ let debugLog = false;
 if (!localStorage.madesktopItemCount) {
     localStorage.madesktopItemCount = 1;
     localStorage.madesktopOpenWindows = "0";
+}
+
+if (!isWin10) {
+    delete localStorage.sysplugIntegration;
 }
 
 if (localStorage.madesktopBgColor) document.body.style.backgroundColor = localStorage.madesktopBgColor;
@@ -150,12 +155,6 @@ bgHtmlView.addEventListener('load', function () {
 if (typeof wallpaperOnVideoEnded === "function") { // Check if running in Wallpaper Engine
     runningMode = WE;
 }
-
-// Press Ctrl+Shift+Y to activate the debug mode
-// Wont work in WE so enter !debugmode in the Change URL window
-document.addEventListener('keypress', function(event) {
-    if (event.ctrlKey && event.shiftKey && event.code === 'KeyY') activateDebugMode();
-});
 
 // Main context menu things (only for browser uses)
 window.addEventListener('contextmenu', function (event) {
@@ -565,10 +564,10 @@ function openWindow(openDoc, temp, width, height, style, centered, top, left, ao
         }
         if (localStorage.madesktopItemVisible === "false") {
             windowContainers[0].style.display = "block";
-            deskMover = createNewDeskItem(localStorage.madesktopItemCount, openDoc, temp, width, height, style || (openDoc ? "wnd" : "ad"), centered, top, left, aot);
+            deskMover = createNewDeskItem(localStorage.madesktopItemCount, openDoc, temp, width, height, style || "wnd", centered, top, left, aot);
             windowContainers[0].style.display = "none";
         } else {
-            deskMover = createNewDeskItem(localStorage.madesktopItemCount, openDoc, temp, width, height, style || (openDoc ? "wnd" : "ad"), centered, top, left, aot);
+            deskMover = createNewDeskItem(localStorage.madesktopItemCount, openDoc, temp, width, height, style || "wnd", centered, top, left, aot);
         }
         activateWindow(localStorage.madesktopItemCount);
         localStorage.madesktopItemCount++;
@@ -710,7 +709,7 @@ function activateWindow(num = activeWindow || 0) {
         activeWindow = num;
     }
 
-    if (!localStorage.madesktopNoDeactivate) {
+    if (!localStorage.madesktopNoDeactivate && deskMovers[num]) {
         deskMovers[num].config.active = true;
     }
 

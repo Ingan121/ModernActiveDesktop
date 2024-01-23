@@ -1,3 +1,9 @@
+// ChannelViewer.js for ModernActiveDesktop
+// Made by Ingan121
+// Licensed under the MIT License
+
+'use strict';
+
 const bgHtmlView = document.getElementById("bgHtml");
 const iframe = document.getElementById("iframe");
 const container = document.getElementById("container");
@@ -207,7 +213,7 @@ function hookIframeSize(iframe) {
 
     // Also hook window.open as this doesn't work in WE
     // Try to use sysplug, and if unavailable, just prompt for URL copy
-    if (runningMode != BROWSER) {
+    if (typeof wallpaperOnVideoEnded === "function") {
         iframe.contentWindow.open = function (url) {
             if (localStorage.sysplugIntegration) {
                 fetch("http://localhost:3031/open", { method: "POST", body: url })

@@ -1,3 +1,7 @@
+// misc.js for ModernActiveDesktop Configurator
+// Made by Ingan121
+// Licensed under the MIT License
+
 'use strict';
 
 const dpiSlider = document.getElementById('dpiSlider');
@@ -16,6 +20,8 @@ const connectTestBtn = document.getElementById('connectTestBtn');
 const connectionStatus = document.getElementById('connectionStatus');
 const showGuideBtn = document.getElementById('showGuideBtn');
 const resetBtn = document.getElementById('resetBtn');
+
+const isWin10 = navigator.userAgent.includes('Windows NT 10.0');
 
 let config = {
     dpi: parent.scaleFactor,
@@ -74,13 +80,21 @@ switch (config.dpi * 100) {
 }
 dpiSlider.value = dpiSelector.selectedIndex;
 
-if (config.sysplug) {
-    sysplugChkBox.checked = true;
-    sysplugOpenOptSelector.disabled = false;
-    getSysplugOWConfig();
-}
+if (isWin10) {
+    if (config.sysplug) {
+        sysplugChkBox.checked = true;
+        sysplugOpenOptSelector.disabled = false;
+        getSysplugOWConfig();
+    }
 
-sysplugOpenOptSelector.selectedIndex = config.sysplugOpenOpt;
+    sysplugOpenOptSelector.selectedIndex = config.sysplugOpenOpt;
+} else {
+    sysplugChkBox.disabled = true;
+    sysplugOpenOptSelector.disabled = true;
+    connectTestBtn.disabled = true;
+    connectionStatus.textContent = "System plugin requires Windows 10 or higher.";
+    showGuideBtn.disabled = true;
+}
 
 if (config.startSound) {
     startSoundChkBox.checked = true;

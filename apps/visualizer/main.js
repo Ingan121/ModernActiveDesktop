@@ -10,6 +10,7 @@ if (parent === window) {
     alert("MADVis is being cross-origin restricted. Please run ModernActiveDesktop with a web server.");
 } else if (madRunningMode !== 1) {
     madAlert("Sorry, but the visualizer is only available for Wallpaper Engine.", null, "error");
+    madDeskMover.isVisualizer = true;
     madCloseWindow();
 } else if (parent.visDeskMover && parent.visDeskMover !== madDeskMover) {
     madAlert("Only one instance of the visualizer can be open at a time.", null, "warning");
@@ -18,7 +19,9 @@ if (parent === window) {
     // Although the media integration is available, it is not reliable to be used in MAD
     // because we don't have a way to check if the media listener is invalidated or not
     // This happens frequently when an iframe loads a page or gets closed
+    // See also: the bottom of wmpvis.js
     madAlert("Audio recording is not enabled. Please enable it in the Wallpaper Engine properties panel.", null, "error");
+    madDeskMover.isVisualizer = true;
     madCloseWindow();
 } else {
     parent.visDeskMover = madDeskMover;
@@ -82,8 +85,13 @@ const helpMenuBg = document.getElementById('helpMenuBg');
 const helpMenu = document.getElementById('helpMenu');
 const helpMenuItems = helpMenu.querySelectorAll('.contextMenuItem');
 
+const isWin10 = navigator.userAgent.includes('Windows NT 10.0');
+const NO_MEDINT_MSG = isWin10
+    ? 'Media integration support is disabled. Please enable it in Wallpaper Engine -> General -> Media integration support.'
+    : 'This feature requires Windows 10 or higher.';
+
 let mouseOverMenu = false;
-let mediaIntegrationAvailable = true;
+let mediaIntegrationAvailable = isWin10;
 
 for (const menuName of ['vis', 'view', 'opt', 'help']) {
     const menuBtn = document.getElementById(menuName + 'MenuBtn');
@@ -97,7 +105,7 @@ for (const menuName of ['vis', 'view', 'opt', 'help']) {
         }
         openMenu(menuName);
         event.preventDefault(); // Prevent focusout event
-        madDeskMover.wcMouseDown(); // But keep the window activation working
+        madDeskMover.bringToTop(); // But keep the window activation working
     });
 
     menuBg.addEventListener('focusout', () => {
@@ -192,14 +200,13 @@ if (localStorage.madesktopVisOnlyAlbumArt) {
 visMenuItems[0].addEventListener('click', () => { // Album Art button
     closeMenu('vis');
     if (!mediaIntegrationAvailable) {
-        madAlert('Media integration support is disabled. Please enable it in Wallpaper Engine -> General -> Media integration support.');
+        madAlert(NO_MEDINT_MSG, null, isWin10 ? 'info' : 'error');
         return;
     }
 
     localStorage.madesktopVisOnlyAlbumArt = true;
     visMenuItems[0].classList.add('activeStyle');
     visMenuItems[1].classList.remove('activeStyle');
-    visMenuItems[2].classList.remove('activeStyle');
     visualizer.style.opacity = '0';
     albumArt.style.opacity = '1';
     localStorage.madesktopVisShowAlbumArt = true;
@@ -212,15 +219,10 @@ visMenuItems[1].addEventListener('click', () => { // WMP Bars button
     delete localStorage.madesktopVisOnlyAlbumArt;
     visMenuItems[0].classList.remove('activeStyle');
     visMenuItems[1].classList.add('activeStyle');
-    visMenuItems[2].classList.remove('activeStyle');
     visualizer.style.opacity = '1';
 });
 
-visMenuItems[2].addEventListener('click', () => { // MilkDrop button
-    closeMenu('vis');
-});
-
-visMenuItems[3].addEventListener('click', () => { // Exit button
+visMenuItems[2].addEventListener('click', () => { // Exit button
     madCloseWindow();
 });
 
@@ -242,7 +244,7 @@ viewMenuItems[0].addEventListener('click', () => { // Autohide Menu Bar button
 viewMenuItems[1].addEventListener('click', () => { // Information button
     closeMenu('view');
     if (!mediaIntegrationAvailable) {
-        madAlert('Media integration support is disabled. Please enable it in Wallpaper Engine -> General -> Media integration support.');
+        madAlert(NO_MEDINT_MSG, null, isWin10 ? 'info' : 'error');
         return;
     }
 
@@ -292,7 +294,7 @@ viewMenuItems[1].addEventListener('click', () => { // Information button
 viewMenuItems[2].addEventListener('click', () => { // Playback Status button
     closeMenu('view');
     if (!mediaIntegrationAvailable) {
-        madAlert('Media integration support is disabled. Please enable it in Wallpaper Engine -> General -> Media integration support.');
+        madAlert(NO_MEDINT_MSG, null, isWin10 ? 'info' : 'error');
         return;
     }
 
@@ -350,7 +352,7 @@ viewMenuItems[2].addEventListener('click', () => { // Playback Status button
 viewMenuItems[3].addEventListener('click', () => { // Enable Media Controls button
     closeMenu('view');
     if (!mediaIntegrationAvailable) {
-        madAlert('Media integration support is disabled. Please enable it in Wallpaper Engine -> General -> Media integration support.');
+        madAlert(NO_MEDINT_MSG, null, isWin10 ? 'info' : 'error');
         return;
     }
 
@@ -384,7 +386,7 @@ optMenuItems[0].addEventListener('click', () => { // Configure Visualization but
     });
 });
 
-helpMenuItems[0].addEventListener('click', () => { // About button
+helpMenuItems[0].addEventListener('click', () => { // About Visualizer button
     closeMenu('help');
     madOpenWindow('apps/madconf/about.html', true);
 });
@@ -659,7 +661,7 @@ window.addEventListener("message", (event) => {
             }
             break;
         case "sysplug-option-changed":
-            if (localStorage.sysplugIntegration) {
+            if (localStorage.sysplugIntegration && isWin10) {
                 viewMenuItems[3].classList.remove('disabled');
             } else {
                 viewMenuItems[3].classList.add('disabled');
@@ -681,6 +683,10 @@ function updateSchemeColor() {
 }
 
 function setupListeners() {
+    if (!isWin10) {
+        wallpaperMediaStatusListener({ enabled: false });
+        return;
+    }
     window.wallpaperRegisterMediaStatusListener(wallpaperMediaStatusListener);
     window.wallpaperRegisterMediaPropertiesListener(wallpaperMediaPropertiesListener);
     window.wallpaperRegisterMediaPlaybackListener(wallpaperMediaPlaybackListener);

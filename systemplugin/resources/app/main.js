@@ -1,3 +1,7 @@
+// main.js for ModernActiveDesktop System Plugin
+// Made by Ingan121
+// Licensed under the MIT License
+
 'use strict';
 
 // Modules to control application life and create native browser window
@@ -7,7 +11,7 @@ const http = require('http');
 const fs = require('fs');
 const url = require('url');
 const args = require('minimist')(process.argv);
-const { execFile } = require('child_process');
+const { spawn } = require('child_process');
 
 if (args.help) {
   console.log(`ModernActiveDesktop System Plugin ${app.getVersion()} Help`);
@@ -29,6 +33,7 @@ const gotTheLock = app.requestSingleInstanceLock();
 let tray = null;
 let mainWindow = null;
 let cvNumber = 0;
+let mcc = null;
 
 const configPath = app.getPath('userData') + '/config.json';
 const tempFilePath = app.getPath('temp') + '/madsp-uploaded.dat';
@@ -391,30 +396,23 @@ function onRequest(req, res) {
   switch (req.url) {
     case '/open':
       if (req.method === 'POST') {
-        let body = '';
+        processPost(req, res, function (body) {
+          if (!body.startsWith('http')) {
+            body = url.pathToFileURL(path.normalize(`${__dirname}/../../../${body}`)).toString();
+          }
 
-        req.on('data', function (data) {
-          body += data;
-
-          // Too much POST data, kill the connection!
-          // 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
-          if (body.length > 1e6)
-            req.connection.destroy();
-        });
-
-        req.on('end', function () {
-          if (!body.startsWith('http')) body = url.pathToFileURL(path.normalize(`${__dirname}/../../../${body}`)).toString();
-          
-          if (config.openWith < 2) mainWindow.webContents.executeJavaScript(`openPage("${body}");`);
-          else shell.openExternal(body);
-          res.end('OK');
+          if (config.openWith < 2) {
+            mainWindow.webContents.executeJavaScript(`openPage("${body}");`);
+          } else {
+            shell.openExternal(body);
+          }
         });
       } else {
         res.writeHead(405, {'Content-Type': 'text/html'});
         res.end('<h1>405 Method Not Allowed</h1><p>Usage: send a POST request with a URL in the request body</p>')
       }
       break;
-    
+
     case '/save':
       if (req.method === 'POST') {
         try {
@@ -450,21 +448,9 @@ function onRequest(req, res) {
 
     case '/config':
       if (req.method === 'POST') {
-        let body = '';
-
-        req.on('data', function (data) {
-          body += data;
-
-          // Too much POST data, kill the connection!
-          // 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
-          if (body.length > 1e6)
-            req.connection.destroy();
-        });
-
-        req.on('end', function () {
+        processPost(req, res, function (body) {
           const reqParse = JSON.parse(body);
           config.openWith = reqParse.openWith;
-          res.end('OK');
         });
       } else {
         res.writeHead(405, {'Content-Type': 'text/html'});
@@ -484,85 +470,41 @@ function onRequest(req, res) {
 
     case '/playpause':
       if (req.method === 'POST') {
-        let body = '';
-
-        req.on('data', function (data) {
-          body += data;
-
-          // Too much POST data, kill the connection!
-          // 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
-          if (body.length > 1e6)
-            req.connection.destroy();
-        });
-
-        req.on('end', function () {
-          execMccAndRespond('playpause', body, res);
+        processPost(req, res, function (body) {
+          runMccCmd('playpause', body);
         });
       } else {
-        execMccAndRespond('playpause', undefined, res);
+        runMccCmd('playpause');
       }
       break;
 
     case '/stop':
-        if (req.method === 'POST') {
-          let body = '';
-  
-          req.on('data', function (data) {
-            body += data;
-  
-            // Too much POST data, kill the connection!
-            // 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
-            if (body.length > 1e6)
-              req.connection.destroy();
-          });
-  
-          req.on('end', function () {
-            execMccAndRespond('stop', body, res);
-          });
-        } else {
-          execMccAndRespond('stop', undefined, res);
-        }
-        break;
+      if (req.method === 'POST') {
+        processPost(req, res, function (body) {
+          runMccCmd('stop', body);
+        });
+      } else {
+        runMccCmd('stop');
+      }
+      break;
 
     case '/prev':
       if (req.method === 'POST') {
-        let body = '';
-
-        req.on('data', function (data) {
-          body += data;
-
-          // Too much POST data, kill the connection!
-          // 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
-          if (body.length > 1e6)
-            req.connection.destroy();
-        });
-
-        req.on('end', function () {
-          execMccAndRespond('prev', body, res);
+        processPost(req, res, function (body) {
+          runMccCmd('prev', body);
         });
       } else {
-        execMccAndRespond('stop', undefined, res);
+        runMccCmd('prev');
       }
       break;
 
     case '/next':
       if (req.method === 'POST') {
-        let body = '';
-
-        req.on('data', function (data) {
-          body += data;
-
-          // Too much POST data, kill the connection!
-          // 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
-          if (body.length > 1e6)
-            req.connection.destroy();
-        });
-
-        req.on('end', function () {
-          execMccAndRespond('next', body, res);
+        processPost(req, res, function (body) {
+          runMccCmd('next', body);
         });
       } else {
-        execMccAndRespond('next', undefined, res);
+        runMccCmd('next');
       }
       break;
 
@@ -605,17 +547,48 @@ function onRequest(req, res) {
   }
 }
 
-function execMccAndRespond(command, title, res) {
-  const args = [command];
-  if (title) args.push(title);
-  execFile(path.join(__dirname, 'MediaControlCLI.exe'), args, (err) => {
-    if (err) {
-      console.error(err);
-      res.writeHead(500);
-      res.end(err.toString());
-      return;
-    }
-    res.writeHead(200);
+function processPost(req, res, callback) {
+  let body = '';
+
+  req.on('data', function (data) {
+    body += data;
+
+    // Too much POST data, kill the connection!
+    // 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
+    if (body.length > 1e6)
+      req.connection.destroy();
+  });
+
+  req.on('end', function () {
+    callback(body);
     res.end('OK');
   });
+}
+
+function initMcc() {
+  mcc = spawn(path.join(__dirname, 'MediaControlCLI.exe'), ['utf8']);
+  mcc.stdin.setEncoding('utf-8');
+  mcc.stdout.setEncoding('utf-8');
+  mcc.stderr.setEncoding('utf-8');
+  mcc.stdout.pipe(process.stdout);
+
+  mcc.on('error', (err) => {
+    console.error(err);
+    showErrorMsg(mainWindow, "Failed to run media control helper.\n" + err.toString(), "error");
+    mcc = null;
+  });
+
+  mcc.on('exit', (code) => {
+    console.log(`Media control helper exited with code ${code}`);
+    mcc = null;
+  });
+}
+
+function runMccCmd(command, title = "") {
+  const args = command + " " + title;
+  console.log(args);
+  if (!mcc) {
+    initMcc();
+  }
+  mcc.stdin.write(args + "\n");
 }

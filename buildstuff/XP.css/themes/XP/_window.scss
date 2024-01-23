@@ -26,7 +26,7 @@
 
 .title-bar,
 .os-window > .window-titlebar:not(#JustHereToGiveItPriority) {
-    font-family: "Trebuchet MS";
+    font-family: "Trebuchet MS" !important;
     background: linear-gradient(
         180deg,
         rgba(9, 151, 255, 1) 0%,

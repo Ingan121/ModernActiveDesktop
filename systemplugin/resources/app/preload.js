@@ -1,3 +1,9 @@
+// preload.js for ModernActiveDesktop System Plugin
+// Made by Ingan121
+// Licensed under the MIT License
+
+'use strict';
+
 const { ipcRenderer, contextBridge } = require('electron');
 const fs = require('fs');
 

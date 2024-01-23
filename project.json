@@ -11,7 +11,7 @@
 				"condition" : "additem.value = false; true",
 				"index" : 3,
 				"order" : 103,
-				"text" : "Add a new ActiveDesktop item",
+				"text" : "Add a new window",
 				"type" : "bool",
 				"value" : false
 			},
@@ -28,7 +28,7 @@
 				"condition" : "",
 				"index" : 1,
 				"order" : 101,
-				"text" : "BG Image",
+				"text" : "BG image",
 				"type" : "file",
 				"value" : ""
 			},

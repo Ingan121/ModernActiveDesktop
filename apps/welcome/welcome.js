@@ -1,3 +1,7 @@
+// welcome.js for ModernActiveDesktop
+// Made by Ingan121
+// Licensed under the MIT License
+
 'use strict';
 
 const items = document.querySelectorAll(".items");

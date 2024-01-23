@@ -1,3 +1,7 @@
+// wp_preview.js for ModernActiveDesktop Configurator
+// Made by Ingan121
+// Licensed under the MIT License
+
 'use strict';
 
 window.bgHtmlContainer = document.getElementById("bgHtmlContainer");

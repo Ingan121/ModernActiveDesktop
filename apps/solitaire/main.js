@@ -732,7 +732,7 @@ gameMenuBtn.addEventListener('pointerdown', (event) => {
     }
     openGameMenu();
     event.preventDefault(); // Prevent focusout event
-    madDeskMover.wcMouseDown(); // But keep the window activation working
+    madDeskMover.bringToTop(); // But keep the window activation working
 });
 
 gameMenuItems[0].addEventListener('click', () => { // Deal button
@@ -795,7 +795,7 @@ helpMenuBtn.addEventListener('pointerdown', (event) => {
     }
     openHelpMenu();
     event.preventDefault(); // Prevent focusout event
-    madDeskMover.wcMouseDown(); // But keep the window activation working
+    madDeskMover.bringToTop(); // But keep the window activation working
 });
 
 helpMenuBtn.addEventListener('mouseover', () => {
