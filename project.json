@@ -11,7 +11,7 @@
 				"condition" : "additem.value = false; true",
 				"index" : 3,
 				"order" : 103,
-				"text" : "Add a new window",
+				"text" : "Open a new window",
 				"type" : "bool",
 				"value" : false
 			},

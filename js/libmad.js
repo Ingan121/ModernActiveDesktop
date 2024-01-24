@@ -93,7 +93,7 @@
         }
 
         try {
-            document.documentElement.style.setProperty('--hilight-inverted', invertColor(getComputedStyle(document.documentElement).getPropertyValue('--hilight')));
+            document.documentElement.style.setProperty('--hilight-inverted', parent.invertColor(getComputedStyle(document.documentElement).getPropertyValue('--hilight')));
         } catch {
             document.documentElement.style.setProperty('--hilight-inverted', 'var(--hilight-text)');
         }
@@ -104,62 +104,37 @@
     }
 
     function processDarkTheme() {
-        if (isDarkColor(getComputedStyle(parent.document.documentElement).getPropertyValue('--button-face'))) {
+        if (isDarkColor(getComputedStyle(parent.document.documentElement).getPropertyValue('--window'))) {
             styleElement.textContent = `
                 input[type=checkbox]:checked+label:after {
                     filter: invert(1);
                 }
             `;
-            if (window.osguiCompatRequired) {
-                styleElement.textContent += `
-                    .tool-icon {
-                        background-image: url("images/dark/tools.png");
-                        background-repeat: no-repeat;
-                        background-position: calc(-16px * var(--icon-index)) 0;
-                    }
-                    .tool-icon.use-svg {
-                        background-image: url("images/dark/tools.svg");
-                        background-position: calc(-16px * (var(--icon-index) * 2 + 1)) -16px;
-                    }
-                `;
-            }
-            window.madIsDarkTheme = true;
         } else {
             styleElement.textContent = "";
-            window.madIsDarkTheme = false;
         }
-    }
-    
-    function invertColor(hex) {
-        if (hex.indexOf(' ') === 0) {
-            hex = hex.slice(1);
-        }
-        if (hex.indexOf('#') === 0) {
-            hex = hex.slice(1);
-        }
-        // convert 3-digit hex to 6-digits.
-        if (hex.length === 3) {
-            hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
-        }
-        if (hex.length !== 6) {
-            throw new Error('Invalid HEX color.');
-        }
-        // invert color components
-        var r = (255 - parseInt(hex.slice(0, 2), 16)).toString(16),
-            g = (255 - parseInt(hex.slice(2, 4), 16)).toString(16),
-            b = (255 - parseInt(hex.slice(4, 6), 16)).toString(16);
-        // pad each with zeros and return
-        return '#' + padZero(r) + padZero(g) + padZero(b);
-    }
 
-    function padZero(str, len) {
-        len = len || 2;
-        var zeros = new Array(len).join('0');
-        return (zeros + str).slice(-len);
+        if (window.osguiCompatRequired && isDarkColor(getComputedStyle(parent.document.documentElement).getPropertyValue('--button-face'))) {
+            styleElement.textContent += `
+                .tool-icon {
+                    background-image: url("images/dark/tools.png");
+                    background-repeat: no-repeat;
+                    background-position: calc(-16px * var(--icon-index)) 0;
+                }
+                .tool-icon.use-svg {
+                    background-image: url("images/dark/tools.svg");
+                    background-position: calc(-16px * (var(--icon-index) * 2 + 1)) -16px;
+                }
+            `;
+        }
     }
 
     // http://stackoverflow.com/questions/12043187/how-to-check-if-hex-color-is-too-black
     function isDarkColor(color) {
+        if (!color.startsWith("#") || color.length !== 7) {
+            color = parent.normalizeColor(color);
+        }
+
         const c = color.substring(2);  // strip " #"
         const rgb = parseInt(c, 16);   // convert rrggbb to decimal
         const r = (rgb >> 16) & 0xff;  // extract red

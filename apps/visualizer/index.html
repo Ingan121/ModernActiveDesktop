@@ -22,7 +22,8 @@
     <div id="mainArea">
         <div id="pausedAlert">Update has been paused. Click here to resume.</div>
         <img id="albumArt" src="">
-        <iframe id="visualizer" src="wmpvis/wmpvis.html"></iframe>
+        <canvas id="bar"></canvas>
+        <canvas id="top"></canvas>
     </div>
     <div id="statusArea">
         <div id="play" class="statusButton"><p>▶</p></div>
@@ -88,5 +89,6 @@
     </div>
     <script src="../../js/libmad.js"></script>
     <script src="main.js"></script>
+    <script src="wmpvis.js"></script>
 </body>
 </html>

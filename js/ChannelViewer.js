@@ -279,7 +279,7 @@ function parseWallEngColorProp(value) {
 
 // Just for debugging
 function debug() {
-    eval(prompt("실행할 자바스크립트 코드를 입력하십시오. (디버깅용)"));
+    eval(prompt("Enter JavaScript code to run."));
     function loadEruda() { // Load Eruda devtools (but Chrome DevTools is better)
         const script = document.createElement('script');
         script.src="https://cdn.jsdelivr.net/npm/eruda";

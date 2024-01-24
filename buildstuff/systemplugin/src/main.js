@@ -475,6 +475,7 @@ function onRequest(req, res) {
         });
       } else {
         runMccCmd('playpause');
+        res.end('OK');
       }
       break;
 
@@ -485,6 +486,7 @@ function onRequest(req, res) {
         });
       } else {
         runMccCmd('stop');
+        res.end('OK');
       }
       break;
 
@@ -495,6 +497,7 @@ function onRequest(req, res) {
         });
       } else {
         runMccCmd('prev');
+        res.end('OK');
       }
       break;
 
@@ -505,6 +508,7 @@ function onRequest(req, res) {
         });
       } else {
         runMccCmd('next');
+        res.end('OK');
       }
       break;
 
@@ -566,7 +570,7 @@ function processPost(req, res, callback) {
 }
 
 function initMcc() {
-  mcc = spawn(path.join(__dirname, 'MediaControlCLI.exe'), ['utf8']);
+  mcc = spawn(path.join(__dirname, '../MediaControlCLI.exe'), ['utf8']);
   mcc.stdin.setEncoding('utf-8');
   mcc.stdout.setEncoding('utf-8');
   mcc.stderr.setEncoding('utf-8');
@@ -580,6 +584,9 @@ function initMcc() {
 
   mcc.on('exit', (code) => {
     console.log(`Media control helper exited with code ${code}`);
+    if (code === 2) {
+      showErrorMsg(mainWindow, "Media controls are not supported on this system.", "error");
+    }
     mcc = null;
   });
 }

@@ -33,16 +33,6 @@ html, body {
     background-color: black;
 }
 
-#pausedAlert {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    color: white;
-    display: none;
-    z-index: 3;
-}
-
 #albumArt {
     position: absolute;
     top: 50%;
@@ -52,16 +42,31 @@ html, body {
     max-height: 100%;
     min-height: 35%;
     object-fit: contain;
+    z-index: 0;
+}
+
+canvas {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+#top {
     z-index: 1;
 }
 
-#visualizer {
-    border: none;
+#bar {
+    z-index: 2;
+}
+
+#pausedAlert {
+    position: absolute;
     width: 100%;
     height: 100%;
-    pointer-events: none;
-    position: absolute;
-    z-index: 2;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    display: none;
+    z-index: 3;
 }
 
 .menu {

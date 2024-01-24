@@ -1,7 +1,8 @@
 @echo off
 setlocal
 
-set title=ModernActiveDesktop System Plugin 3.1.0 Installer
+set ver=3.1.0
+set title=ModernActiveDesktop System Plugin %ver% Installer
 title %title%
 echo %title%
 echo.
@@ -14,11 +15,12 @@ echo ----------------------------------------------------------
 echo.
 echo Please select an action:
 echo.
-echo 1. Install ModernActiveDesktop System Plugin 3.1.0
-echo 2. Run ModernActiveDesktop System Plugin 3.1.0 without instlling
-echo 3. Uninstall ModernActiveDesktop System Plugin 3.1.0
-echo 4. View license
-echo 5. Exit
+echo 1. Install / Update ModernActiveDesktop System Plugin
+echo 2. Run ModernActiveDesktop System Plugin without instlling
+echo 3. Extract ModernActiveDesktop System Plugin without installing
+echo 4. Uninstall ModernActiveDesktop System Plugin
+echo 5. View license
+echo 6. Exit
 echo.
 
 :choice
@@ -26,46 +28,94 @@ set /p choice=Choice:
 echo.
 
 if %choice% == 1 (
-    <nul set /p =Registering autostart... 
-    reg add HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run /v MADSysPlug /t REG_SZ /d "%cd%\systemplugin\MADSysPlug.exe" /f >nul
-    if not errorlevel 1 (echo Success) else echo Fail
-    
-    echo Starting ModernActiveDesktop System Plugin 3.1.0...
-    start cmd /c start systemplugin\MADSysPlug.exe
+    if exist systemplugin (
+        call :kill
+        echo Deleting the previous installation...
+        rmdir /s /q systemplugin
+    )
+    call :unzip
+    call :autostart
+    call :start
     
     echo.
     echo Done!
-    echo To uninstall, run this program again and enter 3.
+    echo To uninstall, run this program again and enter 4.
     echo Press any key to close this window.
     timeout 20 >nul
 ) else if %choice% == 2 (
-    echo Starting ModernActiveDesktop System Plugin 3.1.0...
-    start cmd /c start systemplugin\MADSysPlug.exe
+    call :ensureinst
+    call :start
     
     echo.
     echo Done!
     echo Press any key to close this window.
     timeout 20 >nul
 ) else if %choice% == 3 (
-    <nul set /p =Killing ModernActiveDesktop System Plugin process... 
-    taskkill -im MADSysPlug.exe -f >nul 2>nul
-    if not errorlevel 1 (echo Success) else echo Not running
-
-    echo.
-    <nul set /p =Removing autostart... 
-    reg delete HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run /v MADSysPlug /f >nul 2>nul
-    if not errorlevel 1 (echo Success) else echo Not installed
+    call :unzip
     
     echo.
     echo Done!
     echo Press any key to close this window.
     timeout 20 >nul
 ) else if %choice% == 4 (
+    if not exist systemplugin (
+        echo ModernActiveDesktop System Plugin %ver% is not installed!
+        echo.
+        goto choice
+    )
+
+    call :kill
+
+    echo.
+    <nul set /p =Removing autostart... 
+    reg delete HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run /v MADSysPlug /f >nul 2>nul
+    if not errorlevel 1 (echo Success) else echo Not installed
+
+    echo.
+    echo Deleting ModernActiveDesktop System Plugin files...
+    rmdir /s /q systemplugin
+    
+    echo.
+    echo Done!
+    echo Press any key to close this window.
+    timeout 20 >nul
+) else if %choice% == 5 (
     start notepad license.txt
     goto choice
-) else if %choice% == 5 (
+) else if %choice% == 6 (
     exit /b
 ) else (
     echo Wrong selection!
+    echo.
     goto choice
+)
+goto :eof
+
+:unzip
+<nul set /p =Extracting ModernActiveDesktop System Plugin %ver%...
+powershell -command "Expand-Archive -Path systemplugin.zip -DestinationPath systemplugin -Force"
+if not errorlevel 1 (echo Success) else echo Fail
+goto :eof
+
+:autostart
+<nul set /p =Registering autostart... 
+reg add HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run /v MADSysPlug /t REG_SZ /d "%cd%\systemplugin\MADSysPlug.exe" /f >nul
+if not errorlevel 1 (echo Success) else echo Fail
+goto :eof
+
+:start
+echo Starting ModernActiveDesktop System Plugin %ver%...
+start cmd /c start systemplugin\MADSysPlug.exe
+goto :eof
+
+:kill
+<nul set /p =Killing ModernActiveDesktop System Plugin process... 
+taskkill -im MADSysPlug.exe -f >nul 2>nul
+if not errorlevel 1 (echo Success) else echo Not running
+timeout 1 >nul
+goto :eof
+
+:ensureinst
+if not exist systemplugin\MADSysPlug.exe (
+    call :unzip
 )

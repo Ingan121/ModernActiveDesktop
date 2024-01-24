@@ -13,18 +13,8 @@ apps/solitaire/cards
 apps/solitaire/icon.png
 apps/visualizer/speaker.png
 
-# electron binary files
-systemplugin/*
-!systemplugin/resources
-
-# modules
-systemplugin/resources/app/bootstrap
-systemplugin/resources/app/bootstrap-icons
-systemplugin/resources/app/node_modules
-
-# nginx files
-buildstuff/nginx/*
-!buildstuff/nginx/conf
+# system plugin installation
+/systemplugin
 
 *.zip
 *.exe

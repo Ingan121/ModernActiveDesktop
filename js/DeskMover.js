@@ -772,7 +772,6 @@ class DeskMover {
                 this.#clearConfig();
                 if (this.isVisualizer) {
                     window.visDeskMover = null;
-                    
                 }
                 deskMovers[this.numStr || 0] = new DeskMover(this.windowContainer, this.numStr, false, undefined, undefined, undefined, undefined, true);
             }

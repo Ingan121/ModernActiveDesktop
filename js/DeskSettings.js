@@ -138,6 +138,14 @@ if (localStorage.madesktopLastVer !== "3.1") { // First run or update from previ
     localStorage.removeItem("madesktopHideWelcome");
     localStorage.removeItem("madesktopCheckedChanges");
     localStorage.removeItem("madesktopCheckedConfigs");
+    openWindow();
+
+    if (localStorage.sysplugIntegration) {
+        madAlert("System plugin has been updated. Please reinstall it with the guide.", function () {
+            openWindow("SysplugSetupGuide.md", true);
+        });
+        delete localStorage.sysplugIntegration;
+    }
     startup();
 }
 localStorage.madesktopLastVer = "3.1";
@@ -502,6 +510,38 @@ function rgbToHex(rgbType) {
     return hexType;
 }
 
+// https://stackoverflow.com/a/44134328
+function hslToHex(h, s, l) {
+    l /= 100;
+    const a = s * Math.min(l, 1 - l) / 100;
+    const f = n => {
+        const k = (n + h / 30) % 12;
+        const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+        return Math.round(255 * color).toString(16).padStart(2, '0');   // convert to Hex and prefix "0" if needed
+    };
+    return `#${f(0)}${f(8)}${f(4)}`;
+}
+
+// Convert rgb, rgba, hsl, 3/4/8 digit hex to 6 digit hex
+function normalizeColor(color) {
+    color = color.trim(color).replace("#", "");
+    if (color.startsWith("hsl")) {
+        color = hslToHex(...color.substring(4, color.length - 1).split(",").map(function(c) {
+            return parseFloat(c);
+        }));
+    } else if (color.startsWith("rgb")) {
+        color = rgbToHex(color);
+    } else if (color.length === 6 || color.length === 8) {
+        color = "#" + color.slice(0, 6);
+    } else if (color.length === 3 || color.length === 4) {
+        color = "#" + color[0] + color[0] + color[1] + color[1] + color[2] + color[2];
+    } else {
+        throw new Error("Invalid color"); // css color names are not supported yet
+    }
+    log(color);
+    return color;
+}
+
 // Convert WE color format to #rrggbb
 function parseWallEngColorProp(value) {
     let customColor = value.split(' ');
@@ -513,8 +553,9 @@ function parseWallEngColorProp(value) {
 
 // https://stackoverflow.com/a/35970186
 function invertColor(hex) {
-    if (hex.indexOf(' ') === 0) {
-        hex = hex.slice(1);
+    log(hex);
+    if (!hex.includes('#') || hex.length !== 7) {
+        hex = normalizeColor(hex);
     }
     if (hex.indexOf('#') === 0) {
         hex = hex.slice(1);
@@ -527,7 +568,7 @@ function invertColor(hex) {
         throw new Error('Invalid HEX color.');
     }
     // invert color components
-    var r = (255 - parseInt(hex.slice(0, 2), 16)).toString(16),
+    const r = (255 - parseInt(hex.slice(0, 2), 16)).toString(16),
         g = (255 - parseInt(hex.slice(2, 4), 16)).toString(16),
         b = (255 - parseInt(hex.slice(4, 6), 16)).toString(16);
     // pad each with zeros and return
@@ -716,7 +757,7 @@ function activateWindow(num = activeWindow || 0) {
     for (const i in deskMovers) {
         if (i !== num) {
             if (localStorage.madesktopNoDeactivate) {
-                delete deskMovers[num].windowContainer.dataset.inactive;
+                delete deskMovers[i].windowContainer.dataset.inactive;
                 deskMovers[i].windowTitlebar.classList.remove("inactive");
             } else {
                 deskMovers[i].windowContainer.dataset.inactive = true;

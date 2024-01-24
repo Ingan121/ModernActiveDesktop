@@ -33,7 +33,9 @@ const menuBar = document.getElementById('menuBar');
 
 const mainArea = document.getElementById('mainArea');
 const albumArt = document.getElementById('albumArt');
-const visualizer = document.getElementById('visualizer');
+const visBar = document.getElementById('bar');
+const visTop = document.getElementById('top');
+const pausedAlert = document.getElementById('pausedAlert');
 
 const statusArea = document.getElementById('statusArea');
 const playIcon = document.getElementById('play');
@@ -87,11 +89,16 @@ const helpMenuItems = helpMenu.querySelectorAll('.contextMenuItem');
 
 const isWin10 = navigator.userAgent.includes('Windows NT 10.0');
 const NO_MEDINT_MSG = isWin10
-    ? 'Media integration support is disabled. Please enable it in Wallpaper Engine -> General -> Media integration support.'
+    ? 'Media integration support is disabled. Please enable it in Wallpaper Engine settings -> General -> Media integration support.'
     : 'This feature requires Windows 10 or higher.';
 
 let mouseOverMenu = false;
 let mediaIntegrationAvailable = isWin10;
+
+let lastAlbumArt = null;
+let lastMusic = null;
+let schemeBarColor = null;
+let schemeTopColor = null;
 
 for (const menuName of ['vis', 'view', 'opt', 'help']) {
     const menuBtn = document.getElementById(menuName + 'MenuBtn');
@@ -154,9 +161,6 @@ if (localStorage.madesktopVisMenuAutohide) {
     viewMenuItems[0].classList.add('checkedItem');
     menuBar.style.position = 'absolute';
     menuBar.style.opacity = '0';
-    visualizer.addEventListener('load', () => {
-        visualizer.contentDocument.dispatchEvent(new Event('resize')); // Resize the visualizer to fill the space left by the menu bar
-    }, { once: true });
 }
 
 if (localStorage.madesktopVisInfoShown) {
@@ -207,7 +211,8 @@ visMenuItems[0].addEventListener('click', () => { // Album Art button
     localStorage.madesktopVisOnlyAlbumArt = true;
     visMenuItems[0].classList.add('activeStyle');
     visMenuItems[1].classList.remove('activeStyle');
-    visualizer.style.opacity = '0';
+    visBar.style.display = 'none';
+    visTop.style.display = 'none';
     albumArt.style.opacity = '1';
     localStorage.madesktopVisShowAlbumArt = true;
     delete localStorage.madesktopVisDimAlbumArt;
@@ -219,7 +224,8 @@ visMenuItems[1].addEventListener('click', () => { // WMP Bars button
     delete localStorage.madesktopVisOnlyAlbumArt;
     visMenuItems[0].classList.remove('activeStyle');
     visMenuItems[1].classList.add('activeStyle');
-    visualizer.style.opacity = '1';
+    visBar.style.display = 'block';
+    visTop.style.display = 'block';
 });
 
 visMenuItems[2].addEventListener('click', () => { // Exit button
@@ -380,7 +386,7 @@ optMenuItems[0].addEventListener('click', () => { // Configure Visualization but
     closeMenu('opt');
     const left = parseInt(madDeskMover.config.xPos) + 25 + 'px';
     const top = parseInt(madDeskMover.config.yPos) + 80 + 'px';
-    const configWindow = madOpenWindow('apps/visualizer/wmpvis/config.html', true, '400px', '260px', 'wnd', false, top, left, true);
+    const configWindow = madOpenWindow('apps/visualizer/config.html', true, '400px', '260px', 'wnd', false, top, left, true);
     configWindow.windowElement.addEventListener('load', () => {
         configWindow.windowElement.contentWindow.targetDeskMover = madDeskMover;
     });
@@ -421,7 +427,7 @@ function closeMenu(menuName) {
     }
 }
 
-function mediaControl(action, title = window.lastMusic.title) {
+function mediaControl(action, title = lastMusic.title) {
     if (!localStorage.sysplugIntegration || !localStorage.madesktopVisMediaControls) {
         return;
     }
@@ -477,7 +483,8 @@ function wallpaperMediaStatusListener(event) {
         delete localStorage.madesktopVisOnlyAlbumArt;
         visMenuItems[0].classList.remove('activeStyle');
         visMenuItems[1].classList.add('activeStyle');
-        visualizer.style.opacity = '1';
+        visBar.style.display = 'block';
+        visTop.style.display = 'block';
         visMenuItems[0].classList.add('disabled');
     } else {
         viewMenuItems[1].classList.remove('disabled');
@@ -562,7 +569,7 @@ function wallpaperMediaPropertiesListener(event) {
     seekHandle.style.display = 'none';
     timeText.parentElement.style.display = 'none';
 
-    window.lastMusic = event;
+    lastMusic = event;
 }
 
 function wallpaperMediaTimelineListener(event) {
@@ -614,7 +621,7 @@ function wallpaperMediaPlaybackListener(event) {
 
 function wallpaperMediaThumbnailListener(event) {
     if (event.thumbnail === 'data:image/png;base64,') {
-        window.lastAlbumArt = null;
+        lastAlbumArt = null;
         configChanged();
         return;
     }
@@ -624,17 +631,17 @@ function wallpaperMediaThumbnailListener(event) {
     if (localStorage.madesktopVisFollowAlbumArt) {
         mainArea.style.backgroundColor = event.primaryColor;
     }
-    window.lastAlbumArt = event;
+    lastAlbumArt = event;
 }
 
 function configChanged() {
-    if (localStorage.madesktopVisShowAlbumArt && window.lastAlbumArt) {
+    if (localStorage.madesktopVisShowAlbumArt && lastAlbumArt) {
         albumArt.src = lastAlbumArt.thumbnail;
     } else {
         albumArt.src = '';
     }
 
-    if (localStorage.madesktopVisFollowAlbumArt && window.lastAlbumArt) {
+    if (localStorage.madesktopVisFollowAlbumArt && lastAlbumArt) {
         mainArea.style.backgroundColor = lastAlbumArt.primaryColor;
     } else if (localStorage.madesktopVisUseSchemeColors) {
         updateSchemeColor();
@@ -654,7 +661,10 @@ window.addEventListener('load', updateSchemeColor);
 window.addEventListener("message", (event) => {
     switch (event.data.type) {
         case "scheme-updated":
-            if (schemeElement.href.startsWith('file:///') && localStorage.madesktopVisUseSchemeColors && (!window.lastAlbumArt || !localStorage.madesktopVisFollowAlbumArt)) {
+            if (schemeElement.href.startsWith('file:///') &&
+                localStorage.madesktopVisUseSchemeColors &&
+                (!lastAlbumArt || !localStorage.madesktopVisFollowAlbumArt))
+            {
                 location.reload();
             } else {
                 updateSchemeColor();
@@ -675,14 +685,14 @@ window.addEventListener("message", (event) => {
 });
 
 function updateSchemeColor() {
-    window.schemeBarColor = getComputedStyle(document.documentElement).getPropertyValue('--hilight');
-    window.schemeTopColor = getComputedStyle(document.documentElement).getPropertyValue('--button-text');
-    if (localStorage.madesktopVisUseSchemeColors && (!window.lastAlbumArt || !localStorage.madesktopVisFollowAlbumArt)) {
+    schemeBarColor = getComputedStyle(document.documentElement).getPropertyValue('--hilight');
+    schemeTopColor = getComputedStyle(document.documentElement).getPropertyValue('--button-text');
+    if (localStorage.madesktopVisUseSchemeColors && (!lastAlbumArt || !localStorage.madesktopVisFollowAlbumArt)) {
         mainArea.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--button-face');
     }
 }
 
-function setupListeners() {
+function setupMediaListeners() {
     if (!isWin10) {
         wallpaperMediaStatusListener({ enabled: false });
         return;
@@ -695,4 +705,3 @@ function setupListeners() {
 }
 
 configChanged();
-setupListeners();
