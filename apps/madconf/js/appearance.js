@@ -101,9 +101,9 @@ async function main() {
             schemeSelector.disabled = true;
             selector.selectedIndex = 11; // background
             scheme = parseCssScheme(await getSchemeText("http://localhost:3031/systemscheme"));
-            applyPreview();
             selector.disabled = true;
             selector.dispatchEvent(new Event("change"));
+            applyPreview();
         } else {
             schemeSelector.disabled = false;
             selector.disabled = false;
@@ -186,7 +186,17 @@ async function main() {
         }
         parent.changeMenuStyle(localStorage.madesktopMenuStyle);
 
-        parent.adjustAllElements(parseInt(scheme["extra-title-height"]) || 0, parseInt(scheme["extra-border-width"]) || 0, parseInt(scheme["extra-border-height"]) || 0);
+        if (schemeSelector.value === "xpcss4mad" && !systemColorChhkBox.checked && parseInt(madDeskMover.config.height) <= 455) {
+            madResizeTo(undefined, 455);
+        } else if (madDeskMover.config.height === "455px") {
+            madResizeTo(undefined, 420);
+        }
+
+        if (selector.disabled && !systemColorChhkBox.checked) {
+            parent.adjustAllElements(parseInt(scheme["extra-title-height"]) || 0, parseInt(scheme["extra-border-width"]) || 0, parseInt(scheme["extra-border-height"]) || 0);
+        } else {
+            parent.adjustAllElements();
+        }
     }
 
     if (localStorage.madesktopColorScheme === "sys") {
@@ -291,11 +301,11 @@ async function getSchemeText(scheme = parent.document.getElementById("scheme").h
         --active-title: #000080;
         --app-workspace: #808080;
         --background: #008080;
-        --button-alternate-face: #b4b4b4;
+        --button-alternate-face: #c0c0c0;
         --button-dk-shadow: #000000;
         --button-face: #c0c0c0;
         --button-hilight: #ffffff;
-        --button-light: #dfdfdf;
+        --button-light: #c0c0c0;
         --button-shadow: #808080;
         --button-text: #000000;
         --gradient-active-title: #1084d0;

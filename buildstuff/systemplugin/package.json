@@ -5,7 +5,7 @@
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
-    "deploy": "electron-builder --win --x64"
+    "build": "electron-builder --win --x64"
   },
   "repository": "",
   "keywords": [

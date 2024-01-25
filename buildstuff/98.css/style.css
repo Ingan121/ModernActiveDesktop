@@ -23,7 +23,7 @@
   --button-dk-shadow: rgb(0, 0, 0);
   --button-face: var(--surface);
   --button-hilight: var(--button-highlight);
-  --button-light: rgb(223, 223, 223);
+  --button-light: rgb(192, 192, 192);
   --button-shadow: rgb(128, 128, 128);
   --button-text: rgb(0, 0, 0);
   --gradient-active-title: var(--dialog-blue-light);
@@ -132,7 +132,7 @@ ul.tree-view,
 .window,
 .title-bar,
 li[role=tab] {
-  font-family: "Pixelated MS Sans Serif", Arial;
+  font-family: "Pixelated MS Sans Serif", Arial, Gulim;
   -webkit-font-smoothing: none;
   font-size: 11px;
 }
@@ -542,6 +542,8 @@ textarea:focus {
 
 input[type="range"] {
   -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
   width: 100%;
   background: transparent;
 }

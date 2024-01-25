@@ -31,8 +31,14 @@ const debugMenu = document.getElementById("debug");
 const debugLogBtn = document.getElementById("debugLogBtn");
 const toggleModeBtn = document.getElementById("toggleModeBtn");
 
-const chord = new Audio("sounds/chord.wav");
-const ding = new Audio("sounds/ding.wav");
+const soundScheme = {
+    startup: new Audio("sounds/The Microsoft Sound.wav"),
+    question: new Audio("sounds/chord.wav"),
+    error: new Audio("sounds/chord.wav"),
+    warning: new Audio("sounds/chord.wav"),
+    info: new Audio("sounds/ding.wav"),
+    modal: new Audio("sounds/ding.wav")
+};
 
 const isWin10 = navigator.userAgent.includes('Windows NT 10.0');
 const NO_SYSPLUG_ALERT = "System plugin is not running. Please make sure you have installed it properly. If you don't want to use it, please disable the system plugin integration option.";
@@ -81,6 +87,7 @@ if (localStorage.madesktopDebugLog) toggleDebugLog();
 changeFont(localStorage.madesktopNoPixelFonts);
 changeCmAnimation(localStorage.madesktopCmAnimation || "slide");
 changeMenuStyle(localStorage.madesktopMenuStyle);
+changeSoundScheme(localStorage.madesktopSoundScheme || "98");
 
 deskMovers[0] = new DeskMover(windowContainers[0], "");
 initSimpleMover(msgbox, msgboxTitlebar, [msgboxCloseBtn]);
@@ -135,7 +142,6 @@ if (localStorage.madesktopItemCount > 1) {
 }
 
 if (localStorage.madesktopLastVer !== "3.1") { // First run or update from previous versions
-    localStorage.removeItem("madesktopHideWelcome");
     localStorage.removeItem("madesktopCheckedChanges");
     localStorage.removeItem("madesktopCheckedConfigs");
     openWindow();
@@ -178,10 +184,14 @@ window.addEventListener('contextmenu', function (event) {
 
 mainMenuBg.addEventListener('focusout', closeMainMenu);
 
-mainMenuItems[0].addEventListener('click', openWindow); // New button
+mainMenuItems[0].addEventListener('click', () => { // New button
+    closeMainMenu();
+    openWindow();
+});
 
-mainMenuItems[1].addEventListener('click', function () { // Properties button
-    openWindow("apps/madconf/background.html", true)
+mainMenuItems[1].addEventListener('click', () => { // Properties button
+    closeMainMenu();
+    openWindow("apps/madconf/background.html", true);
 });
 
 msgboxBg.addEventListener('click', flashDialog);
@@ -463,6 +473,92 @@ function changeMenuStyle(style) {
     announce("scheme-updated");
 }
 
+// Change sound scheme
+function changeSoundScheme(scheme) {
+    switch (scheme) {
+        case '3':
+            soundScheme.startup = new Audio("sounds/95/tada.wav");
+            soundScheme.question = new Audio("sounds/95/chord.wav");
+            soundScheme.error = new Audio("sounds/95/chord.wav");
+            soundScheme.warning = new Audio("sounds/95/chord.wav");
+            soundScheme.info = new Audio("sounds/95/ding.wav");
+            soundScheme.modal = new Audio("sounds/95/ding.wav");
+            break;
+        case '95':
+            soundScheme.startup = new Audio("sounds/95/The Microsoft Sound.wav");
+            soundScheme.question = new Audio("sounds/95/chord.wav");
+            soundScheme.error = new Audio("sounds/95/chord.wav");
+            soundScheme.warning = new Audio("sounds/95/chord.wav");
+            soundScheme.info = new Audio("sounds/95/ding.wav");
+            soundScheme.modal = new Audio("sounds/95/ding.wav");
+            break;
+        case 'nt4':
+            soundScheme.startup = new Audio("sounds/NT4/Windows NT Logon Sound.wav");
+            soundScheme.question = new Audio("sounds/95/chord.wav");
+            soundScheme.error = new Audio("sounds/95/chord.wav");
+            soundScheme.warning = new Audio("sounds/95/chord.wav");
+            soundScheme.info = new Audio("sounds/95/ding.wav");
+            soundScheme.modal = new Audio("sounds/95/ding.wav");
+            break;
+        case '98':
+            soundScheme.startup = new Audio("sounds/The Microsoft Sound.wav");
+            soundScheme.question = new Audio("sounds/chord.wav");
+            soundScheme.error = new Audio("sounds/chord.wav");
+            soundScheme.warning = new Audio("sounds/chord.wav");
+            soundScheme.info = new Audio("sounds/ding.wav");
+            soundScheme.modal = new Audio("sounds/ding.wav");
+            break;
+        case '2k':
+            soundScheme.startup = new Audio("sounds/2000/Windows Logon Sound.wav");
+            soundScheme.question = new Audio("sounds/chord.wav");
+            soundScheme.error = new Audio("sounds/chord.wav");
+            soundScheme.warning = new Audio("sounds/chord.wav");
+            soundScheme.info = new Audio("sounds/ding.wav");
+            soundScheme.modal = new Audio("sounds/ding.wav");
+            break;
+        case 'xp':
+            soundScheme.startup = new Audio("sounds/XP/Windows XP Startup.wav");
+            soundScheme.question = new Audio("sounds/XP/Windows XP Exclamation.wav");
+            soundScheme.error = new Audio("sounds/XP/Windows XP Critical Stop.wav");
+            soundScheme.warning = new Audio("sounds/XP/Windows XP Exclamation.wav");
+            soundScheme.info = new Audio("sounds/XP/Windows XP Error.wav");
+            soundScheme.modal = new Audio("sounds/XP/Windows XP Ding.wav");
+            break;
+        case 'aero':
+            soundScheme.startup = new Audio("sounds/Aero/startup.wav");
+            soundScheme.question = new Audio("sounds/Aero/Windows Exclamation.wav");
+            soundScheme.error = new Audio("sounds/Aero/Windows Critical Stop.wav");
+            soundScheme.warning = new Audio("sounds/Aero/Windows Exclamation.wav");
+            soundScheme.info = new Audio("sounds/Aero/Windows Error.wav");
+            soundScheme.modal = new Audio("sounds/Aero/Windows Ding.wav");
+            break;
+        case '8':
+            soundScheme.startup = new Audio("sounds/Aero/startup.wav");
+            soundScheme.question = new Audio("sounds/8/Windows Background.wav");
+            soundScheme.error = new Audio("sounds/8/Windows Foreground.wav");
+            soundScheme.warning = new Audio("sounds/8/Windows Background.wav");
+            soundScheme.info = new Audio("sounds/8/Windows Background.wav");
+            soundScheme.modal = new Audio("sounds/8/Windows Background.wav");
+            break;
+        case '10':
+            soundScheme.startup = new Audio("sounds/Aero/startup.wav");
+            soundScheme.question = new Audio("sounds/10/Windows Background.wav");
+            soundScheme.error = new Audio("sounds/10/Windows Foreground.wav");
+            soundScheme.warning = new Audio("sounds/10/Windows Background.wav");
+            soundScheme.info = new Audio("sounds/10/Windows Background.wav");
+            soundScheme.modal = new Audio("sounds/10/Windows Background.wav");
+            break;
+        case '11':
+            soundScheme.startup = new Audio("sounds/11/startup.wav");
+            soundScheme.question = new Audio("sounds/11/Windows Background.wav");
+            soundScheme.error = new Audio("sounds/11/Windows Foreground.wav");
+            soundScheme.warning = new Audio("sounds/11/Windows Background.wav");
+            soundScheme.info = new Audio("sounds/11/Windows Background.wav");
+            soundScheme.modal = new Audio("sounds/11/Windows Background.wav");
+            break;
+    }
+}
+
 // Change the 'open with' option of the system plugin, by sending a POST request to the system plugin
 function updateSysplugOpenOpt(option) {
     fetch("http://localhost:3031/config", { method: "POST", body: `{"openWith": ${option}}` })
@@ -525,7 +621,11 @@ function hslToHex(h, s, l) {
 // Convert rgb, rgba, hsl, 3/4/8 digit hex to 6 digit hex
 function normalizeColor(color) {
     color = color.trim(color).replace("#", "");
-    if (color.startsWith("hsl")) {
+    if (color === "silver") {
+        color = "#c0c0c0";
+    } else if (color === "navy") {
+        color = "#000080";
+    } else if (color.startsWith("hsl")) {
         color = hslToHex(...color.substring(4, color.length - 1).split(",").map(function(c) {
             return parseFloat(c);
         }));
@@ -536,7 +636,8 @@ function normalizeColor(color) {
     } else if (color.length === 3 || color.length === 4) {
         color = "#" + color[0] + color[0] + color[1] + color[1] + color[2] + color[2];
     } else {
-        throw new Error("Invalid color"); // css color names are not supported yet
+        // css color names other than those in minified 98.css are not supported yet
+        throw new Error("Invalid color");
     }
     log(color);
     return color;
@@ -582,17 +683,17 @@ function padZero(str, len) {
 }
 
 // Create a new ActiveDesktop item and initialize it
-function createNewDeskItem(numStr, openDoc, temp, width, height, style, centered, top, left, aot) {
+function createNewDeskItem(numStr, openDoc, temp, width, height, style, centered, top, left, aot, unresizable) {
     const newContainer = windowContainers[0].cloneNode(true);
     document.body.appendChild(newContainer);
     windowContainers = document.getElementsByClassName("windowContainer");
-    const deskMover = new DeskMover(newContainer, numStr, openDoc, temp, width, height, style, false, centered, top, left, aot);
+    const deskMover = new DeskMover(newContainer, numStr, openDoc, temp, width, height, style, false, centered, top, left, aot, unresizable);
     deskMovers[numStr] = deskMover;
     return deskMover;
 }
 
 // Create a new AD item, initialize, and increase the saved window count
-function openWindow(openDoc, temp, width, height, style, centered, top, left, aot) {
+function openWindow(openDoc, temp, width, height, style, centered, top, left, aot, unresizable) {
     let deskMover;
     if (localStorage.madesktopItemVisible === "false" && !(typeof openDoc === "string" || openDoc instanceof String)) {
         windowContainers[0].style.display = "block";
@@ -603,13 +704,7 @@ function openWindow(openDoc, temp, width, height, style, centered, top, left, ao
         if (!temp) {
             localStorage.madesktopOpenWindows += `,${localStorage.madesktopItemCount}`;
         }
-        if (localStorage.madesktopItemVisible === "false") {
-            windowContainers[0].style.display = "block";
-            deskMover = createNewDeskItem(localStorage.madesktopItemCount, openDoc, temp, width, height, style || "wnd", centered, top, left, aot);
-            windowContainers[0].style.display = "none";
-        } else {
-            deskMover = createNewDeskItem(localStorage.madesktopItemCount, openDoc, temp, width, height, style || "wnd", centered, top, left, aot);
-        }
+        deskMover = createNewDeskItem(localStorage.madesktopItemCount, openDoc, temp, width, height, style || "wnd", centered, top, left, aot, unresizable);
         activateWindow(localStorage.madesktopItemCount);
         localStorage.madesktopItemCount++;
     }
@@ -713,7 +808,9 @@ function hookIframeSize(iframe, num) {
 
     // Listen for title changes
     new MutationObserver(function(mutations) {
-        deskMovers[num].windowTitleText.textContent = mutations[0].target.innerText;
+        if (!deskMovers[num].config.title) {
+            deskMovers[num].windowTitleText.textContent = mutations[0].target.innerText;
+        }
     }).observe(
         iframe.contentDocument.querySelector('title'),
         { subtree: true, characterData: true, childList: true }
@@ -726,22 +823,26 @@ function saveZOrder() {
     for (const i in deskMovers) {
         zOrders[zOrders.length] = [i, deskMovers[i].windowContainer.style.zIndex];
     }
-    
+
     zOrders.sort(function(a, b) {
         if (+a[1] > +b[1]) return 1;
         else if (+a[1] === +b[1]) return 0;
         else return -1;
     });
-    
+
     for (let i = 0; i < zOrders.length; i++) {
         deskMovers[zOrders[i][0]].config.zIndex = i;
     }
-    
+
     log(zOrders);
 }
 
 function activateWindow(num = activeWindow || 0) {
     log(num);
+    if (!deskMovers[num]) {
+        return;
+    }
+
     delete deskMovers[num].windowContainer.dataset.inactive;
     deskMovers[num].windowTitlebar.classList.remove("inactive");
 
@@ -770,8 +871,9 @@ function activateWindow(num = activeWindow || 0) {
 
 // Prevent windows from being created in the same position
 function cascadeWindow(x, y) {
-    const extraTitleHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--extra-title-height'));
-    const extraBorderWidth = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--extra-border-width'));
+    log({x, y});
+    const extraTitleHeight = parseInt(getComputedStyle(windowContainers[0]).getPropertyValue('--extra-title-height'));
+    const extraBorderWidth = parseInt(getComputedStyle(windowContainers[0]).getPropertyValue('--extra-border-width'));
     x = parseInt(x);
     y = parseInt(y);
     if (isWindowInPosition(x, y)) {
@@ -816,7 +918,7 @@ async function getFavicon(iframe) {
                 return path;
             }
         }
-        
+
         // Check if the favicon exists
         await fetch(path).then(response => {
             if (!response.ok) {
@@ -873,24 +975,20 @@ async function asyncTimeout(ms) {
 
 // Lively Wallpaper doesn't work well with alert/confirm/prompt, so replace these with custom ones
 function madAlert(msg, callback, icon = "info") {
-    if (icon === "warning" || icon === "error") {
-        playSound("chord");
-    } else {
-        playSound("ding");
-    }
+    playSound(icon);
 
     msgboxMessage.innerHTML = msg;
     msgboxIcon.style.display = "block";
     msgboxIcon.src = `images/${icon}.png`;
     msgboxBtn2.style.display = "none";
     msgboxInput.style.display = "none";
-    
+
     document.addEventListener('keyup', keyup);
     msgboxBtn1.addEventListener('click', close);
     msgboxCloseBtn.addEventListener('click', close);
-    
+
     showDialog();
-    
+
     function keyup(event) {
         switch (event.key) {
             case "Enter": case "Escape":
@@ -908,21 +1006,21 @@ function madAlert(msg, callback, icon = "info") {
 }
 
 function madConfirm(msg, callback) {
-    playSound("chord");
+    playSound("question");
 
     msgboxMessage.innerHTML = msg;
     msgboxIcon.style.display = "block";
     msgboxIcon.src = "images/question.png";
     msgboxBtn2.style.display = "block";
     msgboxInput.style.display = "none";
-    
+
     document.addEventListener('keyup', keyup);
     msgboxBtn1.addEventListener('click', ok);
     msgboxBtn2.addEventListener('click', close);
     msgboxCloseBtn.addEventListener('click', close);
-    
+
     showDialog();
-    
+
     function keyup(event) {
         switch (event.key) {
             case "Enter":
@@ -956,22 +1054,22 @@ function madPrompt(msg, callback, hint, text) {
         callback(prompt(msg, text));
         return;
     }
-    
+
     msgboxMessage.innerHTML = msg;
     msgboxIcon.style.display = "none";
     msgboxBtn2.style.display = "block";
     msgboxInput.style.display = "block";
     msgboxInput.placeholder = hint || "";
     msgboxInput.value = text || "";
-    
+
     document.addEventListener('keyup', keyup);
     msgboxBtn1.addEventListener('click', ok);
     msgboxBtn2.addEventListener('click', close);
     msgboxCloseBtn.addEventListener('click', close);
-    
+
     showDialog();
     msgboxInput.focus();
-    
+
     function keyup(event) {
         switch (event.key) {
             case "Enter":
@@ -1017,7 +1115,7 @@ function showDialog() {
 }
 
 function flashDialog() {
-    playSound("ding");
+    playSound("modal");
     let cnt = 1;
     let interval = setInterval(function () {
         if (cnt === 18) {
@@ -1036,16 +1134,8 @@ function flashDialog() {
 
 function playSound(sound) {
     if (!localStorage.madesktopAlertSndMuted) {
-        switch (sound) {
-            case "chord":
-                chord.currentTime = 0;
-                chord.play();
-                break;
-            case "ding":
-                ding.currentTime = 0;
-                ding.play();
-                break;
-        }
+        soundScheme[sound].currentTime = 0;
+        soundScheme[sound].play();
     }
 }
 
@@ -1126,12 +1216,12 @@ function toggleRunningMode() {
             runningMode = WE;
             simulatedModeLabel.textContent = ", simulating Wallpaper Engine behavior"
             break;
-        
+
         case WE:
             runningMode = LW;
             simulatedModeLabel.textContent = ", simulating Lively Wallpaper behavior"
             break;
-        
+
         case LW:
             runningMode = BROWSER;
             simulatedModeLabel.textContent = ", simulating browser behavior"
@@ -1153,7 +1243,7 @@ function startup() {
     }
 
     if (!localStorage.madesktopStartSndMuted) {
-        new Audio("sounds/The Microsoft Sound.wav").play();
+        playSound("startup");
 
         if (!localStorage.madesktopHideWelcome) {
             setTimeout(function () {
@@ -1180,6 +1270,12 @@ if (runningMode === WE) {
 origRunningMode = runningMode;
 
 window.addEventListener('load', function () {
+    try {
+        document.documentElement.style.setProperty('--hilight-inverted', invertColor(getComputedStyle(document.documentElement).getPropertyValue('--hilight')));
+    } catch {
+        document.documentElement.style.setProperty('--hilight-inverted', 'var(--hilight-text)');
+    }
+
     document.dispatchEvent(new Event("mouseup")); // Re-calculate title bar height after loading scheme css
 });
 

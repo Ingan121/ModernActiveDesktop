@@ -67,7 +67,7 @@ items[1].addEventListener("click", async function () {
     madDeskMover.openConfMenu();
     await waitForAnim(madDeskMover.confMenuBg);
     await asyncTimeout(300);
-    await flashElement(madDeskMover.confMenuItems[9], true);
+    await flashElement(madDeskMover.confMenuItems[10], true);
     await asyncTimeout(100);
     madOpenWindow("apps/madconf/background.html", true);
     madDeskMover.closeContextMenu();

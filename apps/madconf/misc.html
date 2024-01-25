@@ -63,10 +63,29 @@
                 </fieldset>
                 <fieldset>
                     <legend>Sounds</legend>
-                    <input id="startSoundChkBox" type="checkbox">
-                    <label for="startSoundChkBox">Play startup sound</label><br>
-                    <input id="alertSoundChkBox" type="checkbox">
-                    <label for="alertSoundChkBox">Play alert sounds</label>
+                    <div class="field-row">
+                        <div id="soundChkBoxes">
+                            <input id="startSoundChkBox" type="checkbox">
+                            <label for="startSoundChkBox">Play startup sound</label><br>
+                            <input id="alertSoundChkBox" type="checkbox">
+                            <label for="alertSoundChkBox">Play alert sounds</label>
+                        </div>
+                        <div id="schemeArea">
+                            Sound Scheme:
+                            <select id="soundSchemeSelector">
+                                <option value="3">Windows 3.x</option>
+                                <option value="95">Windows 95</option>
+                                <option value="nt4">Windows NT 4.0</option>
+                                <option value="98" selected>Windows 98</option>
+                                <option value="2k">Windows 2000 / Me</option>
+                                <option value="xp">Windows XP</option>
+                                <option value="aero">Windows Vista / 7</option>
+                                <option value="8">Windows 8</option>
+                                <option value="10">Windows 10</option>
+                                <option value="11">Windows 11</option>
+                            </select>
+                        </div>
+                    </div>
                 </fieldset>
                 <fieldset>
                     <legend>Window management</legend>

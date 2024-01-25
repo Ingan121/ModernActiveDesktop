@@ -29,7 +29,7 @@ function buildCSS(preserveVariables) {
     })
     .then((result) => {
       mkdirp.sync("dist");
-      fs.writeFileSync(destination, result.css);
+      fs.writeFileSync(destination, result.css.replaceAll("ms_sans", "../fonts/ms_sans"));
       fs.writeFileSync(destination + ".map", result.map.toString());
       fs.copyFileSync(destination, "../../css/98.css");
     });

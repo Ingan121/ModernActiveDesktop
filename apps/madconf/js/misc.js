@@ -13,6 +13,7 @@ const sysplugOpenOptSelector = document.getElementById('sysplugOpenOptSelector')
 const sysplugOpenOptSelectorOptions = sysplugOpenOptSelector.options;
 const startSoundChkBox = document.getElementById('startSoundChkBox');
 const alertSoundChkBox = document.getElementById('alertSoundChkBox');
+const soundSchemeSelector = document.getElementById('soundSchemeSelector');
 const noDisableChkBox = document.getElementById('noDisableChkBox');
 const leftIconArea = document.getElementById('leftIconArea');
 const rightIconArea = document.getElementById('rightIconArea');
@@ -29,6 +30,7 @@ let config = {
     sysplugOpenOpt: localStorage.madesktopPrevOWConfigRequest || 1,
     startSound: !localStorage.madesktopStartSndMuted,
     alertSound: !localStorage.madesktopAlertSndMuted,
+    soundScheme: localStorage.madesktopSoundScheme || "98",
     noDisable: localStorage.madesktopNoDeactivate,
     leftIcon: localStorage.madesktopChanViewLeftMargin || '75px',
     rightIcon: localStorage.madesktopChanViewRightMargin || 0
@@ -104,6 +106,10 @@ if (config.alertSound) {
     alertSoundChkBox.checked = true;
 }
 
+if (config.soundScheme) {
+    soundSchemeSelector.value = config.soundScheme;
+}
+
 if (config.noDisable) {
     noDisableChkBox.checked = true;
 }
@@ -138,6 +144,9 @@ window.apply = function () {
     } else {
         delete localStorage.madesktopAlertSndMuted;
     }
+
+    parent.changeSoundScheme(config.soundScheme);
+    localStorage.madesktopSoundScheme = config.soundScheme;
 
     if (config.noDisable) {
         localStorage.madesktopNoDeactivate = true;
@@ -197,6 +206,10 @@ startSoundChkBox.addEventListener('change', function () {
 
 alertSoundChkBox.addEventListener('change', function () {
     config.alertSound = this.checked;
+});
+
+soundSchemeSelector.addEventListener('change', function () {
+    config.soundScheme = this.value;
 });
 
 noDisableChkBox.addEventListener('change', function () {

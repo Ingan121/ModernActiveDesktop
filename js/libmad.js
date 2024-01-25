@@ -70,7 +70,7 @@
                 // Well these load slower, so let's just use the light theme on theme change as current two css themes are light ones
                 styleElement.textContent = "";
             } else {
-                processDarkTheme();
+                processTheme();
             }
         }
         schemeElement.href = parentSchemeElement.href;
@@ -100,10 +100,10 @@
     }
 
     if (styleElement) {
-        window.addEventListener("load", processDarkTheme);
+        window.addEventListener("load", processTheme);
     }
 
-    function processDarkTheme() {
+    function processTheme() {
         if (isDarkColor(getComputedStyle(parent.document.documentElement).getPropertyValue('--window'))) {
             styleElement.textContent = `
                 input[type=checkbox]:checked+label:after {
@@ -126,6 +126,12 @@
                     background-position: calc(-16px * (var(--icon-index) * 2 + 1)) -16px;
                 }
             `;
+        }
+
+        try {
+            document.documentElement.style.setProperty('--hilight-inverted', parent.invertColor(getComputedStyle(document.documentElement).getPropertyValue('--hilight')));
+        } catch {
+            document.documentElement.style.setProperty('--hilight-inverted', 'var(--hilight-text)');
         }
     }
 

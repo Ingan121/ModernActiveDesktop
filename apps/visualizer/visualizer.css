@@ -252,15 +252,15 @@ canvas {
 }
 
 #play {
-    left: 3px;
+    left: 2px;
 }
 
 #pause {
-    left: 4px;
+    left: 3px;
 }
 
 #stop {
-    left: 5px;
+    left: 4px;
 }
 
 .statusButton p {
@@ -277,6 +277,10 @@ canvas {
     top: -18px;
     left: 1px;
     font-size: 15px;
+}
+
+#pause[data-disabled] p {
+    color: var(--gray-text);
 }
 
 #stop p {
@@ -297,7 +301,7 @@ canvas {
 }
 
 #pause[data-active] p,
-#statusArea[data-controllable] #pause:active p {
+#statusArea[data-controllable] #pause:not([data-disabled]):active p {
     top: -17px;
     left: 2px;
 }
@@ -305,7 +309,7 @@ canvas {
 #stop[data-active] p,
 #statusArea[data-controllable] #stop:active p {
     top: -13px;
-    left: 4px;
+    left: 5px;
 }
 
 #vertbar {
@@ -316,17 +320,17 @@ canvas {
     border-right: solid 1px var(--button-hilight);
     position: relative;
     top: 3px;
-    left: 12px;
+    left: 11px;
 }
 
 #prev {
     display: none;
-    left: 16px;
+    left: 15px;
 }
 
 #next {
     display: none;
-    left: 17px;
+    left: 16px;
     margin-right: 12px;
 }
 
@@ -353,14 +357,14 @@ canvas {
 }
 
 #statusArea[data-controllable] #play:not([data-active]):hover,
-#statusArea[data-controllable] #pause:not([data-active]):hover,
+#statusArea[data-controllable] #pause:not([data-active]):not([data-disabled]):hover,
 #statusArea[data-controllable] #stop:not([data-active]):hover,
 #prev:hover, #next:hover {
     border-color: var(--button-hilight) var(--button-shadow) var(--button-shadow) var(--button-hilight);
 }
 
 #statusArea[data-controllable] #play:not([data-active]):active,
-#statusArea[data-controllable] #pause:not([data-active]):active,
+#statusArea[data-controllable] #pause:not([data-active]):not([data-disabled]):active,
 #statusArea[data-controllable] #stop:not([data-active]):active,
 #prev:active, #next:active {
     border-color: var(--button-shadow) var(--button-hilight) var(--button-hilight) var(--button-shadow);
@@ -401,9 +405,8 @@ canvas {
     color: white;
     border: solid 1px;
     border-color: gray white white gray;
-    margin: 1px;
-    margin-top: 0;
-    font-family: "Pixelated MS Sans Serif";
+    margin: 0;
+    font-family: "Pixelated MS Sans Serif", Gulim;
     display: none;
 }
 
@@ -421,14 +424,30 @@ canvas {
     text-align: right;
 }
 
+#subtitle, #album, #albumArtist, #genre {
+    display: none;
+}
+
 #rightArea {
     margin-left: 25px;
+    width: calc(100% - 110px);
+}
+
+#rightArea .infoItem p {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    width: 100%;
+    height: 15px;
+    line-height: 15px;
+    margin: 0;
 }
 
-#subtitle, #album, #albumArtist, #genre {
+#rightArea .infoItem:first-child {
+    margin-top: 6px;
+}
+
+#rightArea .infoItem p:empty {
     display: none;
 }
 

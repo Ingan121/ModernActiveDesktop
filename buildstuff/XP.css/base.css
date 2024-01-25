@@ -1,7 +1,6 @@
 /* Windows XP style */
 /* See https://github.com/Ingan121/ModernActiveDesktop/tree/master/buildstuff/XP.css for the source */
 :root {
-    --extra-title-height: 4px;
     --active-border: #D4D0C8;
     --active-title: #0054E3;
     --app-workspace: #808080;
@@ -33,4 +32,9 @@
     --window: #FFFFFF;
     --window-frame: #000000;
     --window-text: #000000;
+}
+.windowContainer {
+    --extra-title-height: 4px !important;
+    --extra-border-width: 0px !important;
+    --extra-border-height: 0px !important;
 }

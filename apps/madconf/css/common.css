@@ -15,6 +15,7 @@ menu[role="tablist"] a {
     margin-left: 9px !important;
     margin-right: 7px !important;
     line-height: 10px;
+    cursor: default;
 }
 
 menu[role="tablist"]:nth-child(1) a {

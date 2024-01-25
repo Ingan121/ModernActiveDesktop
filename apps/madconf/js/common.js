@@ -65,4 +65,5 @@ if (applyBtn) {
     });
 }
 
+madSetIcon(false);
 okBtn.focus();

@@ -160,9 +160,6 @@ applyBtn.addEventListener("click", () => {
 
 if (localStorage.madesktopVisUseSchemeColors) {
     schemeRadBtn.checked = true;
-    bgColorPickerColor.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--button-face');
-    barColorPickerColor.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--hilight');
-    topColorPickerColor.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--button-text');
 } else if (localStorage.madesktopVisBgColor) {
     customRadBtn.checked = true;
     bgColorPickerColor.style.backgroundColor = localStorage.madesktopVisBgColor;
@@ -195,5 +192,13 @@ if (localStorage.madesktopVisOnlyAlbumArt) {
     barColorPickerLabel.classList.add("disabled");
     topColorPickerLabel.classList.add("disabled");
 }
+
+window.addEventListener('load', () => {
+    if (localStorage.madesktopVisUseSchemeColors) {
+        bgColorPickerColor.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--button-face');
+        barColorPickerColor.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--hilight');
+        topColorPickerColor.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--button-text');
+    }
+});
 
 madSetIcon(false);

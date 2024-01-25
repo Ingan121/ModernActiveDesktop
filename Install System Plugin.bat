@@ -11,6 +11,14 @@ echo Licensed under the MIT License
 echo.
 cd /d "%~dp0"
 
+for /f "tokens=4-5 delims=. " %%i in ('ver') do set winver=%%i.%%j
+if not "%winver%" == "10.0" (
+    echo ModernActiveDesktop System Plugin requires Windows 10 or higher.
+    echo Press any key to close this window.
+    timeout 20 >nul
+    exit /b
+)
+
 echo ----------------------------------------------------------
 echo.
 echo Please select an action:

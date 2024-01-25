@@ -379,12 +379,23 @@ http.createServer(onRequest).listen(args.port || 3031, args.listen || '127.0.0.1
 
 function onRequest(req, res) {
   console.log('serve: ' + req.url);
-  res.setHeader('Access-Control-Allow-Origin', args.cors || 'https://www.ingan121.com');
+  const cors = args.cors || 'https://www.ingan121.com';
+  res.setHeader('Access-Control-Allow-Origin', cors);
 
-  // Allow CORS for localhost
   if (req.headers.origin && req.headers.origin !== 'null') {
+    // Allow CORS for localhost
     if (new URL(req.headers.origin).hostname.match(/^(localhost|127(.[0-9]{1,3}){3})$/)) {
       res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
+    } else if (args.cors !== "*" && req.headers.origin !== cors && req.headers.origin !== 'file://') {
+      // (Last one is what WE sends)
+      // Abort if CORS is not allowed
+      // This is to prevent any website from accessing your system
+      // Request can proceed even if CORS is not allowed
+      // (JS can't get the response but system changes like MediaControl will still be made)
+      // So explicitly abort the request if CORS is not allowed
+      res.writeHead(403);
+      res.end('403 Forbidden', 'utf-8');
+      return;
     }
   }
 

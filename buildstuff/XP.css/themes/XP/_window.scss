@@ -26,7 +26,7 @@
 
 .title-bar,
 .os-window > .window-titlebar:not(#JustHereToGiveItPriority) {
-    font-family: "Trebuchet MS" !important;
+    font-family: "Trebuchet MS", Gulim !important;
     background: linear-gradient(
         180deg,
         rgba(9, 151, 255, 1) 0%,
@@ -139,6 +139,10 @@
     button:before {
         content: "";
     }
+}
+
+.windowContainer[data-style="wnd"]:not([data-unresizable]) > .title-bar {
+    margin: 0 !important;
 }
 
 .windowIcon {
@@ -267,6 +271,8 @@
     width: 389px;
     margin-left: 3px;
     height: 81px;
+    box-shadow: none !important;
+    border: 1px solid #7f9db9;
 }
 
 #madconf #preview #inactiveWindow {

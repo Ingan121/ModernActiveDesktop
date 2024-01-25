@@ -27,12 +27,19 @@ for (const imgItem of imgItems) {
             preview.contentDocument.body.style.backgroundImage = 'none';
             imgModeSelector.disabled = true;
             switchDisplayOptionElement(false);
-        } else if (i >= 1 && i <= 12) {
+        } else if (i >= 1 && i <= 13) {
+            if (i == 13) {
+                imgModeSelector.value = 'scale';
+                preview.contentWindow.changeBgImgMode('scale');
+            } else {
+                imgModeSelector.value = 'grid';
+                preview.contentWindow.changeBgImgMode('grid');
+            }
             preview.contentWindow.changeBgType('image');
             preview.contentDocument.body.style.backgroundImage = `url('../../wallpapers/${this.textContent}.bmp')`;
             imgModeSelector.disabled = false;
             switchDisplayOptionElement(false);
-        } else if (i == 13) {
+        } else if (i == 14) {
             preview.contentWindow.changeBgType('web');
             preview.contentWindow.bgHtmlView.src = '../../bghtml/index.html';
             imgModeSelector.disabled = true;
@@ -207,8 +214,8 @@ if (localStorage.madesktopBgType == 'web') {
         if (activeItem) {
             delete activeItem.dataset.active;
         }
-        imgItems[13].dataset.active = true;
-        scrollIntoView(imgItems[13]);
+        imgItems[14].dataset.active = true;
+        scrollIntoView(imgItems[14]);
     } else {
         const activeItem = document.querySelector('li[data-active]');
         if (activeItem) {
@@ -233,7 +240,7 @@ window.apply = function () {
     const i = Array.from(imgItems).indexOf(activeItem);
     if (i == 0) {
         delete localStorage.madesktopBgImg;
-    } else if (i >= 1 && i <= 12) {
+    } else if (i >= 1 && i <= 13) {
         localStorage.madesktopBgImg = `wallpapers/${activeItem.textContent}.bmp`;
     } else if (activeItem.id === 'customImgItem') {
         if (activeItem.dataset.base64) {

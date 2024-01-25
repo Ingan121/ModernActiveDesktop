@@ -48,6 +48,7 @@ const seekHandle = document.getElementById('seekHandle');
 
 const infoArea = document.getElementById('infoArea');
 const infoMainArea = document.getElementById('infoMainArea');
+const leftArea = document.getElementById('leftArea');
 const titleText = document.getElementById('title');
 const subtitleText = document.getElementById('subtitle');
 const artistText = document.getElementById('artist');
@@ -55,6 +56,7 @@ const albumText = document.getElementById('album');
 const albumArtistText = document.getElementById('albumArtist');
 const genreText = document.getElementById('genre');
 
+const rightArea = document.getElementById('rightArea');
 const titleValue = document.getElementById('titleValue').querySelector('p');
 const subtitleValue = document.getElementById('subtitleValue').querySelector('p');
 const artistValue = document.getElementById('artistValue').querySelector('p');
@@ -138,7 +140,7 @@ playIcon.addEventListener('click', () => {
 });
 
 pauseIcon.addEventListener('click', () => {
-    if (!pauseIcon.dataset.active) {
+    if (!pauseIcon.dataset.active && !pauseIcon.dataset.disabled) {
         mediaControl('playpause');
     }
 });
@@ -245,6 +247,7 @@ viewMenuItems[0].addEventListener('click', () => { // Autohide Menu Bar button
         menuBar.style.position = 'absolute';
         menuBar.style.opacity = '0';
     }
+    updateSize();
 });
 
 viewMenuItems[1].addEventListener('click', () => { // Information button
@@ -254,7 +257,6 @@ viewMenuItems[1].addEventListener('click', () => { // Information button
         return;
     }
 
-    const currentWidth = parseInt(madDeskMover.config.width);
     const currentHeight = parseInt(madDeskMover.config.height);
     if (localStorage.madesktopVisInfoShown) {
         delete localStorage.madesktopVisInfoShown;
@@ -271,7 +273,7 @@ viewMenuItems[1].addEventListener('click', () => { // Information button
         if (madDeskMover.config.unscaled) {
             infoAreaHeight /= parent.scaleFactor;
         }
-        madResizeTo(currentWidth, currentHeight - infoAreaHeight);
+        madResizeTo(undefined, currentHeight - infoAreaHeight);
     } else {
         localStorage.madesktopVisInfoShown = true;
         viewMenuItems[1].classList.add('checkedItem');
@@ -293,7 +295,7 @@ viewMenuItems[1].addEventListener('click', () => { // Information button
         if (madDeskMover.config.unscaled) {
             infoAreaHeight /= parent.scaleFactor;
         }
-        madResizeTo(currentWidth, currentHeight + infoAreaHeight);
+        madResizeTo(undefined, currentHeight + infoAreaHeight);
     }
 });
 
@@ -386,7 +388,7 @@ optMenuItems[0].addEventListener('click', () => { // Configure Visualization but
     closeMenu('opt');
     const left = parseInt(madDeskMover.config.xPos) + 25 + 'px';
     const top = parseInt(madDeskMover.config.yPos) + 80 + 'px';
-    const configWindow = madOpenWindow('apps/visualizer/config.html', true, '400px', '260px', 'wnd', false, top, left, true);
+    const configWindow = madOpenWindow('apps/visualizer/config.html', true, '400px', '260px', 'wnd', false, top, left, true, true);
     configWindow.windowElement.addEventListener('load', () => {
         configWindow.windowElement.contentWindow.targetDeskMover = madDeskMover;
     });
@@ -447,25 +449,7 @@ function mediaControl(action, title = lastMusic.title) {
 
 function wallpaperMediaStatusListener(event) {
     if (!event.enabled) {
-        document.title = 'Visualization';
-        titleValue.textContent = '';
-        subtitleValue.textContent = '';
-        artistValue.textContent = '';
-        albumValue.textContent = '';
-        albumArtistValue.textContent = '';
-        genreValue.textContent = '';
-        subtitleText.style.display = 'none';
-        artistText.style.display = 'block';
-        albumText.style.display = 'none';
-        albumArtistText.style.display = 'none';
-        genreText.style.display = 'none';
-        statusText.textContent = 'Stopped';
-        delete playIcon.dataset.active;
-        delete pauseIcon.dataset.active;
-        stopIcon.dataset.active = true;
-        seekBar.style.backgroundColor = 'transparent';
-        seekHandle.style.display = 'none';
-        timeText.parentElement.style.display = 'none';
+        wallpaperMediaPropertiesListener({});
         
         if (localStorage.madesktopVisInfoShown) {
             viewMenuItems[1].click();
@@ -511,6 +495,7 @@ function wallpaperMediaPropertiesListener(event) {
         albumText.style.display = 'none';
         albumArtistText.style.display = 'none';
         genreText.style.display = 'none';
+        pauseIcon.dataset.disabled = true;
         statusText.textContent = 'Stopped';
         delete playIcon.dataset.active;
         delete pauseIcon.dataset.active;
@@ -603,18 +588,21 @@ function wallpaperMediaPlaybackListener(event) {
             playIcon.dataset.active = true;
             delete pauseIcon.dataset.active;
             delete stopIcon.dataset.active;
+            delete pauseIcon.dataset.disabled;
             statusText.textContent = 'Playing';
             break;
         case window.wallpaperMediaIntegration.PLAYBACK_PAUSED:
             delete playIcon.dataset.active;
             pauseIcon.dataset.active = true;
             delete stopIcon.dataset.active;
+            delete pauseIcon.dataset.disabled;
             statusText.textContent = 'Paused';
             break;
         case window.wallpaperMediaIntegration.PLAYBACK_STOPPED:
             delete playIcon.dataset.active;
             delete pauseIcon.dataset.active;
             stopIcon.dataset.active = true;
+            pauseIcon.dataset.disabled = true;
             statusText.textContent = 'Stopped';
     }
 }
