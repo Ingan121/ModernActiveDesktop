@@ -135,15 +135,20 @@ if (localStorage.madesktopItemCount > 1) {
 }
 
 if (localStorage.madesktopLastVer !== "3.1") { // First run or update from previous versions
+    localStorage.removeItem("madesktopHideWelcome");
     localStorage.removeItem("madesktopCheckedChanges");
     localStorage.removeItem("madesktopCheckedConfigs");
     openWindow();
 
     if (localStorage.sysplugIntegration) {
-        madAlert("System plugin has been updated. Please reinstall it with the guide.", function () {
+        madAlert("System plugin has been updated, and it needs a reinstall. Please update it with the setup guide.", function () {
             openWindow("SysplugSetupGuide.md", true);
         });
         delete localStorage.sysplugIntegration;
+    }
+    if (localStorage.madesktopColorScheme === "xpcss4mad") {
+        localStorage.madesktopMenuStyle = "mbcm";
+        changeMenuStyle(localStorage.madesktopMenuStyle);
     }
     startup();
 }
