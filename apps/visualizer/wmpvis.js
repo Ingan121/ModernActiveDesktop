@@ -77,7 +77,7 @@ function wallpaperAudioListener(audioArray) {
             } else if (topSpeed[i] > 18) {
                 lastTop[i] += 3;
                 topSpeed[i] += 1;
-            } else if (topSpeed[i] > 12) {
+            } else if (topSpeed[i] > 10) {
                 lastTop[i] += 2;
                 topSpeed[i] += 1;
             } else {

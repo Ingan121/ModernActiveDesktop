@@ -35,6 +35,5 @@
 }
 .windowContainer {
     --extra-title-height: 4px !important;
-    --extra-border-width: 0px !important;
-    --extra-border-height: 0px !important;
+    --extra-border-size: 0px !important;
 }

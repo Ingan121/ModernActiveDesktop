@@ -445,8 +445,10 @@ class DeskMover {
         if (icon) {
             this.windowTitlebar.classList.remove("noIcon");
             this.windowIcon.src = icon;
-        } else {
+        } else if (!localStorage.madesktopDebugMode) {
             this.windowTitlebar.classList.add("noIcon");
+        } else {
+            this.windowTitlebar.classList.remove("noIcon");
         }
     }
 
@@ -465,8 +467,6 @@ class DeskMover {
                 this.windowTitlebar.style.display = "block";
                 this.windowTitlebar.style.left = "2px";
                 this.windowTitlebar.style.top = "3px";
-                this.contextMenuBg.style.top = "21px";
-                this.confMenuBg.style.top = "21px";
                 this.windowTitlebar.style.width = this.windowElement.offsetWidth + 'px';
                 this.windowElement.style.borderColor = "transparent";
                 this.windowFrame.style.borderColor = "transparent";
@@ -482,8 +482,6 @@ class DeskMover {
                 this.windowTitlebar.style.display = "none";
                 this.windowTitlebar.style.left = "0px";
                 this.windowTitlebar.style.top = "6px";
-                this.contextMenuBg.style.top = "24px";
-                this.confMenuBg.style.top = "24px";
                 this.windowTitlebar.style.width = this.windowElement.offsetWidth + 4 + 'px';
                 this.confMenuItems[0].classList.add("activeStyle");
                 this.confMenuItems[1].classList.remove("activeStyle");
@@ -496,8 +494,6 @@ class DeskMover {
                 this.windowTitlebar.style.display = "flex";
                 this.windowTitlebar.style.left = "2px";
                 this.windowTitlebar.style.top = "3px";
-                this.contextMenuBg.style.top = "24px";
-                this.confMenuBg.style.top = "24px";
                 this.windowTitlebar.style.width = 'auto';
                 this.windowElement.style.borderColor = "transparent";
                 this.windowFrame.style.borderColor = "transparent";
@@ -534,7 +530,8 @@ class DeskMover {
     openDropdown(elem) {
         // Suppress the original dropdown
         elem.blur();
-        elem.focus();
+        elem.dataset.open = true;
+        this.lastDropdown = elem;
 
         const dummy = this.dropdownBg.querySelector(".dropdownItem");
         const options = elem.options;
@@ -591,13 +588,14 @@ class DeskMover {
 
     closeDropdown() {
         this.dropdownBg.style.display = "none";
+        delete this.lastDropdown.dataset.open;
         iframeClickEventCtrl(true);
     }
 
     openColorPicker(initialColor, expand, callback) {
         const left = parseInt(this.config.xPos) + 4 + 'px';
         const top = parseInt(this.config.yPos) + 26 + 'px';
-        const colorPicker = openWindow("apps/colorpicker/index.html", true, expand ? "447px" : "219px", "298px", "wnd", false, top, left, true);
+        const colorPicker = openWindow("apps/colorpicker/index.html", true, expand ? "447px" : "219px", "298px", "wnd", false, top, left, true, true);
         const colorPickerWindow = colorPicker.windowElement.contentWindow;
         colorPickerWindow.addEventListener("load", () => {
             colorPickerWindow.choose_color(initialColor, expand, callback);
@@ -638,20 +636,18 @@ class DeskMover {
                 this.windowContainer.offsetLeft - Math.ceil(event.clientX / window.scaleFactor), // event.clientXY doesn't work well with css zoom
                 this.windowContainer.offsetTop - Math.ceil(event.clientY / window.scaleFactor)
             ];
-            let extraTitleHeight = 0;
-            let extraBorderWidth = 0;
+            let extraBorderSize = 0;
             if (this.config.style === "wnd") {
-                extraTitleHeight = parseInt(getComputedStyle(this.windowContainer).getPropertyValue('--extra-title-height'));
-                extraBorderWidth = parseInt(getComputedStyle(this.windowContainer).getPropertyValue('--extra-border-width'));
+                extraBorderSize = parseInt(getComputedStyle(this.windowContainer).getPropertyValue('--extra-border-size'));
             }
             this.#updatePrevOffset();
             log([this.posInContainer.x, this.posInContainer.y]);
             // Decide the resizing mode based on the position of the mouse cursor
-            if (this.posInContainer.x <= 3 + extraBorderWidth) {
+            if (this.posInContainer.x <= 3 + extraBorderSize) {
                 this.resizingMode = this.config.unresizable ? null : "left";
-            } else if (this.posInContainer.x >= this.windowContainer.offsetWidth - 4 - extraBorderWidth) {
+            } else if (this.posInContainer.x >= this.windowContainer.offsetWidth - 4 - extraBorderSize) {
                 this.resizingMode = this.config.unresizable ? null : "right";
-            } else if (this.posInContainer.y <= 3 + extraTitleHeight && this.config.style !== "ad") {
+            } else if (this.posInContainer.y <= 3 + extraBorderSize && this.config.style !== "ad") {
                 this.resizingMode = this.config.unresizable ? null : "top";
             } else if (this.posInContainer.y <= 9 && this.posInContainer.y >= 6 && this.config.style === "ad") {
                 this.resizingMode = this.config.unresizable ? null : "top";
@@ -758,19 +754,17 @@ class DeskMover {
             x : Math.ceil(event.clientX / window.scaleFactor) - this.windowContainer.offsetLeft,
             y : Math.ceil(event.clientY / window.scaleFactor) - this.windowContainer.offsetTop,
         }
-        let extraTitleHeight = 0;
-        let extraBorderWidth = 0;
+        let extraBorderSize = 0;
         if (this.config.style === "wnd") {
-            extraTitleHeight = parseInt(getComputedStyle(this.windowContainer).getPropertyValue('--extra-title-height'));
-            extraBorderWidth = parseInt(getComputedStyle(this.windowContainer).getPropertyValue('--extra-border-width'));
+            extraBorderSize = parseInt(getComputedStyle(this.windowContainer).getPropertyValue('--extra-border-size'));
         }
         // Change the mouse cursor - although this is useless in WE
         if (this.resizingMode === "none" && (this.windowElement.style.borderColor !== "transparent" || this.config.style !== "ad") && !this.config.unresizable) {
-            if (this.posInContainer.x <= 3 + extraBorderWidth) {
+            if (this.posInContainer.x <= 3 + extraBorderSize) {
                 document.body.style.cursor = "ew-resize";
-            } else if (this.posInContainer.x >= this.windowContainer.offsetWidth - 4 - extraBorderWidth) {
+            } else if (this.posInContainer.x >= this.windowContainer.offsetWidth - 4 - extraBorderSize) {
                 document.body.style.cursor = "ew-resize";
-            } else if (this.posInContainer.y <= 3 + extraTitleHeight && this.config.style !== "ad" && this.windowTitlebar.style.display !== "none") {
+            } else if (this.posInContainer.y <= 3 + extraBorderSize && this.config.style !== "ad" && this.windowTitlebar.style.display !== "none") {
                 document.body.style.cursor = "ns-resize";
             } else if (this.posInContainer.y <= 9 && this.posInContainer.y >= 6 && this.config.style === "ad" && this.windowTitlebar.style.display !== "none") {
                 document.body.style.cursor = "ns-resize";
@@ -945,24 +939,21 @@ class DeskMover {
     }
     
     // Adjust all elements to windowElement
-    adjustElements(extraTitleHeight, extraBorderWidth, extraBorderHeight) {
+    adjustElements(extraTitleHeight, extraBorderSize) {
         if (typeof extraTitleHeight === 'undefined') {
             extraTitleHeight = parseInt(getComputedStyle(this.windowContainer).getPropertyValue('--extra-title-height'));
         }
-        if (typeof extraBorderWidth === 'undefined') {
-            extraBorderWidth = parseInt(getComputedStyle(this.windowContainer).getPropertyValue('--extra-border-width'));
+        if (typeof extraBorderSize === 'undefined') {
+            extraBorderSize = parseInt(getComputedStyle(this.windowContainer).getPropertyValue('--extra-border-size'));
         }
-        if (typeof extraBorderHeight === 'undefined') {
-            extraBorderHeight = parseInt(getComputedStyle(this.windowContainer).getPropertyValue('--extra-border-height'));
-        }
-        log({extraTitleHeight, extraBorderWidth, extraBorderHeight}, 'debug');
+        log({extraTitleHeight, extraBorderSize}, 'debug');
         if (localStorage.madesktopColorScheme === 'xpcss4mad' && this.config.style === 'wnd') {
-            this.windowContainer.style.height = this.windowElement.offsetHeight + 22 + extraTitleHeight + extraBorderHeight + 'px';
-            this.windowContainer.style.width = this.windowElement.offsetWidth + 4 + extraBorderWidth * 2 + 'px';
+            this.windowContainer.style.height = this.windowElement.offsetHeight + 22 + extraTitleHeight + (extraBorderSize * 2) + 'px';
+            this.windowContainer.style.width = this.windowElement.offsetWidth + 4 + extraBorderSize * 2 + 'px';
             this.windowTitlebar.style.width = this.windowElement.offsetWidth - 7 + 'px';
         } else if (this.config.style === 'wnd') {
-            this.windowContainer.style.height = this.windowElement.offsetHeight + 19 + extraTitleHeight + extraBorderHeight + 'px';
-            this.windowContainer.style.width = this.windowElement.offsetWidth - 2 + extraBorderWidth * 2 + 'px';
+            this.windowContainer.style.height = this.windowElement.offsetHeight + 19 + extraTitleHeight + (extraBorderSize * 2) + 'px';
+            this.windowContainer.style.width = this.windowElement.offsetWidth - 2 + extraBorderSize * 2 + 'px';
         } else {
             this.windowContainer.style.height = this.windowElement.offsetHeight + 19 + 'px';
             this.windowContainer.style.width = this.windowElement.offsetWidth - 2 + 'px';

@@ -52,6 +52,19 @@ async function main() {
             flatMenuSelector.disabled = true;
         }
 
+        if (schemeSelector.value === "2k" || schemeSelector.value.startsWith("xp") || schemeSelector.value === "aero" || schemeSelector.value.startsWith("win11")) {
+            enableAnimationsChkBox.checked = true;
+            animationSelector.selectedIndex = 1;
+            animationSelector.disabled = false;
+        } else if (schemeSelector.value === "95" || schemeSelector.value.match(/win[1-3].*/)) {
+            enableAnimationsChkBox.checked = false;
+            animationSelector.disabled = true;
+        } else {
+            enableAnimationsChkBox.checked = true;
+            animationSelector.selectedIndex = 0;
+            animationSelector.disabled = false;
+        }
+
         applyPreview();
     });
 
@@ -193,7 +206,7 @@ async function main() {
         }
 
         if (selector.disabled && !systemColorChhkBox.checked) {
-            parent.adjustAllElements(parseInt(scheme["extra-title-height"]) || 0, parseInt(scheme["extra-border-width"]) || 0, parseInt(scheme["extra-border-height"]) || 0);
+            parent.adjustAllElements(parseInt(scheme["extra-title-height"]) || 0, parseInt(scheme["extra-border-size"]) || 0);
         } else {
             parent.adjustAllElements();
         }

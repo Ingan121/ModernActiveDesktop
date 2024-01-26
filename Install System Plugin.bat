@@ -100,7 +100,7 @@ if %choice% == 1 (
 goto :eof
 
 :unzip
-<nul set /p =Extracting ModernActiveDesktop System Plugin %ver%...
+<nul set /p =Extracting ModernActiveDesktop System Plugin %ver%... 
 powershell -command "Expand-Archive -Path systemplugin.zip -DestinationPath systemplugin -Force"
 if not errorlevel 1 (echo Success) else echo Fail
 goto :eof

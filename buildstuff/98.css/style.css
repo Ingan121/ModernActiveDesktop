@@ -679,7 +679,8 @@ input[type="range"]::-moz-range-track {
   transform: translateY(0px) scaleX(-1);
 }
 
-select:focus {
+select:focus,
+select[data-open] {
   color: var(--hilight-text);
   background-color: var(--hilight);
 }
@@ -688,7 +689,7 @@ select:focus option {
   background-color: var(--window);
 }
 
-select:active {
+select:not(:disabled):active {
   background-image: svg-load("./icon/button-down-active.svg");
 }
 

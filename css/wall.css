@@ -141,15 +141,12 @@ body {
     top: 200px;
     right: 184px;
     width: 84px;
-    --extra-title-height: 1px; /* top */
-    --extra-border-width: 1px; /* left and right */
-    --extra-border-height: 1px; /* bottom */
+    --extra-title-height: 0px;
+    --extra-border-size: 1px;
 }
 
 .windowContainer[data-unresizable] {
-    --extra-title-height: 0px;
-    --extra-border-width: 0px;
-    --extra-border-height: 0px;
+    --extra-border-size: 0px;
 }
 
 .windowTitlebar {
@@ -187,8 +184,8 @@ body {
 }
 
 .windowContainer[data-style="wnd"] > .windowFrame {
-    top: calc(21px + var(--extra-title-height));
-    left: var(--extra-border-width);
+    top: calc(21px + var(--extra-title-height) + var(--extra-border-size));
+    left: var(--extra-border-size);
 }
 
 .windowElement {
@@ -225,16 +222,15 @@ body {
     width: 16px;
     height: 16px;
     position: absolute;
-    top: calc(5px + var(--extra-title-height));
-    left: calc(3px + var(--extra-border-width));
+    top: calc(5px + var(--extra-border-size));
+    left: calc(3px + var(--extra-border-size));
     margin-left: 1px;
     display: none;
 }
 
 .windowContainer[data-style="wnd"]:not([data-unresizable]) > .title-bar {
-    margin-top: var(--extra-title-height);
-    margin-left: var(--extra-border-width);
-    margin-right: var(--extra-border-width);
+    margin: var(--extra-border-size);
+    margin-bottom: 0;
 }
 
 .windowCloseBtnAlt {
@@ -280,6 +276,14 @@ body {
     overflow: hidden;
     animation: cmDropright 0.25s linear;
     background-color: var(--menu) !important;
+}
+
+.windowContainer[data-style="ad"] > .contextMenuBg {
+    top: 21px;
+}
+
+.windowContainer[data-style="wnd"] > .contextMenuBg {
+    top: calc(23px + var(--extra-title-height) + var(--extra-border-size));
 }
 
 .contextMenuBg:focus,
@@ -364,10 +368,18 @@ body {
     height: 68px;
 }
 
+.windowContainer[data-style="wnd"] > .windowMenuBg {
+    left: calc(3px + var(--extra-border-size));
+}
+
 .confMenuBg {
     width: 200px;
     height: 214px;
     left: 103px;
+}
+
+.windowContainer[data-style="wnd"] > .confMenuBg {
+    left: calc(103px + var(--extra-border-size));
 }
 
 #mainMenuBg {

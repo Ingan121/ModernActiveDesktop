@@ -44,9 +44,8 @@
 }
 
 .windowContainer {
-    --extra-title-height: 0px !important;
-    --extra-border-width: 1px !important;
-    --extra-border-height: 1px !important;
+    --extra-title-height: -1px !important;
+    --extra-border-size: 1px !important;
 }
 
 .windowContainer[data-style="wnd"],
@@ -104,6 +103,14 @@
 
 .windowContainer[data-style="wnd"] .windowElement {
     border-color: #4D23CD !important;
+}
+
+.windowContainer[data-style="wnd"] .windowMenuBg {
+    left: 3px;
+}
+
+.windowContainer[data-style="wnd"] .confMenuBg {
+    left: 103px;
 }
 
 #madconf #activeWindow textarea {

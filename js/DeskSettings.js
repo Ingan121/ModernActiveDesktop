@@ -31,14 +31,7 @@ const debugMenu = document.getElementById("debug");
 const debugLogBtn = document.getElementById("debugLogBtn");
 const toggleModeBtn = document.getElementById("toggleModeBtn");
 
-const soundScheme = {
-    startup: new Audio("sounds/The Microsoft Sound.wav"),
-    question: new Audio("sounds/chord.wav"),
-    error: new Audio("sounds/chord.wav"),
-    warning: new Audio("sounds/chord.wav"),
-    info: new Audio("sounds/ding.wav"),
-    modal: new Audio("sounds/ding.wav")
-};
+const soundScheme = {};
 
 const isWin10 = navigator.userAgent.includes('Windows NT 10.0');
 const NO_SYSPLUG_ALERT = "System plugin is not running. Please make sure you have installed it properly. If you don't want to use it, please disable the system plugin integration option.";
@@ -524,7 +517,15 @@ function changeSoundScheme(scheme) {
             soundScheme.info = new Audio("sounds/XP/Windows XP Error.wav");
             soundScheme.modal = new Audio("sounds/XP/Windows XP Ding.wav");
             break;
-        case 'aero':
+        case 'vista':
+            soundScheme.startup = new Audio("sounds/Aero/Windows Logon Sound.wav"); // enable real startup sound :D
+            soundScheme.question = new Audio("sounds/Aero/Windows Exclamation.wav");
+            soundScheme.error = new Audio("sounds/Aero/Windows Critical Stop.wav");
+            soundScheme.warning = new Audio("sounds/Aero/Windows Exclamation.wav");
+            soundScheme.info = new Audio("sounds/Aero/Windows Error.wav");
+            soundScheme.modal = new Audio("sounds/Aero/Windows Ding.wav");
+            break;
+        case '7':
             soundScheme.startup = new Audio("sounds/Aero/startup.wav");
             soundScheme.question = new Audio("sounds/Aero/Windows Exclamation.wav");
             soundScheme.error = new Audio("sounds/Aero/Windows Critical Stop.wav");
@@ -842,6 +843,7 @@ function activateWindow(num = activeWindow || 0) {
     if (!deskMovers[num]) {
         return;
     }
+    num = parseInt(num);
 
     delete deskMovers[num].windowContainer.dataset.inactive;
     deskMovers[num].windowTitlebar.classList.remove("inactive");
@@ -856,7 +858,7 @@ function activateWindow(num = activeWindow || 0) {
     }
 
     for (const i in deskMovers) {
-        if (i !== num) {
+        if (parseInt(i) !== num) {
             if (localStorage.madesktopNoDeactivate) {
                 delete deskMovers[i].windowContainer.dataset.inactive;
                 deskMovers[i].windowTitlebar.classList.remove("inactive");
@@ -873,11 +875,11 @@ function activateWindow(num = activeWindow || 0) {
 function cascadeWindow(x, y) {
     log({x, y});
     const extraTitleHeight = parseInt(getComputedStyle(windowContainers[0]).getPropertyValue('--extra-title-height'));
-    const extraBorderWidth = parseInt(getComputedStyle(windowContainers[0]).getPropertyValue('--extra-border-width'));
+    const extraBorderSize = parseInt(getComputedStyle(windowContainers[0]).getPropertyValue('--extra-border-size'));
     x = parseInt(x);
     y = parseInt(y);
     if (isWindowInPosition(x, y)) {
-        return cascadeWindow(x + 4 + extraBorderWidth, y + 24 + extraTitleHeight);
+        return cascadeWindow(x + 4 + extraBorderSize, y + 24 + extraTitleHeight + extraBorderSize);
     } else {
         return [x + "px", y + "px"];
     }
@@ -934,10 +936,10 @@ async function getFavicon(iframe) {
     }
 }
 
-function adjustAllElements(extraTitleHeight, extraBorderWidth, extraBorderHeight) {
-    log({extraTitleHeight, extraBorderWidth, extraBorderHeight});
+function adjustAllElements(extraTitleHeight, extraBorderSize) {
+    log({extraTitleHeight, extraBorderSize});
     for (const i in deskMovers) {
-        deskMovers[i].adjustElements(extraTitleHeight, extraBorderWidth, extraBorderHeight);
+        deskMovers[i].adjustElements(extraTitleHeight, extraBorderSize);
     }
 }
 
@@ -1247,12 +1249,12 @@ function startup() {
 
         if (!localStorage.madesktopHideWelcome) {
             setTimeout(function () {
-                openWindow("apps/welcome/index.html", true, "476px", "322px", "wnd", true);
+                openWindow("apps/welcome/index.html", true, "476px", "322px", "wnd", true, undefined, undefined, false, true);
             }, 5000);
         }
     } else {
         if (!localStorage.madesktopHideWelcome) {
-            openWindow("apps/welcome/index.html", true, "476px", "322px", "wnd", true);
+            openWindow("apps/welcome/index.html", true, "476px", "322px", "wnd", true, undefined, undefined, false, true);
         }
     }
     startupRan = true;

@@ -48,7 +48,8 @@ select {
     background-position: top 2px right 2px;
     background-repeat: no-repeat;
     border-radius: 0;
-    &:focus {
+    &:focus,
+    &[data-open] {
         outline: none;
         color: var(--button-highlight);
         background-color: var(--dialog-blue);
@@ -57,7 +58,7 @@ select {
             background-color: #fff;
         }
     }
-    &:active {
+    &:not(:disabled):active {
         background-image: svg-load("./icon/button-down-active.svg");
     }
 }

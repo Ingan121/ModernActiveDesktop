@@ -27,13 +27,14 @@ select {
     background-image: svg-load("./icon/dropdown.svg");
     background-size: 15px;
     box-shadow: none;
-    &:focus {
+    &:focus,
+    &[data-open] {
         box-shadow: inset 2px 2px white, inset -2px -2px white;
     }
-    &:hover {
+    &:not(:disabled):hover {
         background-image: svg-load("./icon/dropdown-hover.svg");
     }
-    &:active {
+    &:not(:disabled):active {
         background-image: svg-load("./icon/dropdown-active.svg");
     }
 }

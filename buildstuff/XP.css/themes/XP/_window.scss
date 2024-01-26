@@ -287,3 +287,25 @@
     top: 31px;
     left: 31px;
 }
+
+/* Change dialog icons to XP ones */
+#msgbox-icon {
+    margin-top: 3px;
+    margin-left: 6px;
+}
+
+#msgbox-icon[src="images/warning.png"] {
+    content: url("../images/xp_warning.png");
+}
+
+#msgbox-icon[src="images/error.png"] {
+    content: url("../images/xp_error.png");
+}
+
+#msgbox-icon[src="images/info.png"] {
+    content: url("../images/xp_info.png");
+}
+
+#msgbox-icon[src="images/question.png"] {
+    content: url("../images/xp_question.png");
+}
