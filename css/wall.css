@@ -143,6 +143,7 @@ body {
     width: 84px;
     --extra-title-height: 0px;
     --extra-border-size: 1px;
+    --extra-border-bottom: 0px;
 }
 
 .windowContainer[data-unresizable] {

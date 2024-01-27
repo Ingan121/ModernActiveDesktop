@@ -134,25 +134,25 @@ if (localStorage.madesktopItemCount > 1) {
     }
 }
 
-if (localStorage.madesktopLastVer !== "3.1") { // First run or update from previous versions
+if (!localStorage.madesktopLastVer.startsWith("3.1")) { // First run or update from previous versions
     localStorage.removeItem("madesktopHideWelcome");
     localStorage.removeItem("madesktopCheckedChanges");
     localStorage.removeItem("madesktopCheckedConfigs");
     openWindow();
 
-    if (localStorage.sysplugIntegration) {
-        madAlert("System plugin has been updated, and it needs a reinstall. Please update it with the setup guide.", function () {
-            openWindow("SysplugSetupGuide.md", true);
-        });
-        delete localStorage.sysplugIntegration;
-    }
     if (localStorage.madesktopColorScheme === "xpcss4mad") {
         localStorage.madesktopMenuStyle = "mbcm";
         changeMenuStyle(localStorage.madesktopMenuStyle);
     }
     startup();
 }
-localStorage.madesktopLastVer = "3.1";
+if (localStorage.madesktopLastVer !== "3.1.1" && localStorage.sysplugIntegration) {
+    madAlert("System plugin has been updated, and it needs a reinstall. Please update it with the setup guide.", function () {
+        openWindow("SysplugSetupGuide.md", true);
+    });
+    delete localStorage.sysplugIntegration;
+}
+localStorage.madesktopLastVer = "3.1.1";
 
 if (localStorage.madesktopItemVisible === "false") {
     windowContainers[0].style.display = "none";
@@ -540,11 +540,12 @@ function changeSoundScheme(scheme) {
             break;
         case '8':
             soundScheme.startup = new Audio("sounds/Aero/startup.wav");
-            soundScheme.question = new Audio("sounds/8/Windows Background.wav");
-            soundScheme.error = new Audio("sounds/8/Windows Foreground.wav");
-            soundScheme.warning = new Audio("sounds/8/Windows Background.wav");
-            soundScheme.info = new Audio("sounds/8/Windows Background.wav");
-            soundScheme.modal = new Audio("sounds/8/Windows Background.wav");
+			// idk why but WE uploader somehow hates these specific files so I converted these to flac
+            soundScheme.question = new Audio("sounds/8/Windows Background.flac");
+            soundScheme.error = new Audio("sounds/8/Windows Foreground.flac");
+            soundScheme.warning = new Audio("sounds/8/Windows Background.flac");
+            soundScheme.info = new Audio("sounds/8/Windows Background.flac");
+            soundScheme.modal = new Audio("sounds/8/Windows Background.flac");
             break;
         case '10':
             soundScheme.startup = new Audio("sounds/Aero/startup.wav");
@@ -941,10 +942,10 @@ async function getFavicon(iframe) {
     }
 }
 
-function adjustAllElements(extraTitleHeight, extraBorderSize) {
-    log({extraTitleHeight, extraBorderSize});
+function adjustAllElements(extraTitleHeight, extraBorderSize, extraBorderBottom) {
+    log({extraTitleHeight, extraBorderSize, extraBorderBottom});
     for (const i in deskMovers) {
-        deskMovers[i].adjustElements(extraTitleHeight, extraBorderSize);
+        deskMovers[i].adjustElements(extraTitleHeight, extraBorderSize, extraBorderBottom);
     }
 }
 
@@ -1268,6 +1269,8 @@ function startup() {
 document.getElementById("location").textContent = location.href;
 if (runningMode === WE) {
     runningModeLabel.textContent = "Wallpaper Engine";
+    // Dummy listener to make Wallpaper Engine recognize MAD supporting audio visualization
+    window.wallpaperRegisterAudioListener(() => {});
 } else {
     startup();
     if (location.href.startsWith("file:///") && runningMode === BROWSER) {

@@ -237,7 +237,7 @@ function checkSysplug() {
     fetch("http://localhost:3031/connecttest")
         .then(response => response.text())
         .then(responseText => {
-            if (responseText !== localStorage.madesktopLastVer + ".0") {
+            if (responseText !== localStorage.madesktopLastVer) {
                 connectionStatus.textContent = "System plugin version mismatch! Please update the system plugin with the guide.";
             } else {
                 connectionStatus.textContent = "System plugin connection successful!";

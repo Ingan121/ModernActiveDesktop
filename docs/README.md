@@ -40,6 +40,11 @@
     * Fixed the circle mark in context menus being rendered as broken texts in some cases
 * Updated dependencies
 
+### 3.1.1
+* Removed an unnecessary zip file that contained a full copy of itself duplicated
+* Fixed an error in environments other than Wallpaper Engine that happened by a visualizer-related code
+* Visual improvements to the Windose theme
+
 ### 3.0
 * Added a new 'Window' styling
 * Improved the configuration UI

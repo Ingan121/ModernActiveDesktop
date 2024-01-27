@@ -939,20 +939,23 @@ class DeskMover {
     }
     
     // Adjust all elements to windowElement
-    adjustElements(extraTitleHeight, extraBorderSize) {
+    adjustElements(extraTitleHeight, extraBorderSize, extraBorderBottom) {
         if (typeof extraTitleHeight === 'undefined') {
             extraTitleHeight = parseInt(getComputedStyle(this.windowContainer).getPropertyValue('--extra-title-height'));
         }
         if (typeof extraBorderSize === 'undefined') {
             extraBorderSize = parseInt(getComputedStyle(this.windowContainer).getPropertyValue('--extra-border-size'));
         }
-        log({extraTitleHeight, extraBorderSize}, 'debug');
+        if (typeof extraBorderBottom === 'undefined') {
+            extraBorderBottom = parseInt(getComputedStyle(this.windowContainer).getPropertyValue('--extra-border-bottom'));
+        }
+        log({extraTitleHeight, extraBorderSize, extraBorderBottom}, 'debug');
         if (localStorage.madesktopColorScheme === 'xpcss4mad' && this.config.style === 'wnd') {
-            this.windowContainer.style.height = this.windowElement.offsetHeight + 22 + extraTitleHeight + (extraBorderSize * 2) + 'px';
+            this.windowContainer.style.height = this.windowElement.offsetHeight + 22 + extraTitleHeight + (extraBorderSize * 2) + extraBorderBottom + 'px';
             this.windowContainer.style.width = this.windowElement.offsetWidth + 4 + extraBorderSize * 2 + 'px';
             this.windowTitlebar.style.width = this.windowElement.offsetWidth - 7 + 'px';
         } else if (this.config.style === 'wnd') {
-            this.windowContainer.style.height = this.windowElement.offsetHeight + 19 + extraTitleHeight + (extraBorderSize * 2) + 'px';
+            this.windowContainer.style.height = this.windowElement.offsetHeight + 19 + extraTitleHeight + (extraBorderSize * 2) + extraBorderBottom + 'px';
             this.windowContainer.style.width = this.windowElement.offsetWidth - 2 + extraBorderSize * 2 + 'px';
         } else {
             this.windowContainer.style.height = this.windowElement.offsetHeight + 19 + 'px';

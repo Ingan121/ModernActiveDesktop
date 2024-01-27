@@ -46,15 +46,31 @@
 .windowContainer {
     --extra-title-height: -1px !important;
     --extra-border-size: 1px !important;
+    --extra-border-bottom: 5px !important;
 }
 
-.windowContainer[data-style="wnd"],
+.windowContainer[data-style="wnd"] {
+    box-shadow: #4D23CD -1px -1px inset, #4D23CD 1px 1px inset;
+    background-color: #90F3E1;
+    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB8AAAAGCAYAAAA7d0VqAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnMAABJzAYwiuQcAAABISURBVChTY/RVPvufgQpg811jks0Ca5hbKwXlkgeSm5/BLQfRIDGYQ/DxmUCMgQJUtxzkI5gvQQAfn6rBDuUSDaiW4EgHDAwAlEkyJY3231wAAAAASUVORK5CYII=");
+    background-position: 3px bottom;
+    background-repeat: no-repeat;
+    image-rendering: pixelated;
+}
+
+.windowContainer[data-style="wnd"] .windowElement {
+    background-color: #FCF1FF;
+}
+
 #madconf #activeWindow,
 #msgbox {
     box-shadow: #4D23CD -1px -1px inset, #4D23CD 1px 1px inset, #90F3E1 -3px -3px inset, #90F3E1 3px 3px inset;
 }
 
-.windowContainer[data-style="wnd"][data-inactive],
+.windowContainer[data-style="wnd"][data-inactive] {
+    background-color: #E2E2E1;
+}
+
 #madconf #inactiveWindow,
 #msgbox[data-inactive] {
     box-shadow: #4D23CD -1px -1px inset, #4D23CD 1px 1px inset, #E2E2E1 -3px -3px inset, #E2E2E1 3px 3px inset;

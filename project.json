@@ -61,13 +61,13 @@
 		},
 		"supportsaudioprocessing" : true
 	},
-	"preview" : "preview.jpg",
+	"preview" : "preview.gif",
 	"ratingsex" : "none",
 	"ratingviolence" : "none",
 	"tags" : [ "Retro" ],
 	"title" : "Windows 98 Desktop Experience",
-	"type" : "web",
-	"version" : 12,
+	"type" : "Web",
+	"version" : 14,
 	"visibility" : "public",
 	"workshopid" : "2278898637",
 	"workshopurl" : "steam://url/CommunityFilePage/2278898637"

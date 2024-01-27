@@ -146,7 +146,7 @@ function checkSysplug() {
     fetch("http://localhost:3031/connecttest")
         .then(response => response.text())
         .then(responseText => {
-            if (responseText === localStorage.madesktopLastVer + ".0") {
+            if (responseText === localStorage.madesktopLastVer) {
                 checkmarks[2].style.display = "block";
             } else {
                 checkmarks[2].style.display = "none";

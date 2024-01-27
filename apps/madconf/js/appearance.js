@@ -39,14 +39,14 @@ async function main() {
         }
         selector.dispatchEvent(new Event("change"));
 
-        if (schemeSelector.value === "95" || schemeSelector.value.startsWith("win")) {
-            flatMenuChkBox.checked = true;
-            flatMenuSelector.disabled = false;
-            flatMenuSelector.selectedIndex = 0;
-        } else if (schemeSelector.value.startsWith("xp") || schemeSelector.value === "aero") {
+        if (schemeSelector.value.startsWith("xp") || schemeSelector.value === "aero" || schemeSelector.value === "windose") {
             flatMenuChkBox.checked = true;
             flatMenuSelector.disabled = false;
             flatMenuSelector.selectedIndex = 2;
+        } else if (schemeSelector.value === "95" || schemeSelector.value.startsWith("win")) {
+            flatMenuChkBox.checked = true;
+            flatMenuSelector.disabled = false;
+            flatMenuSelector.selectedIndex = 0;
         } else {
             flatMenuChkBox.checked = false;
             flatMenuSelector.disabled = true;
@@ -206,7 +206,7 @@ async function main() {
         }
 
         if (selector.disabled && !systemColorChhkBox.checked) {
-            parent.adjustAllElements(parseInt(scheme["extra-title-height"]) || 0, parseInt(scheme["extra-border-size"]) || 0);
+            parent.adjustAllElements(parseInt(scheme["extra-title-height"]) || 0, parseInt(scheme["extra-border-size"]) || 0, parseInt(scheme["extra-border-bottom"]) || 0);
         } else {
             parent.adjustAllElements();
         }
