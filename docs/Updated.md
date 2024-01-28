@@ -31,6 +31,9 @@
 * Fixed an error in environments other than Wallpaper Engine that happened by a visualizer-related code
 * Visual improvements to the Windose theme
 
+### 3.1.2
+* Fixed a critical error occurring on the first start or after reset
+
 ## 3.0
 * Added a new 'Window' styling
 * Improved the configuration UI

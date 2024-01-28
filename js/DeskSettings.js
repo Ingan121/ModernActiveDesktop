@@ -134,25 +134,31 @@ if (localStorage.madesktopItemCount > 1) {
     }
 }
 
-if (!localStorage.madesktopLastVer.startsWith("3.1")) { // First run or update from previous versions
-    localStorage.removeItem("madesktopHideWelcome");
-    localStorage.removeItem("madesktopCheckedChanges");
-    localStorage.removeItem("madesktopCheckedConfigs");
-    openWindow();
+if (localStorage.madesktopLastVer) {
+    if (!localStorage.madesktopLastVer.startsWith("3.1")) { // Update from 3.0 and below
+        localStorage.removeItem("madesktopHideWelcome");
+        localStorage.removeItem("madesktopCheckedChanges");
+        localStorage.removeItem("madesktopCheckedConfigs");
+        openWindow("placeholder.html");
 
-    if (localStorage.madesktopColorScheme === "xpcss4mad") {
-        localStorage.madesktopMenuStyle = "mbcm";
-        changeMenuStyle(localStorage.madesktopMenuStyle);
+        if (localStorage.madesktopColorScheme === "xpcss4mad") {
+            localStorage.madesktopMenuStyle = "mbcm";
+            changeMenuStyle(localStorage.madesktopMenuStyle);
+        }
+        startup();
     }
+
+    if (localStorage.madesktopLastVer !== "3.1.2" && localStorage.sysplugIntegration) { // Update from 3.1.1 and below
+        madAlert("System plugin has been updated, and it needs a reinstall. Please update it with the setup guide.", function () {
+            openWindow("SysplugSetupGuide.md", true);
+        });
+        delete localStorage.sysplugIntegration;
+    }
+} else { // First run
+    openWindow("placeholder.html");
     startup();
 }
-if (localStorage.madesktopLastVer !== "3.1.1" && localStorage.sysplugIntegration) {
-    madAlert("System plugin has been updated, and it needs a reinstall. Please update it with the setup guide.", function () {
-        openWindow("SysplugSetupGuide.md", true);
-    });
-    delete localStorage.sysplugIntegration;
-}
-localStorage.madesktopLastVer = "3.1.1";
+localStorage.madesktopLastVer = "3.1.2";
 
 if (localStorage.madesktopItemVisible === "false") {
     windowContainers[0].style.display = "none";

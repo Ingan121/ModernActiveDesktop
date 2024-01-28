@@ -1,13 +1,18 @@
 {
   "name": "madsysplug",
-  "version": "3.1.1",
+  "version": "3.1.2",
   "description": "ModernActiveDesktop System Plugin",
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
     "build": "electron-builder --win --x64"
   },
-  "repository": "",
+  "homepage": "https://www.ingan121.com/mad/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Ingan121/ModernActiveDesktop.git",
+    "directory": "buildstuff/systemplugin"
+  },
   "keywords": [
     "Electron",
     "Wallpaper Engine",

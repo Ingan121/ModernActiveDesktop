@@ -295,7 +295,7 @@ class DeskMover {
                 let url = "placeholder.html";
                 let defaultLeft = window.vWidth - this.windowContainer.offsetWidth - (parseInt(localStorage.madesktopChanViewRightMargin) || 0) - 500 + 'px';
                 let defaultTop = '200px';
-                if ((typeof openDoc === "string" || openDoc instanceof String) && !reinit) {
+                if ((typeof openDoc === "string" || openDoc instanceof String) && openDoc != "placeholder.html" && !reinit) {
                     if (openDoc.startsWith("apps/madconf/")) {
                         this.windowElement.width = width || '470px';
                         if (localStorage.madesktopColorScheme === 'xpcss4mad') {
@@ -444,7 +444,9 @@ class DeskMover {
     setIcon(icon) {
         if (icon) {
             this.windowTitlebar.classList.remove("noIcon");
-            this.windowIcon.src = icon;
+            if (typeof icon === "string" || icon instanceof String) {
+                this.windowIcon.src = icon;
+            }
         } else if (!localStorage.madesktopDebugMode) {
             this.windowTitlebar.classList.add("noIcon");
         } else {

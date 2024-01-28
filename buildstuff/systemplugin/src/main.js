@@ -14,9 +14,10 @@ const args = require('minimist')(process.argv);
 const { spawn } = require('child_process');
 
 if (args.help) {
-  console.log(`ModernActiveDesktop System Plugin ${app.getVersion()} Help`);
+  console.log(`ModernActiveDesktop System Plugin ${app.getVersion()}`);
   console.log("Made by Ingan121");
-  console.log("Licensed under the MIT License\n");
+  console.log("Licensed under the MIT License");
+  console.log("https://github.com/Ingan121/ModernActiveDesktop/tree/master/buildstuff/systemplugin\n");
   console.log("Usage: MADSysPlug.exe [options]");
   console.log("--open: Open a URL on startup");
   console.log("--maximize: Maximize the window on startup");
