@@ -332,7 +332,7 @@ body {
     margin-top: 0;
     margin-left: 0;
     margin-bottom: 1px;
-    font-family: "Pixelated MS Sans Serif";
+    font-family: var(--font-98);
     font-size: 11px;
 }
 

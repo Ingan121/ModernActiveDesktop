@@ -9,7 +9,7 @@ const visTopCtx = visTop.getContext('2d');
 
 updateSize();
 
-const lastAud = new Array(128).fill(1);
+const lastAud = new Array(128).fill(0);
 const lastBar = new Array(128).fill(0);
 const lastTop = new Array(128).fill(visTop.height);
 const topSpeed = new Array(128).fill(0);
@@ -47,7 +47,7 @@ function wallpaperAudioListener(audioArray) {
 
     for (var i = 0; i < audioArray.length; ++i) {
         // Create an audio bar with its hight depending on the audio volume level of the current frequency
-        const height = visBar.height * Math.min(audioArray[i], 1);
+        const height = visBar.height * Math.min(audioArray[i], 1)// * 0.7;
         if (height > lastBar[i]) {
             lastBar[i] = height;
             visBarCtx.fillRect(barWidth * i, visBar.height - height, barWidth - gap, height);
@@ -55,7 +55,7 @@ function wallpaperAudioListener(audioArray) {
             lastBar[i] -= 3;
             const diff = audioArray[i] - lastAud[i];
             if (diff > 0.1) {
-                lastBar[i] += visBar.height * diff * 0.15;
+                lastBar[i] += visBar.height * diff * 0.07;
                 if (lastBar[i] > visBar.height) {
                     lastBar[i] = visBar.height;
                 }

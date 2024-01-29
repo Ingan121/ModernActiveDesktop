@@ -1,24 +1,5 @@
-button,
-label,
-input,
-textarea,
-select,
-option,
-table,
-ul.tree-view,
-.window,
-#madWelcome .items,
-#madWelcome .contents,
-#placeholder,
-.menu,
-#madVis #infoArea,
-#madVisConf,
-li[role=tab] {
-  font-family: sans-serif !important;
-}
-
-.title-bar {
-  font-family: sans-serif; /* Don't apply this with the XP style */
+:root {
+  --font-98: sans-serif;
 }
 
 #madconf #checkboxes {

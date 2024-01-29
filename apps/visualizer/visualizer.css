@@ -74,7 +74,7 @@ canvas {
     margin-top: 0;
     margin-left: 0;
     margin-bottom: 1px;
-    font-family: "Pixelated MS Sans Serif";
+    font-family: var(--font-98);
     font-size: 11px;
     background-color: var(--button-face);
     width: 100%;
@@ -406,7 +406,7 @@ canvas {
     border: solid 1px;
     border-color: gray white white gray;
     margin: 0;
-    font-family: "Pixelated MS Sans Serif", Gulim;
+    font-family: var(--font-98);
     display: none;
 }
 

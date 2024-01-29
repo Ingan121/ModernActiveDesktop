@@ -96,7 +96,9 @@
   --border-tab: inset -1px 0 var(--window-frame),
     inset 1px 1px var(--button-face),
     inset -2px 0 var(--button-shadow),
-    inset 2px 2px var(--button-hilight)
+    inset 2px 2px var(--button-hilight);
+
+  --font-98: "Pixelated MS Sans Serif", Arial, Gulim, MS UI Gothic, SimSun, PMingLiU;
 }
 
 @font-face {
@@ -132,7 +134,7 @@ ul.tree-view,
 .window,
 .title-bar,
 li[role=tab] {
-  font-family: "Pixelated MS Sans Serif", Arial, Gulim;
+  font-family: var(--font-98);
   -webkit-font-smoothing: none;
   font-size: 11px;
 }

@@ -153,7 +153,7 @@ body {
     left: 0;
     width: 180px;
     height: 26px;
-    font-family: "Pixelated MS Sans Serif";
+    font-family: var(--font-98);
     font-weight: bold;
     margin-top: 2px;
     background-position: -4px 0;
@@ -274,7 +274,7 @@ body {
     position: absolute;
     top: 63px;
     left: 180px;
-    font-family: "Pixelated MS Sans Serif";
+    font-family: var(--font-98);
     animation: appear 1.9s;
     display: none;
 }

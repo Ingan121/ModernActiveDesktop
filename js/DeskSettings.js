@@ -582,19 +582,6 @@ function updateSysplugOpenOpt(option) {
         });
 }
 
-// Find the cursor position inside an element
-function findPos(elem) {
-    let curleft = 0, curtop = 0;
-    if (elem.offsetParent) {
-        do {
-            curleft += elem.offsetLeft;
-            curtop += elem.offsetTop;
-        } while (elem = elem.offsetParent);
-        return { x: curleft, y: curtop };
-    }
-    return undefined;
-}
-
 // Convert rgb(red, green, blue) to #rrggbb
 function rgbToHex(rgbType) {
     const rgb = rgbType.replace(/[^%,.\d]/g, "").split(",");

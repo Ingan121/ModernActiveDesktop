@@ -275,7 +275,7 @@ async function main() {
         if (fontSmoothingChkBox.checked) {
             styleElement.textContent += `
                 #preview *:not(.title-bar-text) {
-                    font-family: 'Segoe UI', sans-serif;
+                    font-family: sans-serif;
                 }
             `;
         } else {

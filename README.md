@@ -2,19 +2,11 @@
 <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=2278898637"><img src="https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-steam-workshop.jross.me%2F2278898637%2Fsubscriptions-text" alt="Steam Workshop subscribers count"></a>
 
 * ModernActiveDesktop, also known as Windows 98 Desktop Experience, aims to replicate the original Active Desktop behavior and improve the Classic Theme experience on modern Windows.
-* Designed for Wallpaper Engine and Lively Wallpaper.
+* This wallpaper includes Windows 98's Channel Bar, the startup sound, a music visualizer, and various apps like paint and solitaire.
+* Designed for Wallpaper Engine.
 <br><br><img src="docs/images/screenshot.png" width="480px" height="270px" title="Screenshot"><br>
 * [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2278898637)
 * [Try in your browser](https://www.ingan121.com/mad/)
-
-## Basic Usage Guide
-* Place the mouse cursor at the top of a window to show its title bar and menus.
-* You can change MAD's settings within Wallpaper Engine. Open the Wallpaper Engine wallpaper selection window, then you'll see the properties panel on the right side.
-* In the properties panel, you can configure the background, change the color scheme, turn on or off the Windows 98 startup sound, change the Active Desktop item style, and so on. Try them out now!
-* To add a new Active Desktop item on your desktop, click the empty box next to the 'Add a new ActiveDesktop item', and a new window will appear. To load a website into it, move the cursor near its upper side, click the ⏷ button, choose Configure, click Change URL, then enter your desired address in the dialog.
-* For better usability, it is highly recommended to install the system plugin. It allows for the wallpaper to open a new browser window and apply the system color scheme to the wallpaper (if you're using a Classic Theme.) For more information, please refer to the [system plugin setup guide](docs/SysplugSetupGuide.md).
-    * System plugin does not work with Lively Wallpaper yet.
-* To reset one window, click its ⏷ button, choose Reset, and its position, size, URL, and style will be reset. To completely reset, go to the Wallpaper Engine properties panel, click the big red Reset button first, then click the 'Reset completely' button. Everything will go back to the initial state.
 
 ## Changelog
 
