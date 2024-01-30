@@ -144,6 +144,8 @@ body {
     --extra-title-height: 0px;
     --extra-border-size: 1px;
     --extra-border-bottom: 0px;
+    --context-menu-left: calc(3px + var(--extra-border-size));
+    --context-menu-top: calc(23px + var(--extra-title-height) + var(--extra-border-size));
 }
 
 .windowContainer[data-unresizable] {
@@ -284,7 +286,7 @@ body {
 }
 
 .windowContainer[data-style="wnd"] > .contextMenuBg {
-    top: calc(23px + var(--extra-title-height) + var(--extra-border-size));
+    top: var(--context-menu-top);
 }
 
 .contextMenuBg:focus,
@@ -370,7 +372,8 @@ body {
 }
 
 .windowContainer[data-style="wnd"] > .windowMenuBg {
-    left: calc(3px + var(--extra-border-size));
+    top: var(--context-menu-top);
+    left: var(--context-menu-left);
 }
 
 .confMenuBg {
@@ -380,7 +383,7 @@ body {
 }
 
 .windowContainer[data-style="wnd"] > .confMenuBg {
-    left: calc(103px + var(--extra-border-size));
+    left: calc(100px + var(--context-menu-left));
 }
 
 #mainMenuBg {

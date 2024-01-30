@@ -1,0 +1,88 @@
+@import 'common.css';
+
+body {
+    background-color: var(--background);
+    overflow: hidden;
+}
+
+#container {
+    position: relative;
+    left: 3px;
+}
+
+#inactiveWindow {
+    position: absolute;
+    width: 380px;
+    height: 150px;
+    top: 7px;
+    left: 0px;
+    z-index: 1;
+}
+
+.inactive > .title-bar-text {
+    color: var(--inactive-title-text);
+}
+
+#activeWindow {
+    position: absolute;
+    width: 400px;
+    height: 129px;
+    top: 33px;
+    left: 4px;
+    z-index: 2;
+}
+
+.title-bar-controls button:before {
+    font-family: "marlett-icons";
+    content: "\e904";
+    position: relative;
+    top: 0.2px;
+    left: -0.1px;
+}
+
+.menu {
+    display: flex;
+    margin-top: 1px;
+    margin-bottom: 1px;
+}
+
+.menu > div {
+    padding-left: 5px;
+    padding-right: 5px;
+    border: solid 1px transparent;
+}
+
+.disabled {
+    color: var(--button-shadow);
+    text-shadow: 1px 1px 0 var(--button-hilight);
+}
+
+.menu > div[data-active] {
+    border-color: var(--button-shadow) var(--button-hilight) var(--button-hilight) var(--button-shadow) !important;
+}
+
+.menu > div[data-active] > span {
+    margin-top: 1px;
+    margin-left: 1px;
+    margin-right: -1px;
+}
+
+textarea {
+    width: 398px;
+    height: 86px;
+    margin: 1px;
+    margin-top: 0;
+    resize: none;
+    font-size: 12px;
+    font-weight: bold;
+    padding-top: 6px;
+    padding-left: 5px;
+}
+
+#msgbox {
+    position: absolute;
+    width: 260px;
+    top: 106px;
+    left: 12px;
+    z-index: 3;
+}

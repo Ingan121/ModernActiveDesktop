@@ -99,7 +99,7 @@ class DeskMover {
             this.windowMenuBtn.addEventListener('click', this.openContextMenu.bind(this));
             this.windowIcon.addEventListener('click', this.openContextMenu.bind(this));
             this.windowIcon.addEventListener('dblclick', this.closeWindow.bind(this));
-            this.windowTitlebar.addEventListener('contextmenu', this.openContextMenu.bind(this));
+            this.windowTitlebar.addEventListener('contextmenu', this.openContextMenuFromRightClick.bind(this));
             
             // Changes the active status correctly
             for (let i = 0; i < this.contextMenuItems.length; i++) {
@@ -195,7 +195,7 @@ class DeskMover {
 
             this.confMenuItems[10].addEventListener('click', () => { // Properties button
                 this.closeContextMenu();
-                openWindow("apps/madconf/background.html", true);
+                openConfig();
             });
 
             this.windowCloseBtn.addEventListener('click', this.closeWindow.bind(this));
@@ -287,11 +287,11 @@ class DeskMover {
         if (this.config.src) {
             this.windowElement.src = this.config.src;
         } else {
-            if (reinit) {
-                this.changeWndStyle("wnd");
-            }
             if (this.numStr !== "") {
                 // Assign default values
+                if (reinit) {
+                    this.changeWndStyle("wnd");
+                }
                 let url = "placeholder.html";
                 let defaultLeft = window.vWidth - this.windowContainer.offsetWidth - (parseInt(localStorage.madesktopChanViewRightMargin) || 0) - 500 + 'px';
                 let defaultTop = '200px';
@@ -342,6 +342,7 @@ class DeskMover {
                     this.windowContainer.style.top = '200px';
                     this.windowElement.width = '84px';
                     this.windowElement.height = '471px';
+                    this.changeWndStyle("ad");
                     this.adjustElements();
                     this.windowElement.src = "ChannelBar.html";
                 }
@@ -366,6 +367,9 @@ class DeskMover {
             if (this.isVisualizer) {
                 window.visDeskMover = null;
             }
+            if (this.isConfigurator) {
+                window.confDeskMover = null;
+            }
             delete deskMovers[this.numStr];
             this.windowContainer.remove();
             activateWindow(prevActiveWindow);
@@ -387,8 +391,10 @@ class DeskMover {
             localStorage.madesktopItemVisible = false;
         }
     }
-    
+
     openContextMenu() {
+        this.windowContainer.style.setProperty('--context-menu-left', '');
+        this.windowContainer.style.setProperty('--context-menu-top', '');
         this.contextMenuBg.style.display = "block";
 
         // For handling window icon double click
@@ -402,7 +408,17 @@ class DeskMover {
         isContextMenuOpen = true;
         this.contextMenuBg.focus();
     }
-    
+
+    openContextMenuFromRightClick(event) {
+        this.windowContainer.style.setProperty('--context-menu-left', this.posInContainer.x + 'px');
+        this.windowContainer.style.setProperty('--context-menu-top', this.posInContainer.y + 'px');
+        this.contextMenuBg.style.display = "block";
+        iframeClickEventCtrl(false);
+        isContextMenuOpen = true;
+        this.contextMenuBg.focus();
+        event.preventDefault();
+    }
+
     closeContextMenu() {
         log(`contextMenuOpening: ${this.contextMenuOpening}`);
         if (this.contextMenuOpening) {
@@ -419,13 +435,13 @@ class DeskMover {
         iframeClickEventCtrl(true);
         isContextMenuOpen = false;
     }
-    
+
     openConfMenu() {
         this.contextMenuItems[0].dataset.active = true;
         this.confMenuBg.style.display = "block";
         iframeClickEventCtrl(false);
     }
-    
+
     closeConfMenu() {
         if (this.shouldNotCloseConfMenu) {
             return
@@ -433,7 +449,7 @@ class DeskMover {
         delete this.contextMenuItems[0].dataset.active;
         this.confMenuBg.style.display = "none";
     }
-    
+
     #delayedCloseConfMenu(delay) { 
         if (typeof delay !== "number") {
             delay = 300;

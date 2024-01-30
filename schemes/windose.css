@@ -62,7 +62,7 @@
     background-color: #FCF1FF;
 }
 
-#madconf #activeWindow,
+#madconf-preview #activeWindow,
 #msgbox {
     box-shadow: #4D23CD -1px -1px inset, #4D23CD 1px 1px inset, #90F3E1 -3px -3px inset, #90F3E1 3px 3px inset;
 }
@@ -71,7 +71,7 @@
     background-color: #E2E2E1;
 }
 
-#madconf #inactiveWindow,
+#madconf-preview #inactiveWindow,
 #msgbox[data-inactive] {
     box-shadow: #4D23CD -1px -1px inset, #4D23CD 1px 1px inset, #E2E2E1 -3px -3px inset, #E2E2E1 3px 3px inset;
 }
@@ -129,7 +129,7 @@
     left: 103px;
 }
 
-#madconf #activeWindow textarea {
+#madconf-preview #activeWindow textarea {
     height: 85px;
 }
 

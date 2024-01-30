@@ -1,9 +1,8 @@
 @import 'common.css';
 
-
-#preview {
-    height: 200px;
-    max-width: 500px;
+#schemePreview {
+    height: 194px;
+    width: calc(100% - 6px);
     background-color: var(--background);
     margin: 0 auto;
     pointer-events: none;
@@ -11,95 +10,34 @@
         inset 1px 1px var(--button-shadow),
         inset -2px -2px var(--button-light),
         inset 2px 2px var(--button-dk-shadow);
+    border: none;
+    padding: 3px;
 }
 
-#inactiveWindow {
-    position: absolute;
-    width: 380px;
-    height: 150px;
-    top: 21px;
-    left: 50%;
-    transform: translateX(-200px);
-    z-index: 1;
+#conf {
+    padding-top: 5px;
+    display: table;
+    margin: 0 auto;
 }
 
-.inactive > .title-bar-text {
-    color: var(--inactive-title-text);
-}
-
-#activeWindow {
-    position: absolute;
-    width: 400px;
-    height: 129px;
-    top: 47px;
-    left: 50%;
-    transform: translateX(-196px);
-    z-index: 2;
-}
-
-.title-bar-controls button:before {
-    font-family: "marlett-icons";
-    content: "\e904";
+#schemeSelectorGroup button {
     position: relative;
-    top: 0.2px;
-    left: -0.1px;
+    top: 1px;
 }
 
-.menu {
-    display: flex;
-    margin-top: 1px;
-    margin-bottom: 1px;
-}
-
-.menu > div {
-    padding-left: 5px;
-    padding-right: 5px;
-    border: solid 1px transparent;
-}
-
-.disabled {
-    color: var(--button-shadow);
-    text-shadow: 1px 1px 0 var(--button-hilight);
-}
-
-.menu > div[data-active] {
-    border-color: var(--button-shadow) var(--button-hilight) var(--button-hilight) var(--button-shadow) !important;
-}
-
-.menu > div[data-active] > span {
-    margin-top: 1px;
-    margin-left: 1px;
-    margin-right: -1px;
-}
-
-textarea {
-    width: 398px;
-    height: 86px;
-    margin: 1px;
-    margin-top: 0;
-    resize: none;
-    font-size: 12px;
-    font-weight: bold;
-    padding-top: 6px;
-    padding-left: 5px;
-}
-
-#msgbox {
-    position: absolute;
-    width: 260px;
-    top: 120px;
-    left: 50%;
-    transform: translateX(-188px);
-    z-index: 3;
-}
-
-#selector {
-    width: 200px;
-    margin-right: 5px;
+#saveAsBtn {
+    margin-left: 3px;
+    margin-right: 3px;
 }
 
 #schemeSelector {
     width: 200px;
+}
+
+#selector {
+    width: 200px;
+    margin-left: 1px;
+    margin-right: 5px;
 }
 
 .colorPicker {
@@ -108,7 +46,7 @@ textarea {
     width: 42px;
     height: 21px;
     position: relative;
-    top: 13.5px;
+    top: 11px;
     margin-top: -10px;
     margin-left: -1px;
 }
@@ -122,6 +60,10 @@ textarea {
     top: 0;
     left: -7px;
     float: left
+}
+
+.disabled .colorPicker-color {
+    opacity: 0;
 }
 
 .colorPicker-bar {
@@ -142,14 +84,14 @@ textarea {
     font-size: 10px;
 }
 
-#conf {
-    padding-top: 5px;
-    width: 260px;
-    margin: 0 auto;
+.colorPicker-label {
+    position: relative;
+    top: -2px;
+    margin-right: 4px;
 }
 
 #checkboxes {
-    width: 320px;
+    display: table;
     margin: 0 auto;
 }
 

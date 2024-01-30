@@ -98,7 +98,7 @@
     inset -2px 0 var(--button-shadow),
     inset 2px 2px var(--button-hilight);
 
-  --font-98: "Pixelated MS Sans Serif", Arial, Gulim, MS UI Gothic, SimSun, PMingLiU;
+  --font-98: "Pixelated MS Sans Serif", Arial, Gulim, "MS UI Gothic", SimSun, PMingLiU;
 }
 
 @font-face {

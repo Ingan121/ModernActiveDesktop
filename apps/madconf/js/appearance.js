@@ -8,14 +8,21 @@ main();
 
 async function main() {
     let scheme = parseCssScheme(await getSchemeText());
-    const preview = document.getElementById("preview");
-    const styleElement = document.getElementById("style2");
+    const preview = document.getElementById("schemePreview");
     const schemeSelector = document.getElementById("schemeSelector");
     const schemeSelectorOptions = schemeSelector.options;
+    const saveAsBtn = document.getElementById("saveAsBtn");
+    const deleteBtn = document.getElementById("deleteBtn");
     const selector = document.getElementById("selector");
     const options = selector.options;
-    const colorPicker = document.querySelector(".colorPicker");
-    const colorPickerColor = document.querySelector(".colorPicker-color");
+    const colorPickers = document.querySelectorAll(".colorPicker");
+    const colorPickerColor = document.querySelector("#firstColor .colorPicker-color");
+    const secondColorPickerWrap = document.getElementById("secondColorWrap");
+    const secondColorPicker = document.getElementById("secondColor");
+    const secondColorPickerColor = secondColorPicker.querySelector(".colorPicker-color");
+    const textColorPickerWrap = document.getElementById("textColorWrap");
+    const textColorPicker = document.getElementById("textColor");
+    const textColorPickerColor = textColorPicker.querySelector(".colorPicker-color");
     const miniPicker = document.getElementById("miniPicker");
     const miniPickerColors = document.querySelectorAll(".color");
     const openColorPickerBtn = document.getElementById("openColorPickerBtn");
@@ -27,15 +34,20 @@ async function main() {
     const animationSelector = document.getElementById("animationSelector");
     const importBtn = document.getElementById("importBtn");
 
+    let openColorPicker = null;
+
     colorPickerColor.style.backgroundColor = scheme[options[selector.selectedIndex].value];
 
     schemeSelector.addEventListener("change", async function () {
         scheme = parseCssScheme(await getSchemeText(`../../schemes/${schemeSelector.value}.css`));
         if (schemeSelectorOptions[schemeSelector.selectedIndex].dataset.inconfigurable) {
-            selector.selectedIndex = 11; // background
+            selector.selectedIndex = 6; // background
             selector.disabled = true;
+            saveAsBtn.disabled = true;
+            deleteBtn.disabled = true;
         } else {
             selector.disabled = false;
+            saveAsBtn.disabled = false;
         }
         selector.dispatchEvent(new Event("change"));
 
@@ -43,7 +55,7 @@ async function main() {
             flatMenuChkBox.checked = true;
             flatMenuSelector.disabled = false;
             flatMenuSelector.selectedIndex = 2;
-        } else if (schemeSelector.value === "95" || schemeSelector.value.startsWith("win")) {
+        } else if (schemeSelector.value.includes("95") || schemeSelector.value.startsWith("win")) {
             flatMenuChkBox.checked = true;
             flatMenuSelector.disabled = false;
             flatMenuSelector.selectedIndex = 0;
@@ -52,11 +64,11 @@ async function main() {
             flatMenuSelector.disabled = true;
         }
 
-        if (schemeSelector.value === "2k" || schemeSelector.value.startsWith("xp") || schemeSelector.value === "aero" || schemeSelector.value.startsWith("win11")) {
+        if (schemeSelector.value === "2k" || schemeSelector.value.startsWith("xp") || schemeSelector.value === "aero" || schemeSelector.value.startsWith("win11") || schemeSelector.value === "windose") {
             enableAnimationsChkBox.checked = true;
             animationSelector.selectedIndex = 1;
             animationSelector.disabled = false;
-        } else if (schemeSelector.value === "95" || schemeSelector.value.match(/win[1-3].*/)) {
+        } else if (schemeSelector.value.includes("95") || schemeSelector.value.match(/win[1-3].*/)) {
             enableAnimationsChkBox.checked = false;
             animationSelector.disabled = true;
         } else {
@@ -68,31 +80,58 @@ async function main() {
         applyPreview();
     });
 
+    saveAsBtn.addEventListener("click", function () {
+        madAlert("Not implemented yet", null, "error");
+    });
+
+    deleteBtn.addEventListener("click", function () {
+        madAlert("Not implemented yet", null, "error");
+    });
+
     selector.addEventListener("change", function () {
-        const option = options[selector.selectedIndex].value;
+        const option = selector.value;
         colorPickerColor.style.backgroundColor  = scheme[option];
+        if (options[selector.selectedIndex].dataset.second) {
+            secondColorPickerWrap.classList.remove("disabled");
+            secondColorPicker.disabled = false;
+            secondColorPickerColor.style.backgroundColor = scheme[options[selector.selectedIndex].dataset.second];
+        } else {
+            secondColorPickerWrap.classList.add("disabled");
+            secondColorPickerWrap.disabled = true;
+        }
+        if (options[selector.selectedIndex].dataset.text) {
+            textColorPickerWrap.classList.remove("disabled");
+            textColorPicker.disabled = false;
+            textColorPickerColor.style.backgroundColor = scheme[options[selector.selectedIndex].dataset.text];
+        } else {
+            textColorPickerWrap.classList.add("disabled");
+            textColorPicker.disabled = true;
+        }
     });
 
-    colorPicker.addEventListener("click", function () {
-        const clientRect = colorPicker.getBoundingClientRect();
-        let top = clientRect.top + colorPicker.offsetHeight;
-        let left = clientRect.left;
+    for (const colorPicker of colorPickers) {
+        colorPicker.addEventListener("click", function () {
+            openColorPicker = colorPicker;
+            const clientRect = colorPicker.getBoundingClientRect();
+            let top = clientRect.top + colorPicker.offsetHeight;
+            let left = clientRect.left;
 
-        if (left + 78 > window.innerWidth) {
-            left = window.innerWidth - 78;
-        }
-        if (top + 121 > window.innerHeight) {
-            top = window.innerHeight - 121;
-        }
+            if (left + 78 > window.innerWidth) {
+                left = window.innerWidth - 78;
+            }
+            if (top + 121 > window.innerHeight) {
+                top = window.innerHeight - 121;
+            }
 
-        miniPicker.style.top = `${top}px`;
-        miniPicker.style.left = `${left}px`;
-        miniPicker.style.display = "block";
-        miniPicker.focus();
-    });
+            miniPicker.style.top = `${top}px`;
+            miniPicker.style.left = `${left}px`;
+            miniPicker.style.display = "block";
+            miniPicker.focus();
+        });
+    }
 
     miniPicker.addEventListener("focusout", function (event) {
-        if (event.relatedTarget !== colorPicker && event.relatedTarget !== openColorPickerBtn) {
+        if (Array.from(colorPickers).indexOf(event.relatedTarget) === -1 && event.relatedTarget !== openColorPickerBtn) {
             miniPicker.style.display = "none";
         }
     });
@@ -112,7 +151,7 @@ async function main() {
     systemColorChhkBox.addEventListener("change", async function () {
         if (systemColorChhkBox.checked) {
             schemeSelector.disabled = true;
-            selector.selectedIndex = 11; // background
+            selector.selectedIndex = 6; // background
             scheme = parseCssScheme(await getSchemeText("http://localhost:3031/systemscheme"));
             selector.disabled = true;
             selector.dispatchEvent(new Event("change"));
@@ -255,55 +294,43 @@ async function main() {
         }
     }
 
-    applyPreview();
-
     if (localStorage.madesktopDebugMode) {
         importBtn.style.display = "block";
     }
 
     function changeColor(color) {
-        const option = options[selector.selectedIndex].value;
-        scheme[option] = color;
-        colorPickerColor.style.backgroundColor = color;
+        const option = options[selector.selectedIndex];
+        switch (openColorPicker.id) {
+            case "firstColor":
+                scheme[option.value] = color;
+                break;
+            case "secondColor":
+                scheme[option.dataset.second] = color;
+                break;
+            case "textColor":
+                scheme[option.dataset.text] = color;
+                break;
+        }
+        openColorPicker.querySelector(".colorPicker-color").style.backgroundColor = color;
         applyPreview();
     }
 
     function applyPreview() {
-        const schemeText = generateCssScheme(scheme, "#preview");
-        styleElement.textContent = schemeText;
-
-        if (fontSmoothingChkBox.checked) {
-            styleElement.textContent += `
-                #preview *:not(.title-bar-text) {
-                    font-family: sans-serif;
-                }
-            `;
-        } else {
-            styleElement.textContent += `
-                #preview *:not(.title-bar-text) {
-                    font-family: "Pixelated MS Sans Serif";
-                }
-            `;
-        }
-
-        if (flatMenuChkBox.checked && flatMenuSelector.selectedIndex !== 1) {
-            styleElement.textContent += `
-                .menu > div[data-active] {
-                    border-color: var(--menu-highlight) !important;
-                    background-color: var(--menu-highlight) !important;
-                    color: var(--hilight-text) !important;
-                }
-                .menu > div[data-active] span {
-                    margin: 0;
-                }
-            `;
-        }
-
         if (selector.disabled) {
-            preview.style.backgroundColor = document.querySelector(".colorPicker-color").style.backgroundColor;
+            if (systemColorChhkBox.checked) {
+                preview.contentWindow.changeColorScheme("sys");
+            } else {
+                preview.contentWindow.changeColorScheme(schemeSelector.value);
+            }
+            preview.contentDocument.body.style.backgroundColor = colorPickerColor.style.backgroundColor;
         } else {
-            preview.style.backgroundColor = scheme["background"];
+            const schemeText = generateCssScheme(scheme);
+            preview.contentWindow.changeColorScheme(schemeText);
+            preview.contentDocument.body.style.backgroundColor = scheme["background"];
         }
+
+        preview.contentWindow.changeFont(fontSmoothingChkBox.checked);
+        preview.contentWindow.changeMenuStyle(flatMenuChkBox.checked ? flatMenuSelector.value : false);
     }
 }
 
@@ -357,7 +384,7 @@ function applyScheme(scheme) {
         parent.changeColorScheme("sys");
         localStorage.madesktopColorScheme = "sys";
     } else {
-        const schemeText = generateCssScheme(scheme, ":root");
+        const schemeText = generateCssScheme(scheme);
         parent.changeColorScheme(schemeText);
         localStorage.madesktopColorScheme = "custom";
     }
@@ -377,8 +404,8 @@ function parseCssScheme(schemeText) {
     return scheme;
 }
 
-function generateCssScheme(scheme, parent) {
-    let cssScheme = `${parent} {\n`;
+function generateCssScheme(scheme) {
+    let cssScheme = `:root {\n`;
     for (const key in scheme) {
         cssScheme += `--${key}: ${scheme[key]};\n`;
     }

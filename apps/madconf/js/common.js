@@ -10,6 +10,9 @@ if (parent === window) {
     alert("MADConf is being cross-origin restricted. Please run ModernActiveDesktop with a web server.");
 }
 
+parent.confDeskMover = madDeskMover;
+madDeskMover.isConfigurator = true;
+
 const tabs = document.querySelectorAll(".tab");
 const okBtn = document.getElementById("okBtn");
 const cancelBtn = document.getElementById("cancelBtn");

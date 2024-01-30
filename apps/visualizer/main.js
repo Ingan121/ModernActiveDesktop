@@ -396,7 +396,7 @@ optMenuItems[0].addEventListener('click', () => { // Configure Visualization but
 
 helpMenuItems[0].addEventListener('click', () => { // About Visualizer button
     closeMenu('help');
-    madOpenWindow('apps/madconf/about.html', true);
+    madOpenConfig('about');
 });
 
 function openMenu(menuName) {
@@ -413,6 +413,7 @@ function openMenu(menuName) {
         case 'fade':
             menuBg.style.animation = 'fade 0.2s';
     }
+    menuBg.style.left = menuBtn.offsetLeft + 'px';
     menuBg.style.display = 'block';
     menuBar.dataset.active = true;
     menuBtn.dataset.active = true;

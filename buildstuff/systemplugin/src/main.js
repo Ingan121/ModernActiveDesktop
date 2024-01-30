@@ -11,7 +11,7 @@ const http = require('http');
 const fs = require('fs');
 const url = require('url');
 const args = require('minimist')(process.argv);
-const { spawn } = require('child_process');
+const { spawn, execSync } = require('child_process');
 
 if (args.help) {
   console.log(`ModernActiveDesktop System Plugin ${app.getVersion()}`);
@@ -308,14 +308,13 @@ function generateCssScheme() {
 
   let schemeStyle = '';
   if (process.platform === 'win32') {
-    // idk why but button-alternate-face is not supported by Electron so just made it the same as button-face
     schemeStyle = 
       `:root {
         --active-border: ${systemPreferences.getColor('active-border')};
         --active-title: ${systemPreferences.getColor('active-caption')};
         --app-workspace: ${systemPreferences.getColor('app-workspace')};
         --background: ${systemPreferences.getColor('desktop')};
-        --button-alternate-face: ${systemPreferences.getColor('3d-face')};
+        --button-alternate-face: ${getButtonAlternateFace()};
         --button-dk-shadow: ${systemPreferences.getColor('3d-dark-shadow')};
         --button-face: ${systemPreferences.getColor('3d-face')};
         --button-hilight: ${systemPreferences.getColor('3d-highlight')};
@@ -353,6 +352,16 @@ function generateCssScheme() {
       }`;
   }
   return schemeStyle;
+}
+
+// idk why but button-alternate-face is not supported by Electron
+function getButtonAlternateFace() {
+  if (process.platform === 'win32') {
+    const output = execSync('reg query "HKCU\\Control Panel\\Colors" /v ButtonAlternateFace').toString();
+    return `rgb(${output.match(/REG_SZ    (.*)\r\n/)[1].replaceAll(' ', ', ')})`;
+  } else {
+    return '#000000';
+  }
 }
 
 // https://stackoverflow.com/a/13532993

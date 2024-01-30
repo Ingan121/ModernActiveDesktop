@@ -20,166 +20,139 @@
         </menu>
         <div class="window" role="tabpanel">
             <div class="window-body">
-                <div id="preview">
-                    <div id="inactiveWindow" class="window">
-                        <div class="title-bar inactive">
-                            <div class="title-bar-text">Inactive Window</div>
-                            <div class="title-bar-controls">
-                                <button class="window-button"></button>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="activeWindow" class="window">
-                        <div class="title-bar">
-                            <div class="title-bar-text">Active Window</div>
-                            <div class="title-bar-controls">
-                                <button class="window-button"></button>
-                            </div>
-                        </div>
-                        <div class="menu">
-                            <div>Normal</div>
-                            <div class="disabled">Disabled</div>
-                            <div data-active="1"><span>Selected</span></div>
-                        </div>
-                        <textarea>Window Text</textarea>
-                    </div>
-                    <div id="msgbox" class="window">
-                        <div class="title-bar">
-                            <div class="title-bar-text">Message Box</div>
-                            <div class="title-bar-controls">
-                                <button class="window-button"></button>
-                            </div>
-                        </div>
-                        <div class="window-body">
-                            <p id="msgbox-msg">Message Text</p>
-                            <section class="field-row" style="justify-content: center">
-                                <button id="msgbox-btn1">OK</button>
-                            </section>
-                        </div>
-                    </div>
-                </div>
+                <iframe id="schemePreview" src="scheme_preview.html"></iframe>
                 <div id="conf">
-                    <p>Scheme:
-                    <select id="schemeSelector">
-                        <option selected hidden>Current Scheme</option>
-                        <option value="98">Windows Classic (98)</option>
-                        <option value="95">Windows Classic (95 / NT4)</option>
-                        <option value="2k">Windows Standard (2000 / Me)</option>
-                        <option value="xpcss4mad" data-inconfigurable="1">Windows XP style</option>
-                        <option value="xp">Windows XP Blue</option>
-                        <option value="xp_olive">Windows XP Olive Green</option>
-                        <option value="xp_silver">Windows XP Silver</option>
-                        <option value="xp_royale">Windows XP Royale</option>
-                        <option value="aero">Windows Aero</option>
-                        <option value="windose" data-inconfigurable="1">Windose</option>
-                        <option value="brick">Brick</option>
-                        <option value="desert">Desert</option>
-                        <option value="eggplant">Eggplant</option>
-                        <option value="lilac">Lilac</option>
-                        <option value="maple">Maple</option>
-                        <option value="marine">Marine</option>
-                        <option value="plum">Plum</option>
-                        <option value="pumpkin">Pumpkin</option>
-                        <option value="rainy_day">Rainy Day</option>
-                        <option value="red_white_and_blue">Red, White, and Blue</option>
-                        <option value="rose">Rose</option>
-                        <option value="slate">Slate</option>
-                        <option value="spruce">Spruce</option>
-                        <option value="storm">Storm</option>
-                        <option value="teal">Teal</option>
-                        <option value="wheat">Wheat</option>
-                        <option value="windows_98">Windows 98</option>
-                        <option value="plus_baseball">Plus! Baseball</option>
-                        <option value="plus_inside_your_computer">Plus! Inside your Computer</option>
-                        <option value="plus_leonardo_da_vinci">Plus! Leonardo da Vinci</option>
-                        <option value="plus_more_windows">Plus! More Windows</option>
-                        <option value="plus_nature">Plus! Nature</option>
-                        <option value="plus_science">Plus! Science</option>
-                        <option value="plus_space">Plus! Space</option>
-                        <option value="plus_the_60's_usa">Plus! The 60's USA</option>
-                        <option value="plus_the_golden_era">Plus! The Golden Era</option>
-                        <option value="plus_travel">Plus! Travel</option>
-                        <option value="plus_windows_95">Plus! Windows 95</option>
-                        <option value="plus_98_cityscape">Plus! 98 Cityscape</option>
-                        <option value="plus_98_geometry">Plus! 98 Geometry</option>
-                        <option value="plus_98_photodisc">Plus! 98 PhotoDisc</option>
-                        <option value="plus_98_rock-n-roll">Plus! 98 Rock-n-Roll</option>
-                        <option value="vista-esque-midnight-green">Vista-esque-Midnight-Green</option>
-                        <option value="red-wine">Red Wine</option>
-                        <option value="blue">Blue</option>
-                        <option value="high_contrast_1">High Contrast #1</option>
-                        <option value="high_contrast_2">High Contrast #2</option>
-                        <option value="high_contrast_black">High Contrast Black</option>
-                        <option value="high_contrast_white">High Contrast White</option>
-                        <option value="win11_aquatic">Win 11 - High Contrast Aquatic</option>
-                        <option value="win11_desert">Win 11 - High Contrast Desert</option>
-                        <option value="win11_dusk">Win 11 - High Contrast Dusk</option>
-                        <option value="win11_night_sky">Win 11 - High Contrast Night sky</option>
-                        <option value="win1">Win 1</option>
-                        <option value="win2">Win 2</option>
-                        <option value="win3_default_16">Win 3 - Default 16-bit</option>
-                        <option value="win3_default_32">Win 3 - Default 32-bit</option>
-                        <option value="win3_arizona">Win 3 - Arizona</option>
-                        <option value="win3_black_leather_jacket">Win 3 - Black Leather Jacket</option>
-                        <option value="win3_bordeaux">Win 3 - Bordeaux</option>
-                        <option value="win3_cinnamon">Win 3 - Cinnamon</option>
-                        <option value="win3_designer">Win 3 - Designer</option>
-                        <option value="win3_emerald_city">Win 3 - Emerald City</option>
-                        <option value="win3_fluorescent">Win 3 - Fluorescent</option>
-                        <option value="win3_hotdog_stand">Win 3 - Hotdog Stand</option>
-                        <option value="win3_lcd_default">Win 3 - LCD Default</option>
-                        <option value="win3_lcd_reversed_dark">Win 3 - LCD Reversed - Dark</option>
-                        <option value="win3_lcd_reversed_light">Win 3 - LCD Reversed - Light</option>
-                        <option value="win3_mahogany">Win 3 - Mahogany</option>
-                        <option value="win3_monochrome">Win 3 - Monochrome</option>
-                        <option value="win3_ocean">Win 3 - Ocean</option>
-                        <option value="win3_pastel">Win 3 - Pastel</option>
-                        <option value="win3_patchwork">Win 3 - Patchwork</option>
-                        <option value="win3_plasma_power_saver">Win 3 - Plasma Power Saver</option>
-                        <option value="win3_rugby">Win 3 - Rugby</option>
-                        <option value="win3_the_blues">Win 3 - The Blues</option>
-                        <option value="win3_tweed">Win 3 - Tweed</option>
-                        <option value="win3_valentine">Win 3 - Valentine</option>
-                        <option value="win3_wingtips">Win 3 - Wingtips</option>
-                    </select></p>
-                    <select id="selector">
-                        <option value="button-alternate-face">3D Alternate Face</option>
-                        <option value="button-dk-shadow">3D Dark Shadow</option>
-                        <option value="button-face">3D Object</option>
-                        <option value="button-hilight">3D Highlight</option>
-                        <option value="button-light">3D Light</option>
-                        <option value="button-shadow">3D Shadow</option>
-                        <option value="active-title">Active Title Bar</option>
-                        <option value="gradient-active-title">Active Title Bar Color 2</option>
-                        <option value="title-text">Active Title Bar Text</option>
-                        <option value="active-border">Active Window Border</option>
-                        <option value="app-workspace">Application Background</option>
-                        <option value="background" selected>Desktop</option>
-                        <option value="button-text">Button Text</option>
-                        <option value="gray-text">Disabled Item</option>
-                        <option value="hot-tracking-color">Hyperlink</option>
-                        <option value="inactive-title">Inactive Title Bar</option>
-                        <option value="gradient-inactive-title">Inactive Title Bar Color 2</option>
-                        <option value="inactive-title-text">Inactive Title Bar Text</option>
-                        <option value="inactive-border">Inactive Window Border</option>
-                        <option value="menu">Menu</option>
-                        <option value="menu-bar">Menu Bar</option>
-                        <option value="menu-highlight">Menu Highlight</option>
-                        <option value="menu-text">Menu Text</option>
-                        <option value="scrollbar">Scrollbar</option>
-                        <option value="hilight">Selected Item</option>
-                        <option value="hilight-text">Selected Item Text</option>
-                        <option value="info-window">ToolTip</option>
-                        <option value="info-text">ToolTip Text</option>
-                        <option value="window">Window</option>
-                        <option value="window-frame">Window Frame</option>
-                        <option value="window-text">Window Text</option>
-                    </select>
-                    <button class="colorPicker">
-                        <div class="colorPicker-color"></div>
-                        <div class="colorPicker-bar"></div>
-                        <div class="colorPicker-expandMark">⏷</div>
-                    </button>
+                    <p id="schemeSelectorGroup">Scheme:
+                        <select id="schemeSelector">
+                            <option selected hidden>Current Scheme</option>
+                            <option value="98">Windows Classic (98)</option>
+                            <option value="95">Windows Classic (95 / NT4)</option>
+                            <option value="2k">Windows Standard (2000 / Me)</option>
+                            <option value="xpcss4mad" data-inconfigurable="1">Windows XP style</option>
+                            <option value="xp">Windows XP Blue</option>
+                            <option value="xp_olive">Windows XP Olive Green</option>
+                            <option value="xp_silver">Windows XP Silver</option>
+                            <option value="xp_royale">Windows XP Royale</option>
+                            <option value="aero">Windows Aero</option>
+                            <option value="windose" data-inconfigurable="1">Windose</option>
+                            <option value="brick">Brick</option>
+                            <option value="desert">Desert</option>
+                            <option value="eggplant">Eggplant</option>
+                            <option value="lilac">Lilac</option>
+                            <option value="maple">Maple</option>
+                            <option value="marine">Marine</option>
+                            <option value="plum">Plum</option>
+                            <option value="pumpkin">Pumpkin</option>
+                            <option value="rainy_day">Rainy Day</option>
+                            <option value="red_white_and_blue">Red, White, and Blue</option>
+                            <option value="rose">Rose</option>
+                            <option value="slate">Slate</option>
+                            <option value="spruce">Spruce</option>
+                            <option value="storm">Storm</option>
+                            <option value="teal">Teal</option>
+                            <option value="wheat">Wheat</option>
+                            <option value="plus_baseball">Plus! Baseball</option>
+                            <option value="plus_inside_your_computer">Plus! Inside your Computer</option>
+                            <option value="plus_leonardo_da_vinci">Plus! Leonardo da Vinci</option>
+                            <option value="plus_more_windows">Plus! More Windows</option>
+                            <option value="plus_nature">Plus! Nature</option>
+                            <option value="plus_science">Plus! Science</option>
+                            <option value="plus_space">Plus! Space</option>
+                            <option value="plus_the_60's_usa">Plus! The 60's USA</option>
+                            <option value="plus_the_golden_era">Plus! The Golden Era</option>
+                            <option value="plus_travel">Plus! Travel</option>
+                            <option value="plus_windows_95">Plus! Windows 95</option>
+                            <option value="windows_98">Windows 98</option>
+                            <option value="plus_98_cityscape">Plus! 98 Cityscape</option>
+                            <option value="plus_98_geometry">Plus! 98 Geometry</option>
+                            <option value="plus_98_photodisc">Plus! 98 PhotoDisc</option>
+                            <option value="plus_98_rock-n-roll">Plus! 98 Rock-n-Roll</option>
+                            <option value="vista-esque-midnight-green">Vista-esque-Midnight-Green</option>
+                            <option value="red-wine">Red Wine</option>
+                            <option value="blue">Blue</option>
+                            <option value="high_contrast_1">High Contrast #1</option>
+                            <option value="high_contrast_2">High Contrast #2</option>
+                            <option value="high_contrast_black">High Contrast Black</option>
+                            <option value="high_contrast_white">High Contrast White</option>
+                            <option value="win11_aquatic">Win 11 - High Contrast Aquatic</option>
+                            <option value="win11_desert">Win 11 - High Contrast Desert</option>
+                            <option value="win11_dusk">Win 11 - High Contrast Dusk</option>
+                            <option value="win11_night_sky">Win 11 - High Contrast Night sky</option>
+                            <option value="win1">Win 1</option>
+                            <option value="win2">Win 2</option>
+                            <option value="win3_default_16">Win 3 - Default 16-bit</option>
+                            <option value="win3_default_32">Win 3 - Default 32-bit</option>
+                            <option value="win3_arizona">Win 3 - Arizona</option>
+                            <option value="win3_black_leather_jacket">Win 3 - Black Leather Jacket</option>
+                            <option value="win3_bordeaux">Win 3 - Bordeaux</option>
+                            <option value="win3_cinnamon">Win 3 - Cinnamon</option>
+                            <option value="win3_designer">Win 3 - Designer</option>
+                            <option value="win3_emerald_city">Win 3 - Emerald City</option>
+                            <option value="win3_fluorescent">Win 3 - Fluorescent</option>
+                            <option value="win3_hotdog_stand">Win 3 - Hotdog Stand</option>
+                            <option value="win3_lcd_default">Win 3 - LCD Default</option>
+                            <option value="win3_lcd_reversed_dark">Win 3 - LCD Reversed - Dark</option>
+                            <option value="win3_lcd_reversed_light">Win 3 - LCD Reversed - Light</option>
+                            <option value="win3_mahogany">Win 3 - Mahogany</option>
+                            <option value="win3_monochrome">Win 3 - Monochrome</option>
+                            <option value="win3_ocean">Win 3 - Ocean</option>
+                            <option value="win3_pastel">Win 3 - Pastel</option>
+                            <option value="win3_patchwork">Win 3 - Patchwork</option>
+                            <option value="win3_plasma_power_saver">Win 3 - Plasma Power Saver</option>
+                            <option value="win3_rugby">Win 3 - Rugby</option>
+                            <option value="win3_the_blues">Win 3 - The Blues</option>
+                            <option value="win3_tweed">Win 3 - Tweed</option>
+                            <option value="win3_valentine">Win 3 - Valentine</option>
+                            <option value="win3_wingtips">Win 3 - Wingtips</option>
+                        </select>
+                        <button id="saveAsBtn">Sa<u>v</u>e As..</button>
+                        <button id="deleteBtn" disabled><u>D</u>elete</button>
+                    </p>
+                    <section id="schemeEditorGroup" class="field-row">
+                        <select id="selector">
+                            <option value="button-face" data-second="button-alternate-face" data-text="button-text">3D Object</option>
+                            <option value="button-hilight" data-second="button-light">3D Light</option>
+                            <option value="button-shadow" data-second="button-dk-shadow">3D Shadow</option>
+                            <option value="active-title" data-second="gradient-active-title" data-text="title-text">Active Title Bar</option>
+                            <option value="active-border">Active Window Border</option>
+                            <option value="app-workspace">Application Background</option>
+                            <option value="background" selected>Desktop</option>
+                            <option value="gray-text">Disabled Item</option>
+                            <option value="hot-tracking-color">Hyperlink</option>
+                            <option value="inactive-title" data-second="gradient-inactive-title" data-text="inactive-title-text">Inactive Title Bar</option>
+                            <option value="inactive-border">Inactive Window Border</option>
+                            <option value="menu" data-text="menu-text">Menu</option>
+                            <option value="menu-bar" data-second="menu-highlight">Menu Bar (Flat)</option>
+                            <option value="scrollbar">Scrollbar</option>
+                            <option value="hilight" data-text="hilight-text">Selected Item</option>
+                            <option value="info-window" data-text="info-text">ToolTip</option>
+                            <option value="window" data-second="window-frame" data-text="window-text">Window</option>
+                        </select>
+                        <p id="firstColorWrap">
+                            <span class="colorPicker-label">1:</span>
+                            <button id="firstColor" class="colorPicker">
+                                <div class="colorPicker-color"></div>
+                                <div class="colorPicker-bar"></div>
+                                <div class="colorPicker-expandMark">⏷</div>
+                            </button>
+                        </p>
+                        <p id="secondColorWrap" class="disabled">
+                            <span class="colorPicker-label">2:</span>
+                            <button id="secondColor" class="colorPicker" disabled>
+                                <div class="colorPicker-color"></div>
+                                <div class="colorPicker-bar"></div>
+                                <div class="colorPicker-expandMark">⏷</div>
+                            </button>
+                        </p>
+                        <p id="textColorWrap" class="disabled">
+                            <span class="colorPicker-label">Text:</span>
+                            <button id="textColor" class="colorPicker" disabled>
+                                <div class="colorPicker-color"></div>
+                                <div class="colorPicker-bar"></div>
+                                <div class="colorPicker-expandMark">⏷</div>
+                            </button>
+                        </p>
+                    </section>
                 </div>
                 <div id="checkboxes">
                     <input id="systemColorChkBox" type="checkbox" disabled>

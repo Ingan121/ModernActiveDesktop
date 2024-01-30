@@ -11,7 +11,7 @@ window.bgType = localStorage.madesktopBgType || "image";
 window.bgImgMode = localStorage.madesktopBgImgMode || "center";
 let bgSize = "auto";
 
-let scale = (localStorage.madesktopScaleFactor || 1) * 0.0625;
+let scale = (parent.document.body.style.zoom || 1) * 0.0625;
 document.body.style.zoom = scale;
 
 changeBgType(bgType);
@@ -29,7 +29,7 @@ bgHtmlView.addEventListener("load", function () {
 });
 
 new MutationObserver(function(mutations) {
-    scale = (localStorage.madesktopScaleFactor || 1) * 0.0625;
+    scale = (parent.document.body.style.zoom || 1) * 0.0625;
     document.body.style.zoom = scale;
     bgHtmlView.contentWindow.document.body.style.zoom = scale;
 }).observe(
@@ -117,4 +117,5 @@ function changeBgImgMode(value) {
             break;
     }
     window.bgImgMode = value;
+    updateImageSize();
 }

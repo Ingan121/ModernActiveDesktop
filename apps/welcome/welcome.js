@@ -69,7 +69,7 @@ items[1].addEventListener("click", async function () {
     await asyncTimeout(300);
     await flashElement(madDeskMover.confMenuItems[10], true);
     await asyncTimeout(100);
-    madOpenWindow("apps/madconf/background.html", true);
+    madOpenConfig();
     madDeskMover.closeContextMenu();
 
     checkmarks[1].style.display = "block";

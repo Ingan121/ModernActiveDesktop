@@ -42,6 +42,7 @@ let isContextMenuOpen = false;
 let activeWindow = 0;
 let prevActiveWindow = 0;
 let startupRan = false;
+let flashInterval;
 
 const WE = 1; // Wallpaper Engine
 const LW = 2; // Lively Wallpaper
@@ -55,6 +56,7 @@ window.vHeight = window.innerHeight;
 
 window.deskMovers = {};
 window.visDeskMover = null;
+window.confDeskMover = null;
 
 let debugLog = false;
 
@@ -73,7 +75,7 @@ changeBgType(localStorage.madesktopBgType || "image");
 changeBgImgMode(localStorage.madesktopBgImgMode || "center");
 if (localStorage.madesktopBgVideoMuted) bgVideoView.muted = true;
 if (localStorage.madesktopBgHtmlSrc) bgHtmlView.src = localStorage.madesktopBgHtmlSrc;
-if (localStorage.madesktopColorScheme) changeColorScheme(localStorage.madesktopColorScheme);
+changeColorScheme(localStorage.madesktopColorScheme || "98");
 changeScale(localStorage.madesktopScaleFactor);
 if (localStorage.madesktopDebugMode) activateDebugMode();
 if (localStorage.madesktopDebugLog) toggleDebugLog();
@@ -195,7 +197,7 @@ mainMenuItems[0].addEventListener('click', () => { // New button
 
 mainMenuItems[1].addEventListener('click', () => { // Properties button
     closeMainMenu();
-    openWindow("apps/madconf/background.html", true);
+    openConfig();
 });
 
 msgboxBg.addEventListener('click', flashDialog);
@@ -259,7 +261,7 @@ window.wallpaperPropertyListener = {
             openWindow();
         }
         if (properties.openproperties) {
-            openWindow("apps/madconf/background.html", true);
+            openConfig();
         }
         if (properties.audioprocessing) {
             if (properties.audioprocessing.value) {
@@ -288,7 +290,7 @@ function livelyPropertyListener(name, val) {
             changeBgColor(val);
             break;
         case "properties":
-            openWindow("apps/madconf/background.html", true);
+            openConfig();
             break;
         default:
             wallpaperPropertyListener.applyUserProperties({ [name]: { value: val } });
@@ -546,7 +548,7 @@ function changeSoundScheme(scheme) {
             break;
         case '8':
             soundScheme.startup = new Audio("sounds/Aero/startup.wav");
-			// idk why but WE uploader somehow hates these specific files so I converted these to flac
+            // idk why but WE uploader somehow hates these specific files so I converted these to flac
             soundScheme.question = new Audio("sounds/8/Windows Background.flac");
             soundScheme.error = new Audio("sounds/8/Windows Foreground.flac");
             soundScheme.warning = new Audio("sounds/8/Windows Background.flac");
@@ -709,6 +711,17 @@ function openWindow(openDoc, temp, width, height, style, centered, top, left, ao
         localStorage.madesktopItemCount++;
     }
     return deskMover;
+}
+
+function openConfig(page) {
+    if (window.confDeskMover) {
+        if (page) {
+            window.confDeskMover.locReplace(`apps/madconf/${page}.html`);
+        }
+        window.confDeskMover.bringToTop();
+    } else {
+        openWindow(`apps/madconf/${page || 'background'}.html`, true);
+    }
 }
 
 function closeMainMenu() {
@@ -1117,10 +1130,11 @@ function showDialog() {
 
 function flashDialog() {
     playSound("modal");
+    clearInterval(flashInterval);
     let cnt = 1;
-    let interval = setInterval(function () {
+    flashInterval = setInterval(function () {
         if (cnt === 18) {
-            clearInterval(interval);
+            clearInterval(flashInterval);
         }
         if (cnt % 2) {
             msgbox.dataset.inactive = true;

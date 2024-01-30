@@ -778,6 +778,7 @@ function openGameMenu() {
         case 'fade':
             gameMenuBg.style.animation = 'fade 0.2s';
     }
+    gameMenuBg.style.left = gameMenuBtn.offsetLeft + 'px';
     gameMenuBg.style.display = 'block';
     gameMenuBtn.dataset.active = true;
     gameMenuBg.focus();
@@ -818,6 +819,7 @@ function openHelpMenu() {
         case 'fade':
             helpMenuBg.style.animation = 'fade 0.2s';
     }
+    helpMenuBg.style.left = helpMenuBtn.offsetLeft + 'px';
     helpMenuBg.style.display = 'block';
     helpMenuBtn.dataset.active = true;
     helpMenuBg.focus();

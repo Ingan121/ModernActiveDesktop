@@ -9,6 +9,8 @@ body {
     margin: 0;
     line-height: 16px;
     image-rendering: pixelated;
+    user-select: none;
+    overflow: hidden;
 }
 
 menu[role="tablist"] a {
@@ -41,4 +43,9 @@ p {
 
 .shortInput {
     width: 50px;
+}
+
+.disabled {
+    color: var(--button-shadow);
+    text-shadow: 1px 1px 0 var(--button-hilight);
 }

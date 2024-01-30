@@ -35,6 +35,7 @@ body {
     background-repeat: no-repeat;
     background-size: 476px 288px;
     color: black !important;
+    user-select: none;
 }
 
 #author {

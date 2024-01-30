@@ -1036,7 +1036,7 @@
 					},
 				]*/
 				action: () => {
-					madOpenWindow("apps/madconf/appearance.html", true);
+					madOpenConfig("appearance");
 				}
 			},
 			{

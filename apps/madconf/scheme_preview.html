@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ModernActiveDesktop Scheme Preview</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../../css/98.css">
+    <link rel="stylesheet" href="css/scheme_preview.css">
+    <link id="scheme" rel="stylesheet" href="data:text/css,">
+    <link id="font" rel="stylesheet" href="">
+    <link id="menuStyle" rel="stylesheet" href="">
+</head>
+<body id="madconf-preview">
+    <div id="container">
+        <div id="inactiveWindow" class="window">
+            <div class="title-bar inactive">
+                <div class="title-bar-text">Inactive Window</div>
+                <div class="title-bar-controls">
+                    <button class="window-button"></button>
+                </div>
+            </div>
+        </div>
+        <div id="activeWindow" class="window">
+            <div class="title-bar">
+                <div class="title-bar-text">Active Window</div>
+                <div class="title-bar-controls">
+                    <button class="window-button"></button>
+                </div>
+            </div>
+            <div class="menu">
+                <div>Normal</div>
+                <div class="disabled">Disabled</div>
+                <div data-active="1"><span>Selected</span></div>
+            </div>
+            <textarea>Window Text</textarea>
+        </div>
+        <div id="msgbox" class="window">
+            <div class="title-bar">
+                <div class="title-bar-text">Message Box</div>
+                <div class="title-bar-controls">
+                    <button class="window-button"></button>
+                </div>
+            </div>
+            <div class="window-body">
+                <p id="msgbox-msg">Message Text</p>
+                <section class="field-row" style="justify-content: center">
+                    <button id="msgbox-btn1">OK</button>
+                </section>
+            </div>
+        </div>
+    </div>
+    <script src="js/scheme_preview.js"></script>
+</body>
+</html>

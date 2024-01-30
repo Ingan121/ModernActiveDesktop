@@ -22,13 +22,13 @@ for (const imgItem of imgItems) {
     wallMap[imgItem.textContent] = imgItem;
     imgItem.addEventListener('click', function () {
         const i = Array.from(imgItems).indexOf(this);
-        if (i == 0) {
+        if (i === 0) {
             preview.contentWindow.changeBgType('image');
             preview.contentDocument.body.style.backgroundImage = 'none';
             imgModeSelector.disabled = true;
             switchDisplayOptionElement(false);
-        } else if (i >= 1 && i <= 13) {
-            if (i == 13) {
+        } else if (i >= 1 && i <= 14) {
+            if (i === 9 || i === 13 || i === 14) {
                 imgModeSelector.value = 'scale';
                 preview.contentWindow.changeBgImgMode('scale');
             } else {
@@ -39,7 +39,7 @@ for (const imgItem of imgItems) {
             preview.contentDocument.body.style.backgroundImage = `url('../../wallpapers/${this.textContent}.bmp')`;
             imgModeSelector.disabled = false;
             switchDisplayOptionElement(false);
-        } else if (i == 14) {
+        } else if (i === 15) {
             preview.contentWindow.changeBgType('web');
             preview.contentWindow.bgHtmlView.src = '../../bghtml/index.html';
             imgModeSelector.disabled = true;
@@ -214,8 +214,8 @@ if (localStorage.madesktopBgType == 'web') {
         if (activeItem) {
             delete activeItem.dataset.active;
         }
-        imgItems[14].dataset.active = true;
-        scrollIntoView(imgItems[14]);
+        imgItems[15].dataset.active = true;
+        scrollIntoView(imgItems[15]);
     } else {
         const activeItem = document.querySelector('li[data-active]');
         if (activeItem) {
@@ -240,7 +240,7 @@ window.apply = function () {
     const i = Array.from(imgItems).indexOf(activeItem);
     if (i == 0) {
         delete localStorage.madesktopBgImg;
-    } else if (i >= 1 && i <= 13) {
+    } else if (i >= 1 && i <= 14) {
         localStorage.madesktopBgImg = `wallpapers/${activeItem.textContent}.bmp`;
     } else if (activeItem.id === 'customImgItem') {
         if (activeItem.dataset.base64) {

@@ -208,6 +208,7 @@
     // expose MAD APIs
     window.madDeskMover = deskMover;
     window.madOpenWindow = parent.openWindow;
+    window.madOpenConfig = parent.openConfig;
 
     window.madOpenDropdown = deskMover.openDropdown.bind(deskMover);
     window.madOpenColorPicker = deskMover.openColorPicker.bind(deskMover);

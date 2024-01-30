@@ -3,8 +3,8 @@
 \*-------------------------------------------*/
 
 .windowContainer[data-style="wnd"],
-#madconf #preview #inactiveWindow,
-#madconf #preview #activeWindow,
+#madconf-preview #inactiveWindow,
+#madconf-preview #activeWindow,
 #msgbox,
 .os-window {
     box-shadow: inset -1px -1px #00138c, inset 1px 1px #0831d9, inset -2px -2px #001ea0, inset 2px 2px #166aee,
@@ -17,7 +17,7 @@
 }
 
 .windowContainer[data-style="wnd"][data-inactive],
-#madconf #preview #inactiveWindow,
+#madconf-preview #inactiveWindow,
 #msgbox[data-inactive],
 .os-window:not(.focused) {
     box-shadow: inset -1px -1px #4f53bc, inset 1px 1px #7480dc, inset -2px -2px #6d74cd, inset 2px 2px #758cdd,
@@ -240,7 +240,6 @@
 }
 
 .status-bar-field {
-    font-family: var(--sans-serif);
     -webkit-font-smoothing: antialiased;
     box-shadow: none;
     padding: 1px 2px;
@@ -254,20 +253,16 @@
     }
 }
 
-#inactiveWindow {
-    top: 30px;
-}
-
-#activeWindow {
-    top: 56px;
-}
-
 /* madconf adjustments */
 #madconf #preview {
     top: 39px;
 }
 
-#madconf #preview textarea {
+#madconf #schemePreview {
+    height: 188px;
+}
+
+#madconf-preview textarea {
     width: 389px;
     margin-left: 3px;
     height: 81px;
@@ -275,12 +270,18 @@
     border: 1px solid #7f9db9;
 }
 
-#madconf #preview #inactiveWindow {
+#madconf-preview #inactiveWindow {
     width: 375px;
+    top: 1px;
 }
 
-#madconf #preview #activeWindow {
+#madconf-preview #activeWindow {
     width: 395px;
+    top: 27px;
+}
+
+#madconf-preview #msgbox {
+    top: 100px;
 }
 
 #madconf #logo {
