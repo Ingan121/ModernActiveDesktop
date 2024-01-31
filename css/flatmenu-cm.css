@@ -3,6 +3,16 @@
     box-shadow: var(--button-shadow) -1px -1px inset, var(--button-shadow) 1px 1px inset, var(--menu) -3px -3px inset, var(--menu) 3px 3px inset;
 }
 
+body[data-cm-shadow] .contextMenuBg {
+    box-shadow: var(--button-shadow) -1px -1px inset, var(--button-shadow) 1px 1px inset, var(--menu) -3px -3px inset, var(--menu) 3px 3px inset, 5px 5px 4px -4px rgba(0,0,0,.5) !important;
+}
+
+.contextMenuItem:hover,
+.contextMenuItem[data-active] {
+    box-shadow: var(--hilight) -1px -1px inset, var(--hilight) 1px 1px inset;
+    background-color: var(--menu-highlight);
+}
+
 .menu-popup {
     box-shadow: none !important;
     border: 1px solid var(--button-shadow) !important;

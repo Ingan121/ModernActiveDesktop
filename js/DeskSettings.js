@@ -81,6 +81,7 @@ if (localStorage.madesktopDebugMode) activateDebugMode();
 if (localStorage.madesktopDebugLog) toggleDebugLog();
 changeFont(localStorage.madesktopNoPixelFonts);
 changeCmAnimation(localStorage.madesktopCmAnimation || "slide");
+changeCmShadow(localStorage.madesktopCmShadow);
 changeMenuStyle(localStorage.madesktopMenuStyle);
 changeSoundScheme(localStorage.madesktopSoundScheme || "98");
 
@@ -446,9 +447,9 @@ function changeScale(scale) {
 // Toggle between "Pixelated MS Sans Serif" and just sans-serif
 function changeFont(isPixel) {
     if (isPixel) {
-        fontElement.href = "css/nopixel.css";
+        document.documentElement.style.setProperty('--font-98', 'sans-serif');
     } else {
-        fontElement.href = "";
+        document.documentElement.style.removeProperty('--font-98');
     }
 }
 
@@ -467,6 +468,16 @@ function changeCmAnimation(type) {
     for (const i in deskMovers) {
         deskMovers[i].changeCmAnimation(type);
     }
+}
+
+// Change context menu shadow
+function changeCmShadow(isShadow) {
+    if (isShadow) {
+        document.body.dataset.cmShadow = true;
+    } else {
+        delete document.body.dataset.cmShadow;
+    }
+    announce("scheme-updated");
 }
 
 // Change menu style

@@ -254,39 +254,56 @@
 }
 
 /* madconf adjustments */
-#madconf #preview {
-    top: 39px;
-}
-
 #madconf #schemePreview {
-    height: 188px;
+    height: 176px;
 }
 
-#madconf-preview textarea {
-    width: 389px;
-    margin-left: 3px;
-    height: 81px;
-    box-shadow: none !important;
-    border: 1px solid #7f9db9;
+#madconf-preview .title-bar {
+    border: none;
 }
 
 #madconf-preview #inactiveWindow {
-    width: 375px;
-    top: 1px;
+    height: 118px;
+    background-color: white;
 }
 
 #madconf-preview #activeWindow {
-    width: 395px;
-    top: 27px;
+    width: 323px;
+    height: 115px;
+    top: 20px;
+    left: 10px;
+    background-color: white;
+}
+
+#madconf-preview .menu {
+    display: none;
+}
+
+#madconf-preview textarea {
+    margin: 0;
+    box-shadow: none !important;
+    border: none;
+    background-color: transparent;
+    font-weight: normal;
 }
 
 #madconf-preview #msgbox {
-    top: 100px;
+    width: 143px;
+    height: 95px;
+    top: 41px;
+    left: 100px;
 }
 
-#madconf #logo {
-    top: 31px;
-    left: 31px;
+#madconf-preview #msgbox-msg {
+    display: none;
+}
+
+#madconf-preview #msgbox-btn1 {
+    margin-top: 19px;
+    height: 30px;
+    font-weight: normal;
+    box-shadow: inset -1px 1px #cee7ff, inset 1px 2px #98b8ea, inset -2px 2px #bcd4f6, inset 1px -1px #89ade4,
+        inset 2px -2px #89ade4;
 }
 
 /* Change dialog icons to XP ones */

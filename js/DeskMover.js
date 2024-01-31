@@ -297,25 +297,21 @@ class DeskMover {
                 let defaultTop = '200px';
                 if ((typeof openDoc === "string" || openDoc instanceof String) && openDoc != "placeholder.html" && !reinit) {
                     if (openDoc.startsWith("apps/madconf/")) {
-                        this.windowElement.width = width || '470px';
-                        if (localStorage.madesktopColorScheme === 'xpcss4mad') {
-                            this.windowElement.height = height || '455px';
-                        } else {
-                            this.windowElement.height = height || '420px';
-                        }
+                        this.windowElement.width = width || '398px';
+                        this.windowElement.height = height || '423px';
                         this.#toggleResizable();
                     } else {
                         this.windowElement.width = width || '800px';
                         this.windowElement.height = height || '600px';
+                        if (unresizable) {
+                            this.#toggleResizable();
+                        }
                     }
                     defaultLeft = left || (parseInt(localStorage.madesktopChanViewLeftMargin) || 75) + 250 + 'px';
                     defaultTop = top || '150px';
                     url = openDoc.includes(".html") ? openDoc : `docs/index.html?src=${openDoc}`;
                     if (aot) {
                         this.#toggleAoT();
-                    }
-                    if (unresizable) {
-                        this.#toggleResizable();
                     }
                 } else {
                     this.windowElement.width = width || '300px';
@@ -564,6 +560,11 @@ class DeskMover {
         for (const option of options) {
             if (option.hidden) {
                 continue;
+            }
+            if (option.dataset.condition) {
+                if (!localStorage.getItem(option.dataset.condition)) {
+                    continue;
+                }
             }
             const item = dummy.cloneNode(dummy, true);
             item.textContent = option.textContent;

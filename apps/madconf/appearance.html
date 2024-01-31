@@ -8,7 +8,6 @@
     <link id="scheme" rel="stylesheet" href="data:text/css,">
     <link id="font" rel="stylesheet" href="">
     <style id="style"></style>
-    <style id="style2"></style>
 </head>
 <body>
     <div id="madconf" class="window-body">
@@ -22,12 +21,15 @@
             <div class="window-body">
                 <iframe id="schemePreview" src="scheme_preview.html"></iframe>
                 <div id="conf">
-                    <p id="schemeSelectorGroup">Scheme:
+                    <p id="schemeSelectorGroup">
+                        <span class="groupLabel"><u>S</u>cheme:</span><br>
                         <select id="schemeSelector">
                             <option selected hidden>Current Scheme</option>
                             <option value="98">Windows Classic (98)</option>
                             <option value="95">Windows Classic (95 / NT4)</option>
                             <option value="2k">Windows Standard (2000 / Me)</option>
+                            <option value="sys" data-inconfigurable="1" data-condition="sysplugIntegration">System Colors</option>
+                            <option value="import" data-inconfigurable="1" data-condition="madesktopDebugMode">Import CSS</option>
                             <option value="xpcss4mad" data-inconfigurable="1">Windows XP style</option>
                             <option value="xp">Windows XP Blue</option>
                             <option value="xp_olive">Windows XP Olive Green</option>
@@ -109,27 +111,34 @@
                         <button id="deleteBtn" disabled><u>D</u>elete</button>
                     </p>
                     <section id="schemeEditorGroup" class="field-row">
-                        <select id="selector">
-                            <option value="button-face" data-second="button-alternate-face" data-text="button-text">3D Object</option>
-                            <option value="button-hilight" data-second="button-light">3D Light</option>
-                            <option value="button-shadow" data-second="button-dk-shadow">3D Shadow</option>
-                            <option value="active-title" data-second="gradient-active-title" data-text="title-text">Active Title Bar</option>
-                            <option value="active-border">Active Window Border</option>
-                            <option value="app-workspace">Application Background</option>
-                            <option value="background" selected>Desktop</option>
-                            <option value="gray-text">Disabled Item</option>
-                            <option value="hot-tracking-color">Hyperlink</option>
-                            <option value="inactive-title" data-second="gradient-inactive-title" data-text="inactive-title-text">Inactive Title Bar</option>
-                            <option value="inactive-border">Inactive Window Border</option>
-                            <option value="menu" data-text="menu-text">Menu</option>
-                            <option value="menu-bar" data-second="menu-highlight">Menu Bar (Flat)</option>
-                            <option value="scrollbar">Scrollbar</option>
-                            <option value="hilight" data-text="hilight-text">Selected Item</option>
-                            <option value="info-window" data-text="info-text">ToolTip</option>
-                            <option value="window" data-second="window-frame" data-text="window-text">Window</option>
-                        </select>
+                        <p id="selectorWrap">
+                            <span class="groupLabel"><u>I</u>tem:</span>
+                            <select id="selector">
+                                <option value="button-face" data-second="button-alternate-face" data-text="button-text">3D Object</option>
+                                <option value="button-hilight" data-second="button-light">3D Light</option>
+                                <option value="button-shadow" data-second="button-dk-shadow">3D Shadow</option>
+                                <option value="active-title" data-second="gradient-active-title" data-text="title-text">Active Title Bar</option>
+                                <option value="active-border">Active Window Border</option>
+                                <option value="app-workspace">Application Background</option>
+                                <option value="background" selected>Desktop</option>
+                                <option value="gray-text">Disabled Item</option>
+                                <option value="hot-tracking-color">Hyperlink</option>
+                                <option value="inactive-title" data-second="gradient-inactive-title" data-text="inactive-title-text">Inactive Title Bar</option>
+                                <option value="inactive-border">Inactive Window Border</option>
+                                <option value="menu" data-text="menu-text">Menu</option>
+                                <option value="menu-bar" data-second="menu-highlight">Menu Bar (Flat)</option>
+                                <option value="scrollbar">Scrollbar</option>
+                                <option value="hilight" data-text="hilight-text">Selected Item</option>
+                                <option value="info-window" data-text="info-text">ToolTip</option>
+                                <option value="window" data-second="window-frame" data-text="window-text">Window</option>
+                            </select>
+                        </p>
+                        <p id="itemSizeWrap">
+                            <span id="itemSizeLabel" class="label">Si<u>z</u>e:</span>
+                            <input id="itemSize" type="number" min="0" max="100" value="" disabled>
+                        </p>
                         <p id="firstColorWrap">
-                            <span class="colorPicker-label">1:</span>
+                            <span id="firstColorLabel" class="label">Co<u>l</u>or:</span>
                             <button id="firstColor" class="colorPicker">
                                 <div class="colorPicker-color"></div>
                                 <div class="colorPicker-bar"></div>
@@ -137,50 +146,62 @@
                             </button>
                         </p>
                         <p id="secondColorWrap" class="disabled">
-                            <span class="colorPicker-label">2:</span>
+                            <span id="secondColorLabel" class="label">Color <u>2</u>:</span>
                             <button id="secondColor" class="colorPicker" disabled>
                                 <div class="colorPicker-color"></div>
                                 <div class="colorPicker-bar"></div>
                                 <div class="colorPicker-expandMark">⏷</div>
                             </button>
                         </p>
+                    </section>
+                    <section id="fontEditorGroup" class="field-row">
+                        <p id="fontSelectorWrap">
+                            <span class="groupLabel"><u>F</u>ont:</span>
+                            <select id="fontSelector">
+                                <option>Pixelated MS Sans Serif</option>
+                                <option>sans-serif</option>
+                            </select>
+                        </p>
+                        <p id="fontSizeWrap">
+                            <span class="label">Siz<u>e</u>:</span>
+                            <input id="itemSize" type="number" min="0" max="100" value="" disabled>
+                        </p>
                         <p id="textColorWrap" class="disabled">
-                            <span class="colorPicker-label">Text:</span>
+                            <span id="textColorLabel" class="label">Colo<u>r</u>:</span>
                             <button id="textColor" class="colorPicker" disabled>
                                 <div class="colorPicker-color"></div>
                                 <div class="colorPicker-bar"></div>
                                 <div class="colorPicker-expandMark">⏷</div>
                             </button>
                         </p>
+                        <button id="boldToggle" disabled><span><b>B</b></span></button>
+                        <button id="italicToggle" disabled><span>/</span></button>
                     </section>
                 </div>
                 <div id="checkboxes">
-                    <input id="systemColorChkBox" type="checkbox" disabled>
-                    <label for="systemColorChkBox">Use system colors (system plugin required)</label><br>
-                    <input id="fontSmoothingChkBox" type="checkbox">
-                    <label for="fontSmoothingChkBox">Do not use pixelated fonts</label>
                     <section id="flatMenuSelectorGroup" class="field-row">
                         <input id="flatMenuChkBox" type="checkbox">
-                        <label for="flatMenuChkBox">Use flat menus for:</label>
-                        <select id="flatMenuSelector" disabled>
-                            <option value="mb">menu bars (95 / NT4)</option>
-                            <option value="cm">context menus</option>
-                            <option value="mbcm">menu bars and context menus (XP)</option>
+                        <select id="flatMenuSelector">
+                            <option value="mb"></option>
+                            <option value="cm"></option>
+                            <option value="mbcm"></option>
                         </select>
                     </section>
                     <section id="animationSelectorGroup" class="field-row">
                         <input id="enableAnimationsChkBox" type="checkbox" checked>
-                        <label for="enableAnimationsChkBox">Use the following transition effect for menus:</label>
                         <select id="animationSelector">
-                            <option value="slide">Slide effect</option>
-                            <option value="fade">Fade effect</option>
+                            <option value="slide"></option>
+                            <option value="fade"></option>
                         </select>
                     </section>
+                    <input id="shadowChkBox" type="checkbox">
+                    <input id="dragChkBox" type="checkbox">
+                    <input id="underlineChkBox" type="checkbox">
                 </div>
             </div>
         </div>
         <section class="topmargin field-row" style="justify-content: flex-end;">
-            <button id="importBtn">Import CSS</button>
+            <button id="effectsBtn">Effects</button>
             <button id="okBtn">OK</button>
             <button id="cancelBtn">Cancel</button>
             <button id="applyBtn">Apply</button>

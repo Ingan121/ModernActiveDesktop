@@ -8,7 +8,9 @@ const schemeElement = document.getElementById("scheme");
 const fontElement = document.getElementById("font");
 const menuStyleElement = document.getElementById("menuStyle");
 const container = document.getElementById("container");
+const inactiveWindow = document.getElementById("inactiveWindow");
 const activeWindow = document.getElementById("activeWindow");
+const msgbox = document.getElementById("msgbox");
 
 function changeColorScheme(scheme) {
     if (scheme === "98") {
@@ -34,7 +36,6 @@ function changeColorScheme(scheme) {
             })
     } else {
         schemeElement.href = `../../schemes/${scheme}.css`;
-        setTimeout(resize, 100);
     }
     resize();
 }
@@ -42,9 +43,9 @@ function changeColorScheme(scheme) {
 // Toggle between "Pixelated MS Sans Serif" and just sans-serif
 function changeFont(isPixel) {
     if (isPixel) {
-        fontElement.href = "../../css/nopixel.css";
+        document.documentElement.style.setProperty('--font-98', 'sans-serif');
     } else {
-        fontElement.href = "";
+        document.documentElement.style.removeProperty('--font-98');
     }
 }
 
@@ -58,7 +59,13 @@ function changeMenuStyle(style) {
 }
 
 document.body.style.zoom = parent.document.body.style.zoom || 1;
-changeColorScheme(localStorage.madesktopColorScheme || "98");
+
+const url = new URLSearchParams(window.location.search);
+if (url.has("scheme")) {
+    changeColorScheme(url.get("scheme"));
+} else {
+    changeColorScheme(localStorage.madesktopColorScheme || "98");
+}
 changeFont(localStorage.madesktopNoPixelFonts);
 changeMenuStyle(localStorage.madesktopMenuStyle);
 if (localStorage.madesktopBgColor) {
@@ -73,9 +80,10 @@ new MutationObserver(function(mutations) {
     { attributes: true, attributeFilter: ["style"] }
 );
 
-resize();
+window.addEventListener("load", resize);
 window.addEventListener("resize", resize);
 
 function resize() {
-    container.style.left = (frameElement.offsetWidth - activeWindow.offsetWidth - 10) / 2 + "px";
+    container.style.left = (frameElement.offsetWidth - (activeWindow.offsetLeft + activeWindow.offsetWidth - inactiveWindow.offsetLeft) - 2) / 2 + "px";
+    container.style.top = (frameElement.offsetHeight - (msgbox.offsetTop + msgbox.offsetHeight - inactiveWindow.offsetTop) - 2) / 2 + "px";
 }

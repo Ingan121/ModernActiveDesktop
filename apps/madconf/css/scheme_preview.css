@@ -2,6 +2,7 @@
 
 body {
     background-color: var(--background);
+    margin: 0;
     overflow: hidden;
 }
 
@@ -12,11 +13,22 @@ body {
 
 #inactiveWindow {
     position: absolute;
-    width: 380px;
-    height: 150px;
-    top: 7px;
-    left: 0px;
+    width: 311px;
+    height: 145px;
+    top: 0;
+    left: 0;
     z-index: 1;
+}
+
+.title-bar {
+    height: 12px;
+}
+
+#inactiveWindow .title-bar,
+#activeWindow .title-bar {
+    border: solid 1px var(--button-face);
+    border-bottom: none;
+    margin-bottom: -1px;
 }
 
 .inactive > .title-bar-text {
@@ -25,9 +37,9 @@ body {
 
 #activeWindow {
     position: absolute;
-    width: 400px;
-    height: 129px;
-    top: 33px;
+    width: 329px;
+    height: 127px;
+    top: 23px;
     left: 4px;
     z-index: 2;
 }
@@ -46,6 +58,10 @@ body {
     margin-bottom: 1px;
 }
 
+.menu > div:first-child {
+    margin-left: 2px;
+}
+
 .menu > div {
     padding-left: 5px;
     padding-right: 5px;
@@ -59,17 +75,20 @@ body {
 
 .menu > div[data-active] {
     border-color: var(--button-shadow) var(--button-hilight) var(--button-hilight) var(--button-shadow) !important;
+    margin-top: 1px;
+    margin-left: -1px;
+    height: 15px;
 }
 
 .menu > div[data-active] > span {
     margin-top: 1px;
-    margin-left: 1px;
-    margin-right: -1px;
+    margin-left: 2px;
+    margin-right: -2px;
 }
 
 textarea {
-    width: 398px;
-    height: 86px;
+    width: 327px;
+    height: 89px;
     margin: 1px;
     margin-top: 0;
     resize: none;
@@ -81,8 +100,25 @@ textarea {
 
 #msgbox {
     position: absolute;
-    width: 260px;
-    top: 106px;
+    width: 207px;
+    height: 63px;
+    top: 108px;
     left: 12px;
     z-index: 3;
+}
+
+#msgbox-msg {
+    padding-top: 1px;
+    padding-left: 4px;
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+
+#msgbox-btn1 {
+    height: 24px;
+    font-weight: bold;
+    width: 72px;
+    min-width: 0;
+    margin-top: -1px;
+    margin-left: -1px;
 }

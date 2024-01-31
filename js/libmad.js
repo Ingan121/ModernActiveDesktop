@@ -75,12 +75,10 @@
         }
         schemeElement.href = parentSchemeElement.href;
 
-        if (fontElement) {
-            if (localStorage.madesktopNoPixelFonts) {
-                fontElement.href = parentFontElement.href;
-            } else {
-                fontElement.href = "";
-            }
+        if (localStorage.madesktopNoPixelFonts) {
+            document.documentElement.style.setProperty('--font-98', 'sans-serif');
+        } else {
+            document.documentElement.style.removeProperty('--font-98');
         }
 
         if (menuStyleElement) {
@@ -90,6 +88,12 @@
             } else {
                 menuStyleElement.href = "";
             }
+        }
+
+        if (localStorage.madesktopCmShadow) {
+            document.body.dataset.cmShadow = true;
+        } else {
+            delete document.body.dataset.cmShadow;
         }
 
         try {

@@ -256,3 +256,5 @@ function getSysplugOWConfig() {
             config.sysplugOpenOpt = responseJson.openWith;
         });
 }
+
+window.scrollTo(0, 0);

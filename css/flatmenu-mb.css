@@ -4,6 +4,7 @@
     border: none !important;
     color: var(--hilight-text) !important;
     background-color: var(--menu-highlight) !important;
+    box-shadow: var(--hilight) -1px -1px inset, var(--hilight) 1px 1px inset !important;
     margin-right: 0 !important;
 }
 
@@ -11,12 +12,17 @@
     display: none !important;
 }
 
+.menu, .menus,
+.menu-button {
+    background-color: var(--menu-bar);
+}
+
 .menu > div:hover,
 .menu > div:active,
 .menu > div[data-active] {
-    border-color: var(--menu-highlight) !important;
-    background-color: var(--menu-highlight) !important;
+    border-color: var(--hilight) !important;
     color: var(--hilight-text) !important;
+    background-color: var(--menu-highlight) !important;
 }
 
 .menu > div:hover span,

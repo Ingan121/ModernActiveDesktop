@@ -1,0 +1,24 @@
+body {
+    margin-top: 11px;
+    margin-left: 4px;
+}
+
+label:not(.hasDropdown) {
+    margin-top: 6px;
+    margin-bottom: 2px;
+}
+
+select {
+    margin: 3px 0 4px 23px;
+    min-width: 140px;
+}
+
+#flatMenuSelector {
+    margin-bottom: 5px;
+}
+
+.bottom {
+    position: absolute;
+    right: 12px;
+    bottom: 5px;
+}

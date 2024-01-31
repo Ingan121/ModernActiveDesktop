@@ -19,11 +19,11 @@
   --active-title: var(--dialog-blue);
   --app-workspace: rgb(128, 128, 128);
   --background: rgb(0, 128, 128);
-  --button-alternate-face: rgb(192, 192, 192);
+  --button-alternate-face: rgb(181, 181, 181);
   --button-dk-shadow: rgb(0, 0, 0);
   --button-face: var(--surface);
   --button-hilight: var(--button-highlight);
-  --button-light: rgb(192, 192, 192);
+  --button-light: rgb(223, 223, 223);
   --button-shadow: rgb(128, 128, 128);
   --button-text: rgb(0, 0, 0);
   --gradient-active-title: var(--dialog-blue-light);

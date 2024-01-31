@@ -1,10 +1,10 @@
 @import 'common.css';
 
 #schemePreview {
-    height: 194px;
-    width: calc(100% - 6px);
+    height: 187px;
+    width: calc(100% - 15px);
     background-color: var(--background);
-    margin: 0 auto;
+    margin-left: 5px;
     pointer-events: none;
     box-shadow: inset -1px -1px var(--button-hilight),
         inset 1px 1px var(--button-shadow),
@@ -15,9 +15,35 @@
 }
 
 #conf {
-    padding-top: 5px;
+    padding-top: 3px;
     display: table;
     margin: 0 auto;
+}
+
+.groupLabel {
+    position: relative;
+    top: -1px;
+    margin-left: 5px;
+}
+
+.label {
+    position: relative;
+    top: -1px;
+    margin-left: 0;
+}
+
+#itemSizeLabel {
+    top: -2px;
+}
+
+#firstColorLabel,
+#secondColorLabel {
+    left: 1px;
+}
+
+#textColorLabel {
+    top: 0;
+    left: -2px;
 }
 
 #schemeSelectorGroup button {
@@ -30,14 +56,29 @@
     margin-right: 3px;
 }
 
-#schemeSelector {
-    width: 200px;
+select {
+    width: 197px;
+    margin-left: 4px;
 }
 
-#selector {
-    width: 200px;
-    margin-left: 1px;
-    margin-right: 5px;
+#schemeEditorGroup {
+    margin-top: 6px;
+}
+
+#schemeEditorGroup label:first-child {
+    top: -2px;
+}
+
+input[type="number"] {
+    width: 57px;
+    height: 21px;
+    margin-left: -1px;
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    appearance: none;
+    margin: 0; 
 }
 
 .colorPicker {
@@ -84,23 +125,50 @@
     font-size: 10px;
 }
 
-.colorPicker-label {
+#firstColor {
+    margin-left: 0;
+}
+
+#secondColor {
+    margin-left: 0;
+}
+
+#fontEditorGroup {
+    margin-top: 5px;
+    margin-bottom: 2px;
+}
+
+#textColor {
+    margin-left: -3px;
+}
+
+#boldToggle,
+#italicToggle {
     position: relative;
-    top: -2px;
-    margin-right: 4px;
+    left: -5px;
+    min-width: 0;
+    min-height: 21px;
+    margin: 0;
+    margin-top: 17px;
+    padding: 0 9px 0 7px;
+}
+
+#italicToggle {
+    padding: 0 9px 0 8px;
+}
+
+#boldToggle span,
+#italicToggle span {
+    position: relative;
+    top: -1px;
 }
 
 #checkboxes {
-    display: table;
-    margin: 0 auto;
+    display: none;
 }
 
 #animationSelectorGroup {
     margin-top: 1px;
-}
-
-#importBtn {
-    display: none;
 }
 
 #miniPicker {

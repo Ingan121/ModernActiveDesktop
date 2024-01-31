@@ -7,29 +7,33 @@
 body {
     background-color: var(--button-face);
     margin: 0;
+    margin-top: 8px;
     line-height: 16px;
     image-rendering: pixelated;
     user-select: none;
     overflow: hidden;
 }
 
+#madconf {
+    margin: 6px;
+    margin-top: 7px;
+}
+
+menu[role="tablist"] {
+    margin-top: 1px;
+}
+
 menu[role="tablist"] a {
     margin-left: 9px !important;
+    margin-top: 7px !important;
     margin-right: 7px !important;
-    line-height: 10px;
+    line-height: 8px;
     cursor: default;
 }
 
-menu[role="tablist"]:nth-child(1) a {
-    margin-left: 8px !important;
-}
-
-menu[role="tablist"]:nth-child(2) a {
+li:not([aria-selected]) a {
     margin-left: 7px !important;
-}
-
-menu[role="tablist"]:nth-child(3) a {
-    margin-left: 6px !important;
+    margin-right: 5px !important;
 }
 
 p {
@@ -48,4 +52,9 @@ p {
 .disabled {
     color: var(--button-shadow);
     text-shadow: 1px 1px 0 var(--button-hilight);
+}
+
+.disabled u,
+button[disabled] u {
+    border-bottom-color: var(--button-shadow);
 }
