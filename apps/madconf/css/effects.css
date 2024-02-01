@@ -8,13 +8,14 @@ label:not(.hasDropdown) {
     margin-bottom: 2px;
 }
 
-select {
+mad-select {
     margin: 3px 0 4px 23px;
-    min-width: 140px;
+    width: 140px;
 }
 
 #flatMenuSelector {
     margin-bottom: 5px;
+    width: 200px;
 }
 
 .bottom {

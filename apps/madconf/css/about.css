@@ -28,12 +28,12 @@ p {
 
 #creditsMain {
     margin: 0;
-    height: 118px;
+    height: 124px;
     margin-left: 3px;
     overflow-y: auto;
 }
 
 .buttons button {
     margin-top: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 3px;
 }

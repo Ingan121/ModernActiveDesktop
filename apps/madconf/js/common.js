@@ -18,18 +18,11 @@ const okBtn = document.getElementById("okBtn");
 const cancelBtn = document.getElementById("cancelBtn");
 const applyBtn = document.getElementById("applyBtn");
 
-const dropdowns = document.querySelectorAll("select");
-const textboxes = document.querySelectorAll("input[type=text]");
+const textboxes = document.querySelectorAll("input[type=text], input[type=number]");
 
 for (const tab of tabs) {
     tab.addEventListener("click", function () {
         madLocReplace(`apps/madconf/${this.dataset.pagename}.html`);
-    });
-}
-
-for (const dropdown of dropdowns) {
-    dropdown.addEventListener("click", function () {
-        madOpenDropdown(this);
     });
 }
 

@@ -9,9 +9,9 @@ const bgHtmlContainer = document.getElementById("bgHtmlContainer");
 const bgHtmlView = document.getElementById("bgHtmlView");
 const bgVideoView = document.getElementById("bgVideo");
 const schemeElement = document.getElementById("scheme");
-const fontElement = document.getElementById("font");
 const menuStyleElement = document.getElementById("menuStyle");
 const styleElement = document.getElementById("style");
+const styleElement2 = document.getElementById("style2");
 const msgboxBg = document.getElementById("msgboxBg");
 const msgbox = document.getElementById("msgbox");
 const msgboxTitlebar = msgbox.getElementsByClassName("title-bar")[0];
@@ -353,12 +353,12 @@ function changeBgImgMode(value) {
             document.body.style.backgroundRepeat = "repeat";
             document.body.style.backgroundPosition = "left top";
             break;
-        case "horizfit": // Fit horizontally
+        case "horizfit": // Fit
             document.body.style.backgroundSize = "contain";
             document.body.style.backgroundRepeat = "no-repeat";
             document.body.style.backgroundPosition = "center center";
             break;
-        case "vertfit": // Fit vertically
+        case "vertfit": // Fill
             document.body.style.backgroundSize = "cover";
             document.body.style.backgroundRepeat = "no-repeat";
             document.body.style.backgroundPosition = "center center";
@@ -376,17 +376,21 @@ function changeColorScheme(scheme) {
         schemeElement.href = "data:text/css,";
         delete localStorage.madesktopCustomColor;
         delete localStorage.madesktopSysColorCache;
+        processTheme();
     } else if (scheme === "custom") {
         schemeElement.href = localStorage.madesktopCustomColor;
         delete localStorage.madesktopSysColorCache;
+        processTheme();
     } else if (scheme.split('\n').length > 1) {
         const dataURL = `data:text/css,${encodeURIComponent(scheme)}`;
         schemeElement.href = dataURL;
         localStorage.madesktopCustomColor = dataURL;
         delete localStorage.madesktopSysColorCache;
+        processTheme();
     } else if (scheme === "sys") {
         if (localStorage.madesktopSysColorCache) {
             schemeElement.href = localStorage.madesktopSysColorCache;
+            processTheme();
         }
 
         fetch("http://localhost:3031/systemscheme")
@@ -395,6 +399,7 @@ function changeColorScheme(scheme) {
                 const dataURL = `data:text/css,${encodeURIComponent(responseText)}`;
                 schemeElement.href = dataURL;
                 localStorage.madesktopSysColorCache = dataURL; // Cache it as SysPlug startup is slower than high priority WE startup
+                processTheme();
             })
             .catch(error => {
                 // Ignore it as SysPlug startup is slower than high priority WE startup
@@ -405,6 +410,8 @@ function changeColorScheme(scheme) {
         schemeElement.href = `schemes/${scheme}.css`;
         delete localStorage.madesktopCustomColor;
         delete localStorage.madesktopSysColorCache;
+        // These load slower, so let's just use the light theme on theme change as current two css themes are light ones
+        processTheme('#000');
     }
     
     try {
@@ -656,6 +663,62 @@ function normalizeColor(color) {
     return color;
 }
 
+// http://stackoverflow.com/questions/12043187/how-to-check-if-hex-color-is-too-black
+function isDarkColor(color) {
+    if (!color.startsWith("#") || color.length !== 7) {
+        color = parent.normalizeColor(color);
+    }
+
+    const c = color.substring(2);  // strip " #"
+    const rgb = parseInt(c, 16);   // convert rrggbb to decimal
+    const r = (rgb >> 16) & 0xff;  // extract red
+    const g = (rgb >>  8) & 0xff;  // extract green
+    const b = (rgb >>  0) & 0xff;  // extract blue
+
+    const luma = 0.2126 * r + 0.7152 * g + 0.0722 * b; // per ITU-R BT.709
+
+    if (luma < 50) {
+        return true;
+    }
+    return false;
+}
+
+function processTheme(color) {
+    styleElement2.textContent = generateScrollBarSvgs(color);
+}
+
+function generateScrollBarSvgs(color) {
+    if (!color) {
+        color = getComputedStyle(document.documentElement).getPropertyValue('--button-text');
+    }
+    const up = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M8 6H7V7H6V8H5V9H4V10H11V9H10V8H9V7H8V6Z" fill="${color}"/></svg>`;
+    const down = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M8 6H4V7H5V8H6V9H7V10H8V9H9V8H10V7H11V6Z" fill="${color}"/></svg>`;
+    const left = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M6 4H8V5H7V6H6V7H5V8H6V9H7V10H8V11H9V4Z" fill="${color}"/></svg>`;
+    const right = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M10 4H6V11H7V10H8V9H9V8H10V7H9V6H8V5H7V4Z" fill="${color}"/></svg>`;
+    const css = `
+    ::-webkit-scrollbar-button:vertical:start {
+        background-image: url("data:image/svg+xml,${encodeURIComponent(up)}");
+        background-position: unset;
+    }
+    ::-webkit-scrollbar-button:vertical:end {
+        background-image: url("data:image/svg+xml,${encodeURIComponent(down)}");
+        background-position: unset;
+    }
+    ::-webkit-scrollbar-button:horizontal:start {
+        background-image: url("data:image/svg+xml,${encodeURIComponent(left)}");
+        background-position: unset;
+    }
+    ::-webkit-scrollbar-button:horizontal:end {
+        background-image: url("data:image/svg+xml,${encodeURIComponent(right)}");
+        background-position: unset;
+    }`
+    return css;
+}
+
 // Convert WE color format to #rrggbb
 function parseWallEngColorProp(value) {
     let customColor = value.split(' ');
@@ -831,7 +894,7 @@ function hookIframeSize(iframe, num) {
     }
 
     // Listen for title changes
-    new MutationObserver(function(mutations) {
+    new MutationObserver(function (mutations) {
         if (!deskMovers[num].config.title) {
             deskMovers[num].windowTitleText.textContent = mutations[0].target.innerText;
         }

@@ -16,7 +16,11 @@ async function main() {
     const selector = document.getElementById("selector");
     const options = selector.options;
     const colorPickers = document.querySelectorAll(".colorPicker");
-    const colorPickerColor = document.querySelector("#firstColor .colorPicker-color");
+    const colorPickerWrap = document.getElementById("firstColorWrap");
+    const colorPicker = document.getElementById("firstColor");
+    const colorPickerColor = colorPicker.querySelector(".colorPicker-color");
+    const itemSizeWrap = document.getElementById("itemSizeWrap");
+    const itemSize = document.getElementById("itemSize");
     const secondColorPickerWrap = document.getElementById("secondColorWrap");
     const secondColorPicker = document.getElementById("secondColor");
     const secondColorPickerColor = secondColorPicker.querySelector(".colorPicker-color");
@@ -34,6 +38,65 @@ async function main() {
     const shadowChkBox = document.getElementById("shadowChkBox");
     const effectsBtn = document.getElementById("effectsBtn");
 
+    const itemMappings = {
+        'button-face': {
+            second: 'button-alternate-face',
+            text: 'button-text'
+        },
+        'button-hilight': {
+            second: 'button-light'
+        },
+        'button-shadow': {
+            second: 'button-dk-shadow'
+        },
+        'active-title': {
+            second: 'gradient-active-title',
+            text: 'title-text',
+            itemSize: 'extra-title-height'
+        },
+        'inactive-title': {
+            second: 'gradient-inactive-title',
+            text: 'inactive-title-text',
+            itemSize: 'extra-title-height'
+        },
+        'active-border': {
+            itemSize: 'extra-border-size'
+        },
+        'inactive-border': {
+            itemSize: 'extra-border-size'
+        },
+        'menu': {
+            text: 'menu-text',
+            itemSize: 'menu-height'
+        },
+        'menu-bar': {
+            second: 'menu-highlight',
+            text: 'menu-text',
+            itemSize: 'menu-height'
+        },
+        'palette-title': {
+            noFirst: true,
+            itemSize: 'palette-title-height'
+        },
+        'scrollbar': {
+            itemSize: 'scrollbar-size'
+        },
+        'hilight': {
+            second: 'hilight-text'
+        },
+        'info-window': {
+            text: 'info-text'
+        },
+        'window': {
+            second: 'window-frame',
+            text: 'window-text'
+        }
+    };
+    /*
+        ItemMatrics: menu, scrollbar OK, title OK, palette-title OK, border OK
+        FontMatrics: menu, message-box, title, palette-title, info-window
+    */
+
     let openColorPicker = null;
 
     colorPickerColor.style.backgroundColor = scheme[options[selector.selectedIndex].value];
@@ -49,7 +112,7 @@ async function main() {
         }
 
         if (schemeSelectorOptions[schemeSelector.selectedIndex].dataset.inconfigurable) {
-            selector.selectedIndex = 6; // background
+            selector.value = "background";
             selector.disabled = true;
             saveAsBtn.disabled = true;
             deleteBtn.disabled = true;
@@ -59,11 +122,11 @@ async function main() {
         }
         selector.dispatchEvent(new Event("change"));
 
-        if (schemeSelector.value.startsWith("xp") || schemeSelector.value === "aero" || schemeSelector.value === "windose") {
+        if (scheme["flat-menus"] === "mbcm") {
             flatMenuChkBox.checked = true;
             flatMenuSelector.disabled = false;
             flatMenuSelector.selectedIndex = 2;
-        } else if (schemeSelector.value.includes("95") || schemeSelector.value.startsWith("win")) {
+        } else if (scheme["flat-menus"] === "mb") {
             flatMenuChkBox.checked = true;
             flatMenuSelector.disabled = false;
             flatMenuSelector.selectedIndex = 0;
@@ -72,11 +135,11 @@ async function main() {
             flatMenuSelector.disabled = true;
         }
 
-        if (schemeSelector.value === "2k" || schemeSelector.value.startsWith("xp") || schemeSelector.value === "aero" || schemeSelector.value.startsWith("win11") || schemeSelector.value === "windose") {
+        if (scheme["menu-animation"] === "fade") {
             enableAnimationsChkBox.checked = true;
             animationSelector.selectedIndex = 1;
             animationSelector.disabled = false;
-        } else if (schemeSelector.value.includes("95") || schemeSelector.value.match(/win[1-3].*/)) {
+        } else if (scheme["menu-animation"] === "none") {
             enableAnimationsChkBox.checked = false;
             animationSelector.disabled = true;
         } else {
@@ -85,7 +148,7 @@ async function main() {
             animationSelector.disabled = false;
         }
 
-        if (schemeSelector.value.startsWith("xp") || schemeSelector.value === "aero") {
+        if (scheme["menu-shadow"] === "true") {
             shadowChkBox.checked = true;
         } else {
             shadowChkBox.checked = false;
@@ -105,21 +168,65 @@ async function main() {
     selector.addEventListener("change", function () {
         const option = selector.value;
         colorPickerColor.style.backgroundColor  = scheme[option];
-        if (options[selector.selectedIndex].dataset.second) {
-            secondColorPickerWrap.classList.remove("disabled");
-            secondColorPicker.disabled = false;
-            secondColorPickerColor.style.backgroundColor = scheme[options[selector.selectedIndex].dataset.second];
+        if (itemMappings[option]) {
+            if (itemMappings[option].noFirst) {
+                colorPickerWrap.classList.add("disabled");
+                colorPicker.disabled = true;
+            } else {
+                colorPickerWrap.classList.remove("disabled");
+                colorPicker.disabled = false;
+            }
+            if (itemMappings[option].second) {
+                secondColorPickerWrap.classList.remove("disabled");
+                secondColorPicker.disabled = false;
+                secondColorPickerColor.style.backgroundColor = scheme[itemMappings[option].second];
+            } else {
+                secondColorPickerWrap.classList.add("disabled");
+                secondColorPickerWrap.disabled = true;
+            }
+            if (itemMappings[option].text) {
+                textColorPickerWrap.classList.remove("disabled");
+                textColorPicker.disabled = false;
+                textColorPickerColor.style.backgroundColor = scheme[itemMappings[option].text];
+            } else {
+                textColorPickerWrap.classList.add("disabled");
+                textColorPicker.disabled = true;
+            }
+            if (itemMappings[option].itemSize) {
+                itemSizeWrap.classList.remove("disabled");
+                itemSize.disabled = false;
+                let itemSizeValue = parseInt(scheme[itemMappings[option].itemSize]);
+                if (itemMappings[option].itemSize === "extra-title-height") {
+                    itemSizeValue += 14;
+                }
+                itemSize.value = itemSizeValue;
+            } else {
+                itemSize.value = '';
+                itemSizeWrap.classList.add("disabled");
+                itemSize.disabled = true;
+            }
         } else {
+            colorPickerWrap.classList.remove("disabled");
+            colorPicker.disabled = false;
             secondColorPickerWrap.classList.add("disabled");
-            secondColorPickerWrap.disabled = true;
-        }
-        if (options[selector.selectedIndex].dataset.text) {
-            textColorPickerWrap.classList.remove("disabled");
-            textColorPicker.disabled = false;
-            textColorPickerColor.style.backgroundColor = scheme[options[selector.selectedIndex].dataset.text];
-        } else {
+            secondColorPicker.disabled = true;
             textColorPickerWrap.classList.add("disabled");
             textColorPicker.disabled = true;
+            itemSize.value = '';
+            itemSizeWrap.classList.add("disabled");
+            itemSize.disabled = true;
+        }
+    });
+
+    itemSize.addEventListener("change", function () {
+        const option = selector.value;
+        if (itemMappings[option].itemSize) {
+            if (itemMappings[option].itemSize === "extra-title-height") {
+                scheme[itemMappings[option].itemSize] = itemSize.value - 14 + "px";
+            } else {
+                scheme[itemMappings[option].itemSize] = itemSize.value + "px";
+            }
+            applyPreview();
         }
     });
 
@@ -261,16 +368,16 @@ async function main() {
     }
 
     function changeColor(color) {
-        const option = options[selector.selectedIndex];
+        const option = selector.value;
         switch (openColorPicker.id) {
             case "firstColor":
-                scheme[option.value] = color;
+                scheme[option] = color;
                 break;
             case "secondColor":
-                scheme[option.dataset.second] = color;
+                scheme[itemMappings[option].second] = color;
                 break;
             case "textColor":
-                scheme[option.dataset.text] = color;
+                scheme[itemMappings[option].text] = color;
                 break;
         }
         openColorPicker.querySelector(".colorPicker-color").style.backgroundColor = color;
@@ -329,6 +436,13 @@ async function getSchemeText(scheme = parent.document.getElementById("scheme").h
         --window: #ffffff;
         --window-frame: #000000;
         --window-text: #000000;
+        --scrollbar-size: 16px;
+        --menu-height: 18px;
+        --palette-title-height: 15px;
+    }
+    .window {
+        --extra-border-size: 1px;
+        --extra-title-height: -2px;
     }`;
     if (scheme === "../../schemes/98.css" || scheme === "data:text/css,") {
         return schemeText;
@@ -366,9 +480,29 @@ function parseCssScheme(schemeText) {
 }
 
 function generateCssScheme(scheme) {
+    const belongsInWindow = [
+        'extra-title-height',
+        'extra-border-size',
+    ];
+    const shouldBeDeleted = [
+        'extra-border-bottom',
+        'flat-menus',
+        'menu-animation',
+        'menu-shadow'
+    ];
+
     let cssScheme = `:root {\n`;
     for (const key in scheme) {
+        if (belongsInWindow.includes(key) || shouldBeDeleted.includes(key)) {
+            continue;
+        }
         cssScheme += `--${key}: ${scheme[key]};\n`;
+    }
+    cssScheme += "}\n.window {\n";
+    for (const key of belongsInWindow) {
+        if (scheme[key]) {
+            cssScheme += `--${key}: ${scheme[key]};\n`;
+        }
     }
     cssScheme += "}";
     return cssScheme;

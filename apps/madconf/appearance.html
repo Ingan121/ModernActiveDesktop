@@ -6,7 +6,6 @@
     <link rel="stylesheet" href="../../css/98.css">
     <link rel="stylesheet" href="css/appearance.css">
     <link id="scheme" rel="stylesheet" href="data:text/css,">
-    <link id="font" rel="stylesheet" href="">
     <style id="style"></style>
 </head>
 <body>
@@ -23,7 +22,7 @@
                 <div id="conf">
                     <p id="schemeSelectorGroup">
                         <span class="groupLabel"><u>S</u>cheme:</span><br>
-                        <select id="schemeSelector">
+                        <mad-select id="schemeSelector">
                             <option selected hidden>Current Scheme</option>
                             <option value="98">Windows Classic (98)</option>
                             <option value="95">Windows Classic (95 / NT4)</option>
@@ -106,34 +105,35 @@
                             <option value="win3_tweed">Win 3 - Tweed</option>
                             <option value="win3_valentine">Win 3 - Valentine</option>
                             <option value="win3_wingtips">Win 3 - Wingtips</option>
-                        </select>
+                        </mad-select>
                         <button id="saveAsBtn">Sa<u>v</u>e As..</button>
                         <button id="deleteBtn" disabled><u>D</u>elete</button>
                     </p>
                     <section id="schemeEditorGroup" class="field-row">
                         <p id="selectorWrap">
                             <span class="groupLabel"><u>I</u>tem:</span>
-                            <select id="selector">
-                                <option value="button-face" data-second="button-alternate-face" data-text="button-text">3D Object</option>
-                                <option value="button-hilight" data-second="button-light">3D Light</option>
-                                <option value="button-shadow" data-second="button-dk-shadow">3D Shadow</option>
-                                <option value="active-title" data-second="gradient-active-title" data-text="title-text">Active Title Bar</option>
+                            <mad-select id="selector">
+                                <option value="button-face">3D Object</option>
+                                <option value="button-hilight">3D Light</option>
+                                <option value="button-shadow">3D Shadow</option>
+                                <option value="active-title">Active Title Bar</option>
                                 <option value="active-border">Active Window Border</option>
                                 <option value="app-workspace">Application Background</option>
                                 <option value="background" selected>Desktop</option>
                                 <option value="gray-text">Disabled Item</option>
                                 <option value="hot-tracking-color">Hyperlink</option>
-                                <option value="inactive-title" data-second="gradient-inactive-title" data-text="inactive-title-text">Inactive Title Bar</option>
+                                <option value="inactive-title">Inactive Title Bar</option>
                                 <option value="inactive-border">Inactive Window Border</option>
-                                <option value="menu" data-text="menu-text">Menu</option>
-                                <option value="menu-bar" data-second="menu-highlight">Menu Bar (Flat)</option>
+                                <option value="menu">Menu</option>
+                                <option value="menu-bar">Menu Bar (Flat)</option>
+                                <option value="palette-title">Palette Title</option>
                                 <option value="scrollbar">Scrollbar</option>
-                                <option value="hilight" data-text="hilight-text">Selected Item</option>
-                                <option value="info-window" data-text="info-text">ToolTip</option>
-                                <option value="window" data-second="window-frame" data-text="window-text">Window</option>
-                            </select>
+                                <option value="hilight">Selected Item</option>
+                                <option value="info-window">ToolTip</option>
+                                <option value="window">Window</option>
+                            </mad-select>
                         </p>
-                        <p id="itemSizeWrap">
+                        <p id="itemSizeWrap" class="disabled">
                             <span id="itemSizeLabel" class="label">Si<u>z</u>e:</span>
                             <input id="itemSize" type="number" min="0" max="100" value="" disabled>
                         </p>
@@ -157,12 +157,12 @@
                     <section id="fontEditorGroup" class="field-row">
                         <p id="fontSelectorWrap">
                             <span class="groupLabel"><u>F</u>ont:</span>
-                            <select id="fontSelector">
+                            <mad-select id="fontSelector">
                                 <option>Pixelated MS Sans Serif</option>
                                 <option>sans-serif</option>
-                            </select>
+                            </mad-select>
                         </p>
-                        <p id="fontSizeWrap">
+                        <p id="fontSizeWrap" class="disabled">
                             <span class="label">Siz<u>e</u>:</span>
                             <input id="itemSize" type="number" min="0" max="100" value="" disabled>
                         </p>
@@ -181,18 +181,18 @@
                 <div id="checkboxes">
                     <section id="flatMenuSelectorGroup" class="field-row">
                         <input id="flatMenuChkBox" type="checkbox">
-                        <select id="flatMenuSelector">
+                        <mad-select id="flatMenuSelector">
                             <option value="mb"></option>
                             <option value="cm"></option>
                             <option value="mbcm"></option>
-                        </select>
+                        </mad-select>
                     </section>
                     <section id="animationSelectorGroup" class="field-row">
                         <input id="enableAnimationsChkBox" type="checkbox" checked>
-                        <select id="animationSelector">
+                        <mad-select id="animationSelector">
                             <option value="slide"></option>
                             <option value="fade"></option>
-                        </select>
+                        </mad-select>
                     </section>
                     <input id="shadowChkBox" type="checkbox">
                     <input id="dragChkBox" type="checkbox">
@@ -200,11 +200,11 @@
                 </div>
             </div>
         </div>
-        <section class="topmargin field-row" style="justify-content: flex-end;">
-            <button id="effectsBtn">Effects</button>
+        <section class="bottomButtons field-row" style="justify-content: flex-end;">
+            <button id="effectsBtn"><u>E</u>ffects</button>
             <button id="okBtn">OK</button>
             <button id="cancelBtn">Cancel</button>
-            <button id="applyBtn">Apply</button>
+            <button id="applyBtn"><u>A</u>pply</button>
         </section>
     </div>
 

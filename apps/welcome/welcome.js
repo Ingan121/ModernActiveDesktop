@@ -123,7 +123,7 @@ if (localStorage.madesktopCheckedGithub) {
 // HiDPI: use real font instead of image
 switchItemTitleDisplay();
 
-new MutationObserver(function(mutations) {
+new MutationObserver(function (mutations) {
     switchItemTitleDisplay();
 }).observe(
     document.body,

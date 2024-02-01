@@ -65,10 +65,6 @@
     }
 }
 
-:root {
-    --hilight-inverted: #FFFF7F;
-}
-
 html, body {
     height: 100%;
     user-select: none;
@@ -141,6 +137,9 @@ body {
     top: 200px;
     right: 184px;
     width: 84px;
+}
+
+.window {
     --extra-title-height: -2px;
     --extra-border-size: 1px;
     --extra-border-bottom: 0px;
@@ -156,12 +155,14 @@ body {
 
 .windowContainer[data-style="wnd"]:not([data-unresizable]) {
     box-shadow: var(--border-window-outer), var(--border-window-inner),
-        var(--active-border) var(--border-inset-minus) var(--border-inset-minus) inset, var(--active-border) var(--border-inset) var(--border-inset) inset !important;
+        var(--active-border) var(--border-inset-minus) var(--border-inset-minus) inset,
+        var(--active-border) var(--border-inset) var(--border-inset) inset !important;
 }
 
 .windowContainer[data-style="wnd"][data-inactive]:not([data-unresizable]) {
     box-shadow: var(--border-window-outer), var(--border-window-inner),
-        var(--inactive-border) var(--border-inset-minus) var(--border-inset-minus) inset, var(--inactive-border) var(--border-inset) var(--border-inset) inset !important;
+        var(--inactive-border) var(--border-inset-minus) var(--border-inset-minus) inset,
+        var(--inactive-border) var(--border-inset) var(--border-inset) inset !important;
 }
 
 .windowTitlebar {
@@ -254,6 +255,8 @@ body {
 
 .windowCloseBtnAlt {
     display: none !important;
+    height: calc(16px + var(--extra-title-height));
+    width: calc(16px + var(--extra-title-height));
 }
 
 .title-bar .title-bar-text {
@@ -502,6 +505,11 @@ body[data-cm-shadow] .contextMenuBg {
     min-width: 300px;
     max-width: 50%;
     z-index: 99997;
+}
+
+#msgbox-close {
+    height: calc(16px + var(--extra-title-height));
+    width: calc(16px + var(--extra-title-height));
 }
 
 #msgbox-icon {

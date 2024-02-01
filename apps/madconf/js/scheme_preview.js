@@ -5,7 +5,6 @@
 'use strict';
 
 const schemeElement = document.getElementById("scheme");
-const fontElement = document.getElementById("font");
 const menuStyleElement = document.getElementById("menuStyle");
 const container = document.getElementById("container");
 const inactiveWindow = document.getElementById("inactiveWindow");
@@ -72,7 +71,7 @@ if (localStorage.madesktopBgColor) {
     document.body.style.backgroundColor = localStorage.madesktopBgColor;
 }
 
-new MutationObserver(function(mutations) {
+new MutationObserver(function (mutations) {
     document.body.style.zoom = parent.document.body.style.zoom || 1;
     resize();
 }).observe(

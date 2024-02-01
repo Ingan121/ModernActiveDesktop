@@ -3,54 +3,63 @@
 \*-------------------------------------------*/
 
 ::-webkit-scrollbar {
-    width: 17px;
+    width: 17px !important;
 }
 ::-webkit-scrollbar-corner {
-    background: var(--button-face);
+    background: var(--button-face) !important;
 }
 ::-webkit-scrollbar-track {
     &:vertical {
-        background-image: svg-load("./icon/scroll-background.svg");
+        background-image: svg-load("./icon/scroll-background.svg") !important;
     }
     &:horizontal {
-        background-image: svg-load("./icon/scroll-background-horizontal.svg");
+        background-image: svg-load("./icon/scroll-background-horizontal.svg") !important;
     }
 }
 ::-webkit-scrollbar-thumb {
-    background-position: center;
-    background-repeat: no-repeat;
-    background-color: #c8d6fb;
-    background-size: 7px;
-    border: 1px solid white;
-    border-radius: 2px;
-    box-shadow: inset -3px 0 #bad1fc, inset 1px 1px #b7caf5;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-color: #c8d6fb !important;
+    background-size: 7px !important;
+    border: 1px solid white !important;
+    border-radius: 2px !important;
+    box-shadow: inset -3px 0 #bad1fc, inset 1px 1px #b7caf5 !important;
     &:vertical {
-        background-image: svg-load("./icon/scroll-thumb.svg");
+        background-image: svg-load("./icon/scroll-thumb.svg") !important;
     }
     &:horizontal {
-        background-size: 8px;
-        background-image: svg-load("./icon/scroll-thumb-horizontal.svg");
+        background-size: 8px !important;
+        background-image: svg-load("./icon/scroll-thumb-horizontal.svg") !important;
     }
 }
 ::-webkit-scrollbar-button {
     &:vertical {
         &:start {
-            height: 17px;
-            background-image: svg-load("./icon/scroll-arrow-up.svg");
+            height: 17px !important;
+            background-image: svg-load("./icon/scroll-arrow-up.svg") !important;
+            box-shadow: none !important;
+            /* jspaint fix */
+            background-position: unset !important;
         }
         &:end {
-            height: 17px;
-            background-image: svg-load("./icon/scroll-arrow-down.svg");
+            height: 17px !important;
+            background-image: svg-load("./icon/scroll-arrow-down.svg") !important;
+            box-shadow: none !important;
+            background-position: unset !important;
         }
     }
     &:horizontal {
         &:start {
             width: 17px;
-            background-image: svg-load("./icon/scroll-arrow-left.svg");
+            background-image: svg-load("./icon/scroll-arrow-left.svg") !important;
+            box-shadow: none !important;
+            background-position: unset !important;
         }
         &:end {
             width: 17px;
-            background-image: svg-load("./icon/scroll-arrow-right.svg");
+            background-image: svg-load("./icon/scroll-arrow-right.svg") !important;
+            box-shadow: none !important;
+            background-position: unset !important;
         }
     }
 }

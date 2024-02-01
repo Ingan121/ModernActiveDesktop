@@ -31,4 +31,14 @@
 	--hotTracking-color: #FF0000;
 	--menu-hilight: #C00000;
 	--menu-bar: #660C08;
+    --flat-menus: none;
+    --menu-animation: slide;
+    --menu-shadow: false;
+    --scrollbar-size: 16px;
+    --menu-height: 18px;
+    --palette-title-height: 15px;
+}
+.window {
+    --extra-border-size: 1px;
+    --extra-title-height: -2px;
 }

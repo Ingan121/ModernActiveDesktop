@@ -45,11 +45,10 @@
         return;
     }
 
+    const parentStyleElement2 = parent.document.getElementById("style2");
     const parentSchemeElement = parent.document.getElementById("scheme");
     const parentMenuStyleElement = parent.document.getElementById("menuStyle");
-    const parentFontElement = parent.document.getElementById("font");
     const schemeElement = document.getElementById("scheme");
-    const fontElement = document.getElementById("font");
     const menuStyleElement = document.getElementById("menuStyle");
     const styleElement = document.getElementById("style");
     const deskMoverNum = frameElement.dataset.num || 0;
@@ -108,7 +107,7 @@
     }
 
     function processTheme() {
-        if (isDarkColor(getComputedStyle(parent.document.documentElement).getPropertyValue('--window'))) {
+        if (parent.isDarkColor(getComputedStyle(parent.document.documentElement).getPropertyValue('--window'))) {
             styleElement.textContent = `
                 input[type=checkbox]:checked+label:after {
                     filter: invert(1);
@@ -118,19 +117,25 @@
             styleElement.textContent = "";
         }
 
-        if (window.osguiCompatRequired && isDarkColor(getComputedStyle(parent.document.documentElement).getPropertyValue('--button-face'))) {
-            styleElement.textContent += `
-                .tool-icon {
-                    background-image: url("images/dark/tools.png");
-                    background-repeat: no-repeat;
-                    background-position: calc(-16px * var(--icon-index)) 0;
-                }
-                .tool-icon.use-svg {
-                    background-image: url("images/dark/tools.svg");
-                    background-position: calc(-16px * (var(--icon-index) * 2 + 1)) -16px;
-                }
-            `;
+        if (parent.isDarkColor(getComputedStyle(parent.document.documentElement).getPropertyValue('--button-face'))) {
+            document.body.dataset.darkTheme = true;
+            if (window.osguiCompatRequired) {
+                styleElement.textContent += `
+                    .tool-icon {
+                        background-image: url("images/dark/tools.png");
+                        background-repeat: no-repeat;
+                        background-position: calc(-16px * var(--icon-index)) 0;
+                    }
+                    .tool-icon.use-svg {
+                        background-image: url("images/dark/tools.svg");
+                        background-position: calc(-16px * (var(--icon-index) * 2 + 1)) -16px;
+                    }
+                `;
+            }
+        } else {
+            delete document.body.dataset.darkTheme;
         }
+        styleElement.textContent += parentStyleElement2.textContent;
 
         try {
             document.documentElement.style.setProperty('--hilight-inverted', parent.invertColor(getComputedStyle(document.documentElement).getPropertyValue('--hilight')));
@@ -139,39 +144,20 @@
         }
     }
 
-    // http://stackoverflow.com/questions/12043187/how-to-check-if-hex-color-is-too-black
-    function isDarkColor(color) {
-        if (!color.startsWith("#") || color.length !== 7) {
-            color = parent.normalizeColor(color);
-        }
-
-        const c = color.substring(2);  // strip " #"
-        const rgb = parseInt(c, 16);   // convert rrggbb to decimal
-        const r = (rgb >> 16) & 0xff;  // extract red
-        const g = (rgb >>  8) & 0xff;  // extract green
-        const b = (rgb >>  0) & 0xff;  // extract blue
-
-        const luma = 0.2126 * r + 0.7152 * g + 0.0722 * b; // per ITU-R BT.709
-
-        if (luma < 50) {
-            return true;
-        }
-        return false;
-    }
-
-    Object.defineProperty(window, "madScaleFactor", {
-        get: function () {
-            if (config.unscaled) {
-                return 1;
-            } else {
-                return parseFloat(parent.scaleFactor);
+    Object.defineProperties(window, {
+        madScaleFactor: {
+            get: function () {
+                if (config.unscaled) {
+                    return 1;
+                } else {
+                    return parseFloat(parent.scaleFactor);
+                }
             }
-        }
-    });
-
-    Object.defineProperty(window, "madRunningMode", {
-        get: function () {
-            return parent.runningMode;
+        },
+        madRunningMode: {
+            get: function () {
+                return parent.runningMode;
+            }
         }
     });
 
@@ -208,6 +194,82 @@
             });
         }
     };
+
+    // custom dropdown
+    class madSelect extends HTMLElement {
+        constructor() {
+            super();
+        }
+        
+        connectedCallback() {
+            const scrollBarSize = parseInt(getComputedStyle(document.body).getPropertyValue("--scrollbar-size"));
+            const label = document.createElement("span");
+            label.classList.add("label");
+            this.style.minWidth = 30 + scrollBarSize + "px";
+
+            const options = this.querySelectorAll("option");
+            this.options = options;
+            this.selectedIndex = 0;
+            for (const option of options) {
+                if (option.selected) {
+                    this.selectedIndex = Array.from(options).indexOf(option);
+                }
+
+                new MutationObserver((mutations) => {
+                    if (this.value === option.value) {
+                        label.textContent = option.textContent;
+                    }
+                }).observe(
+                    option,
+                    { characterData: false, attributes: false, childList: true, subtree: false }
+                )
+            }
+
+            if (this.getAttribute('disabled') !== null) {
+                this.dataset.disabled = true;
+            }
+            
+            label.textContent = options[this.selectedIndex].textContent;
+            this.insertAdjacentElement("afterbegin", label);
+
+            this.addEventListener("click", () => {
+                if (!this.disabled) {
+                    deskMover.openDropdown(this);
+                }
+            });
+
+            Object.defineProperties(this, {
+                value: {
+                    get: function () {
+                        return options[this.selectedIndex].value;
+                    },
+                    set: function (value) {
+                        for (const option of options) {
+                            if (option.value === value) {
+                                this.selectedIndex = Array.from(options).indexOf(option);
+                                label.textContent = option.textContent;
+                                return;
+                            }
+                        }
+                        label.textContent = options[this.selectedIndex].textContent;
+                    }
+                },
+                disabled: {
+                    get: function () {
+                        return this.dataset.disabled;
+                    },
+                    set: function (value) {
+                        if (value) {
+                            this.dataset.disabled = true;
+                        } else {
+                            delete this.dataset.disabled;
+                        }
+                    }
+                }
+            });
+        }
+    }
+    customElements.define("mad-select", madSelect);
 
     // expose MAD APIs
     window.madDeskMover = deskMover;

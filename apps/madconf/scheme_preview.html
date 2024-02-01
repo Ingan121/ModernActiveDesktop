@@ -6,12 +6,11 @@
     <link rel="stylesheet" href="../../css/98.css">
     <link rel="stylesheet" href="css/scheme_preview.css">
     <link id="scheme" rel="stylesheet" href="data:text/css,">
-    <link id="font" rel="stylesheet" href="">
     <link id="menuStyle" rel="stylesheet" href="">
 </head>
 <body id="madconf-preview">
     <div id="container">
-        <div id="inactiveWindow" class="window">
+        <div id="inactiveWindow" class="window windowContainer">
             <div class="title-bar inactive">
                 <div class="title-bar-text">Inactive Window</div>
                 <div class="title-bar-controls">
@@ -19,7 +18,7 @@
                 </div>
             </div>
         </div>
-        <div id="activeWindow" class="window">
+        <div id="activeWindow" class="window windowContainer">
             <div class="title-bar">
                 <div class="title-bar-text">Active Window</div>
                 <div class="title-bar-controls">
@@ -31,9 +30,9 @@
                 <div class="disabled">Disabled</div>
                 <div data-active="1"><span>Selected</span></div>
             </div>
-            <textarea>Window Text</textarea>
+            <textarea class="borderedScrollBar">Window Text</textarea>
         </div>
-        <div id="msgbox" class="window">
+        <div id="msgbox" class="window windowContainer">
             <div class="title-bar">
                 <div class="title-bar-text">Message Box</div>
                 <div class="title-bar-controls">

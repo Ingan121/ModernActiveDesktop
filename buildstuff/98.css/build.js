@@ -29,7 +29,8 @@ function buildCSS(preserveVariables) {
     })
     .then((result) => {
       mkdirp.sync("dist");
-      fs.writeFileSync(destination, result.css.replaceAll("ms_sans", "../fonts/ms_sans"));
+      // save with BOM - otherwise WE sometimes confuses the encoding
+      fs.writeFileSync(destination, '\ufeff' + result.css.replaceAll("ms_sans", "../fonts/ms_sans"));
       fs.writeFileSync(destination + ".map", result.map.toString());
       fs.copyFileSync(destination, "../../css/98.css");
     });

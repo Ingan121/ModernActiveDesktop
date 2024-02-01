@@ -6,7 +6,6 @@
     <link rel="stylesheet" href="../../css/98.css">
     <link rel="stylesheet" href="css/background.css">
     <link id="scheme" rel="stylesheet" href="data:text/css,">
-    <link id="font" rel="stylesheet" href="">
     <style id="style"></style>
 </head>
 <body>
@@ -27,7 +26,7 @@
                     <legend>Wallpaper</legend>
                     <p><u>S</u>elect an HTML Document or a picture:</p>
                     <div class="field-row">
-                        <ul id="wpChooser" class="tree-view">
+                        <ul id="wpChooser" class="tree-view borderedScrollBar">
                             <li data-active><img src="images/none.png"><div class="mask mask-none"></div><span>(None)</span></li>
                             <li><img src="images/image.png"><div class="mask"></div><span>1stboot</span></li>
                             <li><img src="images/image.png"><div class="mask"></div><span>Black Thatch</span></li>
@@ -53,13 +52,13 @@
                             <button id="wpBrowseBtn"><u>B</u>rowse...</button><br>
                             <button id="wpEnterUrlBtn"><u>E</u>nter URL...</button><br>
                             <span id="displayLabel"><u>D</u>isplay:</span><br>
-                            <select id="imgModeSelector" disabled>
+                            <mad-select id="imgModeSelector" disabled>
                                 <option value="center">Center</option>
                                 <option value="grid">Tile</option>
                                 <option value="horizfit">Fit</option>
                                 <option value="vertfit">Fill</option>
                                 <option value="scale">Stretch</option>
-                            </select>
+                            </mad-select>
                             <input id="wpVideoMuteChkBox" type="checkbox">
                             <label for="wpVideoMuteChkBox">Mute video</label>
                         </div>
@@ -67,10 +66,10 @@
                 </fieldset>
             </div>
         </div>
-        <section class="topmargin field-row" style="justify-content: flex-end;">
+        <section class="bottomButtons field-row" style="justify-content: flex-end;">
             <button id="okBtn">OK</button>
             <button id="cancelBtn">Cancel</button>
-            <button id="applyBtn">Apply</button>
+            <button id="applyBtn"><u>A</u>pply</button>
         </section>
     </div>
 

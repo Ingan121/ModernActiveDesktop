@@ -101,7 +101,7 @@ window.addEventListener('resize', updateSize);
 window.addEventListener('load', updateSize);
 
 // Listen for scale change
-new MutationObserver(function(mutations) {
+new MutationObserver(function (mutations) {
     updateSize();
 }).observe(
     document.body,

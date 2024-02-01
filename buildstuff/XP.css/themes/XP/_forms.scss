@@ -16,13 +16,15 @@
 
 label,
 select,
+mad-select,
 input,
 textarea,
 option {
     -webkit-font-smoothing: antialiased;
 }
 
-select {
+select,
+mad-select {
     border: 1px solid #7f9db9;
     background-image: svg-load("./icon/dropdown.svg");
     background-size: 15px;
@@ -37,6 +39,14 @@ select {
     &:not(:disabled):active {
         background-image: svg-load("./icon/dropdown-active.svg");
     }
+}
+
+mad-select:before {
+    display: none;
+}
+
+mad-select:after {
+    display: none;
 }
 
 input[type="radio"] {
@@ -166,7 +176,8 @@ input[type="text"],
 input[type="password"],
 input[type="email"],
 input[type="number"],
-select {
+select,
+mad-select {
     height: 23px;
     box-shadow: none;
 }

@@ -60,4 +60,57 @@
     --window: #ffffff;
     --window-frame: #000000;
     --window-text: #000000;
+
+    --extra-title-height: -2px;
+    --extra-border-size: 1px;
+    --palette-title-height: 15px;
+    --border-inset: calc(2px + var(--extra-border-size));
+    --border-inset-minus: calc(var(--extra-border-size) * -1 - 2px);
+}
+
+.os-window {
+    padding: var(--extra-border-size) !important;
+    background-color: var(--inactive-border) !important;
+}
+
+.os-window.focused {
+    background-color: var(--active-border) !important;
+}
+
+.os-window.maximized {
+    padding: 0 !important;
+}
+
+.window-titlebar {
+    height: calc(20px + var(--extra-title-height)) !important;
+    border: solid 1px var(--button-face) !important;
+    border-bottom: none !important;
+}
+
+.window-button {
+    height: calc(16px + var(--extra-title-height)) !important;
+    width: calc(18px + var(--extra-title-height)) !important;
+}
+
+.window-content {
+    background-color: var(--button-face) !important;
+    border: solid 1px var(--button-face) !important;
+    border-top: none !important;
+}
+
+.tool-window .window-titlebar {
+    height: var(--palette-title-height) !important;
+}
+
+.tool-window .window-button {
+    height: calc(var(--palette-title-height) - 2px) !important;
+    width: calc(var(--palette-title-height) - 2px) !important;
+}
+
+.maximized .window-titlebar {
+    border: none !important;
+}
+
+.maximized .window-content {
+    border: none !important;
 }

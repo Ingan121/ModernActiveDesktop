@@ -1,6 +1,6 @@
 /* Windows 11 High Contrast - Night sky */
 :root {
-    --active-border: #FFFF00;
+    --active-border: #868CFF;
     --active-title: #868CFF;
     --app-workspace: #000000;
     --background: #000000;
@@ -17,7 +17,7 @@
     --hilight: #D6B4FD;
     --hilight-text: #2B2B2B;
     --hot-tracking-color: #8080FF;
-    --inactive-border: #008000;
+    --inactive-border: #A6A6A6;
     --inactive-title: #A6A6A6;
     --inactive-title-text: #000000;
     --info-text: #FFFFFF;
@@ -31,4 +31,14 @@
     --window: #000000;
     --window-frame: #FFFFFF;
     --window-text: #FFFFFF;
+    --flat-menus: mb;
+    --menu-animation: fade;
+    --menu-shadow: true;
+    --scrollbar-size: 17px;
+    --menu-height: 19px;
+    --palette-title-height: 22px;
+}
+.window {
+    --extra-border-size: 5px;
+    --extra-title-height: 2px;
 }

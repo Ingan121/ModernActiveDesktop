@@ -547,8 +547,9 @@ class DeskMover {
         elem.dataset.open = true;
         this.lastDropdown = elem;
 
+        const label = elem.querySelector(".label");
         const dummy = this.dropdownBg.querySelector(".dropdownItem");
-        const options = elem.options;
+        const options = elem.options || elem.querySelectorAll("option");
         let optionCnt = 0;
 
         if (this.dropdown.childElementCount > 1) {
@@ -572,6 +573,9 @@ class DeskMover {
             item.addEventListener('click', () => {
                 elem.value = item.dataset.value;
                 elem.dispatchEvent(new Event('change'));
+                if (label) {
+                    label.textContent = item.textContent;
+                }
                 this.closeDropdown();
             });
             this.dropdown.appendChild(item);

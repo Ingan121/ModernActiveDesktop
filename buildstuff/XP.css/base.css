@@ -32,8 +32,14 @@
     --window: #FFFFFF;
     --window-frame: #000000;
     --window-text: #000000;
+    --flat-menus: mbcm;
+    --menu-animation: fade;
+    --menu-shadow: true;
+    --scrollbar-size: 17px;
+    --menu-height: 19px;
+    --palette-title-height: 17px;
 }
-.windowContainer {
+.window {
     --extra-title-height: 4px !important;
     --extra-border-size: 0px !important;
 }

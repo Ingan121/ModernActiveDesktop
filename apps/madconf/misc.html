@@ -6,7 +6,6 @@
     <link rel="stylesheet" href="../../css/98.css">
     <link rel="stylesheet" href="css/misc.css">
     <link id="scheme" rel="stylesheet" href="data:text/css,">
-    <link id="font" rel="stylesheet" href="">
     <style id="style"></style>
 </head>
 <body>
@@ -25,7 +24,7 @@
                         100%
                         <input id="dpiSlider" type="range" min="0" max="8" value="0" />
                         300%
-                        <select id="dpiSelector">
+                        <mad-select id="dpiSelector">
                             <option value="1">100%</option>
                             <option value="1.25">125%</option>
                             <option value="1.5">150%</option>
@@ -40,7 +39,7 @@
                             <option value="3.75">375%</option>
                             <option value="4">400%</option>
                             <option value="custom">Custom</option>
-                        </select>
+                        </mad-select>
                     </div>
                 </fieldset>
                 <fieldset>
@@ -49,11 +48,11 @@
                     <label for="sysplugChkBox">Enable system plugin integration</label>
                     <div class="field-row">
                         Open pages in...
-                        <select id="sysplugOpenOptSelector" disabled>
+                        <mad-select id="sysplugOpenOptSelector" disabled>
                             <option>Classic style channel viewer</option>
                             <option>Classic style channel viewer (fullscreen)</option>
                             <option>System default browser</option>
-                        </select>
+                        </mad-select>
                     </div>
                     <div class="topmargin field-row">
                         <button id="connectTestBtn">Check connectivity</button>
@@ -72,7 +71,7 @@
                         </div>
                         <div id="schemeArea">
                             Sound Scheme:
-                            <select id="soundSchemeSelector">
+                            <mad-select id="soundSchemeSelector">
                                 <option value="3">Windows 3.x</option>
                                 <option value="95">Windows 95</option>
                                 <option value="nt4">Windows NT 4.0</option>
@@ -84,7 +83,7 @@
                                 <option value="8">Windows 8</option>
                                 <option value="10">Windows 10</option>
                                 <option value="11">Windows 11</option>
-                            </select>
+                            </mad-select>
                         </div>
                     </div>
                 </fieldset>
@@ -101,11 +100,11 @@
                 </fieldset>
             </div>
         </div>
-        <section class="topmargin field-row" style="justify-content: flex-end;">
-            <button id="resetBtn">Reset config</button>
+        <section class="bottomButtons field-row" style="justify-content: flex-end;">
+            <button id="resetBtn"><u>R</u>eset config</button>
             <button id="okBtn">OK</button>
             <button id="cancelBtn">Cancel</button>
-            <button id="applyBtn">Apply</button>
+            <button id="applyBtn"><u>A</u>pply</button>
         </section>
     </div>
 

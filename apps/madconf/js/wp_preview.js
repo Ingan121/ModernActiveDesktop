@@ -28,7 +28,7 @@ bgHtmlView.addEventListener("load", function () {
     bgHtmlView.contentWindow.document.body.style.zoom = scale;
 });
 
-new MutationObserver(function(mutations) {
+new MutationObserver(function (mutations) {
     scale = (parent.document.body.style.zoom || 1) * 0.0625;
     document.body.style.zoom = scale;
     bgHtmlView.contentWindow.document.body.style.zoom = scale;
@@ -100,12 +100,12 @@ function changeBgImgMode(value) {
             document.body.style.backgroundRepeat = "repeat";
             document.body.style.backgroundPosition = "left top";
             break;
-        case "horizfit": // Fit horizontally
+        case "horizfit": // Fit
             document.body.style.backgroundSize = "contain";
             document.body.style.backgroundRepeat = "no-repeat";
             document.body.style.backgroundPosition = "center center";
             break;
-        case "vertfit": // Fit vertically
+        case "vertfit": // Fill
             document.body.style.backgroundSize = "cover";
             document.body.style.backgroundRepeat = "no-repeat";
             document.body.style.backgroundPosition = "center center";

@@ -78,6 +78,7 @@ canvas {
     font-size: 11px;
     background-color: var(--menu);
     width: 100%;
+    height: calc(5px + var(--menu-height));
     z-index: 4;
 }
 
@@ -87,7 +88,7 @@ canvas {
 }
 
 .menu > div {
-    padding: 2px 5px 2px 5px;
+    padding: calc((var(--menu-height) - 9px) / 4) 5px 2px 5px;
     border: solid 1px transparent;
     user-select: none;
     cursor: default;
@@ -117,6 +118,10 @@ canvas {
     animation: cmDropdown 0.25s linear;
     background-color: var(--menu);
     z-index: 5;
+}
+
+body[data-cm-shadow] .contextMenuBg {
+    box-shadow: var(--border-window-outer), var(--border-window-inner), 5px 5px 4px -4px rgba(0,0,0,.5) !important;
 }
 
 .contextMenuBg:focus {

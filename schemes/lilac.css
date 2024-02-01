@@ -31,4 +31,14 @@
     --window: #FFFFFF;
     --window-frame: #000000;
     --window-text: #000000;
+    --flat-menus: none;
+    --menu-animation: slide;
+    --menu-shadow: false;
+    --scrollbar-size: 15px;
+    --menu-height: 18px;
+    --palette-title-height: 16px;
+}
+.window {
+    --extra-border-size: 1px;
+    --extra-title-height: 2px;
 }

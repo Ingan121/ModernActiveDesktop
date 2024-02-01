@@ -8,7 +8,6 @@ const bgHtmlView = document.getElementById("bgHtml");
 const iframe = document.getElementById("iframe");
 const container = document.getElementById("container");
 const schemeElement = document.getElementById("scheme");
-const fontElement = document.getElementById("font");
 let scaleFactor = 1;
 
 // Load configs
@@ -127,12 +126,12 @@ function changeBgImgMode(value) {
             document.body.style.backgroundRepeat = "repeat";
             document.body.style.backgroundPosition = "left top";
             break;
-        case "horizfit": // Fit horizontally
+        case "horizfit": // Fit
             document.body.style.backgroundSize = "contain";
             document.body.style.backgroundRepeat = "no-repeat";
             document.body.style.backgroundPosition = "center center";
             break;
-        case "vertfit": // Fit vertically
+        case "vertfit": // Fill
             document.body.style.backgroundSize = "cover";
             document.body.style.backgroundRepeat = "no-repeat";
             document.body.style.backgroundPosition = "center center";

@@ -38,17 +38,22 @@
 
 #firstColorLabel,
 #secondColorLabel {
+    top: -2px;
     left: 1px;
 }
 
 #textColorLabel {
-    top: 0;
+    top: -1px;
     left: -2px;
 }
 
 #schemeSelectorGroup button {
     position: relative;
-    top: 1px;
+    top: -6px;
+}
+
+#schemeSelector {
+    margin-top: 1px;
 }
 
 #saveAsBtn {
@@ -56,23 +61,33 @@
     margin-right: 3px;
 }
 
-select {
+mad-select {
     width: 197px;
     margin-left: 4px;
 }
 
 #schemeEditorGroup {
-    margin-top: 6px;
+    margin-top: -5px;
 }
 
-#schemeEditorGroup label:first-child {
-    top: -2px;
+#schemeEditorGroup .groupLabel {
+    top: 1px;
+}
+
+#schemeEditorGroup mad-select {
+    margin-top: 3px;
+}
+
+#schemeEditorGroup .colorPicker {
+    margin-top: -11px;
+
 }
 
 input[type="number"] {
     width: 57px;
     height: 21px;
     margin-left: -1px;
+    text-align: right;
 }
 
 input[type=number]::-webkit-inner-spin-button, 
@@ -90,6 +105,7 @@ input[type=number]::-webkit-outer-spin-button {
     top: 11px;
     margin-top: -10px;
     margin-left: -1px;
+    box-shadow: inset -1px -1px var(--button-dk-shadow), inset 1px 1px var(--button-light), inset -2px -2px var(--button-shadow), inset 2px 2px var(--button-hilight);
 }
 
 .colorPicker-color {
@@ -134,11 +150,20 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 #fontEditorGroup {
-    margin-top: 5px;
-    margin-bottom: 2px;
+    margin-top: -1px;
+    margin-bottom: -2px;
+}
+
+#fontEditorGroup .groupLabel {
+    top: 2px;
+}
+
+#fontEditorGroup mad-select {
+    margin-top: 3px;
 }
 
 #textColor {
+    margin-top: -11px;
     margin-left: -3px;
 }
 
@@ -149,7 +174,7 @@ input[type=number]::-webkit-outer-spin-button {
     min-width: 0;
     min-height: 21px;
     margin: 0;
-    margin-top: 17px;
+    margin-top: 16px;
     padding: 0 9px 0 7px;
 }
 
@@ -167,8 +192,8 @@ input[type=number]::-webkit-outer-spin-button {
     display: none;
 }
 
-#animationSelectorGroup {
-    margin-top: 1px;
+.topmargin {
+    margin-top: 6px;
 }
 
 #miniPicker {

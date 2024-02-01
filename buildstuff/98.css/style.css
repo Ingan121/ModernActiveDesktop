@@ -94,11 +94,15 @@
 
   /* Tabs */
   --border-tab: inset -1px 0 var(--window-frame),
-    inset 1px 1px var(--button-face),
+    inset 1px 1px var(--button-hilight),
     inset -2px 0 var(--button-shadow),
-    inset 2px 2px var(--button-hilight);
+    inset 2px 2px var(--button-light);
 
   --font-98: "Pixelated MS Sans Serif", Arial, Gulim, "MS UI Gothic", SimSun, PMingLiU;
+  --scrollbar-size: 16px;
+  --palette-title-height: 15px;
+  --menu-height: 18px;
+  --hilight-inverted: #FFFF7F;
 }
 
 @font-face {
@@ -128,7 +132,7 @@ label,
 input,
 textarea,
 select,
-option,
+mad-select,
 table,
 ul.tree-view,
 .window,
@@ -459,6 +463,7 @@ input[type="tel"],
 input[type="number"],
 input[type="search"],
 select,
+mad-select,
 textarea {
   padding: 3px 4px;
   border: none;
@@ -477,7 +482,8 @@ input[type="password"],
 input[type="email"],
 input[type="tel"],
 input[type="search"],
-select {
+select,
+mad-select {
   height: 21px;
 }
 input[type="number"] {
@@ -519,16 +525,59 @@ textarea:disabled {
   background-color: var(--button-face);
 }
 
-select {
+select,
+mad-select {
+  display: inline-block;
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
   position: relative;
+  padding-top: 4px;
   padding-right: 32px;
-  background-image: svg-load("./icon/button-down.svg");
-  background-position: top 2px right 2px;
-  background-repeat: no-repeat;
   border-radius: 0;
+}
+
+mad-select .label {
+  display: inline-block;
+  border: solid 1px transparent;
+  width: calc(100% - 24px);
+  height: 13px;
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  line-height: 14px;
+}
+
+mad-select:before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 16px;
+  height: calc(100% - 4px);
+  margin: 2px;
+  background-color: var(--button-face);
+  box-shadow: var(--border-window-outer), var(--border-window-inner);
+  border-radius: 0;
+}
+
+mad-select:after {
+  content: "⏷";
+  display: block;
+  position: absolute;
+  top: 1px;
+  right: 4px;
+  color: var(--button-text);
+}
+
+mad-select[data-disabled] {
+  color: var(--button-shadow);
+  background-color: var(--button-face);
+}
+
+mad-select[data-disabled]:after {
+  text-shadow: 1px 1px 0 var(--button-hilight);
 }
 
 select:focus,
@@ -682,17 +731,20 @@ input[type="range"]::-moz-range-track {
 }
 
 select:focus,
-select[data-open] {
+select[data-open],
+mad-select:focus .label,
+mad-select[data-open] .label {
   color: var(--hilight-text);
   background-color: var(--hilight);
-}
-select:focus option {
-  color: var(--window-text);
-  background-color: var(--window);
+  border: dotted 1px var(--hilight-inverted)
 }
 
-select:not(:disabled):active {
-  background-image: svg-load("./icon/button-down-active.svg");
+mad-select:not([data-disabled]):active:before {
+  box-shadow: var(--button-shadow) -1px -1px inset, var(--button-shadow) 1px 1px inset;
+}
+
+option {
+  display: none;
 }
 
 a {
@@ -819,10 +871,10 @@ summary:focus {
 }
 
 ::-webkit-scrollbar {
-  width: 16px;
+  width: var(--scrollbar-size);
 }
 ::-webkit-scrollbar:horizontal {
-  height: 17px;
+  height: var(--scrollbar-size);
 }
 
 ::-webkit-scrollbar-corner {
@@ -834,8 +886,8 @@ summary:focus {
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: var(--button-light);
-  box-shadow: var(--border-raised-outer), var(--border-raised-inner);
+  background-color: var(--button-face);
+  box-shadow: var(--border-window-outer), var(--border-window-inner);
 }
 
 ::-webkit-scrollbar-button:horizontal:start:decrement,
@@ -846,25 +898,88 @@ summary:focus {
 }
 
 ::-webkit-scrollbar-button:vertical:start {
-  height: 17px;
+  height: var(--scrollbar-size);
+  background-color: var(--button-face);
   background-image: svg-load("./icon/button-up.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+  box-shadow: var(--border-window-outer), var(--border-window-inner);
 }
 ::-webkit-scrollbar-button:vertical:end {
-  height: 17px;
+  height: var(--scrollbar-size);
+  background-color: var(--button-face);
   background-image: svg-load("./icon/button-down.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+  box-shadow: var(--border-window-outer), var(--border-window-inner);
 }
 ::-webkit-scrollbar-button:horizontal:start {
-  width: 16px;
+  width: var(--scrollbar-size);
+  background-color: var(--button-face);
   background-image: svg-load("./icon/button-left.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+  box-shadow: var(--border-window-outer), var(--border-window-inner);
 }
 ::-webkit-scrollbar-button:horizontal:end {
-  width: 16px;
+  width: var(--scrollbar-size);
+  background-color: var(--button-face);
   background-image: svg-load("./icon/button-right.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+  box-shadow: var(--border-window-outer), var(--border-window-inner);
+}
+
+.borderedScrollBar::-webkit-scrollbar {
+  width: calc(var(--scrollbar-size) + 2px);
+}
+.borderedScrollBar::-webkit-scrollbar:horizontal {
+  height: calc(var(--scrollbar-size) + 2px);
+}
+
+.borderedScrollBar::-webkit-scrollbar-track {
+  border-right: solid 2px transparent;
+  background-clip: content-box;
+}
+
+.borderedScrollBar::-webkit-scrollbar-thumb {
+  border-right: solid 2px transparent;
+  background-clip: content-box;
+}
+
+.borderedScrollBar::-webkit-scrollbar-button:vertical:start {
+  height: calc(var(--scrollbar-size) + 2px);
+  border-top: solid 2px transparent;
+  border-right: solid 2px transparent;
+  background-clip: content-box;
+}
+.borderedScrollBar::-webkit-scrollbar-button:vertical:end {
+  height: calc(var(--scrollbar-size) + 2px);
+  border-right: solid 2px transparent;
+  border-bottom: solid 2px transparent;
+  background-clip: content-box;
+}
+.borderedScrollBar::-webkit-scrollbar-button:horizontal:start {
+  width: calc(var(--scrollbar-size) + 2px);
+  border-left: solid 2px transparent;
+  border-bottom: solid 2px transparent;
+  background-clip: content-box;
+}
+.borderedScrollBar::-webkit-scrollbar-button:horizontal:end {
+  width: calc(var(--scrollbar-size) + 2px);
+  border-right: solid 2px transparent;
+  border-bottom: solid 2px transparent;
+  background-clip: content-box;
 }
 
 .window[role=tabpanel] {
   position: relative;
   z-index: 2;
+  box-shadow: inset -1px -1px var(--button-dk-shadow), inset 1px 1px var(--button-hilight), inset -2px -2px var(--button-shadow), inset 2px 2px var(--button-light);
 }
 
 menu[role=tablist] {

@@ -2,13 +2,13 @@
     Window
 \*-------------------------------------------*/
 
-.windowContainer[data-style="wnd"],
+.windowContainer[data-style="wnd"]:not(#JustHereToGiveItPriority),
 #madconf-preview #inactiveWindow,
 #madconf-preview #activeWindow,
 #msgbox,
 .os-window {
     box-shadow: inset -1px -1px #00138c, inset 1px 1px #0831d9, inset -2px -2px #001ea0, inset 2px 2px #166aee,
-        inset -3px -3px #003bda, inset 3px 3px #0855dd;
+        inset -3px -3px #003bda, inset 3px 3px #0855dd !important;
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
     padding: 0 0 3px 0 !important;
@@ -16,12 +16,12 @@
     border: none !important;
 }
 
-.windowContainer[data-style="wnd"][data-inactive],
+.windowContainer[data-style="wnd"][data-inactive]:not(#JustHereToGiveItPriority),
 #madconf-preview #inactiveWindow,
 #msgbox[data-inactive],
 .os-window:not(.focused) {
     box-shadow: inset -1px -1px #4f53bc, inset 1px 1px #7480dc, inset -2px -2px #6d74cd, inset 2px 2px #758cdd,
-        inset -3px -3px #7586dc, inset 3px 3px #758cdc;
+        inset -3px -3px #7586dc, inset 3px 3px #758cdc !important;
 }
 
 .title-bar,
@@ -281,6 +281,8 @@
 
 #madconf-preview textarea {
     margin: 0;
+    width: 321px;
+    height: 90px;
     box-shadow: none !important;
     border: none;
     background-color: transparent;
@@ -304,6 +306,8 @@
     font-weight: normal;
     box-shadow: inset -1px 1px #cee7ff, inset 1px 2px #98b8ea, inset -2px 2px #bcd4f6, inset 1px -1px #89ade4,
         inset 2px -2px #89ade4;
+    position: unset;
+    bottom: unset;
 }
 
 /* Change dialog icons to XP ones */

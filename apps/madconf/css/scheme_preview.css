@@ -6,6 +6,13 @@ body {
     overflow: hidden;
 }
 
+.window {
+    --extra-title-height: -2px;
+    --extra-border-size: 1px;
+    --border-inset: calc(2px + var(--extra-border-size));
+    --border-inset-minus: calc(var(--extra-border-size) * -1 - 2px);
+}
+
 #container {
     position: relative;
     left: 3px;
@@ -18,16 +25,24 @@ body {
     top: 0;
     left: 0;
     z-index: 1;
+    box-shadow: var(--border-window-outer), var(--border-window-inner),
+        var(--inactive-border) var(--border-inset-minus) var(--border-inset-minus) inset,
+        var(--inactive-border) var(--border-inset) var(--border-inset) inset;
 }
 
 .title-bar {
-    height: 12px;
+    height: calc(14px + var(--extra-title-height));
+}
+
+.window-button {
+    height: calc(16px + var(--extra-title-height));
+    width: calc(16px + var(--extra-title-height));
 }
 
 #inactiveWindow .title-bar,
 #activeWindow .title-bar {
-    border: solid 1px var(--button-face);
-    border-bottom: none;
+    margin: 0;
+    margin: var(--extra-border-size);
     margin-bottom: -1px;
 }
 
@@ -42,6 +57,9 @@ body {
     top: 23px;
     left: 4px;
     z-index: 2;
+    box-shadow: var(--border-window-outer), var(--border-window-inner),
+        var(--active-border) var(--border-inset-minus) var(--border-inset-minus) inset,
+        var(--active-border) var(--border-inset) var(--border-inset) inset;
 }
 
 .title-bar-controls button:before {
@@ -54,12 +72,12 @@ body {
 
 .menu {
     display: flex;
-    margin-top: 1px;
-    margin-bottom: 1px;
+    margin: 1px var(--extra-border-size) 1px var(--extra-border-size);
+    background-color: var(--menu);
 }
 
 .menu > div:first-child {
-    margin-left: 2px;
+    margin-left: 1px;
 }
 
 .menu > div {
@@ -87,15 +105,20 @@ body {
 }
 
 textarea {
-    width: 327px;
-    height: 89px;
-    margin: 1px;
+    width: calc(100% - var(--extra-border-size) * 2);
+    height: calc(88px - var(--extra-border-size) * 2 - var(--extra-title-height));
+    margin: var(--extra-border-size);
     margin-top: 0;
     resize: none;
     font-size: 12px;
     font-weight: bold;
     padding-top: 6px;
     padding-left: 5px;
+    overflow-y: scroll;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--scrollbar);
 }
 
 #msgbox {
@@ -119,6 +142,6 @@ textarea {
     font-weight: bold;
     width: 72px;
     min-width: 0;
-    margin-top: -1px;
-    margin-left: -1px;
+    position: absolute;
+    bottom: 6px;
 }
