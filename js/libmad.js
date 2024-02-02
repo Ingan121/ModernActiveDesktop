@@ -89,6 +89,12 @@
             }
         }
 
+        if (localStorage.madesktopCmAnimation === "fade") {
+            document.body.dataset.cmFade = true;
+        } else {
+            delete document.body.dataset.cmFade;
+        }
+
         if (localStorage.madesktopCmShadow) {
             document.body.dataset.cmShadow = true;
         } else {
@@ -118,7 +124,6 @@
         }
 
         if (parent.isDarkColor(getComputedStyle(parent.document.documentElement).getPropertyValue('--button-face'))) {
-            document.body.dataset.darkTheme = true;
             if (window.osguiCompatRequired) {
                 styleElement.textContent += `
                     .tool-icon {
@@ -132,8 +137,6 @@
                     }
                 `;
             }
-        } else {
-            delete document.body.dataset.darkTheme;
         }
         styleElement.textContent += parentStyleElement2.textContent;
 
@@ -199,59 +202,39 @@
     class madSelect extends HTMLElement {
         constructor() {
             super();
-        }
-        
-        connectedCallback() {
-            const scrollBarSize = parseInt(getComputedStyle(document.body).getPropertyValue("--scrollbar-size"));
-            const label = document.createElement("span");
-            label.classList.add("label");
-            this.style.minWidth = 30 + scrollBarSize + "px";
-
-            const options = this.querySelectorAll("option");
-            this.options = options;
-            this.selectedIndex = 0;
-            for (const option of options) {
-                if (option.selected) {
-                    this.selectedIndex = Array.from(options).indexOf(option);
-                }
-
-                new MutationObserver((mutations) => {
-                    if (this.value === option.value) {
-                        label.textContent = option.textContent;
-                    }
-                }).observe(
-                    option,
-                    { characterData: false, attributes: false, childList: true, subtree: false }
-                )
-            }
-
-            if (this.getAttribute('disabled') !== null) {
-                this.dataset.disabled = true;
-            }
-            
-            label.textContent = options[this.selectedIndex].textContent;
-            this.insertAdjacentElement("afterbegin", label);
-
-            this.addEventListener("click", () => {
-                if (!this.disabled) {
-                    deskMover.openDropdown(this);
-                }
-            });
+            this.selectedIndexReal = 0;
 
             Object.defineProperties(this, {
-                value: {
+                options: {
                     get: function () {
-                        return options[this.selectedIndex].value;
+                        return this.querySelectorAll("option");
+                    }
+                },
+                selectedIndex: {
+                    get: function () {
+                        return this.selectedIndexReal;
                     },
                     set: function (value) {
-                        for (const option of options) {
+                        this.selectedIndexReal = value;
+                        for (const option of this.options) {
+                            option.selected = false;
+                        }
+                        this.options[this.selectedIndexReal].selected = true;
+                    }
+                },
+                value: {
+                    get: function () {
+                        return this.options[this.selectedIndex].value;
+                    },
+                    set: function (value) {
+                        for (const option of this.options) {
                             if (option.value === value) {
-                                this.selectedIndex = Array.from(options).indexOf(option);
-                                label.textContent = option.textContent;
+                                this.selectedIndex = Array.from(this.options).indexOf(option);
+                                this.label.textContent = option.textContent;
                                 return;
                             }
                         }
-                        label.textContent = options[this.selectedIndex].textContent;
+                        this.label.textContent = this.options[this.selectedIndex].textContent;
                     }
                 },
                 disabled: {
@@ -265,6 +248,41 @@
                             delete this.dataset.disabled;
                         }
                     }
+                }
+            });
+        }
+        
+        connectedCallback() {
+            const scrollBarSize = parseInt(getComputedStyle(document.body).getPropertyValue("--scrollbar-size"));
+            this.label = document.createElement("span");
+            this.label.classList.add("label");
+            this.style.minWidth = 30 + scrollBarSize + "px";
+
+            for (const option of this.options) {
+                if (option.selected) {
+                    this.selectedIndex = Array.from(this.options).indexOf(option);
+                }
+
+                new MutationObserver((mutations) => {
+                    if (this.value === option.value) {
+                        this.label.textContent = option.textContent;
+                    }
+                }).observe(
+                    option,
+                    { characterData: false, attributes: false, childList: true, subtree: false }
+                )
+            }
+
+            if (this.getAttribute('disabled') !== null) {
+                this.dataset.disabled = true;
+            }
+            
+            this.label.textContent = this.options[this.selectedIndex].textContent;
+            this.insertAdjacentElement("afterbegin", this.label);
+
+            this.addEventListener("click", () => {
+                if (!this.disabled) {
+                    deskMover.openDropdown(this);
                 }
             });
         }

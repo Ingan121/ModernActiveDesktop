@@ -14,6 +14,7 @@
     padding: 0 0 3px 0 !important;
     -webkit-font-smoothing: antialiased;
     border: none !important;
+    background-color: #ece9d8 !important;
 }
 
 .windowContainer[data-style="wnd"][data-inactive]:not(#JustHereToGiveItPriority),
@@ -39,9 +40,9 @@
         rgba(0, 61, 215, 1) 100%
     );
     padding: 3px 5px 3px 3px;
-    border-top: 1px solid #0831d9;
-    border-left: 1px solid #0831d9;
-    border-right: 1px solid #001ea0;
+    border-top: 1px solid #0831d9 !important;
+    border-left: 1px solid #0831d9 !important;
+    border-right: 1px solid #001ea0 !important;
     border-top-left-radius: 8px;
     border-top-right-radius: 7px;
     font-size: 13px;
@@ -151,6 +152,11 @@
 }
 
 /* For OS-GUI */
+.window-content {
+    background-color: transparent !important;
+    border: none !important;
+}
+
 .window-button:not(#JustHereToGiveItPriority) {
     min-width: 21px;
     min-height: 21px;
@@ -258,13 +264,21 @@
     height: 176px;
 }
 
+#madconf .window-body {
+    padding-bottom: 0;
+}
+
+#madconf #creditsMain {
+    height: 120px;
+}
+
 #madconf-preview .title-bar {
     border: none;
 }
 
 #madconf-preview #inactiveWindow {
     height: 118px;
-    background-color: white;
+    background-color: white !important;
 }
 
 #madconf-preview #activeWindow {
@@ -272,7 +286,7 @@
     height: 115px;
     top: 20px;
     left: 10px;
-    background-color: white;
+    background-color: white !important;
 }
 
 #madconf-preview .menu {
@@ -281,12 +295,13 @@
 
 #madconf-preview textarea {
     margin: 0;
-    width: 321px;
+    width: 322px;
     height: 90px;
     box-shadow: none !important;
     border: none;
     background-color: transparent;
     font-weight: normal;
+    background-clip: content-box;
 }
 
 #madconf-preview #msgbox {

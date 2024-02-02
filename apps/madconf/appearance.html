@@ -23,12 +23,10 @@
                     <p id="schemeSelectorGroup">
                         <span class="groupLabel"><u>S</u>cheme:</span><br>
                         <mad-select id="schemeSelector">
-                            <option selected hidden>Current Scheme</option>
+                            <option value="current" selected hidden>Current Scheme</option>
                             <option value="98">Windows Classic (98)</option>
                             <option value="95">Windows Classic (95 / NT4)</option>
                             <option value="2k">Windows Standard (2000 / Me)</option>
-                            <option value="sys" data-inconfigurable="1" data-condition="sysplugIntegration">System Colors</option>
-                            <option value="import" data-inconfigurable="1" data-condition="madesktopDebugMode">Import CSS</option>
                             <option value="xpcss4mad" data-inconfigurable="1">Windows XP style</option>
                             <option value="xp">Windows XP Blue</option>
                             <option value="xp_olive">Windows XP Olive Green</option>
@@ -36,6 +34,8 @@
                             <option value="xp_royale">Windows XP Royale</option>
                             <option value="aero">Windows Aero</option>
                             <option value="windose" data-inconfigurable="1">Windose</option>
+                            <option value="sys" data-inconfigurable="1" data-condition="sysplugIntegration">System Colors</option>
+                            <option value="import" data-inconfigurable="1">Browse...</option>
                             <option value="brick">Brick</option>
                             <option value="desert">Desert</option>
                             <option value="eggplant">Eggplant</option>
@@ -53,15 +53,20 @@
                             <option value="teal">Teal</option>
                             <option value="wheat">Wheat</option>
                             <option value="plus_baseball">Plus! Baseball</option>
+                            <option value="plus_dangerous_creatures">Plus! Dangerous Creatures</option>
                             <option value="plus_inside_your_computer">Plus! Inside your Computer</option>
+                            <option value="plus_jungle">Plus! Jungle</option>
                             <option value="plus_leonardo_da_vinci">Plus! Leonardo da Vinci</option>
                             <option value="plus_more_windows">Plus! More Windows</option>
+                            <option value="plus_mystery">Plus! Mystery</option>
                             <option value="plus_nature">Plus! Nature</option>
                             <option value="plus_science">Plus! Science</option>
                             <option value="plus_space">Plus! Space</option>
+                            <option value="plus_sports">Plus! Sports</option>
                             <option value="plus_the_60's_usa">Plus! The 60's USA</option>
                             <option value="plus_the_golden_era">Plus! The Golden Era</option>
                             <option value="plus_travel">Plus! Travel</option>
+                            <option value="plus_underwater">Plus! Underwater</option>
                             <option value="plus_windows_95">Plus! Windows 95</option>
                             <option value="windows_98">Windows 98</option>
                             <option value="plus_98_cityscape">Plus! 98 Cityscape</option>
@@ -179,21 +184,17 @@
                     </section>
                 </div>
                 <div id="checkboxes">
-                    <section id="flatMenuSelectorGroup" class="field-row">
-                        <input id="flatMenuChkBox" type="checkbox">
-                        <mad-select id="flatMenuSelector">
-                            <option value="mb"></option>
-                            <option value="cm"></option>
-                            <option value="mbcm"></option>
-                        </mad-select>
-                    </section>
-                    <section id="animationSelectorGroup" class="field-row">
-                        <input id="enableAnimationsChkBox" type="checkbox" checked>
-                        <mad-select id="animationSelector">
-                            <option value="slide"></option>
-                            <option value="fade"></option>
-                        </mad-select>
-                    </section>
+                    <input id="flatMenuChkBox" type="checkbox">
+                    <select id="flatMenuSelector">
+                        <option value="mb"></option>
+                        <option value="cm"></option>
+                        <option value="mbcm"></option>
+                    </select>
+                    <input id="enableAnimationsChkBox" type="checkbox" checked>
+                    <select id="animationSelector">
+                        <option value="slide"></option>
+                        <option value="fade"></option>
+                    </select>
                     <input id="shadowChkBox" type="checkbox">
                     <input id="dragChkBox" type="checkbox">
                     <input id="underlineChkBox" type="checkbox">

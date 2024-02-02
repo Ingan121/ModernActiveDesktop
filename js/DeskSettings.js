@@ -475,6 +475,7 @@ function changeCmAnimation(type) {
     for (const i in deskMovers) {
         deskMovers[i].changeCmAnimation(type);
     }
+    announce("scheme-updated");
 }
 
 // Change context menu shadow
@@ -789,7 +790,7 @@ function openWindow(openDoc, temp, width, height, style, centered, top, left, ao
 
 function openConfig(page) {
     if (window.confDeskMover) {
-        if (page) {
+        if (page && window.confDeskMover.config.src !== `apps/madconf/${page}.html`) {
             window.confDeskMover.locReplace(`apps/madconf/${page}.html`);
         }
         window.confDeskMover.bringToTop();
@@ -1001,7 +1002,7 @@ async function getFavicon(iframe) {
         // Use the MAD icon for local/MAD files and data URLs
         if (loc.startsWith("file:///") || loc.startsWith("data:") || loc.startsWith(madBase)) {
             if (iconElem.notFound) {
-                return 'icon.ico';
+                return 'images/mad16.png';
             } else {
                 return path;
             }

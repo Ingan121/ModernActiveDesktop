@@ -1,0 +1,44 @@
+/* Plus! Underwater */
+:root {
+    --active-border: #3868c8;
+    --active-title: #000030;
+    --app-workspace: #254483;
+    --background: #284880;
+    --button-alternate-face: #B5B5B5;
+    --button-dk-shadow: #000000;
+    --button-face: #3868c8;
+    --button-hilight: #98b0e0;
+    --button-light: #3868c8;
+    --button-shadow: #284880;
+    --button-text: #000000;
+    --gradient-active-title: #000030;
+    --gradient-inactive-title: #284880;
+    --gray-text: #284880;
+    --hilight: #ffc040;
+    --hilight-text: #000000;
+    --hot-tracking-color: #008080;
+    --inactive-border: #3868c8;
+    --inactive-title: #284880;
+    --inactive-title-text: #a8b8d8;
+    --info-text: #800080;
+    --info-window: #ffffff;
+    --menu: #3868c8;
+    --menu-bar: #3868c8;
+    --menu-highlight: #ffc040;
+    --menu-text: #000000;
+    --scrollbar: #98b0e0;
+    --title-text: #ffc040;
+    --window: #ffffff;
+    --window-frame: #000000;
+    --window-text: #000000;
+    --flat-menus: none;
+    --menu-animation: slide;
+    --menu-shadow: false;
+    --scrollbar-size: 16px;
+    --menu-height: 18px;
+    --palette-title-height: 17px;
+}
+.window {
+    --extra-title-height: 3px;
+    --extra-border-size: 1px;
+}

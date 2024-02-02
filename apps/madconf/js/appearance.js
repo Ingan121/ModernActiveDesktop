@@ -8,6 +8,7 @@ main();
 
 async function main() {
     let scheme = parseCssScheme(await getSchemeText());
+    let schemeName = "Windows Classic (98)";
     const preview = document.getElementById("schemePreview");
     const schemeSelector = document.getElementById("schemeSelector");
     const schemeSelectorOptions = schemeSelector.options;
@@ -110,6 +111,7 @@ async function main() {
         } else {
             scheme = parseCssScheme(await getSchemeText(`../../schemes/${schemeSelector.value}.css`));
         }
+        schemeName = schemeSelectorOptions[schemeSelector.selectedIndex].textContent;
 
         if (schemeSelectorOptions[schemeSelector.selectedIndex].dataset.inconfigurable) {
             selector.value = "background";
@@ -197,7 +199,7 @@ async function main() {
                 itemSize.disabled = false;
                 let itemSizeValue = parseInt(scheme[itemMappings[option].itemSize]);
                 if (itemMappings[option].itemSize === "extra-title-height") {
-                    itemSizeValue += 14;
+                    itemSizeValue += 20;
                 }
                 itemSize.value = itemSizeValue;
             } else {
@@ -219,10 +221,11 @@ async function main() {
     });
 
     itemSize.addEventListener("change", function () {
+        appendModified();
         const option = selector.value;
         if (itemMappings[option].itemSize) {
             if (itemMappings[option].itemSize === "extra-title-height") {
-                scheme[itemMappings[option].itemSize] = itemSize.value - 14 + "px";
+                scheme[itemMappings[option].itemSize] = itemSize.value - 20 + "px";
             } else {
                 scheme[itemMappings[option].itemSize] = itemSize.value + "px";
             }
@@ -296,7 +299,7 @@ async function main() {
             localStorage.madesktopColorScheme = schemeSelector.value;
             parent.changeBgColor(colorPickerColor.style.backgroundColor);
         } else {
-            applyScheme(scheme);
+            applyScheme(scheme, schemeName);
         }
 
         if (fontSelector.selectedIndex === 1) {
@@ -367,7 +370,17 @@ async function main() {
         }
     }
 
+    if (localStorage.madesktopCmShadow) {
+        shadowChkBox.checked = true;
+    }
+
+    if (localStorage.madesktopLastSchemeName) {
+        schemeName = localStorage.madesktopLastSchemeName;
+        schemeSelectorOptions[0].textContent = schemeName;
+    }
+
     function changeColor(color) {
+        appendModified();
         const option = selector.value;
         switch (openColorPicker.id) {
             case "firstColor":
@@ -383,6 +396,15 @@ async function main() {
         openColorPicker.querySelector(".colorPicker-color").style.backgroundColor = color;
         applyPreview();
     }
+
+    function appendModified() {
+        if (!selector.disabled && !schemeName.endsWith(" (Modified)")) {       
+            schemeName += " (Modified)";
+            schemeSelectorOptions[0].textContent = schemeName;
+            schemeSelector.value = "current";
+        }
+    }
+
 
     function applyPreview() {
         if (selector.disabled) {
@@ -454,7 +476,7 @@ async function getSchemeText(scheme = parent.document.getElementById("scheme").h
     }
 }
 
-function applyScheme(scheme) {
+function applyScheme(scheme, schemeName) {
     if (scheme === "sys") {
         parent.changeColorScheme("sys");
         localStorage.madesktopColorScheme = "sys";
@@ -462,6 +484,11 @@ function applyScheme(scheme) {
         const schemeText = generateCssScheme(scheme);
         parent.changeColorScheme(schemeText);
         localStorage.madesktopColorScheme = "custom";
+    }
+    if (schemeName) {
+        localStorage.madesktopLastSchemeName = schemeName;
+    } else {
+        delete localStorage.madesktopLastSchemeName;
     }
     parent.changeBgColor("var(--background)");
 }

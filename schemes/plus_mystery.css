@@ -1,0 +1,44 @@
+/* Plus! Mystery */
+:root {
+    --active-border: #687868;
+    --active-title: #503840;
+    --app-workspace: #485048;
+    --background: #000000;
+    --button-alternate-face: #B5B5B5;
+    --button-dk-shadow: #000000;
+    --button-face: #687868;
+    --button-hilight: #b0c0b0;
+    --button-light: #687868;
+    --button-shadow: #485048;
+    --button-text: #000000;
+    --gradient-active-title: #503840;
+    --gradient-inactive-title: #485048;
+    --gray-text: #485048;
+    --hilight: #b87840;
+    --hilight-text: #ffffff;
+    --hot-tracking-color: #008080;
+    --inactive-border: #687868;
+    --inactive-title: #485048;
+    --inactive-title-text: #687868;
+    --info-text: #000000;
+    --info-window: #ced9ce;
+    --menu: #687868;
+    --menu-bar: #687868;
+    --menu-highlight: #b87840;
+    --menu-text: #000000;
+    --scrollbar: #b0c0b0;
+    --title-text: #fffff0;
+    --window: #fffff0;
+    --window-frame: #000000;
+    --window-text: #000000;
+    --flat-menus: none;
+    --menu-animation: slide;
+    --menu-shadow: false;
+    --scrollbar-size: 16px;
+    --menu-height: 18px;
+    --palette-title-height: 16px;
+}
+.window {
+    --extra-title-height: -2px;
+    --extra-border-size: 1px;
+}

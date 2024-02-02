@@ -13,6 +13,11 @@
     margin-left: 20px;
 }
 
+#soundSchemeLabel {
+    position: relative;
+    top: -6px;
+}
+
 #soundSchemeSelector {
     width: 130px;
 }

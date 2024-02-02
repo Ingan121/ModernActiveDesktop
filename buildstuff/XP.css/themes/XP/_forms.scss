@@ -33,11 +33,15 @@ mad-select {
     &[data-open] {
         box-shadow: inset 2px 2px white, inset -2px -2px white;
     }
-    &:not(:disabled):hover {
+    &:not(:disabled):not([data-disabled]):hover {
         background-image: svg-load("./icon/dropdown-hover.svg");
     }
-    &:not(:disabled):active {
+    &:not(:disabled):not([data-disabled]):active {
         background-image: svg-load("./icon/dropdown-active.svg");
+    }
+    &:disabled,
+    &[data-disabled] {
+        background-color: transparent;
     }
 }
 
@@ -47,6 +51,22 @@ mad-select:before {
 
 mad-select:after {
     display: none;
+}
+
+input[type=email]:disabled,
+input[type=email]:read-only,
+input[type=number]:disabled,
+input[type=number]:read-only,
+input[type=password]:disabled,
+input[type=password]:read-only,
+input[type=search]:disabled,
+input[type=search]:read-only,
+input[type=tel]:disabled,
+input[type=tel]:read-only,
+input[type=text]:disabled,
+input[type=text]:read-only,
+textarea:disabled {
+    background-color: transparent;
 }
 
 input[type="radio"] {

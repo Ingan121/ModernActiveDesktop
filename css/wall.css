@@ -256,7 +256,8 @@ body {
 .windowCloseBtnAlt {
     display: none !important;
     height: calc(16px + var(--extra-title-height));
-    width: calc(16px + var(--extra-title-height));
+    width: calc(18px + var(--extra-title-height));
+    font-size: calc(12px + var(--extra-title-height) / 2);
 }
 
 .title-bar .title-bar-text {
@@ -301,7 +302,7 @@ body {
 }
 
 body[data-cm-shadow] .contextMenuBg {
-    box-shadow: var(--border-window-outer), var(--border-window-inner), 5px 5px 4px -4px rgba(0,0,0,.5) !important;
+    box-shadow: var(--border-window-outer), var(--border-window-inner), 5px 5px 4px -4px rgba(0, 0, 0, 0.75) !important;
 }
 
 .windowContainer[data-style="ad"] > .contextMenuBg {
@@ -509,7 +510,8 @@ body[data-cm-shadow] .contextMenuBg {
 
 #msgbox-close {
     height: calc(16px + var(--extra-title-height));
-    width: calc(16px + var(--extra-title-height));
+    width: calc(18px + var(--extra-title-height));
+    font-size: calc(12px + var(--extra-title-height) / 2);
 }
 
 #msgbox-icon {

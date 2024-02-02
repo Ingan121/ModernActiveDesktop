@@ -1,0 +1,44 @@
+/* Plus! Jungle */
+:root {
+    --active-border: #b8a068;
+    --active-title: #000000;
+    --app-workspace: #826d3e;
+    --background: #000000;
+    --button-alternate-face: #B5B5B5;
+    --button-dk-shadow: #000000;
+    --button-face: #b8a068;
+    --button-hilight: #e0d0b8;
+    --button-light: #b8a068;
+    --button-shadow: #807040;
+    --button-text: #000000;
+    --gradient-active-title: #000000;
+    --gradient-inactive-title: #807040;
+    --gray-text: #807040;
+    --hilight: #800000;
+    --hilight-text: #f09010;
+    --hot-tracking-color: #008080;
+    --inactive-border: #b8a068;
+    --inactive-title: #807040;
+    --inactive-title-text: #800000;
+    --info-text: #000000;
+    --info-window: #ffffff;
+    --menu: #b8a068;
+    --menu-bar: #b8a068;
+    --menu-highlight: #800000;
+    --menu-text: #000000;
+    --scrollbar: #e0d0b8;
+    --title-text: #f09010;
+    --window: #ffffff;
+    --window-frame: #000000;
+    --window-text: #000000;
+    --flat-menus: none;
+    --menu-animation: slide;
+    --menu-shadow: false;
+    --scrollbar-size: 13px;
+    --menu-height: 18px;
+    --palette-title-height: 15px;
+}
+.window {
+    --extra-title-height: 2px;
+    --extra-border-size: 1px;
+}

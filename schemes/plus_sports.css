@@ -1,0 +1,44 @@
+/* Plus! Sports */
+:root {
+    --active-border: #b0e0a0;
+    --active-title: #008080;
+    --app-workspace: #d8f0d0;
+    --background: #000000;
+    --button-alternate-face: #B5B5B5;
+    --button-dk-shadow: #000000;
+    --button-face: #b0e0a0;
+    --button-hilight: #d8f0d0;
+    --button-light: #c0c0c0;
+    --button-shadow: #68b848;
+    --button-text: #000000;
+    --gradient-active-title: #008080;
+    --gradient-inactive-title: #008000;
+    --gray-text: #68b848;
+    --hilight: #ffff00;
+    --hilight-text: #000000;
+    --hot-tracking-color: #008080;
+    --inactive-border: #68b848;
+    --inactive-title: #008000;
+    --inactive-title-text: #b0e0a0;
+    --info-text: #000000;
+    --info-window: #ffff00;
+    --menu: #b0e0a0;
+    --menu-bar: #b0e0a0;
+    --menu-highlight: #ffff00;
+    --menu-text: #008000;
+    --scrollbar: #c0c0c0;
+    --title-text: #000000;
+    --window: #ffffff;
+    --window-frame: #000000;
+    --window-text: #008000;
+    --flat-menus: none;
+    --menu-animation: slide;
+    --menu-shadow: false;
+    --scrollbar-size: 13px;
+    --menu-height: 18px;
+    --palette-title-height: 15px;
+}
+.window {
+    --extra-title-height: -2px;
+    --extra-border-size: 1px;
+}

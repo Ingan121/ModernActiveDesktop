@@ -1,0 +1,44 @@
+/* Plus! Dangerous Creatures */
+:root {
+    --active-border: #707070;
+    --active-title: #008080;
+    --app-workspace: #484848;
+    --background: #000000;
+    --button-alternate-face: #B5B5B5;
+    --button-dk-shadow: #000000;
+    --button-face: #707070;
+    --button-hilight: #b8b8b8;
+    --button-light: #707070;
+    --button-shadow: #484848;
+    --button-text: #000000;
+    --gradient-active-title: #008080;
+    --gradient-inactive-title: #484848;
+    --gray-text: #484848;
+    --hilight: #008080;
+    --hilight-text: #ffffff;
+    --hot-tracking-color: #008080;
+    --inactive-border: #707070;
+    --inactive-title: #484848;
+    --inactive-title-text: #707070;
+    --info-text: #800080;
+    --info-window: #ffffff;
+    --menu: #707070;
+    --menu-bar: #707070;
+    --menu-highlight: #008080;
+    --menu-text: #000000;
+    --scrollbar: #b8b8b8;
+    --title-text: #ffffff;
+    --window: #b8b8b8;
+    --window-frame: #000000;
+    --window-text: #000000;
+    --flat-menus: none;
+    --menu-animation: slide;
+    --menu-shadow: false;
+    --scrollbar-size: 13px;
+    --menu-height: 18px;
+    --palette-title-height: 16px;
+}
+.window {
+    --extra-title-height: -2px;
+    --extra-border-size: 1px;
+}

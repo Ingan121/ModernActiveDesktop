@@ -36,7 +36,8 @@ body {
 
 .window-button {
     height: calc(16px + var(--extra-title-height));
-    width: calc(16px + var(--extra-title-height));
+    width: calc(18px + var(--extra-title-height));
+    font-size: calc(12px + var(--extra-title-height) / 2);
 }
 
 #inactiveWindow .title-bar,
@@ -74,6 +75,7 @@ body {
     display: flex;
     margin: 1px var(--extra-border-size) 1px var(--extra-border-size);
     background-color: var(--menu);
+    height: var(--menu-height);
 }
 
 .menu > div:first-child {
@@ -81,8 +83,7 @@ body {
 }
 
 .menu > div {
-    padding-left: 5px;
-    padding-right: 5px;
+    padding: calc((var(--menu-height) - 16px) / 2) 5px 0 5px;
     border: solid 1px transparent;
 }
 
@@ -95,7 +96,6 @@ body {
     border-color: var(--button-shadow) var(--button-hilight) var(--button-hilight) var(--button-shadow) !important;
     margin-top: 1px;
     margin-left: -1px;
-    height: 15px;
 }
 
 .menu > div[data-active] > span {

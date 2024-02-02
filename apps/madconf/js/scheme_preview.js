@@ -6,6 +6,7 @@
 
 const schemeElement = document.getElementById("scheme");
 const menuStyleElement = document.getElementById("menuStyle");
+const styleElement = document.getElementById("style");
 const container = document.getElementById("container");
 const inactiveWindow = document.getElementById("inactiveWindow");
 const activeWindow = document.getElementById("activeWindow");
@@ -14,11 +15,14 @@ const msgbox = document.getElementById("msgbox");
 function changeColorScheme(scheme) {
     if (scheme === "98") {
         schemeElement.href = "data:text/css,";
+        processTheme();
     } else if (scheme === "custom") {
         schemeElement.href = localStorage.madesktopCustomColor;
+        processTheme();
     } else if (scheme.split('\n').length > 1) {
         const dataURL = `data:text/css,${encodeURIComponent(scheme)}`;
         schemeElement.href = dataURL;
+        processTheme();
     } else if (scheme === "sys") {
         if (localStorage.madesktopSysColorCache) {
             schemeElement.href = localStorage.madesktopSysColorCache;
@@ -29,6 +33,7 @@ function changeColorScheme(scheme) {
             .then(responseText => {
                 const dataURL = `data:text/css,${encodeURIComponent(responseText)}`;
                 schemeElement.href = dataURL;
+                processTheme();
             })
             .catch(error => {
                 // Ignore it as SysPlug startup is slower than high priority WE startup
@@ -36,7 +41,6 @@ function changeColorScheme(scheme) {
     } else {
         schemeElement.href = `../../schemes/${scheme}.css`;
     }
-    resize();
 }
 
 // Toggle between "Pixelated MS Sans Serif" and just sans-serif
@@ -55,6 +59,11 @@ function changeMenuStyle(style) {
     } else {
         menuStyleElement.href = `../../css/flatmenu-${style}.css`;
     }
+}
+
+function processTheme() {
+    styleElement.textContent = top.generateScrollBarSvgs(getComputedStyle(document.documentElement).getPropertyValue('--button-text'));
+    resize();
 }
 
 document.body.style.zoom = parent.document.body.style.zoom || 1;
@@ -79,8 +88,8 @@ new MutationObserver(function (mutations) {
     { attributes: true, attributeFilter: ["style"] }
 );
 
-window.addEventListener("load", resize);
-window.addEventListener("resize", resize);
+window.addEventListener("load", processTheme);
+window.addEventListener("resize", processTheme);
 
 function resize() {
     container.style.left = (frameElement.offsetWidth - (activeWindow.offsetLeft + activeWindow.offsetWidth - inactiveWindow.offsetLeft) - 2) / 2 + "px";

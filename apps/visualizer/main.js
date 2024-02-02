@@ -161,7 +161,7 @@ nextIcon.addEventListener('click', () => {
 
 if (localStorage.madesktopVisMenuAutohide) {
     viewMenuItems[0].classList.add('checkedItem');
-    menuBar.style.position = 'absolute';
+    mainArea.style.marginTop = '0';
     menuBar.style.opacity = '0';
 }
 
@@ -239,12 +239,12 @@ viewMenuItems[0].addEventListener('click', () => { // Autohide Menu Bar button
     if (localStorage.madesktopVisMenuAutohide) {
         delete localStorage.madesktopVisMenuAutohide;
         viewMenuItems[0].classList.remove('checkedItem');
-        menuBar.style.position = '';
+        mainArea.style.marginTop = '';
         menuBar.style.opacity = '';
     } else {
         localStorage.madesktopVisMenuAutohide = true;
         viewMenuItems[0].classList.add('checkedItem');
-        menuBar.style.position = 'absolute';
+        mainArea.style.marginTop = '0';
         menuBar.style.opacity = '0';
     }
     updateSize();

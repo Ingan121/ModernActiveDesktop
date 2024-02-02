@@ -63,3 +63,44 @@
         }
     }
 }
+.borderedScrollBar::-webkit-scrollbar {
+    width: 19px !important;
+}
+.borderedScrollBar::-webkit-scrollbar:horizontal {
+    height: 19px !important;
+}
+
+.borderedScrollBar::-webkit-scrollbar-track {
+    border-right: solid 2px transparent !important;
+    background-clip: content-box;
+}
+
+.borderedScrollBar::-webkit-scrollbar-thumb {
+    border-right: solid 2px transparent !important;
+    background-clip: content-box;
+}
+
+.borderedScrollBar::-webkit-scrollbar-button:vertical:start {
+    height: 19px !important;
+    border-top: solid 2px transparent;
+    border-right: solid 2px transparent;
+    background-clip: content-box;
+}
+.borderedScrollBar::-webkit-scrollbar-button:vertical:end {
+    height: 19px !important;
+    border-right: solid 2px transparent;
+    border-bottom: solid 2px transparent;
+    background-clip: content-box;
+}
+.borderedScrollBar::-webkit-scrollbar-button:horizontal:start {
+    width: 19px !important;
+    border-left: solid 2px transparent;
+    border-bottom: solid 2px transparent;
+    background-clip: content-box;
+}
+.borderedScrollBar::-webkit-scrollbar-button:horizontal:end {
+    width: 19px !important;
+    border-right: solid 2px transparent;
+    border-bottom: solid 2px transparent;
+    background-clip: content-box;
+}

@@ -6,7 +6,7 @@
 /* And then you can import one in the Appearance properties menu. */
 
 :root {
-    --active-border: #90F4E3;
+    --active-border: #90F3E1;
     --active-title: #F0D0F1;
     --app-workspace: #FDF1FD;
     --background: #F9E2FD;
@@ -21,7 +21,7 @@
     --gradient-inactive-title: #E2E2E1;
     --gray-text: #AAA6C3;
     --hilight: #CCECFC;
-    --hilight-text: #4D23CD;
+    --hilight-text: #4D22CD;
     --hot-tracking-color: #815CDC;
     --inactive-border: #E2E2E1;
     --inactive-title: #E2E2E1;
@@ -43,6 +43,7 @@
     --scrollbar-size: 16px;
     --menu-height: 18px;
     --palette-title-height: 15px;
+    --bottom-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB8AAAAGCAYAAAA7d0VqAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnMAABJzAYwiuQcAAABISURBVChTY/RVPvufgQpg811jks0Ca5hbKwXlkgeSm5/BLQfRIDGYQ/DxmUCMgQJUtxzkI5gvQQAfn6rBDuUSDaiW4EgHDAwAlEkyJY3231wAAAAASUVORK5CYII=");
     --close-button: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMCAxMCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIj48bGluZSB4MT0iMCIgeTE9IjAiIHgyPSIxMCIgeTI9IjEwIiB2ZWN0b3ItZWZmZWN0PSJub24tc2NhbGluZy1zdHJva2UiIHN0cm9rZT0iIzREMjNDRCIgc2hhcGUtcmVuZGVyaW5nPSJjcmlzcEVkZ2VzIiAvPjxsaW5lIHgxPSIxMCIgeTE9IjAiIHgyPSIwIiB5Mj0iMTAiIHZlY3Rvci1lZmZlY3Q9Im5vbi1zY2FsaW5nLXN0cm9rZSIgc3Ryb2tlPSIjNEQyM0NEIiBzaGFwZS1yZW5kZXJpbmc9ImNyaXNwRWRnZXMiIC8+PC9zdmc+");
     --maximize-button: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMCAxMCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIj48cmVjdCB4PSIyIiB5PSIyIiB3aWR0aD0iNyIgaGVpZ2h0PSI3IiBzdHJva2U9IiM0RDIzQ0QiIGZpbGw9InRyYW5zcGFyZW50IiBzaGFwZS1yZW5kZXJpbmc9ImNyaXNwRWRnZXMiIC8+PC9zdmc+");
     --minimize-button: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMCAxMCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIj48bGluZSB4MT0iMiIgeTE9IjkiIHgyPSI2IiB5Mj0iOSIgdmVjdG9yLWVmZmVjdD0ibm9uLXNjYWxpbmctc3Ryb2tlIiBzdHJva2U9IiM0RDIzQ0QiIHNoYXBlLXJlbmRlcmluZz0iY3Jpc3BFZGdlcyIgLz48L3N2Zz4=");
@@ -55,35 +56,41 @@
     --extra-border-bottom: 5px !important;
 }
 
-.windowContainer[data-style="wnd"] {
-    background-color: #90F3E1;
-    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB8AAAAGCAYAAAA7d0VqAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnMAABJzAYwiuQcAAABISURBVChTY/RVPvufgQpg811jks0Ca5hbKwXlkgeSm5/BLQfRIDGYQ/DxmUCMgQJUtxzkI5gvQQAfn6rBDuUSDaiW4EgHDAwAlEkyJY3231wAAAAASUVORK5CYII=");
-    background-position: 3px bottom;
-    background-repeat: no-repeat;
-    image-rendering: pixelated;
+.windowContainer[data-style="wnd"],
+.os-window {
+    background-color: var(--active-border) !important;
+    background-image: var(--bottom-image) !important;
+    background-position: 3px bottom !important;
+    background-repeat: no-repeat !important;
+    image-rendering: pixelated !important;
 }
 
 .windowContainer[data-style="wnd"]:not(#JustHereToGiveItPriority) {
-    box-shadow: #4D23CD -1px -1px inset, #4D23CD 1px 1px inset !important;
+    box-shadow: var(--title-text) -1px -1px inset, var(--title-text) 1px 1px inset !important;
 }
 
 .windowContainer[data-style="wnd"] .windowElement {
-    background-color: #FCF1FF;
+    background-color: var(--button-face);
 }
 
 #madconf-preview #activeWindow,
 #msgbox {
-    box-shadow: #4D23CD -1px -1px inset, #4D23CD 1px 1px inset, #90F3E1 -3px -3px inset, #90F3E1 3px 3px inset;
+    box-shadow: var(--title-text) -1px -1px inset, var(--title-text) 1px 1px inset,
+        var(--active-border) -3px -3px inset, var(--active-border) 3px 3px inset,
+        var(--title-text) -4px -4px inset, var(--title-text) 4px 4px inset;
 }
 
-.windowContainer[data-style="wnd"][data-inactive] {
-    background-color: #E2E2E1;
+.windowContainer[data-style="wnd"][data-inactive],
+.os-window:not(.focused) {
+    background-color: var(--inactive-border) !important;
 }
 
 #madconf-preview #inactiveWindow,
 #msgbox[data-inactive] {
     border: none;
-    box-shadow: #4D23CD -1px -1px inset, #4D23CD 1px 1px inset, #E2E2E1 -3px -3px inset, #E2E2E1 3px 3px inset;
+    box-shadow: var(--title-text) -1px -1px inset, var(--title-text) 1px 1px inset,
+        var(--inactive-border) -3px -3px inset, var(--inactive-border) 3px 3px inset,
+        var(--title-text) -4px -4px inset, var(--title-text) 4px 4px inset;
 }
 
 #madconf-preview .title-bar {
@@ -93,27 +100,28 @@
 
 #madconf-preview .menu {
     margin-top: 0;
-    border: solid 1px #4D22CD;
+    border: solid 1px var(--title-text);
     margin: 0;
     border-bottom: none;
 }
 
 #madconf-preview #activeWindow textarea {
-    width: 329px;
-    height: 84px;
-    border: solid 1px #4D22CD;
-    margin: 0;
-    box-shadow: none;
+    width: 327px;
+    height: 83px;
 }
 
 .title-bar {
-    box-shadow: #4D23CD -1px -1px inset, #4D23CD 1px 1px inset;
-    border-bottom: 2px solid #90F3E1 !important;
+    box-shadow: var(--title-text) -1px -1px inset, var(--title-text) 1px 1px inset;
+    border-bottom: 2px solid var(--active-border) !important;
     height: unset;
 }
 
 .title-bar.inactive {
-    border-bottom: 2px solid #E2E2E1 !important;
+    border-bottom: 2px solid var(--inactive-title) !important;
+}
+
+#msgbox .title-bar {
+    box-shadow: var(--title-text) -1px -1px inset, var(--title-text) 1px 1px inset, var(--title-text) 0 1px 0;
 }
 
 .windowContainer[data-style="wnd"]:not([data-unresizable]) > .title-bar {
@@ -121,7 +129,7 @@
 }
 
 .title-bar-controls button {
-    box-shadow: #4D23CD -1px -1px inset, #4D23CD 1px 1px inset;
+    box-shadow: var(--title-text) -1px -1px inset, var(--title-text) 1px 1px inset;
     background: transparent;
     min-width: 0 !important;
     min-height: 0 !important;
@@ -139,7 +147,7 @@
 }
 
 .title-bar-controls button:active {
-    box-shadow: #4D23CD -1px -1px inset, #4D23CD 1px 1px inset;
+    box-shadow: var(--title-text) -1px -1px inset, var(--title-text) 1px 1px inset;
 }
 
 .windowIcon {
@@ -149,7 +157,7 @@
 }
 
 .windowContainer[data-style="wnd"] .windowElement {
-    border-color: #4D23CD !important;
+    border-color: var(--title-text) !important;
 }
 
 .windowContainer[data-style="wnd"] .windowMenuBg {
@@ -162,21 +170,21 @@
 
 /* For OS-GUI (JSPaint) */
 .os-window {
-    box-shadow: #4D23CD -1px -1px inset, #4D23CD 1px 1px inset, #90F3E1 -3px -3px inset, #90F3E1 3px 3px inset !important;
+    box-shadow: var(--title-text) -1px -1px inset, var(--title-text) 1px 1px inset !important;
     border: none !important;
 }
 
-.os-window:not(.focused) {
-    box-shadow: #4D23CD -1px -1px inset, #4D23CD 1px 1px inset, #E2E2E1 -3px -3px inset, #E2E2E1 3px 3px inset !important;
-}
-
 .window-titlebar {
-    box-shadow: #4D23CD -1px -1px inset, #4D23CD 1px 1px inset !important;
-    border-bottom: 2px solid #90F3E1 !important;
+    box-shadow: var(--title-text) -1px -1px inset, var(--title-text) 1px 1px inset !important;
+    border: none !important;
+    border-bottom: 2px solid var(--active-border) !important;
+    margin: 2px !important;
+    margin-bottom: 0 !important;
+    height: 18px !important;
 }
 
 .os-window:not(.focused) > .window-titlebar {
-    border-bottom: 2px solid #E2E2E1 !important;
+    border-bottom: 2px solid var(--inactive-border) !important;
 }
 
 body > .window-titlebar,
@@ -184,8 +192,12 @@ body > .window-titlebar,
     border-bottom: none !important;
 }
 
+.window-title {
+    top: -1px !important;
+}
+
 .window-button {
-    box-shadow: #4D23CD -1px -1px inset, #4D23CD 1px 1px inset !important;
+    box-shadow: var(--title-text) -1px -1px inset, var(--title-text) 1px 1px inset !important;
     background: transparent !important;
     min-width: 0 !important;
     min-height: 0 !important;
@@ -217,4 +229,11 @@ body > .window-titlebar,
 }
 .window-button-icon {
     display: none !important;
+}
+
+.window-content {
+    box-shadow: var(--title-text) -1px -1px inset, var(--title-text) 1px 1px inset !important;
+    background-color: var(--button-face) !important;
+    border: none !important;
+    margin: 0 2px 7px 2px !important;
 }
