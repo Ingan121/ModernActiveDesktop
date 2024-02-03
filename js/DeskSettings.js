@@ -5,6 +5,7 @@
 'use strict';
 
 let windowContainers = document.getElementsByClassName("windowContainer");
+const windowOutline = document.getElementById("windowOutline");
 const bgHtmlContainer = document.getElementById("bgHtmlContainer");
 const bgHtmlView = document.getElementById("bgHtmlView");
 const bgVideoView = document.getElementById("bgVideo");
@@ -454,9 +455,9 @@ function changeScale(scale) {
 // Toggle between "Pixelated MS Sans Serif" and just sans-serif
 function changeFont(isPixel) {
     if (isPixel) {
-        document.documentElement.style.setProperty('--font-98', 'sans-serif');
+        document.documentElement.style.setProperty('--ui-font', 'sans-serif');
     } else {
-        document.documentElement.style.removeProperty('--font-98');
+        document.documentElement.style.removeProperty('--ui-font');
     }
 }
 
@@ -961,8 +962,8 @@ function activateWindow(num = activeWindow || 0) {
 // Prevent windows from being created in the same position
 function cascadeWindow(x, y) {
     log({x, y});
-    const extraTitleHeight = parseInt(getComputedStyle(windowContainers[0]).getPropertyValue('--extra-title-height'));
-    const extraBorderSize = parseInt(getComputedStyle(windowContainers[0]).getPropertyValue('--extra-border-size'));
+    const extraTitleHeight = parseInt(getComputedStyle(msgbox).getPropertyValue('--extra-title-height'));
+    const extraBorderSize = parseInt(getComputedStyle(msgbox).getPropertyValue('--extra-border-size'));
     x = parseInt(x);
     y = parseInt(y);
     if (isWindowInPosition(x, y)) {

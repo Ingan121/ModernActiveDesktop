@@ -260,6 +260,10 @@
 }
 
 /* madconf adjustments */
+#madconf #previewMonitor {
+    content: url("../apps/madconf/images/monitor_xp.png");
+}
+
 #madconf #schemePreview {
     height: 176px;
 }

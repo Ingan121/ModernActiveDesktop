@@ -1,21 +1,6 @@
 ﻿@charset "utf-8";
 
-@import '../../css/marlett.css';
-
-@keyframes fade {
-    0% {
-        opacity: 0.3;
-    }
-    100% {
-        opacity: 1;
-    }
-}
-
-@keyframes cmDropdown {
-    0% {
-        height: 0;
-    }
-}
+@import '../../css/libmad.css';
 
 html, body {
     height: 100%;
@@ -71,15 +56,6 @@ canvas {
 }
 
 .menu {
-    display: flex;
-    margin-top: 0;
-    margin-left: 0;
-    margin-bottom: 1px;
-    font-family: var(--font-98);
-    font-size: 11px;
-    background-color: var(--menu);
-    width: 100%;
-    height: var(--menu-height);
     position: absolute;
     z-index: 4;
 }
@@ -89,52 +65,8 @@ canvas {
     opacity: 1 !important;
 }
 
-.menu > div {
-    padding: calc((var(--menu-height) - 14px) / 2) 5px 2px 5px;
-    border: solid 1px transparent;
-    user-select: none;
-    cursor: default;
-}
-
-.menu > div:hover {
-    border-color: var(--button-hilight) var(--button-shadow) var(--button-shadow) var(--button-hilight);
-}
-
-.menu > div:active,
-.menu > div[data-active] {
-    border-color: var(--button-shadow) var(--button-hilight) var(--button-hilight) var(--button-shadow);
-}
-
-.menu > div:active > span,
-.menu > div[data-active] > span {
-    margin-top: 1px;
-    margin-left: 1px;
-    margin-right: -1px;
-}
-
 .contextMenuBg {
-    display: none;
-    position: absolute;
-    top: var(--menu-height);
-    overflow: hidden;
-    animation: cmDropdown 0.25s linear;
-    background-color: var(--menu);
     z-index: 5;
-}
-
-body[data-cm-shadow] .contextMenuBg {
-    box-shadow: var(--border-window-outer), var(--border-window-inner), 5px 5px 4px -4px rgba(0, 0, 0, 0.75) !important;
-}
-
-.contextMenuBg:focus {
-    outline: none;
-}
-
-.contextMenu {
-    position: absolute;
-    bottom: 3px;
-    margin: 0 !important;
-    margin-right: 3px;
 }
 
 #visMenuBg {
@@ -174,71 +106,6 @@ body[data-cm-shadow] .contextMenuBg {
 
 #helpMenu {
     width: 128px;
-}
-
-.contextMenuItem {
-    width: 100%;
-    height: 17px;
-    font-size: 11px;
-    padding-left: 2px;
-    pointer-events: auto !important;
-}
-
-.contextMenuItem p {
-    margin: 0;
-    padding-top: 2px;
-}
-
-.contextMenuItem:not(.hasIcon):not(.activeStyle):not(.checkedItem) > p {
-    padding-left: 15px;
-}
-
-#visMenu > .contextMenuItem:not(.hasIcon):not(.activeStyle):not(.checkedItem) > p,
-#viewMenu > .contextMenuItem:not(.hasIcon):not(.activeStyle):not(.checkedItem) > p {
-    padding-left: 20px;
-}
-
-.contextMenuItem.activeStyle p,
-.contextMenuItem.checkedItem p {
-    line-height: 10px;
-}
-
-.contextMenuItem.activeStyle p::before {
-    content: "●";
-    font-size: 15px;
-    margin-left: 4px;
-    margin-right: 7px;
-}
-
-.contextMenuItem.checkedItem p::before {
-    font-family: "marlett-icons";
-    content: "\e903";
-    font-size: 15px;
-    position: relative;
-    top: 2px;
-    left: 1px;
-    margin-right: 5px;
-}
-
-.contextMenuItem:hover,
-.contextMenuItem[data-active] {
-    background-color: var(--hilight);
-    color: var(--hilight-text);
-}
-
-.contextMenuItem:hover u,
-.contextMenuItem[data-active] u {
-    border-bottom-color: var(--hilight-text);
-}
-
-.contextMenu hr {
-    margin-top: 3px;
-    margin-bottom: 4px;
-}
-
-.disabled {
-    color: var(--button-shadow) !important;
-    text-shadow: 1px 1px 0 var(--button-hilight) !important;
 }
 
 #statusArea {
@@ -413,7 +280,7 @@ body[data-cm-shadow] .contextMenuBg {
     border: solid 1px;
     border-color: gray white white gray;
     margin: 0;
-    font-family: var(--font-98);
+    font-family: var(--ui-font);
     display: none;
 }
 

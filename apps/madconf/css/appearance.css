@@ -1,8 +1,12 @@
 @import 'common.css';
 
+.window-body {
+    margin-right: 0;
+}
+
 #schemePreview {
     height: 187px;
-    width: calc(100% - 15px);
+    width: calc(100% - 23px);
     background-color: var(--background);
     margin-left: 5px;
     pointer-events: none;
@@ -68,6 +72,7 @@ mad-select {
 
 #schemeEditorGroup {
     margin-top: -5px;
+    margin-right: 8px;
 }
 
 #schemeEditorGroup .groupLabel {
@@ -150,8 +155,7 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 #fontEditorGroup {
-    margin-top: -1px;
-    margin-bottom: -2px;
+    margin: -1px 8px -2px 0;
 }
 
 #fontEditorGroup .groupLabel {

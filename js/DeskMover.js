@@ -416,7 +416,6 @@ class DeskMover {
     }
 
     closeContextMenu() {
-        log(`contextMenuOpening: ${this.contextMenuOpening}`);
         if (this.contextMenuOpening) {
             if (this.contextMenuOpening === this.posInContainer && this.config.style === "wnd")
             {
@@ -659,6 +658,10 @@ class DeskMover {
                 this.windowContainer.offsetLeft - Math.ceil(event.clientX / window.scaleFactor), // event.clientXY doesn't work well with css zoom
                 this.windowContainer.offsetTop - Math.ceil(event.clientY / window.scaleFactor)
             ];
+            this.posInContainer = {
+                x : Math.ceil(event.clientX / window.scaleFactor) - this.windowContainer.offsetLeft,
+                y : Math.ceil(event.clientY / window.scaleFactor) - this.windowContainer.offsetTop,
+            }
             let extraBorderSize = 0;
             if (this.config.style === "wnd") {
                 extraBorderSize = parseInt(getComputedStyle(this.windowContainer).getPropertyValue('--extra-border-size'));
@@ -681,11 +684,52 @@ class DeskMover {
             } else {
                 this.resizingMode = null;
             }
+            log(this.resizingMode);
+
+            if (this.resizingMode === null) {
+                this.isDown = false;
+                return;
+            }
+
+            if (localStorage.madesktopOutlineMode && this.config.style !== "ad") {
+                const extraBorderSize = parseInt(getComputedStyle(this.windowContainer).getPropertyValue('--extra-border-size'));
+                if (this.config.style === "nonad") {
+                    this.borderSize = 3;
+                    windowOutline.style.padding = this.borderSize + "px";
+                } else {
+                    this.borderSize = extraBorderSize + 3;
+                    if (this.config.unresizable) {
+                        windowOutline.style.padding = "1px";
+                    } else {
+                        windowOutline.style.padding = this.borderSize + "px";
+                    }
+                }
+                windowOutline.style.left = this.windowContainer.offsetLeft + "px";
+                windowOutline.style.top = this.windowContainer.offsetTop + "px";
+                windowOutline.style.width = this.windowContainer.offsetWidth + "px";
+                windowOutline.style.height = this.windowContainer.offsetHeight + "px";
+            }
         }
     }
 
     #docMouseUp() {
         iframeClickEventCtrl(true);
+        if (this.isDown && localStorage.madesktopOutlineMode && this.config.style !== "ad" &&
+            this.resizingMode !== null && windowOutline.style.display !== "none")
+        {
+            let extraBorderSize = 0;
+            let extraBorderBottom = 0;
+            if (this.config.style === "wnd") {
+                extraBorderSize = parseInt(getComputedStyle(this.windowContainer).getPropertyValue('--extra-border-size'));
+                extraBorderBottom = parseInt(getComputedStyle(this.windowContainer).getPropertyValue('--extra-border-bottom'));
+            }
+            log({extraBorderSize, extraBorderBottom})
+            this.windowContainer.style.left = windowOutline.style.left;
+            this.windowContainer.style.top = windowOutline.style.top;
+            this.windowElement.width = windowOutline.offsetWidth - this.borderSize * 2 + "px";
+            this.windowElement.height = windowOutline.offsetHeight - this.windowFrame.offsetTop - extraBorderSize - extraBorderBottom - 6 + "px";
+            windowOutline.style.display = "none";
+        }
         this.isDown = false;
 
         if (this.windowContainer.style.display === "none") return; // offsets are always 0 when hidden, causing unexpected behaviors
@@ -731,37 +775,71 @@ class DeskMover {
             y : Math.ceil(event.clientY / window.scaleFactor) - this.windowContainer.offsetTop,
         }
         if (this.isDown) {
+            let target = this.windowElement;
+            let target2 = this.windowContainer;
+            const isOutlineMode = localStorage.madesktopOutlineMode && this.config.style !== "ad";
+            if (isOutlineMode) {
+                target = target2 = windowOutline;
+                windowOutline.style.display = "block";
+            }
             // Window resizing & moving - adjust windowContainer / windowElement first
             switch (this.resizingMode) {
                 case "left":
-                    if (this.windowElement.offsetWidth >= 60) {
-                        this.windowElement.width = this.prevOffsetRight - this.mousePosition.x + 'px';
-                        this.windowContainer.style.left = (this.mousePosition.x + this.offset[0]) + 'px';
+                    if (target.offsetWidth >= 60) {
+                        if (isOutlineMode) {
+                            // Well even the exact pixel of border where you click matters here
+                            // TODO: calibrate it with initial mouse position
+                            let extra = this.borderSize * 2 + 1;
+                            if (this.config.style === "nonad") {
+                                extra = 6;
+                            }
+                            windowOutline.style.width = this.prevOffsetRight - this.mousePosition.x + extra + 'px';
+                        } else {
+                            this.windowElement.width = this.prevOffsetRight - this.mousePosition.x + 'px';
+                        }
+                        target2.style.left = (this.mousePosition.x + this.offset[0]) + 'px';
                     }
                     break;
 
                 case "right":
-                    if (this.windowElement.offsetWidth >= 60) {
-                        this.windowElement.width = this.posInContainer.x - 6 + 'px';
+                    if (target.offsetWidth >= 60) {
+                        if (isOutlineMode) {
+                            windowOutline.style.width = this.posInContainer.x + 2 + 'px';
+                        } else {
+                            this.windowElement.width = this.posInContainer.x - 4 + 'px';
+                        }
                     }
                     break;
 
                 case "top":
-                    if (this.windowElement.offsetHeight >= 15) {
-                        this.windowElement.height = this.prevOffsetBottom - this.mousePosition.y + 'px';
-                        this.windowContainer.style.top = (this.mousePosition.y + this.offset[1]) + 'px';
+                    if (target.offsetHeight >= 15) {
+                        if (isOutlineMode) {
+                            const extraBorderBottom = parseInt(getComputedStyle(this.windowContainer).getPropertyValue('--extra-border-bottom'));
+                            let extra = this.borderSize * 2 - 3;
+                            if (this.config.style === "nonad") {
+                                extra = 1;
+                            }
+                            windowOutline.style.height = this.prevOffsetBottom - this.mousePosition.y + this.windowFrame.offsetTop + extraBorderBottom + extra + 'px';
+                        } else {
+                            this.windowElement.height = this.prevOffsetBottom - this.mousePosition.y + 5 + 'px';
+                        }
+                        target2.style.top = (this.mousePosition.y + this.offset[1]) + 'px';
                     }
                     break;
 
                 case "bottom":
-                    if (this.windowElement.offsetHeight >= 15) {
-                        this.windowElement.height = this.posInContainer.y - 21 + 'px';
+                    if (target.offsetHeight >= 15) {
+                        if (isOutlineMode) {
+                            windowOutline.style.height = this.posInContainer.y + 2 + 'px';
+                        } else {
+                            this.windowElement.height = this.posInContainer.y - 24 + 'px';
+                        }
                     }
                     break;
 
                 case "none":
-                    this.windowContainer.style.left = (this.mousePosition.x + this.offset[0]) + 'px';
-                    this.windowContainer.style.top  = (this.mousePosition.y + this.offset[1]) + 'px';
+                    target2.style.left = (this.mousePosition.x + this.offset[0]) + 'px';
+                    target2.style.top  = (this.mousePosition.y + this.offset[1]) + 'px';
                     break;
             }
             if (this.resizingMode !== "none") {
@@ -1096,10 +1174,24 @@ function initSimpleMover(container, titlebar, exclusions) {
                 container.offsetLeft - Math.ceil(event.clientX / scaleFactor), // event.clientXY doesn't work well with css zoom
                 container.offsetTop - Math.ceil(event.clientY / scaleFactor)
             ];
+
+            if (localStorage.madesktopOutlineMode) {
+                windowOutline.style.padding = "1px";
+                windowOutline.style.left = container.offsetLeft + "px";
+                windowOutline.style.top = container.offsetTop + "px";
+                windowOutline.style.width = container.offsetWidth + "px";
+                windowOutline.style.height = container.offsetHeight + "px";
+            }
         }
     });
     
     document.addEventListener('mouseup', function () {
+        if (isDown && localStorage.madesktopOutlineMode && windowOutline.style.display !== "none") {
+            container.style.left = windowOutline.style.left;
+            container.style.top = windowOutline.style.top;
+            container.style.right = "auto";
+            windowOutline.style.display = "none";
+        }
         isDown = false;
         iframeClickEventCtrl(true);
         
@@ -1112,9 +1204,15 @@ function initSimpleMover(container, titlebar, exclusions) {
     
     document.addEventListener('mousemove', function (event) {
         if (isDown) {
-            container.style.left = (Math.ceil(event.clientX / scaleFactor) + offset[0]) + 'px';
-            container.style.top  = (Math.ceil(event.clientY / scaleFactor) + offset[1]) + 'px';
-            container.style.right = "auto";
+            let target = container;
+            if (localStorage.madesktopOutlineMode) {
+                target = windowOutline;
+                windowOutline.style.display = "block";
+            } else {
+                container.style.right = "auto";
+            }
+            target.style.left = (Math.ceil(event.clientX / scaleFactor) + offset[0]) + 'px';
+            target.style.top  = (Math.ceil(event.clientY / scaleFactor) + offset[1]) + 'px';
         }
     });
     

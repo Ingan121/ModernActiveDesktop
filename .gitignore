@@ -2,9 +2,11 @@
 bghtml
 channels-en
 channels-ko
-images
+images/*
 !docs/images
 !apps/jspaint/images
+!images/mad*
+apps/madconf/images
 sounds
 apps/welcome/resources/*
 !apps/welcome/resources/contents.png

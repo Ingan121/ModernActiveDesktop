@@ -37,6 +37,11 @@
     --scrollbar-size: 13px;
     --menu-height: 18px;
     --palette-title-height: 15px;
+    --caption-font: bold 8pt Arial, var(--cjk-fontlink);
+    --menu-font: 8pt var(--cjk-fontlink);
+    --message-font: 8pt var(--cjk-fontlink);
+    --status-font: 8pt var(--cjk-fontlink);
+    --sm-caption-font: 8pt var(--cjk-fontlink);
 }
 .window {
     --extra-border-size: 1px;

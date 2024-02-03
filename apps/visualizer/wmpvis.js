@@ -7,16 +7,17 @@
 const visBarCtx = visBar.getContext('2d');
 const visTopCtx = visTop.getContext('2d');
 
+let updateCnt = 0;
+let triedRegistering = false;
+let timeout;
+let idle = false;
+
 updateSize();
 
 const lastAud = new Array(128).fill(0);
 const lastBar = new Array(128).fill(0);
 const lastTop = new Array(128).fill(visTop.height);
 const topSpeed = new Array(128).fill(0);
-
-let updateCnt = 0;
-let triedRegistering = false;
-let timeout;
 
 function wallpaperAudioListener(audioArray) {
     updateCnt++;
@@ -26,6 +27,22 @@ function wallpaperAudioListener(audioArray) {
 
     if (window.noupdate || localStorage.madesktopVisOnlyAlbumArt) {
         return;
+    }
+
+    // Optimization
+    if (idle) {
+        let allZero = true;
+        for (let i = 0; i < audioArray.length; ++i) {
+            if (audioArray[i] !== 0) {
+                allZero = false;
+                break;
+            }
+        }
+        if (allZero) {
+            return;
+        }
+        idle = false;
+        top.log("Active", "log", "MADVis");
     }
 
     // Clear the canvas
@@ -45,6 +62,7 @@ function wallpaperAudioListener(audioArray) {
         visTopCtx.fillStyle = schemeTopColor;
     }
 
+    let allZero = true;
     for (var i = 0; i < audioArray.length; ++i) {
         // Create an audio bar with its hight depending on the audio volume level of the current frequency
         const height = visBar.height * Math.min(audioArray[i], 1)// * 0.7;
@@ -67,6 +85,7 @@ function wallpaperAudioListener(audioArray) {
             lastTop[i] = topPos;
             visTopCtx.fillRect(barWidth * i, topPos, barWidth - gap, 1);
             topSpeed[i] = 0;
+            allZero = false;
         } else if (lastTop[i] < visTop.height - 1) {
             visTopCtx.clearRect(barWidth * i, 0, barWidth - gap, visTop.height);
             if (topSpeed[i] > 38) {
@@ -84,8 +103,13 @@ function wallpaperAudioListener(audioArray) {
                 topSpeed[i] += 1;
             }
             visTopCtx.fillRect(barWidth * i, lastTop[i], barWidth - gap, 1);
+            allZero = false;
         }
         lastAud[i] = audioArray[i];
+    }
+    if (allZero) {
+        idle = true;
+        top.log("Idle", "log", "MADVis");
     }
 }
 
@@ -95,6 +119,7 @@ function updateSize() {
     visBar.width = Math.round(clientRect.width * madScaleFactor);
     visTop.height = visBar.height;
     visTop.width = visBar.width;
+    idle = false;
 }
 
 window.addEventListener('resize', updateSize);

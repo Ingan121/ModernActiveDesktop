@@ -37,6 +37,11 @@
     --scrollbar-size: 13px;
     --menu-height: 18px;
     --palette-title-height: 15px;
+    --caption-font: 12pt "Matisse ITC", "Tempus Sans ITC", var(--ui-font);
+    --menu-font: 8pt/1 "Tempus Sans ITC", var(--ui-font);
+    --message-font: 9pt "Tempus Sans ITC", var(--ui-font);
+    --status-font: bold 9pt var(--ui-font);
+    --sm-caption-font: 8pt var(--ui-font);
 }
 .window {
     --extra-title-height: 2px;

@@ -1,0 +1,46 @@
+/* Windows Classic (98SE) */
+/* Might be misnomer but my Korean Win98SE, XP, and Vista VMs have this variant with different button-alternate-face and button-light. */
+/* Also found in themes.exe of English Windows 98 First Edition as 'Windows Default'. */
+:root {
+    --active-border: #c0c0c0;
+    --active-title: #000080;
+    --app-workspace: #808080;
+    --background: #008080;
+    --button-alternate-face: #c0c0c0;
+    --button-dk-shadow: #000000;
+    --button-face: #c0c0c0;
+    --button-hilight: #ffffff;
+    --button-light: #c0c0c0;
+    --button-shadow: #808080;
+    --button-text: #000000;
+    --gradient-active-title: #1084d0;
+    --gradient-inactive-title: #b5b5b5;
+    --gray-text: #808080;
+    --hilight: #000080;
+    --hilight-text: #ffffff;
+    --hot-tracking-color: #000080;
+    --inactive-border: #c0c0c0;
+    --inactive-title: #808080;
+    --inactive-title-text: #c0c0c0;
+    --info-text: #000000;
+    --info-window: #ffffe1;
+    --menu: #c0c0c0;
+    --menu-bar: #c0c0c0;
+    --menu-highlight: #000080;
+    --menu-text:  #000000;
+    --scrollbar: #c0c0c0;
+    --title-text: #ffffff;
+    --window: #ffffff;
+    --window-frame: #000000;
+    --window-text: #000000;
+    --flat-menus: none;
+    --menu-animation: slide;
+    --menu-shadow: false;
+    --scrollbar-size: 16px;
+    --menu-height: 18px;
+    --palette-title-height: 15px;
+}
+.window {
+    --extra-border-size: 1px;
+    --extra-title-height: -2px;
+}

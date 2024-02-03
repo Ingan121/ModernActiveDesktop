@@ -101,9 +101,9 @@ function changeBgColor(str) {
 // Toggle between "Pixelated MS Sans Serif" and just sans-serif
 function changeFont(isPixel) {
     if (isPixel) {
-        document.documentElement.style.setProperty('--font-98', 'sans-serif');
+        document.documentElement.style.setProperty('--ui-font', 'sans-serif');
     } else {
-        document.documentElement.style.removeProperty('--font-98');
+        document.documentElement.style.removeProperty('--ui-font');
     }
 }
 

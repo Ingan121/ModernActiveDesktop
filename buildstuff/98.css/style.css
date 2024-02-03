@@ -98,10 +98,20 @@
     inset -2px 0 var(--button-shadow),
     inset 2px 2px var(--button-light);
 
-  --font-98: "Pixelated MS Sans Serif", Arial, Gulim, "MS UI Gothic", SimSun, PMingLiU;
+  /* Fonts */
+  --cjk-fontlink: Gulim, "MS UI Gothic", SimSun, PMingLiU;
+  --ui-font: "Pixelated MS Sans Serif", Arial, var(--cjk-fontlink);
+  --caption-font: bold 8pt var(--ui-font);
+  --menu-font: 8pt var(--ui-font);
+  --message-font: 8pt var(--ui-font);
+  --status-font: 8pt var(--ui-font);
+  --sm-caption-font: bold 8pt var(--ui-font);
+
+  /* WindowMetrics */
   --scrollbar-size: 16px;
   --palette-title-height: 15px;
   --menu-height: 18px;
+
   --hilight-inverted: #FFFF7F;
 }
 
@@ -138,9 +148,14 @@ ul.tree-view,
 .window,
 .title-bar,
 li[role=tab] {
-  font-family: var(--font-98);
+  font-family: var(--ui-font);
   -webkit-font-smoothing: none;
   font-size: 11px;
+}
+
+.title-bar {
+  line-height: 3;
+  font: var(--caption-font);
 }
 
 u {
@@ -241,7 +256,6 @@ input[type="reset"]:disabled,
 }
 
 .title-bar-text {
-  font-weight: bold;
   color: var(--title-text);
   letter-spacing: 0;
   margin-right: 24px;

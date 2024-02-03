@@ -75,9 +75,9 @@
         schemeElement.href = parentSchemeElement.href;
 
         if (localStorage.madesktopNoPixelFonts) {
-            document.documentElement.style.setProperty('--font-98', 'sans-serif');
+            document.documentElement.style.setProperty('--ui-font', 'sans-serif');
         } else {
-            document.documentElement.style.removeProperty('--font-98');
+            document.documentElement.style.removeProperty('--ui-font');
         }
 
         if (menuStyleElement) {
@@ -220,6 +220,7 @@
                             option.selected = false;
                         }
                         this.options[this.selectedIndexReal].selected = true;
+                        this.label.textContent = this.options[this.selectedIndexReal].textContent;
                     }
                 },
                 value: {

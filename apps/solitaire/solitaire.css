@@ -1,3 +1,5 @@
+@import '../../css/libmad.css';
+
 :root {
     --card-back: linear-gradient(45deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0) 44.9%, white 45%, white 55%, rgba(255, 255, 255, 0) 55.1%, rgba(255, 255, 255, 0)), linear-gradient(-45deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0) 44.9%, white 45%, white 55%, rgba(255, 255, 255, 0) 55.1%, rgba(255, 255, 255, 0));
 }
@@ -312,83 +314,10 @@ body {
 }
 
 /* MAD Additions */
-@keyframes fade {
-    0% {
-        opacity: 0.3;
-    }
-    100% {
-        opacity: 1;
-    }
-}
-
-@keyframes cmDropdown {
-    0% {
-        height: 0;
-    }
-}
-
-.menu {
-    display: flex;
-    margin-top: 0;
-    margin-left: 0;
-    margin-bottom: 1px;
-    font-family: var(--font-98);
-    background-color: var(--menu);
-    font-size: 11px;
-    height: var(--menu-height);
-}
-
-.menu > div {
-    padding: calc((var(--menu-height) - 14px) / 2) 5px 2px 5px;
-    border: solid 1px transparent;
-    user-select: none;
-    cursor: default;
-}
-
-.menu > div:hover {
-    border-color: var(--button-hilight) var(--button-shadow) var(--button-shadow) var(--button-hilight);
-}
-
-.menu > div:active,
-.menu > div[data-active] {
-    border-color: var(--button-shadow) var(--button-hilight) var(--button-hilight) var(--button-shadow);
-}
-
-.menu > div:active > span,
-.menu > div[data-active] > span {
-    margin-top: 1px;
-    margin-left: 1px;
-    margin-right: -1px;
-}
-
-.contextMenuBg {
-    display: none;
-    position: absolute;
-    top: var(--menu-height);
-    left: 0;
-    overflow: hidden;
-    animation: cmDropdown 0.25s linear;
-    background-color: var(--menu);
-}
-
-body[data-cm-shadow] .contextMenuBg {
-    box-shadow: var(--border-window-outer), var(--border-window-inner), 5px 5px 4px -4px rgba(0, 0, 0, 0.75) !important;
-}
-
-.contextMenu {
-    position: absolute;
-    bottom: 3px;
-    margin: 0 !important;
-    margin-right: 3px;
-}
 
 #gameMenuBg {
     width: 100px;
     height: 51px;
-}
-
-#gameMenuBg:focus {
-    outline: none;
 }
 
 #gameMenu {
@@ -405,42 +334,6 @@ body[data-cm-shadow] .contextMenuBg {
     left: 42px;
 }
 
-#helpMenuBg:focus {
-    outline: none;
-}
-
 #helpMenu {
     width: 118px;
-}
-
-.contextMenuItem {
-    width: 100%;
-    height: 17px;
-    font-size: 11px;
-    padding-left: 2px;
-    pointer-events: auto !important;
-}
-
-.contextMenuItem p {
-    margin: 0;
-    padding-top: 2px;
-}
-
-.contextMenuItem > p {
-    padding-left: 15px;
-}
-
-.confMenu > .contextMenuItem > p {
-    padding-left: 20px;
-}
-
-.contextMenuItem:hover,
-.contextMenuItem[data-active] {
-    background-color: var(--hilight);
-    color: var(--hilight-text);
-}
-
-.contextMenuItem:hover u,
-.contextMenuItem[data-active] u {
-    border-bottom-color: var(--hilight-text);
 }

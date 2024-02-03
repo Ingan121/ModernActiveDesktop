@@ -37,6 +37,11 @@
     --scrollbar-size: 16px;
     --menu-height: 18px;
     --palette-title-height: 17px;
+    --caption-font: bold 11pt "Times New Roman", var(--ui-font);
+    --menu-font: 10pt "Times New Roman", var(--ui-font);
+    --message-font: 10pt "Times New Roman", var(--ui-font);
+    --status-font: 10pt "Times New Roman", var(--ui-font);
+    --sm-caption-font: bold 10pt "Times New Roman", var(--ui-font);
 }
 .window {
     --extra-border-size: 1px;

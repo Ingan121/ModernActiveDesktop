@@ -113,7 +113,7 @@
 .title-bar {
     box-shadow: var(--title-text) -1px -1px inset, var(--title-text) 1px 1px inset;
     border-bottom: 2px solid var(--active-border) !important;
-    height: unset;
+    height: 12px;
 }
 
 .title-bar.inactive {

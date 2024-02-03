@@ -37,6 +37,7 @@ async function main() {
     const enableAnimationsChkBox = document.getElementById("enableAnimationsChkBox");
     const animationSelector = document.getElementById("animationSelector");
     const shadowChkBox = document.getElementById("shadowChkBox");
+    const outlineModeChkBox = document.getElementById("outlineModeChkBox");
     const effectsBtn = document.getElementById("effectsBtn");
 
     const itemMappings = {
@@ -329,6 +330,12 @@ async function main() {
         }
         parent.changeCmShadow(localStorage.madesktopCmShadow);
 
+        if (outlineModeChkBox.checked) {
+            delete localStorage.madesktopOutlineMode;
+        } else {
+            localStorage.madesktopOutlineMode = true;
+        }
+
         if (selector.disabled && schemeSelector.value !== "sys") {
             parent.adjustAllElements(parseInt(scheme["extra-title-height"]) || 0, parseInt(scheme["extra-border-size"]) || 0, parseInt(scheme["extra-border-bottom"]) || 0);
         } else {
@@ -374,10 +381,21 @@ async function main() {
         shadowChkBox.checked = true;
     }
 
+    if (localStorage.madesktopOutlineMode) {
+        outlineModeChkBox.checked = false;
+    }
+
     if (localStorage.madesktopLastSchemeName) {
         schemeName = localStorage.madesktopLastSchemeName;
         schemeSelectorOptions[0].textContent = schemeName;
     }
+
+    FontDetective.each(font => {
+        const option = document.createElement("option");
+        option.textContent = font.name;
+        option.value = font.name;
+        fontSelector.appendChild(option);
+    });
 
     function changeColor(color) {
         appendModified();
@@ -498,7 +516,7 @@ function parseCssScheme(schemeText) {
     let scheme = {};
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i].trim();
-        if (line.startsWith("--") && line.length <= 50) {
+        if (line.startsWith("--") && line.length <= 100) {
             const [key, value] = line.split(":");
             scheme[key.trim().slice(2)] = value.trim().slice(0, -1);
         }

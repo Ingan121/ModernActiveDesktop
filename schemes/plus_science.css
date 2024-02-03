@@ -37,6 +37,10 @@
     --scrollbar-size: 13px;
     --menu-height: 18px;
     --palette-title-height: 16px;
+    --caption-font: bold 8pt "Lucida Sans Unicode", var(--ui-font);
+    --menu-font: 8pt/1.1 "Lucida Sans Unicode", var(--ui-font);
+    --status-font: bold 7pt "Lucida Sans Unicode", var(--ui-font);
+    --sm-caption-font: 8pt "Lucida San Unicodes", var(--ui-font);
 }
 .window {
     --extra-border-size: 1px;

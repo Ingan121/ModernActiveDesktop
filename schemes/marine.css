@@ -37,6 +37,7 @@
     --scrollbar-size: 13px;
     --menu-height: 18px;
     --palette-title-height: 13px;
+    --sm-caption-font: 7pt var(--ui-font);
 }
 .window {
     --extra-border-size: 1px;

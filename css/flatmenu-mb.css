@@ -23,6 +23,7 @@
     border-color: var(--hilight) !important;
     color: var(--hilight-text) !important;
     background-color: var(--menu-highlight) !important;
+    padding-top: 2px !important;
 }
 
 .menu > div:hover span,

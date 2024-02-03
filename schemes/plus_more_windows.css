@@ -37,6 +37,10 @@
     --scrollbar-size: 13px;
     --menu-height: 20px;
     --palette-title-height: 17px;
+    --caption-font: bold italic 12pt "News Gothic MT", "Yu Gothic", Arial, var(--cjk-fontlink);
+    --menu-font: 9pt/1 "News Gothic MT", "Yu Gothic", Arial, var(--cjk-fontlink);
+    --status-font: 8pt "News Gothic MT", "Yu Gothic", Arial, var(--cjk-fontlink);
+    --sm-caption-font: 7pt "News Gothic MT", "Yu Gothic", Arial, var(--cjk-fontlink);
 }
 .window {
     --extra-border-size: 1px;

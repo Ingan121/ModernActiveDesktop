@@ -37,6 +37,11 @@
     --scrollbar-size: 16px;
     --menu-height: 18px;
     --palette-title-height: 17px;
+    --caption-font: 12pt "Haettenschweiler", var(--ui-font);
+    --menu-font: 10pt/1 "Haettenschweiler", var(--ui-font);
+    --message-font: 10pt "Haettenschweiler", var(--ui-font);
+    --status-font: 10pt "Times New Roman", var(--ui-font);
+    --sm-caption-font: bold 10pt "Times New Roman", var(--ui-font);
 }
 .window {
     --extra-title-height: 3px;

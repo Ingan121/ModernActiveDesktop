@@ -76,6 +76,8 @@ body {
     margin: 1px var(--extra-border-size) 1px var(--extra-border-size);
     background-color: var(--menu);
     height: var(--menu-height);
+    line-height: 1.2;
+    font: var(--menu-font);
 }
 
 .menu > div:first-child {
@@ -85,6 +87,7 @@ body {
 .menu > div {
     padding: calc((var(--menu-height) - 16px) / 2) 5px 0 5px;
     border: solid 1px transparent;
+    padding-top: 2px;
 }
 
 .disabled {
@@ -135,13 +138,15 @@ textarea {
     padding-left: 4px;
     padding-bottom: 0;
     margin-bottom: 0;
+    font: var(--message-font);
 }
 
 #msgbox-btn1 {
     height: 24px;
-    font-weight: bold;
     width: 72px;
     min-width: 0;
     position: absolute;
     bottom: 6px;
+    font: var(--message-font);
+    font-weight: bold;
 }
