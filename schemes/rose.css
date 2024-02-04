@@ -24,7 +24,7 @@
     --info-window: #FFFFFF;
     --menu: #CFAFB7;
     --menu-bar: #CFAFB7;
-    --menu-highlight: #9F6070;
+    --menu-hilight: #9F6070;
     --menu-text: #000000;
     --scrollbar: #CFAFB7;
     --title-text: #FFFFFF;
@@ -37,8 +37,8 @@
     --scrollbar-size: 15px;
     --menu-height: 18px;
     --palette-title-height: 17px;
-    --caption-font: 14pt "Times New Roman", var(--ui-font);
-    --sm-caption-font: bold 10pt "Times New Roman", var(--ui-font);
+    --caption-font: 14pt/0.7 "Times New Roman", var(--ui-font);
+    --sm-caption-font: bold 10pt/0.9 "Times New Roman", var(--ui-font);
 }
 .window {
     --extra-border-size: 1px;

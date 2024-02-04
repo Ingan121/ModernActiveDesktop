@@ -23,10 +23,6 @@ const topColorPickerLabel = document.getElementById("topColorPickerLabel");
 const albumArtChkBox = document.getElementById("albumArtChkBox");
 const dimAlbumArtChkBox = document.getElementById("dimAlbumArtChkBox");
 
-const miniPicker = document.getElementById("miniPicker");
-const miniPickerColors = document.querySelectorAll(".color");
-const openColorPickerBtn = document.getElementById("openColorPickerBtn");
-
 const okBtn = document.getElementById("okBtn");
 const cancelBtn = document.getElementById("cancelBtn");
 const applyBtn = document.getElementById("applyBtn");
@@ -36,40 +32,11 @@ let openColorPickerColor = null;
 for (const colorPicker of colorPickers) {
     colorPicker.addEventListener("click", function () {
         openColorPickerColor = this.querySelector(".colorPicker-color");
-        const clientRect = colorPicker.getBoundingClientRect();
-        let top = clientRect.top + colorPicker.offsetHeight;
-        let left = clientRect.left;
-
-        if (left + 78 > window.innerWidth) {
-            left = window.innerWidth - 78;
-        }
-        if (top + 121 > window.innerHeight) {
-            top = window.innerHeight - 121;
-        }
-
-        miniPicker.style.top = `${top}px`;
-        miniPicker.style.left = `${left}px`;
-        miniPicker.style.display = "block";
-        miniPicker.focus();
+        madOpenMiniColorPicker(this, this.querySelector(".colorPicker-color").style.backgroundColor, function (color) {
+            changeColor(color);
+        });
     });
 }
-
-miniPicker.addEventListener("focusout", function (event) {
-    if (Array.from(colorPickers).indexOf(event.relatedTarget) === -1 && event.relatedTarget !== openColorPickerBtn) {
-        miniPicker.style.display = "none";
-    }
-});
-
-for (const miniPickerColor of miniPickerColors) {
-    miniPickerColor.addEventListener("click", function () {
-        changeColor(this.style.backgroundColor);
-        miniPicker.style.display = "none";
-    });
-}
-
-openColorPickerBtn.addEventListener("click", function () {
-    madOpenColorPicker(openColorPickerColor.style.backgroundColor, true, changeColor);
-});
 
 function changeColor(color) {
     openColorPickerColor.style.backgroundColor = color;

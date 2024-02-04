@@ -78,6 +78,11 @@ body {
     height: var(--menu-height);
     line-height: 1.2;
     font: var(--menu-font);
+    color: var(--menu-text);
+}
+
+.menu u {
+    border-bottom-color: var(--menu-text);
 }
 
 .menu > div:first-child {

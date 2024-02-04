@@ -307,12 +307,6 @@ function loadBgImgConf() {
     return "";
 }
 
-// Get filename without extension
-// Accepts both fileurl and filename with extension
-function getFilename(str) {
-    return str.split('/').pop().split('.').slice(0, -1).join('.');
-}
-
 function switchDisplayOptionElement(isVideo) {
     if (isVideo) {
         wpVideoMuteLabel.style.display = 'block';

@@ -24,7 +24,7 @@
     --info-window: #FFFFFF;
     --menu: #00FFFF;
     --menu-bar: #00FFFF;
-    --menu-highlight: #FF0000;
+    --menu-hilight: #FF0000;
     --menu-text: #000000;
     --scrollbar: #3F3F3F;
     --title-text: #FFFFFF;
@@ -37,12 +37,11 @@
     --scrollbar-size: 17px;
     --menu-height: 19px;
     --palette-title-height: 14px;
-    --ui-font: "Fixedsys Excelsior", Arial, var(--cjk-fontlink);
-    --caption-font: bold 10pt var(--ui-font);
-    --menu-font: bold 10pt var(--ui-font);
-    --message-font: bold 10pt var(--ui-font);
-    --status-font: bold 10pt var(--ui-font);
-    --sm-caption-font: bold 10pt var(--ui-font);
+    --caption-font: bold 10pt "Fixedsys Excelsior", var(--ui-font);
+    --menu-font: bold 10pt/1 "Fixedsys Excelsior", var(--ui-font);
+    --message-font: bold 10pt "Fixedsys Excelsior", var(--ui-font);
+    --status-font: bold 10pt "Fixedsys Excelsior", var(--ui-font);
+    --sm-caption-font: bold 10pt "Fixedsys Excelsior", var(--ui-font);
 }
 .window {
     --extra-border-size: 5px;

@@ -228,6 +228,7 @@ visMenuItems[1].addEventListener('click', () => { // WMP Bars button
     visMenuItems[1].classList.add('activeStyle');
     visBar.style.display = 'block';
     visTop.style.display = 'block';
+    configChanged();
 });
 
 visMenuItems[2].addEventListener('click', () => { // Exit button
@@ -643,6 +644,7 @@ function configChanged() {
     } else {
         albumArt.style.opacity = '1';
     }
+    updateVisConfig();
 }
 
 window.addEventListener('load', updateSchemeColor);
@@ -692,5 +694,3 @@ function setupMediaListeners() {
     window.wallpaperRegisterMediaTimelineListener(wallpaperMediaTimelineListener);
     window.wallpaperRegisterMediaThumbnailListener(wallpaperMediaThumbnailListener);
 }
-
-configChanged();

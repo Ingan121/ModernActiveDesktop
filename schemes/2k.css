@@ -24,7 +24,7 @@
     --info-window: #FFFFE1;
     --menu: #D4D0C8;
     --menu-bar: #D4D0C8;
-    --menu-highlight: #0A246A;
+    --menu-hilight: #0A246A;
     --menu-text: #000000;
     --scrollbar: #D4D0C8;
     --title-text: #FFFFFF;
@@ -39,7 +39,7 @@
     --palette-title-height: 15px;
     --ui-font: Tahoma, Arial, var(--cjk-fontlink);
     --caption-font: bold 8pt var(--ui-font);
-    --menu-font: 8pt var(--ui-font);
+    --menu-font: 8pt/1.1 var(--ui-font);
     --message-font: 8pt var(--ui-font);
     --status-font: 8pt var(--ui-font);
     --sm-caption-font: bold 8pt var(--ui-font);

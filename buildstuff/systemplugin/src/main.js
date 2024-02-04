@@ -69,7 +69,7 @@ function createWindow () {
       webSecurity: false,
       enableRemoteModule: true
     },
-    resizable: false,
+    resizable: true,
     show: false
   });
   
@@ -308,6 +308,9 @@ function generateCssScheme() {
 
   let schemeStyle = '';
   if (process.platform === 'win32') {
+    const borderSize = (mainWindow.getSize()[0] - mainWindow.getContentSize()[0]) / 2;
+    const titleHeight = mainWindow.getSize()[1] - mainWindow.getContentSize()[1] - borderSize * 2;
+    console.log({ borderSize, titleHeight });
     schemeStyle = 
       `:root {
         --active-border: ${systemPreferences.getColor('active-border')};
@@ -334,7 +337,7 @@ function generateCssScheme() {
         --info-window: ${systemPreferences.getColor('info-background')};
         --menu: ${systemPreferences.getColor('menu')};
         --menu-bar: ${systemPreferences.getColor('menubar')};
-        --menu-highlight: ${systemPreferences.getColor('menu-highlight')};
+        --menu-hilight: ${systemPreferences.getColor('menu-highlight')};
         --menu-text: ${systemPreferences.getColor('menu-text')};
         --scrollbar: ${systemPreferences.getColor('scrollbar')};
         --title-text: ${systemPreferences.getColor('caption-text')};
@@ -343,6 +346,16 @@ function generateCssScheme() {
         --window-text: ${systemPreferences.getColor('window-text')};
         --accent: ${accent};
         --accent-dark: ${shadeColor(accent.substring(0, 6), -27)};
+        --ui-font: "Segoe UI";
+        --caption-font: caption;
+        --menu-font: menu;
+        --message-font: message-box;
+        --status-font: status-bar;
+        --sm-caption-font: small-caption;
+      }
+      .window {
+        --extra-border-size: ${borderSize - 3}px;
+        --extra-title-height: ${titleHeight - 18}px;
       }`;
   } else {
     schemeStyle = 

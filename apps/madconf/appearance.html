@@ -29,14 +29,14 @@
                             <option value="95">Windows Classic (95 / NT4)</option>
                             <option value="2k">Windows Standard (2000 / Me)</option>
                             <option value="xpcss4mad" data-inconfigurable="1">Windows XP style</option>
+                            <option value="sys" data-inconfigurable="1" data-condition="sysplugIntegration">System Scheme</option>
+                            <option value="import" data-inconfigurable="1">Browse...</option>
                             <option value="xp">Windows XP Blue</option>
                             <option value="xp_olive">Windows XP Olive Green</option>
                             <option value="xp_silver">Windows XP Silver</option>
                             <option value="xp_royale">Windows XP Royale</option>
                             <option value="aero">Windows Aero</option>
                             <option value="windose" data-inconfigurable="1">Windose</option>
-                            <option value="sys" data-inconfigurable="1" data-condition="sysplugIntegration">System Colors</option>
-                            <option value="import" data-inconfigurable="1">Browse...</option>
                             <option value="brick">Brick</option>
                             <option value="desert">Desert</option>
                             <option value="eggplant">Eggplant</option>
@@ -125,6 +125,7 @@
                                 <option value="active-title">Active Title Bar</option>
                                 <option value="active-border">Active Window Border</option>
                                 <option value="app-workspace">Application Background</option>
+                                <option value="caption-buttons">Caption Buttons</option>
                                 <option value="background" selected>Desktop</option>
                                 <option value="gray-text">Disabled Item</option>
                                 <option value="hot-tracking-color">Hyperlink</option>
@@ -132,10 +133,12 @@
                                 <option value="inactive-border">Inactive Window Border</option>
                                 <option value="menu">Menu</option>
                                 <option value="menu-bar">Menu Bar (Flat)</option>
+                                <option value="message-box">Message Box</option>
                                 <option value="palette-title">Palette Title</option>
                                 <option value="scrollbar">Scrollbar</option>
                                 <option value="hilight">Selected Item</option>
                                 <option value="info-window">ToolTip</option>
+                                <option value="user-interface">UI Font</option>
                                 <option value="window">Window</option>
                             </mad-select>
                         </p>
@@ -163,14 +166,15 @@
                     <section id="fontEditorGroup" class="field-row">
                         <p id="fontSelectorWrap">
                             <span class="groupLabel"><u>F</u>ont:</span>
-                            <mad-select id="fontSelector">
+                            <mad-select id="fontSelector" disabled>
+                                <option hidden selected></option>
                                 <option value="Pixelated MS Sans Serif">Pixelated MS Sans Serif</option>
                                 <option value="Fixedsys Excelsior">Fixedsys Excelsior</option>
                             </mad-select>
                         </p>
                         <p id="fontSizeWrap" class="disabled">
                             <span class="label">Siz<u>e</u>:</span>
-                            <input id="itemSize" type="number" min="0" max="100" value="" disabled>
+                            <input id="fontSize" type="number" min="0" max="100" value="" disabled>
                         </p>
                         <p id="textColorWrap" class="disabled">
                             <span id="textColorLabel" class="label">Colo<u>r</u>:</span>
@@ -208,33 +212,6 @@
             <button id="cancelBtn">Cancel</button>
             <button id="applyBtn"><u>A</u>pply</button>
         </section>
-    </div>
-
-    <div id="miniPicker" class="window" tabindex="-1">
-        <div id="miniPickerColors">
-            <div class="color" style="background-color: #FFFFFF"></div>
-            <div class="color" style="background-color: #000000"></div>
-            <div class="color" style="background-color: #C0C0C0"></div>
-            <div class="color" style="background-color: #808080"></div>
-            <div class="color" style="background-color: #FF0000"></div>
-            <div class="color" style="background-color: #800000"></div>
-            <div class="color" style="background-color: #FFFF00"></div>
-            <div class="color" style="background-color: #808000"></div>
-            <div class="color" style="background-color: #00FF00"></div>
-            <div class="color" style="background-color: #008000"></div>
-            <div class="color" style="background-color: #00FFFF"></div>
-            <div class="color" style="background-color: #008080"></div>
-            <div class="color" style="background-color: #0000FF"></div>
-            <div class="color" style="background-color: #000080"></div>
-            <div class="color" style="background-color: #FF00FF"></div>
-            <div class="color" style="background-color: #800080"></div>
-            <div class="color" style="background-color: #C0DCC0"></div>
-            <div class="color" style="background-color: #A6CAF0"></div>
-            <div class="color" style="background-color: #F0FBFF"></div>
-            <div class="color" style="background-color: #A0A0A4"></div>
-        </div>
-        <hr>
-        <button id="openColorPickerBtn"><u>O</u>ther...</button>
     </div>
 
     <script src="../../js/libmad.js"></script>

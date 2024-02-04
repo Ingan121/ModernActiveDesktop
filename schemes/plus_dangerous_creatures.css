@@ -24,7 +24,7 @@
     --info-window: #ffffff;
     --menu: #707070;
     --menu-bar: #707070;
-    --menu-highlight: #008080;
+    --menu-hilight: #008080;
     --menu-text: #000000;
     --scrollbar: #b8b8b8;
     --title-text: #ffffff;
@@ -37,7 +37,7 @@
     --scrollbar-size: 13px;
     --menu-height: 18px;
     --palette-title-height: 16px;
-    --caption-font: bold 8pt Arial, var(--cjk-fontlink);
+    --caption-font: bold 8pt/1.4 Arial, var(--cjk-fontlink);
     --menu-font: 8pt Arial, var(--cjk-fontlink);
     --message-font: 8pt Arial, var(--cjk-fontlink);
     --status-font: bold 8pt Arial, var(--cjk-fontlink);

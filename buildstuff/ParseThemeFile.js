@@ -26,7 +26,7 @@ const scheme = {
     'info-window': getColorValue('InfoWindow'),
     'menu': getColorValue('Menu'),
     'menu-bar': getColorValue('MenuBar'),
-    'menu-highlight': getColorValue('MenuHighlight'),
+    'menu-hilight': getColorValue('MenuHilight'),
     'menu-text': getColorValue('MenuText'),
     'scrollbar': getColorValue('Scrollbar'),
     'title-text': getColorValue('TitleText'),
@@ -55,7 +55,7 @@ function getColorValue(name) {
                 return getColorValue('InactiveTitle');
             case 'MenuBar':
                 return getColorValue('Menu');
-            case 'MenuHighlight':
+            case 'MenuHilight':
                 return getColorValue('Hilight');
             case 'HotTrackingColor':
                 return '#008080';

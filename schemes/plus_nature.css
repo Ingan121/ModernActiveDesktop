@@ -24,7 +24,7 @@
     --info-window: #FFFFFF;
     --menu: #D8C0A0;
     --menu-bar: #D4D0C8;
-    --menu-highlight: #0A246A;
+    --menu-hilight: #0A246A;
     --menu-text: #000000;
     --scrollbar: #F0E0D0;
     --title-text: #F0E8D8;
@@ -37,7 +37,7 @@
     --scrollbar-size: 13px;
     --menu-height: 18px;
     --palette-title-height: 15px;
-    --caption-font: bold 11pt "Copperplate Gothic Bold", "Copperplate Gothic", var(--ui-font);
+    --caption-font: bold 11pt/0.9 "Copperplate Gothic Bold", "Copperplate Gothic", var(--ui-font);
     --menu-font: 9pt "Copperplate Gothic Light", "Copperplate Gothic", var(--ui-font);
     --status-font: 9pt "Copperplate Gothic Light", "Copperplate Gothic", var(--ui-font);
     --sm-caption-font: bold 8pt "Copperplate Gothic Light", "Copperplate Gothic", var(--ui-font);

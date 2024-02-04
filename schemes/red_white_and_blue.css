@@ -24,7 +24,7 @@
     --info-window: #FFFFFF;
     --menu: #C0C0C0;
     --menu-bar: #C0C0C0;
-    --menu-highlight: #800000;
+    --menu-hilight: #800000;
     --menu-text: #000000;
     --scrollbar: #C0C0C0;
     --title-text: #FFFFFF;
@@ -37,11 +37,11 @@
     --scrollbar-size: 13px;
     --menu-height: 18px;
     --palette-title-height: 17px;
-    --caption-font: bold 11pt "Times New Roman", var(--ui-font);
-    --menu-font: 10pt "Times New Roman", var(--ui-font);
+    --caption-font: bold 11pt/0.9 "Times New Roman", var(--ui-font);
+    --menu-font: 10pt/1 "Times New Roman", var(--ui-font);
     --message-font: 10pt "Times New Roman", var(--ui-font);
     --status-font: 10pt "Times New Roman", var(--ui-font);
-    --sm-caption-font: bold 10pt "Times New Roman", var(--ui-font);
+    --sm-caption-font: bold 10pt/1 "Times New Roman", var(--ui-font);
 }
 .window {
     --extra-border-size: 1px;

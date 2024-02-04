@@ -550,6 +550,7 @@ class DeskMover {
         const dummy = this.dropdownBg.querySelector(".dropdownItem");
         const options = elem.options || elem.querySelectorAll("option");
         let optionCnt = 0;
+        let selectedIndex = 0;
 
         if (this.dropdown.childElementCount > 1) {
             for (let i = this.dropdown.childElementCount - 1; i > 0; i--) {
@@ -566,9 +567,13 @@ class DeskMover {
                     continue;
                 }
             }
-            const item = dummy.cloneNode(dummy, true);
+            const item = dummy.cloneNode(true);
             item.textContent = option.textContent;
             item.dataset.value = option.value;
+            if (option.value === elem.value) {
+                selectedIndex = optionCnt;
+                item.dataset.hover = true;
+            }
             item.addEventListener('click', () => {
                 elem.value = item.dataset.value;
                 elem.dispatchEvent(new Event('change'));
@@ -576,6 +581,12 @@ class DeskMover {
                     label.textContent = item.textContent;
                 }
                 this.closeDropdown();
+            });
+            item.addEventListener('mouseover', () => {
+                for (let i = 1; i < this.dropdown.childElementCount; i++) {
+                    delete this.dropdown.children[i].dataset.hover;
+                }
+                item.dataset.hover = true;
             });
             this.dropdown.appendChild(item);
             optionCnt++;
@@ -604,6 +615,12 @@ class DeskMover {
         }
         this.dropdown.style.height = this.dropdownBg.style.height;
 
+        if (selectedIndex > 12) {
+            this.dropdown.scrollTop = (selectedIndex - 12) * itemHeight;
+        } else {
+            this.dropdown.scrollTop = 0;
+        }
+
         iframeClickEventCtrl(false);
         this.dropdownBg.focus();
     }
@@ -612,6 +629,59 @@ class DeskMover {
         this.dropdownBg.style.display = "none";
         delete this.lastDropdown.dataset.open;
         iframeClickEventCtrl(true);
+    }
+
+    openMiniColorPicker(elem, initialColor, callback) {
+        const miniPicker = miniPickerBase.cloneNode(true);
+        const miniPickerColors = miniPicker.querySelectorAll(".miniPickerColor");
+        const openColorPickerBtn = miniPicker.querySelector(".openColorPickerBtn");
+        miniPicker.style.display = "block";
+
+        const clientRect = elem.getBoundingClientRect();
+        let top = parseInt(this.config.yPos); 
+        let left = parseInt(this.config.xPos);
+        if (this.config.unscaled) {
+            top += (clientRect.top + elem.offsetHeight) / window.scaleFactor;
+            left += clientRect.left / window.scaleFactor;
+        } else {
+            top += clientRect.top + elem.offsetHeight;
+            left += clientRect.left;
+        }
+        top += this.windowFrame.offsetTop + 3;
+        left += this.windowFrame.offsetLeft + 3;
+
+        if (left + 78 > window.innerWidth) {
+            left = window.innerWidth - 78;
+        }
+        if (top + 121 > window.innerHeight) {
+            top = window.innerHeight - 121;
+        }
+
+        miniPicker.style.top = `${top}px`;
+        miniPicker.style.left = `${left}px`;
+        miniPicker.style.display = "block";
+
+        for (const miniPickerColor of miniPickerColors) {
+            miniPickerColor.addEventListener("click", function () {
+                callback(this.style.backgroundColor);
+                miniPicker.blur();
+            });
+        }
+
+        openColorPickerBtn.addEventListener("click", () => {
+            this.openColorPicker(initialColor, true, callback);
+            miniPicker.blur();
+        });
+
+        miniPicker.addEventListener("focusout", function (event) {
+            if (event.relatedTarget !== elem && event.relatedTarget !== openColorPickerBtn) {
+                miniPicker.style.display = "none";
+                miniPicker.remove();
+            }
+        });
+
+        document.body.appendChild(miniPicker);
+        miniPicker.focus();
     }
 
     openColorPicker(initialColor, expand, callback) {
@@ -821,7 +891,7 @@ class DeskMover {
                             }
                             windowOutline.style.height = this.prevOffsetBottom - this.mousePosition.y + this.windowFrame.offsetTop + extraBorderBottom + extra + 'px';
                         } else {
-                            this.windowElement.height = this.prevOffsetBottom - this.mousePosition.y + 5 + 'px';
+                            this.windowElement.height = this.prevOffsetBottom - this.mousePosition.y + 'px';
                         }
                         target2.style.top = (this.mousePosition.y + this.offset[1]) + 'px';
                     }

@@ -24,7 +24,7 @@
     --info-window: #FFFFE1;
     --menu: #FFFFFF;
     --menu-bar: #E0E2EB;
-    --menu-highlight: #BBB7C7;
+    --menu-hilight: #BBB7C7;
     --menu-text: #000000;
     --scrollbar: #D4D0C8;
     --title-text: #0E1010;
@@ -38,11 +38,11 @@
     --menu-height: 19px;
     --palette-title-height: 17px;
     --ui-font: Tahoma, Arial, var(--cjk-fontlink);
-    --caption-font: bold 10pt "Trebuchet MS", var(--ui-font);
+    --caption-font: bold 10pt/1 "Trebuchet MS", var(--ui-font);
     --menu-font: 8pt/1.1 var(--ui-font);
     --message-font: 8pt var(--ui-font);
     --status-font: 8pt var(--ui-font);
-    --sm-caption-font: bold 8pt var(--ui-font);
+    --sm-caption-font: bold 8pt/1.1 var(--ui-font);
 }
 .window {
     --extra-border-size: 1px;

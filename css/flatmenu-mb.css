@@ -3,7 +3,7 @@
 .menu-button.active {
     border: none !important;
     color: var(--hilight-text) !important;
-    background-color: var(--menu-highlight) !important;
+    background-color: var(--menu-hilight) !important;
     box-shadow: var(--hilight) -1px -1px inset, var(--hilight) 1px 1px inset !important;
     margin-right: 0 !important;
 }
@@ -22,8 +22,8 @@
 .menu > div[data-active] {
     border-color: var(--hilight) !important;
     color: var(--hilight-text) !important;
-    background-color: var(--menu-highlight) !important;
-    padding-top: 2px !important;
+    background-color: var(--menu-hilight) !important;
+    padding-top: calc((var(--menu-height) - 14px) / 2) !important;
 }
 
 .menu > div:hover span,

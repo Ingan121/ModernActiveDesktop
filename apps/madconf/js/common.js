@@ -18,7 +18,7 @@ const okBtn = document.getElementById("okBtn");
 const cancelBtn = document.getElementById("cancelBtn");
 const applyBtn = document.getElementById("applyBtn");
 
-const textboxes = document.querySelectorAll("input[type=text], input[type=number]");
+const textboxes = document.querySelectorAll("input[type=text], input[type=number]:not(#fontSize)");
 
 for (const tab of tabs) {
     tab.addEventListener("click", function () {
@@ -63,3 +63,18 @@ if (applyBtn) {
 
 madSetIcon(false);
 okBtn.focus();
+
+// Get filename without extension
+// Accepts both fileurl and filename with extension
+function getFilename(str) {
+    return str.split('/').pop().split('.').slice(0, -1).join('.');
+}
+
+function copyText(str) {
+    const tmp = document.createElement("textarea");
+    document.body.appendChild(tmp);
+    tmp.value = str;
+    tmp.select();
+    document.execCommand('copy');
+    document.body.removeChild(tmp);
+}

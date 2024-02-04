@@ -6,7 +6,7 @@ html,body {
 }
 
 * {
-    font-family: "Pixelated MS Sans Serif", Arial, Gulim, MS UI Gothic, SimSun, PMingLiU;
+    font-family: var(--ui-font);
 }
 
 .windowBtn-ChanView {

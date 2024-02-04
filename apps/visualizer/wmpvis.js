@@ -12,6 +12,14 @@ let triedRegistering = false;
 let timeout;
 let idle = false;
 
+let visConfig = {
+    barColor: localStorage.madesktopVisBarColor || '#a4eb0c',
+    topColor: localStorage.madesktopVisTopColor || '#dfeaf7',
+    useSchemeColors: localStorage.madesktopVisUseSchemeColors,
+    followAlbumArt: localStorage.madesktopVisFollowAlbumArt,
+    desktopVisOnlyAlbumArt: localStorage.madesktopVisOnlyAlbumArt
+};
+
 updateSize();
 
 const lastAud = new Array(128).fill(0);
@@ -25,20 +33,13 @@ function wallpaperAudioListener(audioArray) {
     clearTimeout(timeout);
     pausedAlert.style.display = 'none';
 
-    if (window.noupdate || localStorage.madesktopVisOnlyAlbumArt) {
+    if (window.noupdate || visConfig.desktopVisOnlyAlbumArt) {
         return;
     }
 
     // Optimization
     if (idle) {
-        let allZero = true;
-        for (let i = 0; i < audioArray.length; ++i) {
-            if (audioArray[i] !== 0) {
-                allZero = false;
-                break;
-            }
-        }
-        if (allZero) {
+        if (audioArray[Math.round(Math.random() * 120)] <= 0.0001) {
             return;
         }
         idle = false;
@@ -52,12 +53,12 @@ function wallpaperAudioListener(audioArray) {
     const barWidth = Math.max(Math.round(1.0 / 128.0 * visBar.width), Math.floor(6 * madScaleFactor));
     const gap = 1;
 
-    visBarCtx.fillStyle = localStorage.madesktopVisBarColor || '#a4eb0c';
-    visTopCtx.fillStyle = localStorage.madesktopVisTopColor || '#dfeaf7';
-    if (localStorage.madesktopVisFollowAlbumArt && lastAlbumArt) {
+    visBarCtx.fillStyle = visConfig.barColor;
+    visTopCtx.fillStyle = visConfig.topColor;
+    if (visConfig.followAlbumArt && lastAlbumArt) {
         visBarCtx.fillStyle = lastAlbumArt.textColor;
         visTopCtx.fillStyle = lastAlbumArt.highContrastColor;
-    } else if (localStorage.madesktopVisUseSchemeColors) {
+    } else if (visConfig.useSchemeColors) {
         visBarCtx.fillStyle = schemeBarColor;
         visTopCtx.fillStyle = schemeTopColor;
     }
@@ -65,7 +66,7 @@ function wallpaperAudioListener(audioArray) {
     let allZero = true;
     for (var i = 0; i < audioArray.length; ++i) {
         // Create an audio bar with its hight depending on the audio volume level of the current frequency
-        const height = visBar.height * Math.min(audioArray[i], 1)// * 0.7;
+        const height = Math.round(visBar.height * Math.min(audioArray[i], 1));
         if (height > lastBar[i]) {
             lastBar[i] = height;
             visBarCtx.fillRect(barWidth * i, visBar.height - height, barWidth - gap, height);
@@ -73,7 +74,7 @@ function wallpaperAudioListener(audioArray) {
             lastBar[i] -= 3;
             const diff = audioArray[i] - lastAud[i];
             if (diff > 0.1) {
-                lastBar[i] += visBar.height * diff * 0.07;
+                lastBar[i] += Math.round(visBar.height * diff * 0.07);
                 if (lastBar[i] > visBar.height) {
                     lastBar[i] = visBar.height;
                 }
@@ -122,6 +123,16 @@ function updateSize() {
     idle = false;
 }
 
+function updateVisConfig() {
+    visConfig = {
+        barColor: localStorage.madesktopVisBarColor || '#a4eb0c',
+        topColor: localStorage.madesktopVisTopColor || '#dfeaf7',
+        useSchemeColors: localStorage.madesktopVisUseSchemeColors,
+        followAlbumArt: localStorage.madesktopVisFollowAlbumArt,
+        desktopVisOnlyAlbumArt: localStorage.madesktopVisOnlyAlbumArt
+    };
+}
+
 window.addEventListener('resize', updateSize);
 window.addEventListener('load', updateSize);
 
@@ -159,3 +170,5 @@ setInterval(() => {
     }
     updateCnt = 0;
 }, 200);
+
+configChanged();

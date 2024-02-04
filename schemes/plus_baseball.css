@@ -24,7 +24,7 @@
     --info-window: #E1E0D2;
     --menu: #D0A870;
     --menu-bar: #D4D0C8;
-    --menu-highlight: #0A246A;
+    --menu-hilight: #0A246A;
     --menu-text: #000000;
     --scrollbar: #E8D0B8;
     --title-text: #FFFFFF;
@@ -37,7 +37,7 @@
     --scrollbar-size: 13px;
     --menu-height: 18px;
     --palette-title-height: 15px;
-    --caption-font: bold 10pt "Century Gothic", var(--ui-font);
+    --caption-font: bold 10pt/1.1 "Century Gothic", var(--ui-font);
     --sm-caption-font: 8pt var(--ui-font);
 }
 .window {

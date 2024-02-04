@@ -2026,7 +2026,7 @@ function show_document_history() {
 	$w.addClass("history-window squish");
 	$w.$content.html(`
 		<label>
-			<select id="history-view-mode" class="inset-deep">
+			<select id="history-view-mode" class="inset-deep" onclick="madOpenDropdown(this)">
 				<option value="linear">Linear timeline</option>
 				<option value="tree">Tree</option>
 			</select>

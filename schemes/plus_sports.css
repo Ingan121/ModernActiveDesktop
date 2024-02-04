@@ -24,7 +24,7 @@
     --info-window: #ffff00;
     --menu: #b0e0a0;
     --menu-bar: #b0e0a0;
-    --menu-highlight: #ffff00;
+    --menu-hilight: #ffff00;
     --menu-text: #008000;
     --scrollbar: #c0c0c0;
     --title-text: #000000;
@@ -37,7 +37,7 @@
     --scrollbar-size: 13px;
     --menu-height: 18px;
     --palette-title-height: 15px;
-    --caption-font: bold 9pt "OCR A Extended", "OCR A", var(--ui-font);
+    --caption-font: bold 9pt/1.2 "OCR A Extended", "OCR A", var(--ui-font);
     --menu-font: 8pt "OCR A Extended", "OCR A", var(--ui-font);
 }
 .window {

@@ -24,7 +24,7 @@
     --info-window: #FFFFE1;
     --menu: #B4C3DC;
     --menu-bar: #D4D0C8;
-    --menu-highlight: #0A246A;
+    --menu-hilight: #0A246A;
     --menu-text: #000000;
     --scrollbar: #DAE1ED;
     --title-text: #FFFFFF;
@@ -37,7 +37,7 @@
     --scrollbar-size: 13px;
     --menu-height: 20px;
     --palette-title-height: 17px;
-    --caption-font: bold italic 12pt "News Gothic MT", "Yu Gothic", Arial, var(--cjk-fontlink);
+    --caption-font: bold italic 12pt/1 "News Gothic MT", "Yu Gothic", Arial, var(--cjk-fontlink);
     --menu-font: 9pt/1 "News Gothic MT", "Yu Gothic", Arial, var(--cjk-fontlink);
     --status-font: 8pt "News Gothic MT", "Yu Gothic", Arial, var(--cjk-fontlink);
     --sm-caption-font: 7pt "News Gothic MT", "Yu Gothic", Arial, var(--cjk-fontlink);

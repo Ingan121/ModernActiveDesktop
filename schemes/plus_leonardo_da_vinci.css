@@ -24,7 +24,7 @@
     --info-window: #FFFFFF;
     --menu: #BFA59F;
     --menu-bar: #D4D0C8;
-    --menu-highlight: #0A246A;
+    --menu-hilight: #0A246A;
     --menu-text: #000000;
     --scrollbar: #DFD2D0;
     --title-text: #FFFFFF;
@@ -37,8 +37,8 @@
     --scrollbar-size: 16px;
     --menu-height: 18px;
     --palette-title-height: 18px;
-    --caption-font: bold 10pt "Book Antiqua", var(--ui-font);
-    --menu-font: 8pt "Book Antiqua", var(--ui-font);
+    --caption-font: bold 10pt/1.1 "Book Antiqua", var(--ui-font);
+    --menu-font: 8pt/1.1 "Book Antiqua", var(--ui-font);
     --status-font: 8pt "Book Antiqua", var(--ui-font);
     --sm-caption-font: bold 8pt "Book Antiqua", var(--ui-font);
 }

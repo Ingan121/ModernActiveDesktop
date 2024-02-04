@@ -187,6 +187,7 @@ body {
     text-overflow: ellipsis;
     white-space: nowrap;
     display: none;
+    width: 100%;
 }
 
 .windowContainer > .title-bar:not(.noIcon) > .title-bar-text {
@@ -300,6 +301,11 @@ body {
     overflow: hidden;
     animation: cmDropright 0.25s linear;
     background-color: var(--menu) !important;
+    color: var(--menu-text) !important;
+}
+
+.contextMenuBg u {
+    border-bottom-color: var(--menu-text);
 }
 
 body[data-cm-shadow] .contextMenuBg {
@@ -467,7 +473,8 @@ body[data-cm-shadow] .contextMenuBg {
     border: solid 1px transparent;
 }
 
-.dropdownItem:hover {
+.dropdownItem:hover,
+.dropdownItem[data-hover] {
     background-color: var(--hilight);
     color: var(--hilight-text);
     border: dotted 1px var(--hilight-inverted);
@@ -551,6 +558,60 @@ body[data-cm-shadow] .contextMenuBg {
     margin-top: 14px;
     margin-bottom: 12px;
     justify-content: center;
+}
+
+.miniPicker {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 72px;
+    height: 115px;
+    z-index: 99994;
+    display: none;
+}
+
+.miniPicker:focus {
+    outline: none;
+}
+
+.miniPickerColors {
+    display: grid;
+    grid-template-columns: repeat(4, 16px);
+    gap: 2px;
+    margin-top: 1px;
+    margin-left: 1px;
+}
+
+.miniPickerColor {
+    width: 16px;
+    height: 16px;
+    box-shadow: inset -1px -1px var(--button-hilight),
+        inset 1px 1px var(--button-shadow),
+        inset -2px -2px var(--button-light),
+        inset 2px 2px var(--button-dk-shadow);
+}
+
+.miniPickerColor:hover {
+    width: 12px;
+    height: 12px;
+    margin-top: -1px;
+    margin-left: -1px;
+    margin-bottom: -1px;
+    box-shadow: none;
+    border-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3IDciIHdpZHRoPSI3IiBoZWlnaHQ9IjciPjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSI3IiBoZWlnaHQ9IjciIGZpbGw9ImJsYWNrIi8+PHJlY3QgeD0iMSIgeT0iMSIgd2lkdGg9IjUiIGhlaWdodD0iNSIgZmlsbD0id2hpdGUiLz48cmVjdCB4PSIyIiB5PSIyIiB3aWR0aD0iMyIgaGVpZ2h0PSIzIiBmaWxsPSJibGFjayIvPjwvc3ZnPg==") 3 / 3px;
+    border-style: solid;
+}
+
+.miniPicker hr {
+    margin-top: 3px;
+    margin-bottom: 2px;
+}
+
+.openColorPickerBtn {
+    min-width: auto !important;
+    min-height: auto !important;
+    width: 62px;
+    height: 18px;
 }
 
 #errorWnd {

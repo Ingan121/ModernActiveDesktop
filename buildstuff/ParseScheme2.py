@@ -31,7 +31,7 @@ def mapper(string, name, filename, base = 3):
     --info-window: #{parse(lines[base+21])};
     --menu: #{parse(lines[base+22])};
     --menu-bar: #{parse(lines[base+30])};
-    --menu-highlight: #{parse(lines[base+29])};
+    --menu-hilight: #{parse(lines[base+29])};
     --menu-text: #{parse(lines[base+23])};
     --scrollbar: #{parse(lines[base+24])};
     --title-text: #{parse(lines[base+25])};

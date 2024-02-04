@@ -192,60 +192,15 @@ input[type=number]::-webkit-outer-spin-button {
     top: -1px;
 }
 
+button[data-active] {
+    box-shadow: var(--border-sunken-outer), var(--border-sunken-inner);
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdib3g9IjAgMCAyIDIiIHdpZHRoPSIyIiBoZWlnaHQ9IjIiPjxyZWN0IGZpbGw9IndoaXRlIiB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIi8+PHJlY3QgZmlsbD0idHJhbnNwYXJlbnQiIHg9IjEiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiLz48cmVjdCBmaWxsPSJ3aGl0ZSIgeD0iMSIgeT0iMSIgd2lkdGg9IjEiIGhlaWdodD0iMSIvPjxyZWN0IGZpbGw9InRyYW5zcGFyZW50IiB4PSIwIiB5PSIxIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIi8+PC9zdmc+');
+}
+
 #checkboxes {
     display: none;
 }
 
 .topmargin {
     margin-top: 6px;
-}
-
-#miniPicker {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 72px;
-    height: 115px;
-    z-index: 4;
-    display: none;
-}
-
-#miniPickerColors {
-    display: grid;
-    grid-template-columns: repeat(4, 16px);
-    gap: 2px;
-    margin-top: 1px;
-    margin-left: 1px;
-}
-
-.color {
-    width: 16px;
-    height: 16px;
-    box-shadow: inset -1px -1px var(--button-hilight),
-        inset 1px 1px var(--button-shadow),
-        inset -2px -2px var(--button-light),
-        inset 2px 2px var(--button-dk-shadow);
-}
-
-.color:hover {
-    width: 12px;
-    height: 12px;
-    margin-top: -1px;
-    margin-left: -1px;
-    margin-bottom: -1px;
-    box-shadow: none;
-    border-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3IDciIHdpZHRoPSI3IiBoZWlnaHQ9IjciPjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSI3IiBoZWlnaHQ9IjciIGZpbGw9ImJsYWNrIi8+PHJlY3QgeD0iMSIgeT0iMSIgd2lkdGg9IjUiIGhlaWdodD0iNSIgZmlsbD0id2hpdGUiLz48cmVjdCB4PSIyIiB5PSIyIiB3aWR0aD0iMyIgaGVpZ2h0PSIzIiBmaWxsPSJibGFjayIvPjwvc3ZnPg==") 3 / 3px;
-    border-style: solid;
-}
-
-#miniPicker hr {
-    margin-top: 3px;
-    margin-bottom: 2px;
-}
-
-#openColorPickerBtn {
-    min-width: auto;
-    min-height: auto;
-    width: 62px;
-    height: 18px;
 }

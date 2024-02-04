@@ -24,7 +24,7 @@
     --info-window: #ffffff;
     --menu: #b8a068;
     --menu-bar: #b8a068;
-    --menu-highlight: #800000;
+    --menu-hilight: #800000;
     --menu-text: #000000;
     --scrollbar: #e0d0b8;
     --title-text: #f09010;
@@ -37,7 +37,7 @@
     --scrollbar-size: 13px;
     --menu-height: 18px;
     --palette-title-height: 15px;
-    --caption-font: 12pt "Matisse ITC", "Tempus Sans ITC", var(--ui-font);
+    --caption-font: 12pt/0.9 "Matisse ITC", "Tempus Sans ITC", var(--ui-font);
     --menu-font: 8pt/1 "Tempus Sans ITC", var(--ui-font);
     --message-font: 9pt "Tempus Sans ITC", var(--ui-font);
     --status-font: bold 9pt var(--ui-font);

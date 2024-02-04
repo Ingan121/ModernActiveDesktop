@@ -296,6 +296,7 @@
     window.madOpenConfig = parent.openConfig;
 
     window.madOpenDropdown = deskMover.openDropdown.bind(deskMover);
+    window.madOpenMiniColorPicker = deskMover.openMiniColorPicker.bind(deskMover);
     window.madOpenColorPicker = deskMover.openColorPicker.bind(deskMover);
     window.madLocReplace = deskMover.locReplace.bind(deskMover);
     window.madResizeTo = deskMover.resizeTo.bind(deskMover);

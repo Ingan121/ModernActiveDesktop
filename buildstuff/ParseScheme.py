@@ -64,7 +64,7 @@ def mapper(string, name, filename):
     --info-window: #{parse(lines[24])};
     --menu: #{parse(lines[4])};
     --menu-bar: #{parse(lines[30])};
-    --menu-highlight: #{parse(lines[29])};
+    --menu-hilight: #{parse(lines[29])};
     --menu-text: #{parse(lines[7])};
     --scrollbar: #{parse(lines[0])};
     --title-text: #{parse(lines[9])};

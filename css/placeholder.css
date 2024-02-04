@@ -1,6 +1,6 @@
 body {
     background-color: var(--window);
-    font-family: "Pixelated MS Sans Serif";
+    font-family: var(--ui-font);
 }
 
 .icon {

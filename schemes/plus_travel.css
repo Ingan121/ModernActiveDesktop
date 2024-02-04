@@ -24,7 +24,7 @@
     --info-window: #FFFFFF;
     --menu: #908070;
     --menu-bar: #D4D0C8;
-    --menu-highlight: #0A246A;
+    --menu-hilight: #0A246A;
     --menu-text: #000000;
     --scrollbar: #C8C0B8;
     --title-text: #E0E0D8;
@@ -37,10 +37,10 @@
     --scrollbar-size: 16px;
     --menu-height: 19px;
     --palette-title-height: 15px;
-    --caption-font: bold 9pt/2 "Comic Sans MS", var(--ui-font);
-    --menu-font: 9pt/1 "Comic Sans MS", var(--ui-font);
+    --caption-font: bold 9pt "Comic Sans MS", var(--ui-font);
+    --menu-font: 9pt/0.8 "Comic Sans MS", var(--ui-font);
     --status-font: 7pt "Comic Sans MS", var(--ui-font);
-    --sm-caption-font: 8pt "Comic Sans MS", var(--ui-font);
+    --sm-caption-font: 8pt/1 "Comic Sans MS", var(--ui-font);
 }
 .window {
     --extra-border-size: 1px;

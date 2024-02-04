@@ -24,7 +24,7 @@
     --info-window: #FFFFFF;
     --menu: #809098;
     --menu-bar: #D4D0C8;
-    --menu-highlight: #0A246A;
+    --menu-hilight: #0A246A;
     --menu-text: #000000;
     --scrollbar: #C0C8D0;
     --title-text: #00FF00;
@@ -37,7 +37,7 @@
     --scrollbar-size: 13px;
     --menu-height: 18px;
     --palette-title-height: 15px;
-    --caption-font: bold 12pt Westminster, "OCR A Extended", "OCR A", var(--ui-font);
+    --caption-font: bold 12pt/0.9 Westminster, "OCR A Extended", "OCR A", var(--ui-font);
     --menu-font: 8pt "OCR A Extended", "OCR A", var(--ui-font);
     --message-font: 8pt "OCR A Extended", "OCR A", var(--ui-font);
     --status-font: 8pt var(--ui-font);

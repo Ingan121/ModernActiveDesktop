@@ -45,6 +45,11 @@
     background-color: var(--menu);
     width: 100%;
     height: var(--menu-height);
+    color: var(--menu-text);
+}
+
+.menu u {
+    border-bottom-color: var(--menu-text);
 }
 
 .menu > div {
@@ -61,7 +66,7 @@
 .menu > div:active,
 .menu > div[data-active] {
     border-color: var(--button-shadow) var(--button-hilight) var(--button-hilight) var(--button-shadow);
-    padding-top: 3px;
+    padding-top: calc((var(--menu-height) - 14px) / 2 + 1px);
 }
 
 .menu > div:active > span,
@@ -78,6 +83,11 @@
     overflow: hidden;
     animation: cmDropdown 0.25s linear;
     background-color: var(--menu);
+    color: var(--menu-text);
+}
+
+.contextMenuBg u {
+    border-bottom-color: var(--menu-text);
 }
 
 body[data-cm-shadow] .contextMenuBg {
@@ -97,11 +107,10 @@ body[data-cm-shadow] .contextMenuBg {
 
 .contextMenuItem {
     width: 100%;
-    height: 17px;
+    min-height: 17px;
     font-size: 11px;
     padding-left: 2px;
     pointer-events: auto !important;
-    font: var(--menu-font);
 }
 
 .contextMenuItem p {

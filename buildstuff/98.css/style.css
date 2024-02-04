@@ -101,7 +101,7 @@
   /* Fonts */
   --cjk-fontlink: Gulim, "MS UI Gothic", SimSun, PMingLiU;
   --ui-font: "Pixelated MS Sans Serif", Arial, var(--cjk-fontlink);
-  --caption-font: bold 8pt var(--ui-font);
+  --caption-font: bold 11px var(--ui-font);
   --menu-font: 8pt var(--ui-font);
   --message-font: 8pt var(--ui-font);
   --status-font: 8pt var(--ui-font);

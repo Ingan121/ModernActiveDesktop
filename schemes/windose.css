@@ -30,7 +30,7 @@
     --info-window: #FCF1FF;
     --menu: #FCF1FF;
     --menu-bar: #FCF1FF;
-    --menu-highlight: #CCECFC;
+    --menu-hilight: #CCECFC;
     --menu-text: #815CDC;
     --scrollbar: #FCF1FF;
     --title-text: #4D22CD;
@@ -190,10 +190,6 @@
 body > .window-titlebar,
 .minimized-without-taskbar > .window-titlebar {
     border-bottom: none !important;
-}
-
-.window-title {
-    top: -1px !important;
 }
 
 .window-button {

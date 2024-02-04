@@ -22,6 +22,7 @@ const msgboxInput = document.getElementById("msgbox-input");
 const msgboxCloseBtn = document.getElementById("msgbox-close");
 const msgboxBtn1 = document.getElementById("msgbox-btn1");
 const msgboxBtn2 = document.getElementById("msgbox-btn2");
+const miniPickerBase = document.getElementsByClassName("miniPicker")[0];
 const errorWnd = document.getElementById("errorWnd");
 const mainMenuBg = document.getElementById("mainMenuBg");
 const mainMenu = document.getElementById("mainMenu");
@@ -128,6 +129,13 @@ if (localStorage.madesktopDestroyedItems) {
     localStorage.madesktopOpenWindows = openWindows;
 }
 localStorage.removeItem("madesktopLastCustomScale");
+// Mistake that I made in previous versions
+if (localStorage.madesktopCustomColor) {
+    if (localStorage.madesktopCustomColor.includes("--menu-highlight")) {
+        localStorage.madesktopCustomColor = localStorage.madesktopCustomColor.replaceAll("--menu-highlight", "--menu-hilight");
+        changeColorScheme("custom");
+    }
+}
 
 if (localStorage.madesktopItemCount > 1) {
     // Check if the deskitem we're trying to initialize is open or not

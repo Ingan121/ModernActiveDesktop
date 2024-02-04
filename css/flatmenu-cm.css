@@ -10,7 +10,7 @@ body[data-cm-shadow] .contextMenuBg {
 .contextMenuItem:hover,
 .contextMenuItem[data-active] {
     box-shadow: var(--hilight) -1px -1px inset, var(--hilight) 1px 1px inset;
-    background-color: var(--menu-highlight);
+    background-color: var(--menu-hilight);
 }
 
 .menu-popup {

@@ -1,3 +1,32 @@
+@charset "utf-8";
+
+@import "../../../css/fonts.css";
+
+@font-face {
+    font-family: "Pixelated MS Sans Serif";
+    src: url("../../../fonts/ms_sans_serif.woff") format("woff");
+    src: url("../../../fonts/ms_sans_serif.woff2") format("woff2");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Pixelated MS Sans Serif";
+    src: url("../../../fonts/ms_sans_serif_bold.woff") format("woff");
+    src: url("../../../fonts/ms_sans_serif_bold.woff2") format("woff2");
+    font-weight: bold;
+    font-style: normal;
+}
+
+@keyframes fade {
+    0% {
+        opacity: 0.3;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
 :root {
     --ActiveBorder: var(--active-border);
     --ActiveTitle: var(--active-title);
@@ -53,7 +82,7 @@
     --info-window: #ffffe1;
     --menu: #c0c0c0;
     --menu-bar: #c0c0c0;
-    --menu-highlight: #000080;
+    --menu-hilight: #000080;
     --menu-text:  #000000;
     --scrollbar: #c0c0c0;
     --title-text: #ffffff;
@@ -61,25 +90,26 @@
     --window-frame: #000000;
     --window-text: #000000;
 
-    --extra-title-height: -2px;
-    --extra-border-size: 1px;
-    --palette-title-height: 15px;
-    --border-inset: calc(2px + var(--extra-border-size));
-    --border-inset-minus: calc(var(--extra-border-size) * -1 - 2px);
-}
+    --cjk-fontlink: Gulim, "MS UI Gothic", SimSun, PMingLiU;
+    --ui-font: "Pixelated MS Sans Serif", Arial, var(--cjk-fontlink);
+    --caption-font: bold 11px/1.4 var(--ui-font);
+    --menu-font: 8pt var(--ui-font);
+    --message-font: 8pt var(--ui-font);
+    --status-font: 8pt var(--ui-font);
+    --sm-caption-font: bold 8pt var(--ui-font);
 
-@keyframes fade {
-    0% {
-        opacity: 0.3;
-    }
-    100% {
-        opacity: 1;
-    }
+    --extra-title-height: -2px;
+    --extra-border-size: 2px;
+    --palette-title-height: 15px;
 }
 
 .os-window {
     padding: var(--extra-border-size) !important;
     background-color: var(--inactive-border);
+}
+
+.os-window:not(.help-window) {
+    --extra-border-size: 0px;
 }
 
 .os-window.focused {
@@ -96,6 +126,12 @@
     border-bottom: none !important;
 }
 
+.window-title {
+    display: inline-block !important;
+    margin-top: 1px !important;
+    font: var(--caption-font) !important;
+}
+
 .window-button {
     height: calc(16px + var(--extra-title-height)) !important;
     width: calc(18px + var(--extra-title-height)) !important;
@@ -109,6 +145,10 @@
 
 .tool-window .window-titlebar {
     height: var(--palette-title-height) !important;
+}
+
+.tool-window .window-title {
+    font: var(--sm-caption-font) !important;
 }
 
 .tool-window .window-button {
@@ -132,3 +172,23 @@ body[data-cm-fade] .menu-popup {
     animation: fade 0.2s;
 }
 
+::-webkit-scrollbar-button:vertical:start {
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+::-webkit-scrollbar-button:vertical:end {
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+::-webkit-scrollbar-button:horizontal:start {
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+::-webkit-scrollbar-button:horizontal:end {
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
