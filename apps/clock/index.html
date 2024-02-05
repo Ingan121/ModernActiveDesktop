@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Clock</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../../css/98.css">
+    <link rel="stylesheet" href="clock.css">
+    <link rel="shortcut icon" href="icon.png">
+    <link id="scheme" rel="stylesheet" href="data:text/css,">
+    <link id="menuStyle" rel="stylesheet" href="">
+    <style id="style"></style>
+</head>
+<body id="madVis">
+    <!-- https://stackoverflow.com/a/68372384 -->
+    <svg width="0" height="0">
+        <defs>
+            <filter id="remove-alpha" x="0" y="0" width="100%" height="100%">
+                <feComponentTransfer>
+                    <feFuncA type="discrete" tableValues="0 1"></feFuncA>
+                </feComponentTransfer>
+            </filter>
+        </defs>
+    </svg>
+
+    <div id="menuBar" class="menu">
+        <div id="settingsMenuBtn"><span><u>S</u>ettings</span></div>
+    </div>
+    <div id="mainArea">
+        <canvas id="analogClock"></canvas>
+        <div id="digitalClock"></div>
+    </div>
+
+    <div id="settingsMenuBg" class="contextMenuBg window" tabindex="-1">
+        <div id="settingsMenu" class="contextMenu window-body">
+            <div class="contextMenuItem activeStyle"><p><u>A</u>nalog</p></div>
+            <div class="contextMenuItem"><p><u>D</u>igital</p></div>
+            <hr>
+            <div class="contextMenuItem"><p>Set <u>F</u>ont..</p></div>
+            <hr>
+            <div class="contextMenuItem"><p><u>G</u>MT</p></div>
+            <div class="contextMenuItem"><p><u>N</u>o Title</p></div>
+            <hr>
+            <div class="contextMenuItem"><p><u>S</u>econds</p></div>
+            <div class="contextMenuItem"><p>Da<u>t</u>e</p></div>
+            <hr>
+            <div class="contextMenuItem"><p>A<u>b</u>out Clock...</p></div>
+        </div>
+    </div>
+    <script src="../../js/libmad.js"></script>
+    <script src="clock.js"></script>
+</body>
+</html>

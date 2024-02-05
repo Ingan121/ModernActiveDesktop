@@ -137,6 +137,14 @@ body {
   color: var(--button-text);
 }
 
+.clientEdge {
+  box-shadow: inset -1px -1px var(--button-hilight),
+    inset 1px 1px var(--button-shadow),
+    inset -2px -2px var(--button-light),
+    inset 2px 2px var(--button-dk-shadow);
+  padding: 3px;
+}
+
 button,
 label,
 input,

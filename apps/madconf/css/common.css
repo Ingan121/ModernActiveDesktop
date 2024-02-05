@@ -47,6 +47,7 @@ p {
 
 .bottomButtons {
     margin-top: 6px;
+    justify-content: flex-end;
 }
 
 .shortInput {

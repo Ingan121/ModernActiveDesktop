@@ -1,6 +1,12 @@
+html {
+    height: calc(100% - 6px);
+}
+
 body {
+    height: 100%;
     background-color: var(--window);
     font-family: var(--ui-font);
+    overflow: hidden;
 }
 
 .icon {

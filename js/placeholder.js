@@ -34,6 +34,13 @@ function openApp(app) {
             madMoveTo(500, 200);
             madChangeWndStyle("wnd");
             madLocReplace("apps/visualizer/index.html");
+            break;
+        case "clock":
+            madResizeTo(398, 304);
+            madMoveTo(500, 200);
+            madChangeWndStyle("wnd");
+            madLocReplace("apps/clock/index.html");
+            break;
     }
 }
 

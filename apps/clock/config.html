@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Font</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../../css/98.css">
+    <link rel="stylesheet" href="config.css">
+    <link id="scheme" rel="stylesheet" href="data:text/css,">
+    <style id="style"></style>
+</head>
+<body id="madVisConf">
+    <div class="window-body">
+        <fieldset>
+            <legend>Colors</legend>
+            <form name="colorSelecor">
+                <input id="radDefault" type="radio" name="color" value="default" checked>
+                <label for="radDefault">Default</label><br>
+                <input id="radScheme" type="radio" name="color" value="scheme">
+                <label for="radScheme">Follow color scheme</label><br>
+                <input id="radCustom" type="radio" name="color" value="custom">
+                <label for="radCustom">Custom</label><br>
+                <input id="followAlbumArtChkBox" type="checkbox" name="followAlbumArt">
+                <label for="followAlbumArtChkBox">Follow album art colors if available</label>
+            </form>
+        </fieldset>
+        <fieldset>
+            <legend>Custom colors</legend>
+            <section id="customColors" class="field-row disabled">
+                <span id="bgColorPickerLabel">Background:</span>
+                <button id="bgColorPicker" class="colorPicker" disabled>
+                    <div class="colorPicker-color"></div>
+                    <div class="colorPicker-bar"></div>
+                    <div class="colorPicker-expandMark">⏷</div>
+                </button>
+                <span id="barColorPickerLabel">Bar:</span>
+                <button id="barColorPicker" class="colorPicker" disabled>
+                    <div class="colorPicker-color" style="background-color: #a4eb0c;"></div>
+                    <div class="colorPicker-bar"></div>
+                    <div class="colorPicker-expandMark">⏷</div>
+                </button>
+                <span id="topColorPickerLabel">Top:</span>
+                <button id="topColorPicker" class="colorPicker" disabled>
+                    <div class="colorPicker-color" style="background-color: #dfeaf7;"></div>
+                    <div class="colorPicker-bar"></div>
+                    <div class="colorPicker-expandMark">⏷</div>
+                </button>
+            </section>
+        </fieldset>
+        <fieldset>
+            <legend>Album art</legend>
+            <input id="albumArtChkBox" type="checkbox" name="albumArt">
+            <label for="albumArtChkBox">Show album art</label><br>
+            <input id="dimAlbumArtChkBox" type="checkbox" name="albumArt" disabled>
+            <label for="dimAlbumArtChkBox">Dim album art</label>
+        </fieldset>
+        <section class="topmargin field-row" style="justify-content: flex-end;">
+            <button id="okBtn">OK</button>
+            <button id="cancelBtn">Cancel</button>
+            <button id="applyBtn">Apply</button>
+        </section>
+    </div>
+
+    <script src="../../js/libmad.js"></script>
+    <script src="../jspaint/lib/font-detective.js"></script>
+    <script src="config.js"></script>
+</body>
+</html>

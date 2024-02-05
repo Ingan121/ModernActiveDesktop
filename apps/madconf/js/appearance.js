@@ -612,8 +612,8 @@ async function main() {
             }
             scheme[itemMappings[option].font] = fontShorthand;
         } else if (itemMappings[option].fontFamily) {
-            scheme[itemMappings[option].fontFamily] = fontSelector.value + ', Arial';
-            if (fontSelector.selectedIndex < 1) {
+            scheme[itemMappings[option].fontFamily] = `"${fontSelector.value}", Arial`;
+            if (fontSelector.selectedIndex <= 2 || fontSelector.value === "Tahoma") {
                 scheme[itemMappings[option].fontFamily] += ', var(--cjk-fontlink)';
             }
         }
@@ -651,6 +651,11 @@ async function main() {
                     "application/x-windows-theme": [".theme", ".themepack"]
                 }
             }, {
+                description: "JSON Files",
+                accept: {
+                    "application/json": [".json"]
+                }
+            }, {
                 description: "CSS Files",
                 accept: {
                     "text/css": [".css"]
@@ -665,7 +670,6 @@ async function main() {
 
         schemeName = getFilename(file.name);
         schemeSelector.options[0].textContent = schemeName;
-        localStorage.madesktopLastSchemeName = schemeName;
 
         if (file.name.endsWith(".theme") || file.name.endsWith(".themepack")) {
             try {
@@ -707,6 +711,15 @@ async function main() {
                 selector.dispatchEvent(new Event("change"));
             } catch {
                 madAlert("The imported theme file does not contain valid colors.", null, "error");
+            }
+        } else if (file.name.endsWith(".json")) {
+            try {
+                scheme = JSON.parse(text);
+                schemeSelector.selectedIndex = 0;
+                applyPreview();
+                selector.dispatchEvent(new Event("change"));
+            } catch {
+                madAlert("The imported JSON file is not valid.", null, "error");
             }
         } else {
             parent.changeColorScheme(text);

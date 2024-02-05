@@ -1,10 +1,5 @@
 /* Windose */
 /* CSS Theming Demo inspired by Needy Girl Overdose */
-
-/* Wanna apply custom CSS themes? */
-/* Enable the debug mode by going to the About menu, clicking the logo, and then clicking Apply. */
-/* And then you can import one in the Appearance properties menu. */
-
 :root {
     --active-border: #90F3E1;
     --active-title: #F0D0F1;
@@ -166,6 +161,10 @@
 
 .windowContainer[data-style="wnd"] .confMenuBg {
     left: 103px;
+}
+
+.clientEdge {
+    box-shadow: none !important;
 }
 
 /* For OS-GUI (JSPaint) */

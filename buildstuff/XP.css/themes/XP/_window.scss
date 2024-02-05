@@ -151,6 +151,10 @@
     left: 4px;
 }
 
+.clientEdge {
+    box-shadow: none !important;
+}
+
 /* For OS-GUI */
 .window-content {
     background-color: transparent !important;
