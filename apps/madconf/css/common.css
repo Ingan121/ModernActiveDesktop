@@ -46,8 +46,10 @@ p {
 }
 
 .bottomButtons {
-    margin-top: 6px;
-    justify-content: flex-end;
+    position: absolute;
+    right: 6px;
+    bottom: 7px;
+    z-index: 2;
 }
 
 .shortInput {

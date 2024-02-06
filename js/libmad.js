@@ -140,6 +140,10 @@
         }
         styleElement.textContent += parentStyleElement2.textContent;
 
+        if (window.osguiCompatRequired) {
+            applyCSSProperties(renderThemeGraphics(getComputedStyle(document.body)), { element: document.body });
+        }
+
         try {
             document.documentElement.style.setProperty('--hilight-inverted', parent.invertColor(getComputedStyle(document.documentElement).getPropertyValue('--hilight')));
         } catch {

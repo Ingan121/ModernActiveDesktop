@@ -34,11 +34,7 @@ async function main() {
     const textColorPickerWrap = document.getElementById("textColorWrap");
     const textColorPicker = document.getElementById("textColor");
     const textColorPickerColor = textColorPicker.querySelector(".colorPicker-color");
-    const miniPicker = document.getElementById("miniPicker");
-    const miniPickerColors = document.querySelectorAll(".color");
-    const openColorPickerBtn = document.getElementById("openColorPickerBtn");
     const fontSelector = document.getElementById("fontSelector");
-    const fontSelectorLabel = fontSelector.querySelector(".label");
     const fontSizeWrap = document.getElementById("fontSizeWrap");
     const fontSize = document.getElementById("fontSize");
     const boldToggle = document.getElementById("boldToggle");
@@ -138,6 +134,7 @@ async function main() {
 
     schemeSelector.addEventListener("change", async function () {
         if (schemeSelector.selectedIndex === 0) {
+            deleteBtn.disabled = true;
             return;
         } else if (schemeSelector.options[schemeSelector.selectedIndex].dataset.userSaved) {
             scheme = savedSchemes[schemeSelector.value];
@@ -146,7 +143,11 @@ async function main() {
             scheme = parseCssScheme(await getSchemeText("http://localhost:3031/systemscheme"));
             deleteBtn.disabled = true;
         } else if (schemeSelector.value === "import") {
-            importScheme();
+            try {
+                await importScheme();
+            } catch {
+                schemeSelector.selectedIndex = 0;
+            }
             deleteBtn.disabled = true;
             return;
         } else {
@@ -308,7 +309,7 @@ async function main() {
                 italicToggle.disabled = false;
                 const fontInfo = getFontInfo(getComputedStyle(preview.contentDocument.documentElement).getPropertyValue(`--${itemMappings[option].font}`));
                 fontSelector.value = fontInfo.primaryFamily;
-                fontSelectorLabel.textContent = fontInfo.primaryFamily;
+                fontSelector.label.textContent = fontInfo.primaryFamily;
                 fontSize.value = parseInt(fontInfo.size);
                 fontSize.dataset.fullValue = fontInfo.size;
                 if (fontInfo.bold) {
@@ -325,7 +326,7 @@ async function main() {
                 fontSelector.disabled = false;
                 const fontInfo = getFontInfo(getComputedStyle(preview.contentDocument.documentElement).getPropertyValue(`--${itemMappings[option].fontFamily}`), true);
                 fontSelector.value = fontInfo.primaryFamily;
-                fontSelectorLabel.textContent = fontInfo.primaryFamily;
+                fontSelector.label.textContent = fontInfo.primaryFamily;
                 fontSizeWrap.classList.add("disabled");
                 fontSize.disabled = true;
                 fontSize.value = '';
@@ -480,8 +481,11 @@ async function main() {
             applyScheme("sys");
             parent.changeBgColor(colorPickerColor.style.backgroundColor);
         } else if (selector.disabled) {
+            schemeName = schemeSelector.options[schemeSelector.selectedIndex].textContent;
+            schemeSelector.options[0].textContent = schemeName;
             parent.changeColorScheme(schemeSelector.value);
             localStorage.madesktopColorScheme = schemeSelector.value;
+            localStorage.madesktopLastSchemeName = schemeName;
             parent.changeBgColor(colorPickerColor.style.backgroundColor);
         } else {
             applyScheme(scheme, schemeName);
@@ -531,6 +535,7 @@ async function main() {
             colorPickerColor.style.backgroundColor = localStorage.madesktopBgColor;
         }
         schemeName = schemeSelector.options[schemeSelector.selectedIndex].textContent;
+        schemeSelector.options[0].textContent = schemeName;
     }
 
     if (localStorage.madesktopCmAnimation === "none") {
@@ -573,7 +578,7 @@ async function main() {
         option.textContent = font.name;
         option.value = font.name;
         fontSelector.appendChild(option);
-        fonts[fonts.length] = font.name;
+        fonts.push(font.name);
     });
 
     function changeColor(color) {
@@ -847,7 +852,7 @@ function parseCssScheme(schemeText) {
 function generateCssScheme(scheme, keepEffects = false) {
     const belongsInWindow = [
         'extra-title-height',
-        'extra-border-size',
+        'extra-border-size'
     ];
     const shouldBeDeleted = [
         'extra-border-bottom'

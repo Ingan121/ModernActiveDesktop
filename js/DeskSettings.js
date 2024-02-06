@@ -104,7 +104,7 @@ if (localStorage.madesktopDestroyedItems) {
     let openWindows = [0];
     for (let i = 1; i < localStorage.madesktopItemCount; i++) {
         if (!localStorage.madesktopDestroyedItems.includes(`|${i}|`)) {
-            openWindows[openWindows.length] = i;
+            openWindows.push(i);
         } else {
             // Clean up configs of destroyed deskitems
             localStorage.removeItem(`madesktopItemWidth${i}`);
@@ -124,7 +124,7 @@ if (localStorage.madesktopDestroyedItems) {
 } else if (!localStorage.madesktopOpenWindows) {
     let openWindows = [0];
     for (let i = 1; i < localStorage.madesktopItemCount; i++) {
-        openWindows[openWindows.length] = i;
+        openWindows.push(i);
     }
     localStorage.madesktopOpenWindows = openWindows;
 }
@@ -132,7 +132,7 @@ localStorage.removeItem("madesktopLastCustomScale");
 // Mistake that I made in previous versions
 if (localStorage.madesktopCustomColor) {
     if (localStorage.madesktopCustomColor.includes("--menu-highlight")) {
-        localStorage.madesktopCustomColor = localStorage.madesktopCustomColor.replaceAll("--menu-highlight", "--menu-hilight");
+        localStorage.madesktopCustomColor = localStorage.madesktopCustomColor.replace("--menu-highlight", "--menu-hilight");
         changeColorScheme("custom");
     }
 }
@@ -918,7 +918,7 @@ function hookIframeSize(iframe, num) {
 function saveZOrder() {
     let zOrders = [];
     for (const i in deskMovers) {
-        zOrders[zOrders.length] = [i, deskMovers[i].windowContainer.style.zIndex];
+        zOrders.push([i, deskMovers[i].windowContainer.style.zIndex]);
     }
 
     zOrders.sort(function(a, b) {

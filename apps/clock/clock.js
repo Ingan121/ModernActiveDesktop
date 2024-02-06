@@ -4,6 +4,7 @@
 
 'use strict';
 
+const mainArea = document.getElementById('mainArea');
 const clockCanvas = document.getElementById('analogClock');
 const clockCtx = clockCanvas.getContext('2d');
 
@@ -14,6 +15,10 @@ const settingsMenu = document.getElementById('settingsMenu');
 const settingsMenuItems = settingsMenu.querySelectorAll('.contextMenuItem');
 
 let dblClickTimer, dblClickPositon = null, isTitleHidden = false;
+
+if (madDeskMover.config.noFrames) {
+    toggleTitle();
+}
 
 settingsMenuBtn.addEventListener('pointerdown', (event) => {
     openSettingsMenu();
@@ -77,6 +82,13 @@ const colors = {
 updateSize();
 
 function updateSize() {
+    if (mainArea.offsetHeight > mainArea.offsetWidth) {
+        clockCanvas.style.height = 'auto';
+        clockCanvas.style.width = '100%';
+    } else {
+        clockCanvas.style.height = '100%';
+        clockCanvas.style.width = 'auto';
+    }
     const clientRect = clockCanvas.getBoundingClientRect();
     clockCanvas.height = Math.round(clientRect.height * madScaleFactor);
     clockCanvas.width = Math.round(clientRect.width * madScaleFactor);
@@ -93,7 +105,6 @@ function drawBackground() {
 }
 
 function drawSquare(x, y) {
-    clockCtx.filter = "url(#remove-alpha)";
     const size = Math.round(clockCanvas.width / 135);
     x -= Math.round(size / 2);
     y -= Math.round(size / 2);
@@ -107,7 +118,6 @@ function drawSquare(x, y) {
 }
 
 function drawSmallSquare(x, y) {
-    clockCtx.filter = "url(#remove-alpha)";
     clockCtx.fillStyle = colors.shadow;
     clockCtx.fillRect(x - 1, y - 1, 2, 2);
     clockCtx.fillStyle = colors.hilight;
@@ -182,8 +192,8 @@ function drawHourHand() {
     let angle = (Math.PI / 6) * hour - Math.PI / 2;
     clockCtx.beginPath();
     const startPoint = [radius - radius * 0.15 * Math.cos(angle), radius - radius * 0.15 * Math.sin(angle)]
-    const narrowSide1 = [radius - radius * 0.05 * Math.cos(angle + Math.PI / 2), radius - radius * 0.05 * Math.sin(angle + Math.PI / 2)];
-    const narrowSide2 = [radius - radius * 0.05 * Math.cos(angle - Math.PI / 2), radius - radius * 0.05 * Math.sin(angle - Math.PI / 2)];
+    const narrowSide1 = [radius - radius * 0.07 * Math.cos(angle + Math.PI / 2), radius - radius * 0.07 * Math.sin(angle + Math.PI / 2)];
+    const narrowSide2 = [radius - radius * 0.07 * Math.cos(angle - Math.PI / 2), radius - radius * 0.07 * Math.sin(angle - Math.PI / 2)];
     const endPoint = [radius + radius * 0.6 * Math.cos(angle), radius + radius * 0.6 * Math.sin(angle)]
     clockCtx.moveTo(startPoint[0], startPoint[1]);
     clockCtx.lineTo(narrowSide1[0], narrowSide1[1]);
@@ -221,11 +231,11 @@ function drawSecondHand() {
     clockCtx.moveTo(radius, radius);
     const endPoint = [radius + radius * 0.8 * Math.cos(angle), radius + radius * 0.8 * Math.sin(angle)]
     clockCtx.lineTo(endPoint[0], endPoint[1]);
-    clockCtx.globalCompositeOperation='difference';
+    clockCtx.globalCompositeOperation = 'difference';
     clockCtx.strokeStyle='white';
     clockCtx.lineWidth = 1;
     clockCtx.stroke();
-    clockCtx.globalCompositeOperation='source-over';
+    clockCtx.globalCompositeOperation = 'source-over';
 }
 
 function drawClock() {

@@ -469,7 +469,7 @@ class DeskMover {
         if (style === "noframes") {
             style = "ad";
             this.config.noFrames = true;
-        } else {
+        } else if (style !== "ad") {
             this.config.noFrames = false;
         }
         switch (style) {
