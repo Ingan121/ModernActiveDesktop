@@ -4,6 +4,8 @@
 
 'use strict';
 
+const log = top.log;
+
 const visBarCtx = visBar.getContext('2d');
 const visTopCtx = visTop.getContext('2d');
 
@@ -17,10 +19,15 @@ let visConfig = {
     topColor: localStorage.madesktopVisTopColor || '#dfeaf7',
     useSchemeColors: localStorage.madesktopVisUseSchemeColors,
     followAlbumArt: localStorage.madesktopVisFollowAlbumArt,
-    desktopVisOnlyAlbumArt: localStorage.madesktopVisOnlyAlbumArt
+    desktopVisOnlyAlbumArt: localStorage.madesktopVisOnlyAlbumArt,
+    barWidth: parseInt(localStorage.madesktopVisBarWidth),
+    channelSeparation: parseInt(localStorage.madesktopVisChannelSeparation) || 2, // 1 = no processing (pre-3.2 behavior), 2 = reverse right, 3 = combine
+    diffScale: parseFloat(localStorage.madesktopVisDiffScale) || 0.07 // idk what to call this lol, pre-3.2 value was 0.15
 };
 
 updateSize();
+
+let arraySize = visConfig.channelSeparation === 3 ? 64 : 128;
 
 const lastAud = new Array(128).fill(0);
 const lastBar = new Array(128).fill(0);
@@ -39,18 +46,18 @@ function wallpaperAudioListener(audioArray) {
 
     // Optimization
     if (idle) {
-        if (audioArray[Math.round(Math.random() * 120)] <= 0.0001) {
+        if (audioArray[Math.round(Math.random() * arraySize)] <= 0.0001) {
             return;
         }
         idle = false;
-        top.log("Active", "log", "MADVis");
+        log("Active", "log", "MADVis");
     }
 
     // Clear the canvas
     visBarCtx.clearRect(0, 0, visBar.width, visBar.height);
 
     // Render bars along the full width of the canvas
-    const barWidth = Math.max(Math.round(1.0 / 128.0 * visBar.width), Math.floor(6 * madScaleFactor));
+    const barWidth = visConfig.barWidth || Math.max(Math.round(1.0 / arraySize * visBar.width), Math.floor(6 * madScaleFactor));
     const gap = 1;
 
     visBarCtx.fillStyle = visConfig.barColor;
@@ -63,32 +70,53 @@ function wallpaperAudioListener(audioArray) {
         visTopCtx.fillStyle = schemeTopColor;
     }
 
+    switch (visConfig.channelSeparation) {
+        case 2:
+            let tempArray = new Array(64).fill(0);
+            for (let i = 64; i < 128; i++) {
+                tempArray[i - 64] = audioArray[i];
+            }
+            for (let i = 0; i < 64; i++) {
+                audioArray[127 - i] = tempArray[i];
+            }
+            break;
+        case 3:
+            for (let i = 0; i < 64; i++) {
+                audioArray[i] = (audioArray[i] + audioArray[i + 64]) / 2;
+            }
+            break;
+    }
+
+    let leftMargin = 0;
+    if (barWidth * arraySize < visBar.width) {
+        leftMargin = Math.round((visBar.width - barWidth * arraySize) / 2);
+    }
     let allZero = true;
     for (var i = 0; i < audioArray.length; ++i) {
         // Create an audio bar with its hight depending on the audio volume level of the current frequency
         const height = Math.round(visBar.height * Math.min(audioArray[i], 1));
         if (height > lastBar[i]) {
             lastBar[i] = height;
-            visBarCtx.fillRect(barWidth * i, visBar.height - height, barWidth - gap, height);
+            visBarCtx.fillRect(leftMargin + barWidth * i, visBar.height - height, barWidth - gap, height);
         } else {
             lastBar[i] -= 3;
             const diff = audioArray[i] - lastAud[i];
             if (diff > 0.1) {
-                lastBar[i] += Math.round(visBar.height * diff * 0.07);
+                lastBar[i] += Math.round(visBar.height * diff * visConfig.diffScale);
                 if (lastBar[i] > visBar.height) {
                     lastBar[i] = visBar.height;
                 }
             }
-            visBarCtx.fillRect(barWidth * i, visBar.height - lastBar[i], barWidth - gap, lastBar[i]);
+            visBarCtx.fillRect(leftMargin + barWidth * i, visBar.height - lastBar[i], barWidth - gap, lastBar[i]);
         }
         const topPos = visTop.height - Math.round(lastBar[i]) - 1;
         if (topPos < lastTop[i]) {
             lastTop[i] = topPos;
-            visTopCtx.fillRect(barWidth * i, topPos, barWidth - gap, 1);
+            visTopCtx.fillRect(leftMargin + barWidth * i, topPos, barWidth - gap, 1);
             topSpeed[i] = 0;
             allZero = false;
         } else if (lastTop[i] < visTop.height - 1) {
-            visTopCtx.clearRect(barWidth * i, 0, barWidth - gap, visTop.height);
+            visTopCtx.clearRect(leftMargin + barWidth * i, 0, barWidth - gap, visTop.height);
             if (topSpeed[i] > 38) {
                 lastTop[i] += 5;
             } else if (topSpeed[i] > 26) {
@@ -103,14 +131,14 @@ function wallpaperAudioListener(audioArray) {
             } else {
                 topSpeed[i] += 1;
             }
-            visTopCtx.fillRect(barWidth * i, lastTop[i], barWidth - gap, 1);
+            visTopCtx.fillRect(leftMargin + barWidth * i, lastTop[i], barWidth - gap, 1);
             allZero = false;
         }
         lastAud[i] = audioArray[i];
     }
     if (allZero) {
         idle = true;
-        top.log("Idle", "log", "MADVis");
+        log("Idle", "log", "MADVis");
     }
 }
 
@@ -129,8 +157,14 @@ function updateVisConfig() {
         topColor: localStorage.madesktopVisTopColor || '#dfeaf7',
         useSchemeColors: localStorage.madesktopVisUseSchemeColors,
         followAlbumArt: localStorage.madesktopVisFollowAlbumArt,
-        desktopVisOnlyAlbumArt: localStorage.madesktopVisOnlyAlbumArt
+        desktopVisOnlyAlbumArt: localStorage.madesktopVisOnlyAlbumArt,
+        barWidth: parseInt(localStorage.madesktopVisBarWidth),
+        channelSeparation: parseInt(localStorage.madesktopVisChannelSeparation) || 2,
+        diffScale: parseFloat(localStorage.madesktopVisDiffScale) || 0.07
     };
+    arraySize = visConfig.channelSeparation === 3 ? 64 : 128;
+    visTopCtx.clearRect(0, 0, visTop.width, visTop.height);
+    idle = false;
 }
 
 window.addEventListener('resize', updateSize);

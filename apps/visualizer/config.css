@@ -3,6 +3,11 @@ body {
     overflow: hidden;
 }
 
+p, legend, label,
+:not(button):not([data-disabled]):not(.disabled) > span:not(.label) {
+    color: var(--window-text);
+}
+
 #madVisConf {
     -webkit-font-smoothing: none;
     font-family: var(--ui-font);
@@ -61,6 +66,35 @@ form {
 
 label[for="dimAlbumArtChkBox"] {
     margin-top: 3px;
+}
+
+#visConfArea {
+    width: 100%;
+}
+
+#barWidthInput,
+#diffScaleInput {
+    width: 40px;
+    text-align: right;
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    appearance: none;
+    margin: 0; 
+}
+
+#diffScaleLabel {
+    margin-left: 30px;
+}
+
+#barWidthInput,
+#diffScaleInput {
+    margin-left: 5px;
+}
+
+p {
+    margin: 3px 0;
 }
 
 .topmargin, fieldset {

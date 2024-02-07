@@ -13,6 +13,10 @@ body {
     flex-flow: row;
 }
 
+label {
+    color: var(--window-text);
+}
+
 .edit-colors-window .left-side label {
     display: block;
     margin-top: 7px;

@@ -62,7 +62,7 @@ function changeMenuStyle(style) {
 }
 
 function processTheme() {
-    styleElement.textContent = top.generateScrollBarSvgs(getComputedStyle(document.documentElement).getPropertyValue('--button-text'));
+    styleElement.textContent = top.generateThemeSvgs(document.documentElement);
     resize();
 }
 

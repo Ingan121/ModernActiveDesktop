@@ -389,7 +389,7 @@ optMenuItems[0].addEventListener('click', () => { // Configure Visualization but
     closeMenu('opt');
     const left = parseInt(madDeskMover.config.xPos) + 25 + 'px';
     const top = parseInt(madDeskMover.config.yPos) + 80 + 'px';
-    const configWindow = madOpenWindow('apps/visualizer/config.html', true, '400px', '260px', 'wnd', false, top, left, true, true);
+    const configWindow = madOpenWindow('apps/visualizer/config.html', true, '400px', '430px', 'wnd', false, top, left, true, true);
     configWindow.windowElement.addEventListener('load', () => {
         configWindow.windowElement.contentWindow.targetDeskMover = madDeskMover;
     });

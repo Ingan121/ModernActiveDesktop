@@ -38,7 +38,7 @@
     --menu-height: 18px;
     --palette-title-height: 15px;
     --ui-font: Tahoma, Arial, var(--cjk-fontlink);
-    --caption-font: bold 8pt/1.4 var(--ui-font);
+    --caption-font: bold 11px/1.4 var(--ui-font);
     --menu-font: 8pt/1.1 var(--ui-font);
     --message-font: 8pt var(--ui-font);
     --status-font: 8pt var(--ui-font);

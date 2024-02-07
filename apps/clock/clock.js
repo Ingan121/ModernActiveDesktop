@@ -36,9 +36,45 @@ settingsMenuItems[2].addEventListener('click', () => { // Set Font button
     });
 });
 
+settingsMenuItems[3].addEventListener('click', function () { // GMT button
+    closeSettingsMenu();
+    if (localStorage.madesktopClockGMT) {
+        this.classList.remove('checkedItem');
+        delete localStorage.madesktopClockGMT;
+    } else {
+        this.classList.add('checkedItem');
+        localStorage.madesktopClockGMT = true;
+    }
+    drawClock();
+});
+
 settingsMenuItems[4].addEventListener('click', () => { // No Title button
     closeSettingsMenu();
     toggleTitle();
+});
+
+settingsMenuItems[5].addEventListener('click', function () { // Seconds button
+    closeSettingsMenu();
+    if (localStorage.madesktopClockHideSeconds) {
+        this.classList.add('checkedItem');
+        delete localStorage.madesktopClockHideSeconds;
+    } else {
+        this.classList.remove('checkedItem');
+        localStorage.madesktopClockHideSeconds = true;
+    }
+    drawClock();
+});
+
+settingsMenuItems[6].addEventListener('click', function () { // Date button
+    closeSettingsMenu();
+    if (localStorage.madesktopClockHideDate) {
+        this.classList.add('checkedItem');
+        delete localStorage.madesktopClockHideDate;
+    } else {
+        this.classList.remove('checkedItem');
+        localStorage.madesktopClockHideDate = true;
+    }
+    drawClock();
 });
 
 settingsMenuItems[7].addEventListener('click', () => { // About Clock button
@@ -68,6 +104,18 @@ function openSettingsMenu() {
 function closeSettingsMenu() {
     settingsMenuBg.style.display = 'none';
     delete settingsMenuBtn.dataset.active;
+}
+
+if (localStorage.madesktopClockGMT) {
+    settingsMenuItems[3].classList.add('checkedItem');
+}
+
+if (localStorage.madesktopClockHideSeconds) {
+    settingsMenuItems[5].classList.remove('checkedItem');
+}
+
+if (localStorage.madesktopClockHideDate) {
+    settingsMenuItems[6].classList.remove('checkedItem');
 }
 
 const colors = {
@@ -145,49 +193,11 @@ function drawNumbers() {
     }
 }
 
-function drawMinuteHand() {
+function drawHourHand(time) {
     clockCtx.resetTransform();
     const radius = clockCanvas.width / 2;
-    const now = new Date();
-    let minute = now.getMinutes();
-    let angle = (Math.PI / 30) * minute - Math.PI / 2;
-    clockCtx.beginPath();
-    const startPoint = [radius - radius * 0.15 * Math.cos(angle), radius - radius * 0.15 * Math.sin(angle)]
-    const narrowSide1 = [radius - radius * 0.05 * Math.cos(angle + Math.PI / 2), radius - radius * 0.05 * Math.sin(angle + Math.PI / 2)];
-    const narrowSide2 = [radius - radius * 0.05 * Math.cos(angle - Math.PI / 2), radius - radius * 0.05 * Math.sin(angle - Math.PI / 2)];
-    const endPoint = [radius + radius * 0.8 * Math.cos(angle), radius + radius * 0.8 * Math.sin(angle)]
-    clockCtx.moveTo(startPoint[0], startPoint[1]);
-    clockCtx.lineTo(narrowSide1[0], narrowSide1[1]);
-    clockCtx.lineTo(endPoint[0], endPoint[1]);
-    clockCtx.lineTo(narrowSide2[0], narrowSide2[1]);
-    clockCtx.lineTo(startPoint[0], startPoint[1]);
-    clockCtx.strokeStyle = angle > 1.5 ? colors.shadow : colors.hilight;
-    clockCtx.lineWidth = 2;
-    clockCtx.stroke();
-    clockCtx.fillStyle = colors.main;
-    clockCtx.fill();
-    clockCtx.beginPath();
-    clockCtx.moveTo(endPoint[0], endPoint[1]);
-    clockCtx.lineTo(narrowSide2[0], narrowSide2[1]);
-    clockCtx.lineTo(startPoint[0], startPoint[1]);
-    clockCtx.strokeStyle = angle > 1.5 ? colors.hilight : colors.shadow;
-    clockCtx.lineWidth = 2;
-    clockCtx.stroke();
-    clockCtx.beginPath();
-    clockCtx.moveTo(startPoint[0], startPoint[1]);
-    clockCtx.lineTo(narrowSide1[0], narrowSide1[1]);
-    clockCtx.lineTo(endPoint[0], endPoint[1]);
-    clockCtx.strokeStyle = angle > 1.5 ? colors.shadow : colors.hilight;
-    clockCtx.lineWidth = 2;
-    clockCtx.stroke();
-}
-
-function drawHourHand() {
-    clockCtx.resetTransform();
-    const radius = clockCanvas.width / 2;
-    const now = new Date();
-    let minute = now.getMinutes();
-    let hour = now.getHours();
+    let minute = time.getMinutes();
+    let hour = time.getHours();
     hour = hour + minute / 60;
     let angle = (Math.PI / 6) * hour - Math.PI / 2;
     clockCtx.beginPath();
@@ -200,8 +210,7 @@ function drawHourHand() {
     clockCtx.lineTo(endPoint[0], endPoint[1]);
     clockCtx.lineTo(narrowSide2[0], narrowSide2[1]);
     clockCtx.lineTo(startPoint[0], startPoint[1]);
-    clockCtx.strokeStyle = angle > 1.5 ? colors.shadow : colors.hilight;
-    clockCtx.lineWidth = 2;
+    clockCtx.lineWidth = 1;
     clockCtx.stroke();
     clockCtx.fillStyle = colors.main;
     clockCtx.fill();
@@ -221,11 +230,46 @@ function drawHourHand() {
     clockCtx.stroke();
 }
 
-function drawSecondHand() {
+function drawMinuteHand(time) {
     clockCtx.resetTransform();
     const radius = clockCanvas.width / 2;
-    const now = new Date();
-    let second = now.getSeconds();
+    let minute = time.getMinutes();
+    let angle = (Math.PI / 30) * minute - Math.PI / 2;
+    clockCtx.beginPath();
+    const startPoint = [radius - radius * 0.15 * Math.cos(angle), radius - radius * 0.15 * Math.sin(angle)]
+    const narrowSide1 = [radius - radius * 0.05 * Math.cos(angle + Math.PI / 2), radius - radius * 0.05 * Math.sin(angle + Math.PI / 2)];
+    const narrowSide2 = [radius - radius * 0.05 * Math.cos(angle - Math.PI / 2), radius - radius * 0.05 * Math.sin(angle - Math.PI / 2)];
+    const endPoint = [radius + radius * 0.8 * Math.cos(angle), radius + radius * 0.8 * Math.sin(angle)]
+    clockCtx.moveTo(startPoint[0], startPoint[1]);
+    clockCtx.lineTo(narrowSide1[0], narrowSide1[1]);
+    clockCtx.lineTo(endPoint[0], endPoint[1]);
+    clockCtx.lineTo(narrowSide2[0], narrowSide2[1]);
+    clockCtx.lineTo(startPoint[0], startPoint[1]);
+    clockCtx.lineWidth = 1;
+    clockCtx.stroke();
+    clockCtx.fillStyle = colors.main;
+    clockCtx.fill();
+    clockCtx.beginPath();
+    clockCtx.moveTo(endPoint[0], endPoint[1]);
+    clockCtx.lineTo(narrowSide2[0], narrowSide2[1]);
+    clockCtx.lineTo(startPoint[0], startPoint[1]);
+    clockCtx.strokeStyle = angle > 1.5 ? colors.hilight : colors.shadow;
+    clockCtx.lineWidth = 2;
+    clockCtx.stroke();
+    clockCtx.beginPath();
+    clockCtx.moveTo(startPoint[0], startPoint[1]);
+    clockCtx.lineTo(narrowSide1[0], narrowSide1[1]);
+    clockCtx.lineTo(endPoint[0], endPoint[1]);
+    clockCtx.strokeStyle = angle > 1.5 ? colors.shadow : colors.hilight;
+    clockCtx.lineWidth = 2;
+    clockCtx.stroke();
+}
+
+
+function drawSecondHand(time) {
+    clockCtx.resetTransform();
+    const radius = clockCanvas.width / 2;
+    let second = time.getSeconds();
     let angle = (Math.PI / 30) * second - Math.PI / 2;
     clockCtx.beginPath();
     clockCtx.moveTo(radius, radius);
@@ -242,10 +286,24 @@ function drawClock() {
     clockCtx.clearRect(0, 0, clockCanvas.width, clockCanvas.height);
     drawBackground();
     drawNumbers();
-    drawHourHand();
-    drawMinuteHand();
-    drawSecondHand();
-    document.title = "Clock - " + new Date().toLocaleDateString();
+    let time;
+    if (localStorage.madesktopClockGMT) {
+        const now = new Date();
+        const offset = now.getTimezoneOffset() / 60;
+        time = new Date(now.getTime() + offset * 60 * 60 * 1000);
+    } else {
+        time = new Date();
+    }
+    drawHourHand(time);
+    drawMinuteHand(time);
+    if (!localStorage.madesktopClockHideSeconds) {
+        drawSecondHand(time);
+    }
+    if (localStorage.madesktopClockHideDate) {
+        document.title = "Clock";
+    } else {
+        document.title = "Clock - " + new Date().toLocaleDateString();
+    }
 }
 
 setInterval(drawClock, 1000);

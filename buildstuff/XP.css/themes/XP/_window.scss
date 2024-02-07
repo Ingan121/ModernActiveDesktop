@@ -17,6 +17,11 @@
     background-color: #ece9d8 !important;
 }
 
+.os-window {
+    padding-left: 3px !important;
+    padding-right: 3px !important;
+}
+
 .windowContainer[data-style="wnd"][data-inactive]:not(#JustHereToGiveItPriority),
 #madconf-preview #inactiveWindow,
 #msgbox[data-inactive],
@@ -27,7 +32,7 @@
 
 .title-bar,
 .os-window > .window-titlebar:not(#JustHereToGiveItPriority) {
-    font-family: "Trebuchet MS", Gulim, MS UI Gothic, SimSun, PMingLiU !important;
+    font-family: "Trebuchet MS", Gulim, "MS UI Gothic", SimSun, PMingLiU !important;
     background: linear-gradient(
         180deg,
         rgba(9, 151, 255, 1) 0%,
@@ -39,7 +44,7 @@
         rgba(0, 61, 215, 1) 96%,
         rgba(0, 61, 215, 1) 100%
     );
-    padding: 3px 5px 3px 3px;
+    padding: 3px 4px 3px 3px;
     border-top: 1px solid #0831d9 !important;
     border-left: 1px solid #0831d9 !important;
     border-right: 1px solid #001ea0 !important;
@@ -48,6 +53,11 @@
     font-size: 13px;
     text-shadow: 1px 1px #0f1089;
     height: 21px;
+}
+
+.os-window > .window-titlebar:not(#JustHereToGiveItPriority) {
+    width: calc(100% - 3px) !important;
+    margin-left: -3px !important;
 }
 
 .title-bar-text,
@@ -95,50 +105,71 @@
     button[aria-label="Minimize"] {
         background-image: svg-load("./icon/minimize.svg");
         &:hover {
-            background-image: svg-load("./icon/minimize-hover.svg");
+            background-image: svg-load("./icon/minimize-hover.svg") !important;
         }
         &:not(:disabled):active {
-            background-image: svg-load("./icon/minimize-active.svg");
+            background-image: svg-load("./icon/minimize-active.svg") !important;
         }
     }
     button[aria-label="Maximize"] {
         background-image: svg-load("./icon/maximize.svg");
         &:hover {
-            background-image: svg-load("./icon/maximize-hover.svg");
+            background-image: svg-load("./icon/maximize-hover.svg") !important;
         }
         &:not(:disabled):active {
-            background-image: svg-load("./icon/maximize-active.svg");
+            background-image: svg-load("./icon/maximize-active.svg") !important;
         }
     }
     button[aria-label="Restore"] {
         background-image: svg-load("./icon/restore.svg");
         &:hover {
-            background-image: svg-load("./icon/restore-hover.svg");
+            background-image: svg-load("./icon/restore-hover.svg") !important;
         }
         &:not(:disabled):active {
-            background-image: svg-load("./icon/restore-active.svg");
+            background-image: svg-load("./icon/restore-active.svg") !important;
         }
     }
     button[aria-label="Help"] {
         background-image: svg-load("./icon/help.svg");
         &:hover {
-            background-image: svg-load("./icon/help-hover.svg");
+            background-image: svg-load("./icon/help-hover.svg") !important;
         }
         &:not(:disabled):active {
-            background-image: svg-load("./icon/help-active.svg");
+            background-image: svg-load("./icon/help-active.svg") !important;
         }
     }
     button {
         background-image: svg-load("./icon/close.svg");
         &:hover {
-            background-image: svg-load("./icon/close-hover.svg");
+            background-image: svg-load("./icon/close-hover.svg") !important;
         }
         &:not(:disabled):active {
-            background-image: svg-load("./icon/close-active.svg");
+            background-image: svg-load("./icon/close-active.svg") !important;
         }
     }
     button:before {
         content: "";
+    }
+}
+
+.title-bar.inactive > .title-bar-controls {
+    button {
+        background-color: #80a5e7 !important;
+    }
+    button[aria-label="Minimize"] {
+        background-image: svg-load("./icon/minimize-inactive.svg");
+    }
+    button[aria-label="Maximize"] {
+        background-image: svg-load("./icon/maximize-inactive.svg");
+    }
+    button[aria-label="Restore"] {
+        background-image: svg-load("./icon/restore-inactive.svg");
+    }
+    button[aria-label="Help"] {
+        background-image: svg-load("./icon/help-inactive.svg");
+    }
+    button {
+        background-image: svg-load("./icon/close-inactive.svg");
     }
 }
 
@@ -181,51 +212,72 @@
 .window-minimize-button:not(#JustHereToGiveItPriority) {
     background-image: svg-load("./icon/minimize.svg");
     &:hover {
-        background-image: svg-load("./icon/minimize-hover.svg");
+        background-image: svg-load("./icon/minimize-hover.svg") !important;
     }
     &:not(:disabled):active {
-        background-image: svg-load("./icon/minimize-active.svg");
+        background-image: svg-load("./icon/minimize-active.svg") !important;
     }
 }
 .window-action-maximize:not(#JustHereToGiveItPriority) {
     background-image: svg-load("./icon/maximize.svg");
     &:hover {
-        background-image: svg-load("./icon/maximize-hover.svg");
+        background-image: svg-load("./icon/maximize-hover.svg") !important;
     }
     &:not(:disabled):active {
-        background-image: svg-load("./icon/maximize-active.svg");
+        background-image: svg-load("./icon/maximize-active.svg") !important;
     }
 }
 .window-action-restore:not(#JustHereToGiveItPriority) {
     background-image: svg-load("./icon/restore.svg");
     &:hover {
-        background-image: svg-load("./icon/restore-hover.svg");
+        background-image: svg-load("./icon/restore-hover.svg") !important;
     }
     &:not(:disabled):active {
-        background-image: svg-load("./icon/restore-active.svg");
+        background-image: svg-load("./icon/restore-active.svg") !important;
     }
 }
 .window-help-button:not(#JustHereToGiveItPriority) {
     background-image: svg-load("./icon/help.svg");
     &:hover {
-        background-image: svg-load("./icon/help-hover.svg");
+        background-image: svg-load("./icon/help-hover.svg") !important;
     }
     &:not(:disabled):active {
-        background-image: svg-load("./icon/help-active.svg");
+        background-image: svg-load("./icon/help-active.svg") !important;
     }
 }
 .window-close-button:not(#JustHereToGiveItPriority) {
     background-image: svg-load("./icon/close.svg");
     &:hover {
-        background-image: svg-load("./icon/close-hover.svg");
+        background-image: svg-load("./icon/close-hover.svg") !important;
     }
     &:not(:disabled):active {
-        background-image: svg-load("./icon/close-active.svg");
+        background-image: svg-load("./icon/close-active.svg") !important;
     }
     margin-right: 0;
 }
 .window-button-icon {
     display: none;
+}
+
+.os-window:not(.focused) {
+    .window-button:not(#JustHereToGiveItPriority) {
+        background-color: #80a5e7 !important;
+    }
+    .window-minimize-button:not(#JustHereToGiveItPriority) {
+        background-image: svg-load("./icon/minimize-inactive.svg");
+    }
+    .window-action-maximize:not(#JustHereToGiveItPriority) {
+        background-image: svg-load("./icon/maximize-inactive.svg");
+    }
+    .window-action-restore:not(#JustHereToGiveItPriority) {
+        background-image: svg-load("./icon/restore-inactive.svg");
+    }
+    .window-help-button:not(#JustHereToGiveItPriority) {
+        background-image: svg-load("./icon/help-inactive.svg");
+    }
+    .window-close-button:not(#JustHereToGiveItPriority) {
+        background-image: svg-load("./icon/close-inactive.svg");
+    }
 }
 
 .os-window.maximized > .window-titlebar:not(#JustHereToGiveItPriority) {
@@ -339,18 +391,22 @@
     margin-left: 6px;
 }
 
-#msgbox-icon[src="images/warning.png"] {
+#msgbox-icon[src="images/warning.png"],
+img[src="images/warning-32x32-8bpp.png"] {
     content: url("../images/xp_warning.png");
 }
 
-#msgbox-icon[src="images/error.png"] {
+#msgbox-icon[src="images/error.png"],
+img[src="images/error-32x32-8bpp.png"] {
     content: url("../images/xp_error.png");
 }
 
-#msgbox-icon[src="images/info.png"] {
+#msgbox-icon[src="images/info.png"],
+img[src="images/info-32x32-8bpp.png"] {
     content: url("../images/xp_info.png");
 }
 
-#msgbox-icon[src="images/question.png"] {
+#msgbox-icon[src="images/question.png"],
+img[src="images/question-32x32-8bpp.png"] {
     content: url("../images/xp_question.png");
 }

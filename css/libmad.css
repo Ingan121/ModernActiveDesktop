@@ -159,6 +159,8 @@ body[data-cm-shadow] .contextMenuBg {
 .contextMenu hr {
     margin-top: 3px;
     margin-bottom: 4px;
+    border-top-color: var(--button-shadow);
+    border-bottom-color: var(--button-hilight);
 }
 
 .disabled {

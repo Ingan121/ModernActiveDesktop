@@ -337,7 +337,7 @@ body[data-cm-shadow] .contextMenuBg {
     height: 17px;
     font-size: 11px;
     padding-left: 2px;
-    pointer-events: auto !important;
+    pointer-events: auto;
 }
 
 .contextMenuItem p {
@@ -389,6 +389,8 @@ body[data-cm-shadow] .contextMenuBg {
 .contextMenu hr {
     margin-top: 3px;
     margin-bottom: 4px;
+    border-top-color: var(--button-shadow);
+    border-bottom-color: var(--button-hilight);
 }
 
 .submenuMark {

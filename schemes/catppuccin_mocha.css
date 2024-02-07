@@ -1,0 +1,46 @@
+/* Catppuccin Mocha */
+/* https://github.com/catppuccin/catppuccin */
+:root {
+    --active-border: #1e1e2e;
+    --active-title: #1e1e2e;
+    --app-workspace: #000000;
+    --background: #313244;
+    --button-alternate-face: #1e1e2e;
+    --button-dk-shadow: #11111b;
+    --button-face: #1e1e2e;
+    --button-hilight: #a6adc8;
+    --button-light: #9399b2;
+    --button-shadow: #181825;
+    --button-text: #bac2de;
+    --gradient-active-title: #1e1e2e;
+    --gradient-inactive-title: #1e1e2e;
+    --gray-text: #6c7086;
+    --hilight: #cba6f7;
+    --hilight-text: #FFFFFF;
+    --hot-tracking-color: #89b4fa;
+    --inactive-border: #1e1e2e;
+    --inactive-title: #1e1e2e;
+    --inactive-title-text: #a6adc8;
+    --info-text: #b4befe;
+    --info-window: #000000;
+    --menu: #1e1e2e;
+    --menu-bar: #1e1e2e;
+    --menu-hilight: #cba6f7;
+    --menu-text: #FFFFFF;
+    --scrollbar: #000000;
+    --title-text: #cdd6f4;
+    --window: #313244;
+    --window-frame: #cdd6f4;
+    --window-text: #cdd6f4;
+    --flat-menus: none;
+    --menu-animation: slide;
+    --menu-shadow: false;
+    --scrollbar-size: 17px;
+    --menu-height: 18px;
+    --palette-title-height: 15px;
+    --status-font: bold 8pt var(--ui-font);
+}
+.window {
+    --extra-border-size: 1px;
+    --extra-title-height: 0px;
+}

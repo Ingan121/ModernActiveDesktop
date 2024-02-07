@@ -147,7 +147,7 @@ if (localStorage.madesktopItemCount > 1) {
 }
 
 if (localStorage.madesktopLastVer) {
-    if (!localStorage.madesktopLastVer.startsWith("3.1")) { // Update from 3.0 and below
+    if (!localStorage.madesktopLastVer.startsWith("3.2")) { // Update from 3.1 and below
         localStorage.removeItem("madesktopHideWelcome");
         localStorage.removeItem("madesktopCheckedChanges");
         localStorage.removeItem("madesktopCheckedConfigs");
@@ -160,7 +160,7 @@ if (localStorage.madesktopLastVer) {
         startup();
     }
 
-    if (localStorage.madesktopLastVer !== "3.1.2" && localStorage.sysplugIntegration) { // Update from 3.1.1 and below
+    if (localStorage.madesktopLastVer !== "3.2.0" && localStorage.sysplugIntegration) { // Update from 3.2.0 and below
         madAlert("System plugin has been updated, and it needs a reinstall. Please update it with the setup guide.", function () {
             openWindow("SysplugSetupGuide.md", true);
         });
@@ -170,7 +170,7 @@ if (localStorage.madesktopLastVer) {
     openWindow("placeholder.html");
     startup();
 }
-localStorage.madesktopLastVer = "3.1.2";
+localStorage.madesktopLastVer = "3.2.0";
 
 if (localStorage.madesktopItemVisible === "false") {
     windowContainers[0].style.display = "none";
@@ -419,8 +419,6 @@ function changeColorScheme(scheme) {
         schemeElement.href = `schemes/${scheme}.css`;
         delete localStorage.madesktopCustomColor;
         delete localStorage.madesktopSysColorCache;
-        // These load slower, so let's just use the light theme on theme change as current two css themes are light ones
-        processTheme('#000');
     }
     
     try {
@@ -693,39 +691,78 @@ function isDarkColor(color) {
     return false;
 }
 
-function processTheme(color) {
-    styleElement2.textContent = generateScrollBarSvgs(color);
+function processTheme() {
+    styleElement2.textContent = generateThemeSvgs();
 }
 
-function generateScrollBarSvgs(color) {
-    if (!color) {
-        color = getComputedStyle(document.documentElement).getPropertyValue('--button-text');
+function generateThemeSvgs(targetElement) {
+    if (!targetElement) {
+        targetElement = document.documentElement;
     }
-    const up = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path fill-rule="evenodd" clip-rule="evenodd" d="M8 6H7V7H6V8H5V9H4V10H11V9H10V8H9V7H8V6Z" fill="${color}"/></svg>`;
-    const down = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path fill-rule="evenodd" clip-rule="evenodd" d="M8 6H4V7H5V8H6V9H7V10H8V9H9V8H10V7H11V6Z" fill="${color}"/></svg>`;
-    const left = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path fill-rule="evenodd" clip-rule="evenodd" d="M6 4H8V5H7V6H6V7H5V8H6V9H7V10H8V11H9V4Z" fill="${color}"/></svg>`;
-    const right = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path fill-rule="evenodd" clip-rule="evenodd" d="M10 4H6V11H7V10H8V9H9V8H10V7H9V6H8V5H7V4Z" fill="${color}"/></svg>`;
+    const buttonFace = getComputedStyle(targetElement).getPropertyValue('--button-face');
+    const buttonDkShadow = getComputedStyle(targetElement).getPropertyValue('--button-dk-shadow');
+    const buttonHilight = getComputedStyle(targetElement).getPropertyValue('--button-hilight');
+    const buttonLight = getComputedStyle(targetElement).getPropertyValue('--button-light');
+    const buttonShadow = getComputedStyle(targetElement).getPropertyValue('--button-shadow');
+    const buttonText = getComputedStyle(targetElement).getPropertyValue('--button-text');
+    const windowColor = getComputedStyle(targetElement).getPropertyValue('--window');
+
+    const scrollUp = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M8 6H7V7H6V8H5V9H4V10H11V9H10V8H9V7H8V6Z" fill="${buttonText}"/></svg>`;
+    const scrollDown = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M8 6H4V7H5V8H6V9H7V10H8V9H9V8H10V7H11V6Z" fill="${buttonText}"/></svg>`;
+    const scrollLeft = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M6 4H8V5H7V6H6V7H5V8H6V9H7V10H8V11H9V4Z" fill="${buttonText}"/></svg>`;
+    const scrollRight = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M10 4H6V11H7V10H8V9H9V8H10V7H9V6H8V5H7V4Z" fill="${buttonText}"/></svg>`;
+    const radioBorder = `<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M8 0H4V1H2V2H1V4H0V8H1V10H2V8H1V4H2V2H4V1H8V2H10V1H8V0Z" fill="${buttonShadow}"/>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M8 1H4V2H2V3V4H1V8H2V9H3V8H2V4H3V3H4V2H8V3H10V2H8V1Z" fill="${buttonDkShadow}"/>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M9 3H10V4H9V3ZM10 8V4H11V8H10ZM8 10V9H9V8H10V9V10H8ZM4 10V11H8V10H4ZM4 10V9H2V10H4Z" fill="${buttonLight}"/>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M11 2H10V4H11V8H10V10H8V11H4V10H2V11H4V12H8V11H10V10H11V8H12V4H11V2Z" fill="${buttonHilight}"/>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M4 2H8V3H9V4H10V8H9V9H8V10H4V9H3V8H2V4H3V3H4V2Z" fill="${windowColor}"/></svg>`;
+    const radioDot = `<svg width="4" height="4" viewBox="0 0 4 4" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M3 0H1V1H0V2V3H1V4H3V3H4V2V1H3V0Z" fill="${buttonText}"/></svg>`;
+    const checkmark = `<svg width="7" height="7" viewBox="0 0 7 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M7 0H6V1H5V2H4V3H3V4H2V3H1V2H0V5H1V6H2V7H3V6H4V5H5V4H6V3H7V0Z" fill="${buttonText}"/></svg>`;
+    const indicatorThumb = `<svg width="11" height="21" viewBox="0 0 11 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M0 0V16H2V18H4V20H5V19H3V17H1V1H10V0Z" fill="${buttonHilight}"/>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M1 1V16H2V17H3V18H4V19H6V18H7V17H8V16H9V1Z" fill="${buttonFace}"/>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M9 1H10V16H8V18H6V20H5V19H7V17H9Z" fill="${buttonShadow}"/>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M10 0H11V16H9V18H7V20H5V21H6V19H8V17H10Z" fill="${buttonDkShadow}"/></svg>`;
+
     const css = `
     ::-webkit-scrollbar-button:vertical:start {
-        background-image: url("data:image/svg+xml,${encodeURIComponent(up)}");
+        background-image: url("data:image/svg+xml,${encodeURIComponent(scrollUp)}");
         background-position: unset;
     }
     ::-webkit-scrollbar-button:vertical:end {
-        background-image: url("data:image/svg+xml,${encodeURIComponent(down)}");
+        background-image: url("data:image/svg+xml,${encodeURIComponent(scrollDown)}");
         background-position: unset;
     }
     ::-webkit-scrollbar-button:horizontal:start {
-        background-image: url("data:image/svg+xml,${encodeURIComponent(left)}");
+        background-image: url("data:image/svg+xml,${encodeURIComponent(scrollLeft)}");
         background-position: unset;
     }
     ::-webkit-scrollbar-button:horizontal:end {
-        background-image: url("data:image/svg+xml,${encodeURIComponent(right)}");
+        background-image: url("data:image/svg+xml,${encodeURIComponent(scrollRight)}");
         background-position: unset;
-    }`
+    }
+    input[type="radio"] + label::before {
+        background: url("data:image/svg+xml,${encodeURIComponent(radioBorder)}");
+    }
+    input[type="radio"]:checked + label::after {
+        background: url("data:image/svg+xml,${encodeURIComponent(radioDot)}");
+    }
+    input[type="checkbox"]:checked + label::after {
+        background: url("data:image/svg+xml,${encodeURIComponent(checkmark)}");
+    }
+    input[type="range"]::-webkit-slider-thumb {
+        background: url("data:image/svg+xml,${encodeURIComponent(indicatorThumb)}");
+    }
+    input[type="range"]::-moz-range-thumb {
+        background: url("data:image/svg+xml,${encodeURIComponent(indicatorThumb)}");
+    }`;
     return css;
 }
 
@@ -848,20 +885,22 @@ function updateIframeScale() {
 // innerWidth/Height hook
 // Fixes some sites that are broken when scaled, such as YT
 function hookIframeSize(iframe, num) {
-    Object.defineProperty(iframe.contentWindow, "innerWidth", {
-        get: function () {
-            if (typeof num !== "undefined" && deskMovers[num].config.unscaled) {
-                return iframe.clientWidth * scaleFactor;
+    Object.defineProperties(iframe.contentWindow, {
+        innerWidth: {
+            get: function () {
+                if (typeof num !== "undefined" && deskMovers[num].config.unscaled) {
+                    return iframe.clientWidth * scaleFactor;
+                }
+                return iframe.clientWidth;
             }
-            return iframe.clientWidth;
-        }
-    });
-    Object.defineProperty(iframe.contentWindow, "innerHeight", {
-        get: function () {
-            if (typeof num !== "undefined" && deskMovers[num].config.unscaled) {
-                return iframe.clientHeight * scaleFactor;
+        },
+        innerHeight: {
+            get: function () {
+                if (typeof num !== "undefined" && deskMovers[num].config.unscaled) {
+                    return iframe.clientHeight * scaleFactor;
+                }
+                return iframe.clientHeight;
             }
-            return iframe.clientHeight;
         }
     });
 
@@ -1286,6 +1325,9 @@ function activateDebugMode() {
     debugMenu.style.top = 0;
     debugMenu.style.right = 0;
     debugMenu.style.left = "auto";
+    for (const i in deskMovers) {
+        deskMovers[i].windowTitlebar.classList.remove("noIcon");
+    }
     localStorage.madesktopDebugMode = true;
 }
 
@@ -1371,6 +1413,7 @@ if (runningMode === WE) {
 origRunningMode = runningMode;
 
 window.addEventListener('load', function () {
+    processTheme();
     try {
         document.documentElement.style.setProperty('--hilight-inverted', invertColor(getComputedStyle(document.documentElement).getPropertyValue('--hilight')));
     } catch {

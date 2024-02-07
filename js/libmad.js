@@ -6,6 +6,8 @@
 
 (function () {
     if (!frameElement) {
+        // minimal MAD APIs fallback for non-MAD environments (or in cross-origin restricted mode)
+        const noop = () => {};
         window.madScaleFactor = 1;
         window.madRunningMode = 0;
         window.madOpenWindow = function (url, temp, width, height, style) {
@@ -13,6 +15,9 @@
                 url = "../../" + url;
             }
             window.open(url, "_blank", `width=${width},height=${height}`);
+        }
+        window.madOpenConfig = function (page) {
+            madOpenWindow(`apps/madconf/${page}.html`, false, 398, 423);
         }
         window.madOpenDropdown = function (elem) {
             return;
@@ -42,6 +47,14 @@
             }
         }
         window.madCloseWindow = window.close;
+        window.madResizeTo = window.resizeTo;
+        window.madMoveTo = window.moveTo;
+
+        window.madSetIcon = noop;
+        window.madChangeWndStyle = noop;
+        window.madOpenMiniColorPicker = noop;
+        window.madOpenColorPicker = noop;
+        window.madPlaySound = noop;
         return;
     }
 
@@ -65,12 +78,7 @@
 
     function applyScheme(startup) {
         if (schemeElement && !startup) { // Do this on onload instead of startup, as non-dataurl schemes loads slowly
-            if (parentSchemeElement.href.startsWith("file:///")) {
-                // Well these load slower, so let's just use the light theme on theme change as current two css themes are light ones
-                styleElement.textContent = "";
-            } else {
-                processTheme();
-            }
+            processTheme();
         }
         schemeElement.href = parentSchemeElement.href;
 
@@ -113,14 +121,10 @@
     }
 
     function processTheme() {
-        if (parent.isDarkColor(getComputedStyle(parent.document.documentElement).getPropertyValue('--window'))) {
-            styleElement.textContent = `
-                input[type=checkbox]:checked+label:after {
-                    filter: invert(1);
-                }
-            `;
-        } else {
+        if (localStorage.madesktopColorScheme === "xpcss4mad") {
             styleElement.textContent = "";
+        } else {
+            styleElement.textContent = parentStyleElement2.textContent;
         }
 
         if (parent.isDarkColor(getComputedStyle(parent.document.documentElement).getPropertyValue('--button-face'))) {
@@ -138,7 +142,6 @@
                 `;
             }
         }
-        styleElement.textContent += parentStyleElement2.textContent;
 
         if (window.osguiCompatRequired) {
             applyCSSProperties(renderThemeGraphics(getComputedStyle(document.body)), { element: document.body });

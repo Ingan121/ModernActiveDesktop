@@ -4,6 +4,7 @@ html {
 
 body {
     height: 100%;
+    color: var(--window-text);
     background-color: var(--window);
     font-family: var(--ui-font);
     overflow: hidden;

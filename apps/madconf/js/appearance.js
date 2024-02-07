@@ -16,6 +16,7 @@ let savedSchemes = JSON.parse(localStorage.madesktopSavedSchemes || "{}");
 async function main() {
     scheme = parseCssScheme(await getSchemeText());
     let schemeName = "Windows Classic (98)";
+    const parentSchemeElement2 = parent.document.getElementById("style2");
     const preview = document.getElementById("schemePreview");
     const schemeSelector = document.getElementById("schemeSelector");
     const saveAsBtn = document.getElementById("saveAsBtn");
@@ -28,6 +29,8 @@ async function main() {
     const colorPickerColor = colorPicker.querySelector(".colorPicker-color");
     const itemSizeWrap = document.getElementById("itemSizeWrap");
     const itemSize = document.getElementById("itemSize");
+    const itemSizeUp = document.getElementById("itemSizeUp");
+    const itemSizeDown = document.getElementById("itemSizeDown");
     const secondColorPickerWrap = document.getElementById("secondColorWrap");
     const secondColorPicker = document.getElementById("secondColor");
     const secondColorPickerColor = secondColorPicker.querySelector(".colorPicker-color");
@@ -233,7 +236,15 @@ async function main() {
                     return;
             }
             if (savedSchemes[res]) {
-                madAlert("A scheme with this name already exists!", null, "error");
+                madConfirm("A scheme with the same name already exists. Do you want to overwrite it?", function (res2) {
+                    if (res2) {
+                        savedSchemes[res] = scheme;
+                        localStorage.madesktopSavedSchemes = JSON.stringify(savedSchemes);
+                        schemeName = res;
+                        schemeSelector.options[0].textContent = schemeName;
+                        localStorage.madesktopLastSchemeName = schemeName;
+                    }
+                });
                 return;
             }
             savedSchemes[res] = scheme;
@@ -291,6 +302,8 @@ async function main() {
             if (itemMappings[option].itemSize) {
                 itemSizeWrap.classList.remove("disabled");
                 itemSize.disabled = false;
+                itemSizeUp.disabled = false;
+                itemSizeDown.disabled = false;
                 let itemSizeValue = parseInt(scheme[itemMappings[option].itemSize]);
                 if (itemMappings[option].itemSize === "extra-title-height") {
                     itemSizeValue += 20;
@@ -300,6 +313,8 @@ async function main() {
                 itemSize.value = '';
                 itemSizeWrap.classList.add("disabled");
                 itemSize.disabled = true;
+                itemSizeUp.disabled = true;
+                itemSizeDown.disabled = true;
             }
             if (itemMappings[option].font) {
                 fontSelector.disabled = false;
@@ -355,6 +370,8 @@ async function main() {
             itemSize.value = '';
             itemSizeWrap.classList.add("disabled");
             itemSize.disabled = true;
+            itemSizeUp.disabled = true;
+            itemSizeDown.disabled = true;
             fontSelector.selectedIndex = 0;
             fontSelector.disabled = true;
             fontSize.value = '';
@@ -378,6 +395,16 @@ async function main() {
             }
             applyPreview();
         }
+    });
+
+    itemSizeUp.addEventListener("click", function () {
+        itemSize.value = parseInt(itemSize.value) + 1;
+        itemSize.dispatchEvent(new Event("change"));
+    });
+
+    itemSizeDown.addEventListener("click", function () {
+        itemSize.value = parseInt(itemSize.value) - 1;
+        itemSize.dispatchEvent(new Event("change"));
     });
 
     for (const colorPicker of colorPickers) {
@@ -483,6 +510,7 @@ async function main() {
         } else if (selector.disabled) {
             schemeName = schemeSelector.options[schemeSelector.selectedIndex].textContent;
             schemeSelector.options[0].textContent = schemeName;
+            parentSchemeElement2.textContent = preview.contentDocument.getElementById("style").textContent;
             parent.changeColorScheme(schemeSelector.value);
             localStorage.madesktopColorScheme = schemeSelector.value;
             localStorage.madesktopLastSchemeName = schemeName;

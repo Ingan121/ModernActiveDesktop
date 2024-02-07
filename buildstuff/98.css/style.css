@@ -594,7 +594,7 @@ mad-select:after {
 }
 
 mad-select[data-disabled] {
-  color: var(--button-shadow);
+  color: var(--gray-text);
   background-color: var(--button-face);
 }
 

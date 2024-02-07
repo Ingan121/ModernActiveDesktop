@@ -14,6 +14,11 @@ body {
     overflow: hidden;
 }
 
+p, legend, label,
+:not(button):not([data-disabled]):not(.disabled):not([data-active]) > span:not(.label) {
+    color: var(--window-text);
+}
+
 #madconf {
     margin: 6px;
     margin-top: 9px;
@@ -56,7 +61,8 @@ p {
     width: 50px;
 }
 
-.disabled {
+.disabled,
+.disabled * {
     color: var(--button-shadow);
     text-shadow: 1px 1px 0 var(--button-hilight);
 }

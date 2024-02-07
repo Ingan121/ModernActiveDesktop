@@ -169,8 +169,12 @@ dpiSlider.addEventListener('input', function () {
 dpiSelector.addEventListener('change', function () {
     dpiSlider.value = this.selectedIndex;
     if (this.value === 'custom') {
-        madPrompt("Enter scale (%) :", res => {
+        madPrompt("Enter scale (%) :", async (res) => {
             if (res === null) {
+                if (madRunningMode === 1) {
+                    // Weird timing issues with prompt() and libmad mad-select
+                    await parent.asyncTimeout(100);
+                }
                 dpiSelector.value = config.dpi;
                 dpiSlider.value = dpiSelector.selectedIndex;
                 dpiSelectorCustom.textContent = "Custom";
@@ -238,7 +242,7 @@ function checkSysplug() {
         .then(response => response.text())
         .then(responseText => {
             if (responseText !== localStorage.madesktopLastVer) {
-                connectionStatus.textContent = "System plugin version mismatch! Please update the system plugin with the guide.";
+                connectionStatus.textContent = "System plugin is outdated! Please update the system plugin with the guide.";
             } else {
                 connectionStatus.textContent = "System plugin connection successful!";
             }

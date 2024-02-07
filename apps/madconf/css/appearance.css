@@ -92,13 +92,62 @@ input[type="number"] {
     width: 57px;
     height: 21px;
     margin-left: -1px;
-    text-align: right;
 }
 
 input[type=number]::-webkit-inner-spin-button, 
 input[type=number]::-webkit-outer-spin-button { 
     appearance: none;
-    margin: 0; 
+    margin: 0;
+}
+
+#itemSizeWrap {
+    position: relative;
+}
+
+#itemSize {
+    padding-right: 18px;
+    text-align: right;
+}
+
+#itemSizeButtons {
+    position: absolute;
+}
+
+#itemSizeButtons button {
+    position: absolute;
+    left: -17px;
+    min-width: 0;
+    min-height: 0;
+    padding: 0;
+    width: 15px;
+    box-shadow: inset -1px -1px var(--button-dk-shadow), inset 1px 1px var(--button-light), inset -2px -2px var(--button-shadow), inset 2px 2px var(--button-hilight);
+    font-size: 7px;
+    line-height: 2px;
+    color: var(--button-text);
+}
+
+#itemSizeButtons button:disabled {
+    color: var(--button-shadow);
+}
+
+#itemSizeButtons button:focus {
+    outline: none;
+}
+
+#itemSizeButtons button:active {
+    box-shadow: inset -1px -1px var(--button-hilight), inset 1px 1px var(--button-shadow), inset -2px -2px var(--button-light), inset 2px 2px var(--button-dk-shadow);
+    line-height: 3px;
+}
+
+#itemSizeUp {
+    top: 2px;
+    height: 8px;
+}
+
+#itemSizeDown {
+    top: 10px;
+    height: 9px;
+    border-top: solid 1px var(--button-face);
 }
 
 .colorPicker {

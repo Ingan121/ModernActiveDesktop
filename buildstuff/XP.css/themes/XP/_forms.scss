@@ -25,32 +25,32 @@ option {
 
 select,
 mad-select {
-    border: 1px solid #7f9db9;
-    background-image: svg-load("./icon/dropdown.svg");
-    background-size: 15px;
-    box-shadow: none;
+    border: 1px solid #7f9db9 !important;
+    background-image: svg-load("./icon/dropdown.svg") !important;
+    background-size: 15px !important;
+    box-shadow: none !important;
     &:focus,
     &[data-open] {
-        box-shadow: inset 2px 2px white, inset -2px -2px white;
+        box-shadow: inset 2px 2px white, inset -2px -2px white !important;
     }
     &:not(:disabled):not([data-disabled]):hover {
-        background-image: svg-load("./icon/dropdown-hover.svg");
+        background-image: svg-load("./icon/dropdown-hover.svg") !important;
     }
     &:not(:disabled):not([data-disabled]):active {
-        background-image: svg-load("./icon/dropdown-active.svg");
+        background-image: svg-load("./icon/dropdown-active.svg") !important;
     }
     &:disabled,
     &[data-disabled] {
-        background-color: transparent;
+        background-color: transparent !important;
     }
 }
 
 mad-select:before {
-    display: none;
+    display: none !important;
 }
 
 mad-select:after {
-    display: none;
+    display: none !important;
 }
 
 input[type=email]:disabled,

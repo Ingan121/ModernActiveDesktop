@@ -4,6 +4,8 @@
 
 'use strict';
 
+const textboxes = document.querySelectorAll("input[type='text'], input[type='number']");
+
 const defaultRadBtn = document.getElementById('radDefault');
 const schemeRadBtn = document.getElementById('radScheme');
 const customRadBtn = document.getElementById('radCustom');
@@ -23,6 +25,15 @@ const topColorPickerLabel = document.getElementById("topColorPickerLabel");
 const albumArtChkBox = document.getElementById("albumArtChkBox");
 const dimAlbumArtChkBox = document.getElementById("dimAlbumArtChkBox");
 
+const noProcessingRadBtn = document.getElementById("radNoProcessing");
+const reverseRadBtn = document.getElementById("radReverse");
+const combineRadBtn = document.getElementById("radCombine");
+
+const fixedBarsChkBox = document.getElementById("fixedBarsChkBox");
+const barWidthInput = document.getElementById("barWidthInput");
+
+const diffScaleInput = document.getElementById("diffScaleInput");
+
 const okBtn = document.getElementById("okBtn");
 const cancelBtn = document.getElementById("cancelBtn");
 const applyBtn = document.getElementById("applyBtn");
@@ -35,6 +46,18 @@ for (const colorPicker of colorPickers) {
         madOpenMiniColorPicker(this, this.querySelector(".colorPicker-color").style.backgroundColor, function (color) {
             changeColor(color);
         });
+    });
+}
+
+for (const textbox of textboxes) {
+    textbox.addEventListener("click", function () {
+        if (madRunningMode === 1) {
+            madPrompt("Enter value", function (res) {
+                if (res === null) return;
+                textbox.value = res;
+                textbox.dispatchEvent(new Event('change'));
+            }, '', textbox.value);
+        }
     });
 }
 
@@ -79,6 +102,15 @@ albumArtChkBox.addEventListener("change", () => {
     }
 });
 
+fixedBarsChkBox.addEventListener("change", () => {
+    if (fixedBarsChkBox.checked) {
+        barWidthInput.disabled = false;
+    } else {
+        barWidthInput.value = 6;
+        barWidthInput.disabled = true;
+    }
+});
+
 window.apply = function () {
     if (defaultRadBtn.checked) {
         delete localStorage.madesktopVisBgColor;
@@ -109,6 +141,22 @@ window.apply = function () {
     } else {
         delete localStorage.madesktopVisDimAlbumArt;
     }
+
+    if (noProcessingRadBtn.checked) {
+        localStorage.madesktopVisChannelSeparation = 1;
+    } else if (reverseRadBtn.checked) {
+        localStorage.madesktopVisChannelSeparation = 2;
+    } else {
+        localStorage.madesktopVisChannelSeparation = 3;
+    }
+
+    if (fixedBarsChkBox.checked) {
+        localStorage.madesktopVisBarWidth = barWidthInput.value;
+    } else {
+        delete localStorage.madesktopVisBarWidth;
+    }
+
+    localStorage.madesktopVisDiffScale = diffScaleInput.value;
     window.targetDeskMover.windowElement.contentWindow.configChanged();
 }
 
@@ -149,6 +197,30 @@ if (localStorage.madesktopVisShowAlbumArt) {
 
 if (localStorage.madesktopVisDimAlbumArt) {
     dimAlbumArtChkBox.checked = true;
+}
+
+if (localStorage.madesktopVisChannelSeparation) {
+    switch (parseInt(localStorage.madesktopVisChannelSeparation)) {
+        case 1:
+            noProcessingRadBtn.checked = true;
+            break;
+        case 2:
+            reverseRadBtn.checked = true;
+            break;
+        case 3:
+            combineRadBtn.checked = true;
+            break;
+    }
+}
+
+if (localStorage.madesktopVisBarWidth) {
+    fixedBarsChkBox.checked = true;
+    barWidthInput.value = localStorage.madesktopVisBarWidth;
+    barWidthInput.disabled = false;
+}
+
+if (localStorage.madesktopVisDiffScale) {
+    diffScaleInput.value = localStorage.madesktopVisDiffScale;
 }
 
 if (localStorage.madesktopVisOnlyAlbumArt) {

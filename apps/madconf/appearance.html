@@ -25,18 +25,10 @@
                         <mad-select id="schemeSelector">
                             <option value="current" selected hidden>Current Scheme</option>
                             <option value="98">Windows Classic (98)</option>
-                            <option value="98se">Windows Classic (98SE)</option>
-                            <option value="95">Windows Classic (95 / NT4)</option>
                             <option value="2k">Windows Standard (2000 / Me)</option>
                             <option value="xpcss4mad" data-inconfigurable="1">Windows XP style</option>
                             <option value="sys" data-inconfigurable="1" data-condition="sysplugIntegration">System Scheme</option>
                             <option value="import" data-inconfigurable="1">Browse...</option>
-                            <option value="xp">Windows XP Blue</option>
-                            <option value="xp_olive">Windows XP Olive Green</option>
-                            <option value="xp_silver">Windows XP Silver</option>
-                            <option value="xp_royale">Windows XP Royale</option>
-                            <option value="aero">Windows Aero</option>
-                            <option value="windose" data-inconfigurable="1">Windose</option>
                             <option value="brick">Brick</option>
                             <option value="desert">Desert</option>
                             <option value="eggplant">Eggplant</option>
@@ -53,6 +45,15 @@
                             <option value="storm">Storm</option>
                             <option value="teal">Teal</option>
                             <option value="wheat">Wheat</option>
+                            <option value="windose" data-inconfigurable="1">Windose</option>
+                            <option value="catppuccin_mocha">Catppuccin Mocha</option>
+                            <option value="xp_olive">Windows XP Olive Green</option>
+                            <option value="xp_silver">Windows XP Silver</option>
+                            <option value="xp_royale">Windows XP Royale</option>
+                            <option value="xp">Windows XP Blue</option>
+                            <option value="98se">Windows Classic (98SE)</option>
+                            <option value="95">Windows Classic (95 / NT4)</option>
+                            <option value="aero">Windows Aero</option>
                             <option value="plus_baseball">Plus! Baseball</option>
                             <option value="plus_dangerous_creatures">Plus! Dangerous Creatures</option>
                             <option value="plus_inside_your_computer">Plus! Inside your Computer</option>
@@ -145,6 +146,10 @@
                         <p id="itemSizeWrap" class="disabled">
                             <span id="itemSizeLabel" class="label">Si<u>z</u>e:</span>
                             <input id="itemSize" type="number" min="0" max="100" value="" disabled>
+                            <span id="itemSizeButtons">
+                                <button id="itemSizeUp" disabled>⏶</button>
+                                <button id="itemSizeDown" disabled>⏷</button>
+                            </span>
                         </p>
                         <p id="firstColorWrap">
                             <span id="firstColorLabel" class="label">Co<u>l</u>or:</span>

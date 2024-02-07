@@ -389,8 +389,20 @@ class DeskMover {
     }
 
     openContextMenu() {
-        this.windowContainer.style.setProperty('--context-menu-left', '');
-        this.windowContainer.style.setProperty('--context-menu-top', '');
+        this.contextMenuBg.style.removeProperty('--context-menu-left');
+        this.contextMenuBg.style.removeProperty('--context-menu-top');
+        this.confMenuBg.style.removeProperty('--context-menu-left');
+        this.confMenuBg.style.removeProperty('--context-menu-top');
+        // Windows without icons aren't designed to look good in different sizes yet
+        if (this.windowTitlebar.classList.contains("noIcon")) {
+            this.contextMenuBg.style.height = "34px";
+            this.contextMenuItems[2].style.pointerEvents = "none";
+            this.contextMenuItems[2].style.opacity = "0";
+        } else {
+            this.contextMenuBg.style.height = "";
+            this.contextMenuItems[2].style.pointerEvents = "";
+            this.contextMenuItems[2].style.opacity = "";
+        }
         this.contextMenuBg.style.display = "block";
 
         // For handling window icon double click
@@ -406,8 +418,21 @@ class DeskMover {
     }
 
     openContextMenuFromRightClick(event) {
-        this.windowContainer.style.setProperty('--context-menu-left', this.posInContainer.x + 'px');
-        this.windowContainer.style.setProperty('--context-menu-top', this.posInContainer.y + 'px');
+        this.bringToTop();
+        this.contextMenuBg.style.setProperty('--context-menu-left', this.posInContainer.x + 'px');
+        this.contextMenuBg.style.setProperty('--context-menu-top', this.posInContainer.y + 'px');
+        this.confMenuBg.style.setProperty('--context-menu-left', this.posInContainer.x + 'px');
+        this.confMenuBg.style.setProperty('--context-menu-top', this.posInContainer.y + 'px');
+        // Windows without icons aren't designed to look good in different sizes yet
+        if (this.windowTitlebar.classList.contains("noIcon")) {
+            this.contextMenuBg.style.height = "34px";
+            this.contextMenuItems[2].style.pointerEvents = "none";
+            this.contextMenuItems[2].style.opacity = "0";
+        } else {
+            this.contextMenuBg.style.height = "";
+            this.contextMenuItems[2].style.pointerEvents = "";
+            this.contextMenuItems[2].style.opacity = "";
+        }
         this.contextMenuBg.style.display = "block";
         iframeClickEventCtrl(false);
         isContextMenuOpen = true;
@@ -607,7 +632,9 @@ class DeskMover {
         }
         this.dropdown.style.width = this.dropdownBg.style.width;
 
-        const itemHeight = this.dropdown.children[1].getBoundingClientRect().height;
+        this.dropdown.children[0].style.display = "block";
+        const itemHeight = this.dropdown.children[0].getBoundingClientRect().height;
+        this.dropdown.children[0].style.display = "";
         if (optionCnt >= 25) {
             this.dropdownBg.style.height = itemHeight * 25 + "px";
         } else {
@@ -721,6 +748,7 @@ class DeskMover {
 
     #wcMouseDown(event) {
         this.bringToTop();
+        if (event.button !== 0) return;
         if ((this.windowFrame.style.borderColor !== "transparent" || this.config.style !== "ad") && !this.mouseOverWndBtns) {
             iframeClickEventCtrl(false);
             this.isDown = true;
@@ -739,18 +767,62 @@ class DeskMover {
             this.#updatePrevOffset();
             log([this.posInContainer.x, this.posInContainer.y]);
             // Decide the resizing mode based on the position of the mouse cursor
-            if (this.posInContainer.x <= 3 + extraBorderSize) {
-                this.resizingMode = this.config.unresizable ? null : "left";
-            } else if (this.posInContainer.x >= this.windowContainer.offsetWidth - 4 - extraBorderSize) {
-                this.resizingMode = this.config.unresizable ? null : "right";
-            } else if (this.posInContainer.y <= 3 + extraBorderSize && this.config.style !== "ad") {
-                this.resizingMode = this.config.unresizable ? null : "top";
-            } else if (this.posInContainer.y <= 9 && this.posInContainer.y >= 6 && this.config.style === "ad") {
-                this.resizingMode = this.config.unresizable ? null : "top";
-            } else if (this.posInContainer.y >= 30) {
-                this.resizingMode = this.config.unresizable ? null : "bottom";
-            } else if (this.posInContainer.y >= 6 || this.config.style !== "ad") {
+            let left = this.posInContainer.x <= 3 + extraBorderSize;
+            let right = this.posInContainer.x >= this.windowContainer.offsetWidth - 4 - extraBorderSize;
+            let top = this.config.style === "ad" ? this.posInContainer.y <= 9 && this.posInContainer.y >= 6 : this.posInContainer.y <= 3 + extraBorderSize;
+            let bottom = this.config.style === "ad" ?
+                (this.posInContainer.y >= this.windowContainer.offsetHeight - 18 && this.posInContainer.y <= this.windowContainer.offsetHeight - 15) :
+                this.posInContainer.y >= this.windowContainer.offsetHeight - 4 - extraBorderSize;
+            // More tolerance for diagonal resizing
+            if ((left || right) && !top && !bottom) {
+                if (this.config.style === "ad") {
+                    if (this.posInContainer.y <= 14 && this.posInContainer.y >= 6) {
+                        top = true;
+                    }
+                    if ((this.posInContainer.y >= this.windowContainer.offsetHeight - 23 && this.posInContainer.y <= this.windowContainer.offsetHeight - 15)) {
+                        bottom = true;
+                    }
+                } else {
+                    if (this.posInContainer.y <= 8 + extraBorderSize) {
+                        top = true;
+                    }
+                    if (this.posInContainer.y >= this.windowContainer.offsetHeight - 11 - extraBorderSize) {
+                        bottom = true;
+                    }
+                }
+            }
+            if ((top || bottom) && !left && !right) {
+                if (this.posInContainer.x <= 8 + extraBorderSize) {
+                    left = true;
+                }
+                if (this.posInContainer.x >= this.windowContainer.offsetWidth - 9 - extraBorderSize) {
+                    right = true;
+                }
+            }
+            const move = !left && !right && !top && !bottom && (this.posInContainer.y >= 6 || this.config.style !== "ad");
+            log({ left, right, top, bottom, move });
+            if (move) {
                 this.resizingMode = "none";
+            } else if (!this.config.unresizable) {
+                if (left && top) {
+                    this.resizingMode = "lefttop";
+                } else if (right && top) {
+                    this.resizingMode = "righttop";
+                } else if (left && bottom) {
+                    this.resizingMode = "leftbottom";
+                } else if (right && bottom) {
+                    this.resizingMode = "rightbottom";
+                } else if (left) {
+                    this.resizingMode = "left";
+                } else if (right) {
+                    this.resizingMode = "right";
+                } else if (top) {
+                    this.resizingMode = "top";
+                } else if (bottom) {
+                    this.resizingMode = "bottom";
+                } else {
+                    this.resizingMode = null;
+                }
             } else {
                 this.resizingMode = null;
             }
@@ -785,7 +857,7 @@ class DeskMover {
     #docMouseUp() {
         iframeClickEventCtrl(true);
         if (this.isDown && localStorage.madesktopOutlineMode && this.config.style !== "ad" &&
-            this.resizingMode !== null && windowOutline.style.display !== "none")
+            this.resizingMode !== null && windowOutline.style.display === "block")
         {
             let extraBorderSize = 0;
             let extraBorderBottom = 0;
@@ -852,67 +924,62 @@ class DeskMover {
                 target = target2 = windowOutline;
                 windowOutline.style.display = "block";
             }
+            const extraTitleHeight = parseInt(getComputedStyle(this.windowContainer).getPropertyValue('--extra-title-height')) || 0;
+            const extraBorderSize = parseInt(getComputedStyle(this.windowContainer).getPropertyValue('--extra-border-size')) || 0;
             // Window resizing & moving - adjust windowContainer / windowElement first
-            switch (this.resizingMode) {
-                case "left":
-                    if (target.offsetWidth >= 60) {
-                        if (isOutlineMode) {
-                            // Well even the exact pixel of border where you click matters here
-                            // TODO: calibrate it with initial mouse position
-                            let extra = this.borderSize * 2 + 1;
-                            if (this.config.style === "nonad") {
-                                extra = 6;
-                            }
-                            windowOutline.style.width = this.prevOffsetRight - this.mousePosition.x + extra + 'px';
-                        } else {
-                            this.windowElement.width = this.prevOffsetRight - this.mousePosition.x + 'px';
+            if (this.resizingMode.includes("left")) {
+                if (target.offsetWidth >= 60) {
+                    if (isOutlineMode) {
+                        // Well even the exact pixel of border where you click matters here
+                        // TODO: calibrate it with initial mouse position
+                        let extra = this.borderSize * 2 + 1;
+                        if (this.config.style === "nonad") {
+                            extra = 6;
                         }
-                        target2.style.left = (this.mousePosition.x + this.offset[0]) + 'px';
+                        windowOutline.style.width = this.prevOffsetRight - this.mousePosition.x + extra + 'px';
+                    } else {
+                        this.windowElement.width = this.prevOffsetRight - this.mousePosition.x + 'px';
                     }
-                    break;
-
-                case "right":
-                    if (target.offsetWidth >= 60) {
-                        if (isOutlineMode) {
-                            windowOutline.style.width = this.posInContainer.x + 2 + 'px';
-                        } else {
-                            this.windowElement.width = this.posInContainer.x - 4 + 'px';
-                        }
-                    }
-                    break;
-
-                case "top":
-                    if (target.offsetHeight >= 15) {
-                        if (isOutlineMode) {
-                            const extraBorderBottom = parseInt(getComputedStyle(this.windowContainer).getPropertyValue('--extra-border-bottom'));
-                            let extra = this.borderSize * 2 - 3;
-                            if (this.config.style === "nonad") {
-                                extra = 1;
-                            }
-                            windowOutline.style.height = this.prevOffsetBottom - this.mousePosition.y + this.windowFrame.offsetTop + extraBorderBottom + extra + 'px';
-                        } else {
-                            this.windowElement.height = this.prevOffsetBottom - this.mousePosition.y + 'px';
-                        }
-                        target2.style.top = (this.mousePosition.y + this.offset[1]) + 'px';
-                    }
-                    break;
-
-                case "bottom":
-                    if (target.offsetHeight >= 15) {
-                        if (isOutlineMode) {
-                            windowOutline.style.height = this.posInContainer.y + 2 + 'px';
-                        } else {
-                            this.windowElement.height = this.posInContainer.y - 24 + 'px';
-                        }
-                    }
-                    break;
-
-                case "none":
                     target2.style.left = (this.mousePosition.x + this.offset[0]) + 'px';
-                    target2.style.top  = (this.mousePosition.y + this.offset[1]) + 'px';
-                    break;
+                }
             }
-            if (this.resizingMode !== "none") {
+            if (this.resizingMode.includes("right")) {
+                if (target.offsetWidth >= 60) {
+                    if (isOutlineMode) {
+                        windowOutline.style.width = this.posInContainer.x + 2 + 'px';
+                    } else {
+                        this.windowElement.width = this.posInContainer.x - 4 - extraBorderSize + 'px';
+                    }
+                }
+            }
+            if (this.resizingMode.includes("top")) {
+                if (target.offsetHeight >= 15) {
+                    if (isOutlineMode) {
+                        const extraBorderBottom = parseInt(getComputedStyle(this.windowContainer).getPropertyValue('--extra-border-bottom'));
+                        let extra = this.borderSize * 2 - 3;
+                        if (this.config.style === "nonad") {
+                            extra = 1;
+                        }
+                        windowOutline.style.height = this.prevOffsetBottom - this.mousePosition.y + this.windowFrame.offsetTop + extraBorderBottom + extra + 'px';
+                    } else {
+                        this.windowElement.height = this.prevOffsetBottom - this.mousePosition.y + 'px';
+                    }
+                    target2.style.top = (this.mousePosition.y + this.offset[1]) + 'px';
+                }
+            }
+            if (this.resizingMode.includes("bottom")) {
+                if (target.offsetHeight >= 15) {
+                    if (isOutlineMode) {
+                        windowOutline.style.height = this.posInContainer.y + 2 + 'px';
+                    } else {
+                        this.windowElement.height = this.posInContainer.y - 26 - extraBorderSize - extraTitleHeight + 'px';
+                    }
+                }
+            }
+            if (this.resizingMode === "none") {
+                target2.style.left = (this.mousePosition.x + this.offset[0]) + 'px';
+                target2.style.top  = (this.mousePosition.y + this.offset[1]) + 'px';
+            } else {
                 // Now adjust the others
                 this.adjustElements();
             }
@@ -930,16 +997,54 @@ class DeskMover {
             extraBorderSize = parseInt(getComputedStyle(this.windowContainer).getPropertyValue('--extra-border-size'));
         }
         // Change the mouse cursor - although this is useless in WE
+        let left = this.posInContainer.x <= 3 + extraBorderSize;
+        let right = this.posInContainer.x >= this.windowContainer.offsetWidth - 4 - extraBorderSize;
+        let top = this.config.style === "ad" ? this.posInContainer.y <= 9 && this.posInContainer.y >= 6 : this.posInContainer.y <= 3 + extraBorderSize;
+        let bottom = this.config.style === "ad" ?
+            (this.posInContainer.y >= this.windowContainer.offsetHeight - 18 && this.posInContainer.y <= this.windowContainer.offsetHeight - 15) :
+            this.posInContainer.y >= this.windowContainer.offsetHeight - 4 - extraBorderSize;
+        // More tolerance for diagonal resizing
+        if ((left || right) && !top && !bottom) {
+            if (this.config.style === "ad") {
+                if (this.posInContainer.y <= 14 && this.posInContainer.y >= 6) {
+                    top = true;
+                }
+                if ((this.posInContainer.y >= this.windowContainer.offsetHeight - 23 && this.posInContainer.y <= this.windowContainer.offsetHeight - 15)) {
+                    bottom = true;
+                }
+            } else {
+                if (this.posInContainer.y <= 8 + extraBorderSize) {
+                    top = true;
+                }
+                if (this.posInContainer.y >= this.windowContainer.offsetHeight - 11 - extraBorderSize) {
+                    bottom = true;
+                }
+            }
+        }
+        if ((top || bottom) && !left && !right) {
+            if (this.posInContainer.x <= 8 + extraBorderSize) {
+                left = true;
+            }
+            if (this.posInContainer.x >= this.windowContainer.offsetWidth - 9 - extraBorderSize) {
+                right = true;
+            }
+        }
         if (this.resizingMode === "none" && (this.windowElement.style.borderColor !== "transparent" || this.config.style !== "ad") && !this.config.unresizable) {
-            if (this.posInContainer.x <= 3 + extraBorderSize) {
+            if (left && top) {
+                document.body.style.cursor = "nw-resize";
+            } else if (right && top) {
+                document.body.style.cursor = "ne-resize";
+            } else if (left && bottom) {
+                document.body.style.cursor = "sw-resize";
+            } else if (right && bottom) {
+                document.body.style.cursor = "se-resize";
+            } else if (left) {
                 document.body.style.cursor = "ew-resize";
-            } else if (this.posInContainer.x >= this.windowContainer.offsetWidth - 4 - extraBorderSize) {
+            } else if (right) {
                 document.body.style.cursor = "ew-resize";
-            } else if (this.posInContainer.y <= 3 + extraBorderSize && this.config.style !== "ad" && this.windowTitlebar.style.display !== "none") {
+            } else if (top) {
                 document.body.style.cursor = "ns-resize";
-            } else if (this.posInContainer.y <= 9 && this.posInContainer.y >= 6 && this.config.style === "ad" && this.windowTitlebar.style.display !== "none") {
-                document.body.style.cursor = "ns-resize";
-            } else if (this.posInContainer.y >= 30) {
+            } else if (bottom) {
                 document.body.style.cursor = "ns-resize";
             } else {
                 document.body.style.cursor = "auto";

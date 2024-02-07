@@ -1,19 +1,19 @@
 ((exports) => {
 	// Note that this API must be kept in sync with the version in 98.js.org.
 
-	try {
-		const chord = new Audio("sounds/chord.wav");
-		var play_chord = async function () {
-			if (localStorage.madesktopAlertSndMuted) {
-				return;
-			}
+	// try {
+	// 	const chord = new Audio("sounds/chord.wav");
+	// 	var play_chord = async function () {
+	// 		if (localStorage.madesktopAlertSndMuted) {
+	// 			return;
+	// 		}
 			
-			chord.currentTime = 0;
-			chord.play();
-		};
-	} catch (error) {
-		console.log("AudioContext not supported", error);
-	}
+	// 		chord.currentTime = 0;
+	// 		chord.play();
+	// 	};
+	// } catch (error) {
+	// 	console.log("AudioContext not supported", error);
+	// }
 
 	function showMessageBox({
 		title = window.defaultMessageBoxTitle ?? "Alert",
@@ -97,7 +97,9 @@
 		promise.$message = $message;
 		promise.promise = promise; // for easy destructuring
 		try {
-			play_chord();
+			if (iconID !== "nuke") {
+				madPlaySound(iconID);
+			}
 		} catch (error) {
 			console.log(`Failed to play ${chord_audio.src}: `, error);
 		}
