@@ -1,0 +1,715 @@
+:root {
+  --window-spacing: 6px;
+  --window-border: 1px solid;
+  --window-border-radius: 6px;
+  --window-border-color: rgba(0, 0, 0, 0.7);
+  --window-background-color: #4580c4;
+  --window-background-glass-stripes: linear-gradient(
+      135deg,
+      #fff5 70px,
+      transparent 100px
+    ),
+    linear-gradient(225deg, #fff5 70px, transparent 100px),
+    linear-gradient(
+        54deg,
+        /* ------------------------------- 1st stripe ------------------------------- */
+          #0002 0 4%,
+        #6661 6% 6%,
+        #0002 8% 10%,
+        /* ------------------------------- 2nd stripe ------------------------------- */
+          #0002 15% 16%,
+        #aaa1 17% 18%,
+        #0002 23% 24%,
+        /* ------------------------------- 3rd stripe ------------------------------- */
+          #bbb2 25% 26%,
+        #0002 31% 33%,
+        /* ------------------------------- 4th stripe ------------------------------- */
+          #0002 34% 34.5%,
+        #bbb2 36% 40%,
+        /* ------------------------------- 5th stripe ------------------------------- */
+          #0002 41% 41.5%,
+        #bbb2 44% 45%,
+        /* ------------------------------- 6th stripe ------------------------------- */
+          #bbb2 46% 47%,
+        #0002 48% 49%,
+        #0002 50% 50.5%,
+        /* ------------------------------- 7th stripe ------------------------------- */
+          #0002 56% 56.5%,
+        #bbb2 57% 63%,
+        #0002 67% 69%,
+        /* ------------------------------- 8th stripe ------------------------------- */
+          #bbb2 69.5% 70%,
+        #0002 73.5% 74%,
+        /* ------------------------------- 9th stripe ------------------------------- */
+          #bbb2 74.5% 79%,
+        #0002 80% 84%,
+        /* ------------------------------- 10th stripe ------------------------------- */
+          #aaa2 85% 86%,
+        #0002 87%,
+        #bbb1 90%
+      )
+      left center/100vw 100vh no-repeat fixed;
+  --window-background: linear-gradient(
+      to right,
+      #ffffff66,
+      #0000001a,
+      #ffffff33
+    ),
+    var(--window-background-color);
+
+  --control-border-color: rgba(0, 0, 0, 0.3);
+  --control-border-radius: 5px;
+  --control-inset-shadow: inset 0 0 0 1px #fffa;
+  --control-background: linear-gradient(
+    rgba(255, 255, 255, 0.5),
+    rgba(255, 255, 255, 0.3) 45%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.1) 75%,
+    rgba(255, 255, 255, 0.5)
+  );
+
+  /* Colors for minimize, maximize, and restore buttons when hovered */
+  --control-background-hovered: radial-gradient(
+      circle at bottom,
+      #2aceda,
+      transparent 65%
+    ),
+    linear-gradient(#b6d9ee 50%, #1a6ca1 50%);
+
+  /* Colors for minimize, maximize, and restore buttons when clicked */
+  --control-background-active: radial-gradient(
+      circle at bottom,
+      #0bfdfa,
+      transparent 65%
+    ),
+    linear-gradient(#86a7bc 50%, #092747 50%);
+
+  /* Colors for the close button at normal state */
+  --control-background-close: radial-gradient(
+      circle at -60% 50%,
+      #0007 5% 10%,
+      #0000 50%
+    ),
+    radial-gradient(circle at 160% 50%, #0007 5% 10%, #0000 50%),
+    linear-gradient(#e0a197e5, #cf796a 25% 50%, #d54f36 50%);
+
+  /* Colors for the close button when hovered */
+  --control-background-close-hovered: radial-gradient(
+      circle at 50% 170%,
+      #f4e676 10% 20%,
+      #0000 60%
+    ),
+    radial-gradient(circle at -60% 50%, #000a 5% 10%, #0000 50%),
+    radial-gradient(circle at 160% 50%, #000a 5% 10%, #0000 50%),
+    linear-gradient(#fb9d8b, #ee6d56 25% 50%, #d42809 50%);
+
+  /* Colors for the close button when clicked */
+  --control-background-close-active: radial-gradient(
+      circle at 50% 170%,
+      #dcc03f 10% 20%,
+      #0000 60%
+    ),
+    radial-gradient(circle at -60% 50%, #000 5% 10%, #0000 50%),
+    radial-gradient(circle at 160% 50%, #000 5% 10%, #0000 50%),
+    linear-gradient(#d1a894, #b67562 25% 50%, #7d0d01 50%);
+}
+
+.windowContainer[data-style="wnd"]:not(#JustHereToGiveItPriority),
+#inactiveWindow,
+#activeWindow,
+#msgbox,
+.os-window {
+  font: var(--font);
+  box-shadow: 2px 2px 10px 1px var(--window-border-color), inset 0 0 0 1px #fffa !important;
+  border: var(--window-border) var(--window-border-color);
+  border-radius: var(--window-border-radius);
+
+  &::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: var(--window-border-radius);
+    box-shadow: inset 0 0 0 1px #fffd;
+  }
+
+  &-body {
+    margin: var(--window-spacing);
+    margin-top: 0;
+    border: var(--window-border) var(--window-border-color);
+    background: var(--surface);
+    box-shadow: 0 0 0 1px #fff9;
+
+    &.has-space {
+      padding: var(--window-spacing);
+    }
+
+    pre {
+      margin: -var(--window-spacing);
+    }
+  }
+
+  &-footer,
+  footer {
+    margin: var(--window-spacing);
+    margin-top: calc(-1 * var(--window-spacing) - 1px);
+    background: var(--surface);
+    border: var(--window-border) var(--window-border-color);
+    border-top: 0;
+    box-shadow: 0 0.5px 1px 0.5px #fff;
+    position: relative;
+    padding: 10px;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      box-shadow: inset 0 1px rgba(0, 0, 0, 0.3), inset 0 -1px #fff;
+    }
+  }
+
+  &.is-bright {
+    .window-body {
+      background: #fff;
+    }
+
+    .window-footer,
+    footer {
+      background: #eee;
+      box-shadow: inset 0 1px 3px #ddd, 0 1px 0 #fff9, 1px 1px 0 #fff9,
+        -1px 1px 0 #fff9;
+
+      &::before {
+        content: none;
+      }
+    }
+  }
+
+  /* Glass */
+  background-color: transparent;
+  body:not([data-no-glass]) &::before {
+    opacity: 0.6;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    z-index: -10;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: var(--window-border-radius);
+    border: none;
+    backdrop-filter: blur(4px);
+  }
+
+  background: var(--window-background-glass-stripes);
+
+  > .title-bar {
+    background: transparent;
+    border: 0;
+    box-shadow: inset 0 1px 0 #fffd, inset 1px 0 0 #fffd, inset -1px 0 0 #fffd !important;
+  }
+
+  fieldset {
+    margin-bottom: 9px;
+  }
+
+  &[role="dialog"] {
+    position: fixed;
+    z-index: 999;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    visibility: hidden;
+    opacity: 0;
+    transition-duration: 0.2s;
+    transition-property: visibility, opacity;
+
+    &:target {
+      visibility: visible;
+      opacity: 1;
+    }
+  }
+}
+
+.title-bar,
+.os-window > .window-titlebar:not(#JustHereToGiveItPriority) {
+  font: var(--font);
+  box-shadow: inset 0 0 0 1px #fff9 !important;
+  border: var(--window-border) var(--window-border-color);
+  border-radius: var(--window-border-radius) var(--window-border-radius) 0 0;
+  padding: var(--window-spacing);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--window-background);
+  margin: -3px !important;
+
+  /* Active title-bar */
+  :not(#inactiveWindow) &:not(.inactive),
+  .os-window.focused & {
+    .title-bar-controls {
+      border-color: var(--window-border-color);
+
+      button {
+        border-color: var(--window-border-color);
+        box-shadow: var(--control-inset-shadow);
+
+        &::after {
+          content: none;
+        }
+
+        &[aria-label="Minimize"],
+        &.is-minimize {
+          background: url("./icon/minimize.png") no-repeat center 10px,
+            var(--control-background);
+          &::before {
+            content: "";
+            box-shadow: 0 0 7px 3px #5dc4f0, var(--control-inset-shadow);
+            background: url("./icon/minimize.png") no-repeat center 10px,
+              var(--control-background-hovered);
+            border-bottom-left-radius: var(--control-border-radius);
+            opacity: 0;
+            transition: opacity 0.3s linear;
+          }
+
+          &:hover::before,
+          &:focus-visible::before {
+            opacity: 1;
+            transition: opacity 0.1s linear;
+          }
+
+          &:active::before {
+            background: url("./icon/minimize.png") no-repeat center 10px,
+              var(--control-background-active);
+          }
+        }
+
+        &[aria-label="Maximize"],
+        &.is-maximize {
+          background: url("./icon/maximize.png") no-repeat center,
+            var(--control-background);
+          &::before {
+            content: "";
+            box-shadow: 0 0 7px 3px #5dc4f0, var(--control-inset-shadow);
+            background: url("./icon/maximize.png") no-repeat center,
+              var(--control-background-hovered);
+            opacity: 0;
+            transition: opacity 0.3s linear;
+          }
+
+          &:hover::before,
+          &:focus-visible::before {
+            opacity: 1;
+            transition: opacity 0.1s linear;
+          }
+
+          &:active::before {
+            background: url("./icon/maximize.png") no-repeat center,
+              var(--control-background-active);
+          }
+        }
+
+        &[aria-label="Restore"],
+        &.is-restore {
+          background: url("./icon/restore.png") no-repeat center,
+            var(--control-background);
+          &::before {
+            content: "";
+            box-shadow: 0 0 7px 3px #5dc4f0, var(--control-inset-shadow);
+            background: url("./icon/restore.png") no-repeat center,
+              var(--control-background-hovered);
+            opacity: 0;
+            transition: opacity 0.3s linear;
+          }
+
+          &:hover::before,
+          &:focus-visible::before {
+            opacity: 1;
+            transition: opacity 0.1s linear;
+          }
+
+          &:active::before {
+            background: url("./icon/restore.png") no-repeat center,
+              var(--control-background-active);
+          }
+        }
+
+        &[aria-label="Close"],
+        &.is-close,
+        & {
+          background: url("./icon/close.png") no-repeat center,
+            var(--control-background), var(--control-background-close);
+          box-shadow: var(--control-inset-shadow);
+
+          &::before {
+            content: "";
+            background: url("./icon/close.png") no-repeat center,
+              var(--control-background), var(--control-background-close-hovered);
+            box-shadow: 0 0 7px 3px #e68e75, var(--control-inset-shadow);
+            border-bottom-right-radius: var(--control-border-radius);
+            opacity: 0 !important;
+            transition: opacity 0.3s linear;
+          }
+
+          &:hover::before,
+          &:focus-visible::before {
+            opacity: 1 !important;
+            transition: opacity 0.1s linear;
+          }
+
+          &:active::before {
+            background: url("./icon/close.png") no-repeat center,
+              var(--control-background), var(--control-background-close-active);
+          }
+        }
+
+        &:disabled {
+          &[aria-label="Maximize"],
+          &.is-maximize {
+            background: var(--control-background);
+
+            &::before {
+              content: "";
+              background: url("./icon/maximize.png") no-repeat center;
+              opacity: 0.4;
+            }
+          }
+          /* TODO: Add rules to style disabled close button */
+        }
+      }
+    }
+  }
+
+  .title-bar-controls button {
+    &:hover::before {
+      content: "";
+      background: url("./icon/close.png") no-repeat center,
+        var(--control-background), var(--control-background-close-hovered) !important;
+      box-shadow: 0 0 7px 3px #e68e75, var(--control-inset-shadow) !important;
+      border-bottom-right-radius: var(--control-border-radius) !important;
+      opacity: 1 !important;
+      transition: opacity 0.1s linear !important;
+    }
+
+    &:active::before {
+      background: url("./icon/close.png") no-repeat center,
+        var(--control-background), var(--control-background-close-active);
+    }
+  }
+}
+
+.windowIcon {
+  top: 6px;
+  left: 6px;
+}
+
+.title-bar-text {
+  color: #000;
+  letter-spacing: 0;
+  line-height: 3;
+  text-shadow: 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff,
+    0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff;
+  padding-left: 5px;
+}
+
+.windowContainer[data-style="wnd"],
+#madconf-preview #inactiveWindow,
+#madconf-preview #activeWindow,
+#msgbox {
+  .title-bar-controls {
+    display: flex;
+    background: #fff3;
+    border: var(--window-border) var(--control-border-color);
+    border-top: 0;
+    border-radius: 0 0 var(--control-border-radius) var(--control-border-radius);
+    margin-top: -var(--window-spacing);
+    box-shadow: 0 1px 0 #fffa, 1px 0 0 #fffa, -1px 0 0 #fffa;
+
+    button {
+      position: relative;
+      min-width: 29px;
+      min-height: 19px;
+      padding: 0;
+      border: 0;
+      border-right: var(--window-border) var(--control-border-color);
+      border-radius: 0;
+      box-shadow: none;
+      box-sizing: border-box;
+      background: url("./icon/close.png") no-repeat center;
+
+      &::after {
+        content: none;
+      }
+
+      &:hover,
+      &:active {
+        /* resolve the conflict with button styles */
+        background: none;
+      }
+
+      &:disabled {
+        &::before {
+          opacity: 0.4;
+        }
+      }
+
+      &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        border-radius: 0;
+        box-shadow: inset 0 0 0 1px #fff5;
+      }
+
+      &[aria-label="Minimize"],
+      &.is-minimize {
+        &::before {
+          background: url("./icon/minimize.png") no-repeat center 10px;
+        }
+      }
+
+      &[aria-label="Maximize"],
+      &.is-maximize {
+        &::before {
+          background: url("./icon/maximize.png") no-repeat center;
+        }
+      }
+
+      &[aria-label="Restore"],
+      &.is-restore {
+        &::before {
+          background: url("./icon/restore.png") no-repeat center;
+        }
+      }
+
+      &[aria-label="Close"],
+      &.is-close,
+      & {
+        min-width: 48px !important;
+
+        &::before {
+          background: url("./icon/close.png") no-repeat center;
+        }
+      }
+
+      &:first-child,
+      &:first-child::before {
+        border-bottom-left-radius: var(--control-border-radius);
+      }
+
+      &:last-child,
+      &:last-child::before {
+        border: 0;
+        border-bottom-right-radius: var(--control-border-radius);
+      }
+
+      &:focus {
+        outline: none;
+        animation: none;
+      }
+    }
+  }
+}
+
+.windowContainer[data-style="wnd"] .windowElement {
+  outline: solid 1px rgba(255, 255, 255, 0.5);
+  border-color: rgba(0, 0, 0, 0.9) !important;
+  background-color: #F0F0F0;
+}
+
+.status-bar {
+  margin: var(--window-spacing);
+  margin-top: -var(--window-spacing);
+  background: var(--surface);
+  border: var(--window-border) var(--window-border-color);
+  border-top: 0;
+  box-shadow: 0 1px 0 #fff9, 1px 0 0 #fff9, -1px 0 0 #fff9;
+  display: flex;
+
+  &-field {
+    border-right: var(--window-border) #cfcfcf;
+    padding: 2px 3px;
+    margin: 0;
+    flex-grow: 1;
+
+    &:last-child {
+      border-right: 0;
+    }
+  }
+}
+
+#msgbox .window-body,
+#madconf-preview #msgbox section {
+  background: var(--button-face);
+  box-shadow: var(--button-face) -3px -3px, var(--button-face) 3px 7px, var(--button-face) -3px 7px, var(--button-face) 3px -3px,
+    rgba(0, 0, 0, 0.9) -4px -4px, rgba(0, 0, 0, 0.9) 4px 8px, rgba(0, 0, 0, 0.9) -4px 8px, rgba(0, 0, 0, 0.9) 4px -4px,
+    rgba(255, 255, 255, 0.5) -5px -5px, rgba(255, 255, 255, 0.5) 5px 9px, rgba(255, 255, 255, 0.5) -5px 9px, rgba(255, 255, 255, 0.5) 5px -5px;
+}
+
+#msgbox-buttons {
+  justify-content: right;
+}
+
+#windowOutline {
+  background: white;
+}
+
+.clientEdge {
+  box-shadow: none;
+}
+
+/*
+#msgbox .window-body::before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 28px;
+  left: 12px;
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+}
+*/
+
+/* madconf adjustments */
+/*
+#madconf #previewMonitor {
+  content: url("../apps/madconf/images/monitor_xp.png");
+}
+*/
+
+#madconf .window {
+  box-shadow: none;
+}
+
+#madconf #schemePreview {
+  height: 176px;
+}
+
+#madconf .window-body {
+  padding-bottom: 0;
+}
+
+#madconf #flatMenuSelector {
+  width: 230px;
+}
+
+#madconf #sysplugOpenOptSelector {
+  width: 250px;
+}
+
+#madconf label[for="startSoundChkBox"] {
+  width: 120px;
+}
+
+#madconf #creditsMain {
+  height: 120px;
+}
+
+#madconf #changelogBtn {
+  padding-right: 10px;
+}
+
+#madconf #githubBtn {
+  min-width: 0;
+  padding-left: 9px;
+  padding-right: 9px;
+}
+
+#madconf-preview .title-bar {
+  border: none;
+}
+
+#madconf-preview #inactiveWindow {
+  height: 118px;
+  background-color: white !important;
+}
+
+#madconf-preview #activeWindow {
+  width: 323px;
+  height: 115px;
+  top: 20px;
+  left: 10px;
+  background-color: white !important;
+}
+
+#madconf-preview .menu {
+  display: none;
+}
+
+#madconf-preview textarea {
+  margin: 5px 0 0 4px;
+  width: 316px;
+  height: 84px;
+  box-shadow: none !important;
+  font-weight: normal;
+  background-clip: content-box;
+  outline: solid 1px rgba(255, 255, 255, 0.5);
+  border: solid 1px rgba(0, 0, 0, 0.9) !important;
+  padding: 0;
+}
+
+#madconf-preview #msgbox {
+  width: 160px;
+  height: 95px;
+  top: 41px;
+  left: 100px;
+}
+
+#madconf-preview #msgbox-msg {
+  display: none;
+}
+
+#madconf-preview #msgbox section {
+  margin: 9px 8px;
+  height: 52px;
+}
+
+#madconf-preview #msgbox-btn1 {
+  margin-top: 6px;
+  height: 30px;
+  font-weight: normal;
+  box-shadow: inset -1px 1px #cee7ff, inset 1px 2px #98b8ea, inset -2px 2px #bcd4f6, inset 1px -1px #89ade4,
+      inset 2px -2px #89ade4;
+  position: unset;
+  bottom: unset;
+}
+
+/* Change dialog icons to XP ones */
+/*
+#msgbox-icon {
+  margin-top: 3px;
+  margin-left: 6px;
+}
+
+#msgbox-icon[src="images/warning.png"],
+img[src="images/warning-32x32-8bpp.png"] {
+  content: url("../images/xp_warning.png");
+}
+
+#msgbox-icon[src="images/error.png"],
+img[src="images/error-32x32-8bpp.png"] {
+  content: url("../images/xp_error.png");
+}
+
+#msgbox-icon[src="images/info.png"],
+img[src="images/info-32x32-8bpp.png"] {
+  content: url("../images/xp_info.png");
+}
+
+#msgbox-icon[src="images/question.png"],
+img[src="images/question-32x32-8bpp.png"] {
+  content: url("../images/xp_question.png");
+}
+*/

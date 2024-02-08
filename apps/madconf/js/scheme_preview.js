@@ -43,6 +43,18 @@ function changeColorScheme(scheme) {
     }
 }
 
+function changeAeroColor(color) {
+    document.documentElement.style.setProperty('--title-accent', color || '#4580c4');
+}
+
+function changeAeroGlass(noGlass) {
+    if (noGlass) {
+        document.body.dataset.noGlass = true;
+    } else {
+        delete document.body.dataset.noGlass;
+    }
+}
+
 // Toggle between "Pixelated MS Sans Serif" and just sans-serif
 function changeFont(isPixel) {
     if (isPixel) {
@@ -79,6 +91,10 @@ changeMenuStyle(localStorage.madesktopMenuStyle);
 if (localStorage.madesktopBgColor) {
     document.body.style.backgroundColor = localStorage.madesktopBgColor;
 }
+if (localStorage.madesktopAeroColor) {
+    changeAeroColor(localStorage.madesktopAeroColor);
+}
+changeAeroGlass(localStorage.madesktopAeroNoGlass);
 
 new MutationObserver(function (mutations) {
     document.body.style.zoom = parent.document.body.style.zoom || 1;

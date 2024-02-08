@@ -121,7 +121,6 @@ p {
 }
 
 label[for=wpVideoMuteChkBox] {
-    display: none;
-    top: -16px;
+    top: -20px;
     height: 0;
 }

@@ -112,6 +112,17 @@
   --palette-title-height: 15px;
   --menu-height: 18px;
 
+  /* SVGs */
+  --scroll-up: svg-load("./icon/button-up.svg");
+  --scroll-down: svg-load("./icon/button-down.svg");
+  --scroll-left: svg-load("./icon/button-left.svg");
+  --scroll-right: svg-load("./icon/button-right.svg");
+  --scroll-track: svg-load("./icon/scrollbar-background.svg");
+  --radio-border: svg-load("./icon/radio-border.svg");
+  --radio-dot: svg-load("./icon/radio-dot.svg");
+  --checkmark: svg-load("./icon/checkmark.svg");
+  --indicator-thumb: svg-load("./icon/indicator-horizontal.svg");
+
   --hilight-inverted: #FFFF7F;
 }
 
@@ -629,7 +640,7 @@ input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   height: 21px;
   width: 11px;
-  background: svg-load("./icon/indicator-horizontal.svg");
+  background: var(--indicator-thumb);
   transform: translateY(-8px);
   box-shadow: none;
   border: none;
@@ -645,7 +656,7 @@ input[type="range"]::-moz-range-thumb {
   width: 11px;
   border: 0;
   border-radius: 0;
-  background: svg-load("./icon/indicator-horizontal.svg");
+  background: var(--indicator-thumb);
   transform: translateY(2px);
 }
 
@@ -904,7 +915,7 @@ summary:focus {
 }
 
 ::-webkit-scrollbar-track {
-  background-image: svg-load("./icon/scrollbar-background.svg");
+  background-image: var(--scroll-track);
 }
 
 ::-webkit-scrollbar-thumb {
@@ -922,7 +933,7 @@ summary:focus {
 ::-webkit-scrollbar-button:vertical:start {
   height: var(--scrollbar-size);
   background-color: var(--button-face);
-  background-image: svg-load("./icon/button-up.svg");
+  background-image: var(--scroll-up);
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center center;
@@ -931,7 +942,7 @@ summary:focus {
 ::-webkit-scrollbar-button:vertical:end {
   height: var(--scrollbar-size);
   background-color: var(--button-face);
-  background-image: svg-load("./icon/button-down.svg");
+  background-image: var(--scroll-down);
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center center;
@@ -940,7 +951,7 @@ summary:focus {
 ::-webkit-scrollbar-button:horizontal:start {
   width: var(--scrollbar-size);
   background-color: var(--button-face);
-  background-image: svg-load("./icon/button-left.svg");
+  background-image: var(--scroll-left);
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center center;
@@ -949,7 +960,7 @@ summary:focus {
 ::-webkit-scrollbar-button:horizontal:end {
   width: var(--scrollbar-size);
   background-color: var(--button-face);
-  background-image: svg-load("./icon/button-right.svg");
+  background-image: var(--scroll-right);
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center center;

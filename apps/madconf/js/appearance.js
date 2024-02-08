@@ -16,7 +16,6 @@ let savedSchemes = JSON.parse(localStorage.madesktopSavedSchemes || "{}");
 async function main() {
     scheme = parseCssScheme(await getSchemeText());
     let schemeName = "Windows Classic (98)";
-    const parentSchemeElement2 = parent.document.getElementById("style2");
     const preview = document.getElementById("schemePreview");
     const schemeSelector = document.getElementById("schemeSelector");
     const saveAsBtn = document.getElementById("saveAsBtn");
@@ -48,6 +47,7 @@ async function main() {
     const animationSelector = document.getElementById("animationSelector");
     const shadowChkBox = document.getElementById("shadowChkBox");
     const outlineModeChkBox = document.getElementById("outlineModeChkBox");
+    const transparencyChkBox = document.getElementById("transparencyChkBox");
     const effectsBtn = document.getElementById("effectsBtn");
 
     const itemMappings = {
@@ -200,6 +200,16 @@ async function main() {
 
         applyPreview();
         selector.dispatchEvent(new Event("change"));
+        if (schemeSelector.value === "7css4mad") {
+            secondColorPickerWrap.classList.remove("disabled");
+            secondColorPicker.disabled = false;
+            secondColorPickerColor.style.backgroundColor = "#4580c4";
+            transparencyChkBox.disabled = false;
+            transparencyChkBox.checked = true;
+        } else {
+            transparencyChkBox.disabled = true;
+            transparencyChkBox.checked = false;
+        }
     });
 
     saveAsBtn.addEventListener("click", function () {
@@ -489,6 +499,14 @@ async function main() {
         }
     });
 
+    transparencyChkBox.addEventListener("change", function () {
+        if (this.checked) {
+            preview.contentWindow.changeAeroGlass(false);
+        } else {
+            preview.contentWindow.changeAeroGlass(true);
+        }
+    });
+
     effectsBtn.addEventListener("click", function () {
         const left = parseInt(madDeskMover.config.xPos) + 25 + 'px';
         const top = parseInt(madDeskMover.config.yPos) + 80 + 'px';
@@ -507,16 +525,24 @@ async function main() {
             applyScheme(scheme); // Apply the cached one (for preview) first to give libmad a chance to load the system scheme at the right time
             applyScheme("sys");
             parent.changeBgColor(colorPickerColor.style.backgroundColor);
+            delete localStorage.madesktopAeroColor;
         } else if (selector.disabled) {
             schemeName = schemeSelector.options[schemeSelector.selectedIndex].textContent;
             schemeSelector.options[0].textContent = schemeName;
-            parentSchemeElement2.textContent = preview.contentDocument.getElementById("style").textContent;
+
             parent.changeColorScheme(schemeSelector.value);
             localStorage.madesktopColorScheme = schemeSelector.value;
             localStorage.madesktopLastSchemeName = schemeName;
             parent.changeBgColor(colorPickerColor.style.backgroundColor);
+            if (schemeSelector.value === "7css4mad") {
+                parent.changeAeroColor(secondColorPickerColor.style.backgroundColor);
+                localStorage.madesktopAeroColor = secondColorPickerColor.style.backgroundColor;
+            } else {
+                delete localStorage.madesktopAeroColor;
+            }
         } else {
             applyScheme(scheme, schemeName);
+            delete localStorage.madesktopAeroColor;
         }
 
         if (enableAnimationsChkBox.checked) {
@@ -546,6 +572,17 @@ async function main() {
             localStorage.madesktopOutlineMode = true;
         }
 
+        if (schemeSelector.value === "7css4mad") {
+            if (transparencyChkBox.checked) {
+                delete localStorage.madesktopAeroNoGlass;
+            } else {
+                localStorage.madesktopAeroNoGlass = true;
+            }
+        } else {
+            delete localStorage.madesktopAeroNoGlass;
+        }
+        parent.changeAeroGlass(localStorage.madesktopAeroNoGlass);
+
         if (selector.disabled && schemeSelector.value !== "sys") {
             parent.adjustAllElements(parseInt(scheme["extra-title-height"]) || 0, parseInt(scheme["extra-border-size"]) || 0, parseInt(scheme["extra-border-bottom"]) || 0);
         } else {
@@ -561,6 +598,13 @@ async function main() {
         if (schemeSelector.options[schemeSelector.selectedIndex].dataset.inconfigurable) {
             selector.disabled = true;
             colorPickerColor.style.backgroundColor = localStorage.madesktopBgColor;
+            if (localStorage.madesktopColorScheme === "7css4mad") {
+                secondColorPickerWrap.classList.remove("disabled");
+                secondColorPicker.disabled = false;
+                secondColorPickerColor.style.backgroundColor = localStorage.madesktopAeroColor || "#4580c4";
+                transparencyChkBox.disabled = false;
+                transparencyChkBox.checked = !localStorage.madesktopAeroNoGlass;
+            }
         }
         schemeName = schemeSelector.options[schemeSelector.selectedIndex].textContent;
         schemeSelector.options[0].textContent = schemeName;
@@ -617,7 +661,9 @@ async function main() {
                 scheme[option] = color;
                 break;
             case "secondColor":
-                scheme[itemMappings[option].second] = color;
+                if (schemeSelector.value !== "7css4mad") {
+                    scheme[itemMappings[option].second] = color;
+                }
                 break;
             case "textColor":
                 scheme[itemMappings[option].text] = color;
@@ -667,6 +713,10 @@ async function main() {
             preview.addEventListener("load", function () {
                 preview.contentDocument.body.style.backgroundColor = colorPickerColor.style.backgroundColor;
                 preview.contentWindow.changeMenuStyle(flatMenuChkBox.checked ? flatMenuSelector.value : false);
+                if (schemeSelector.value === "7css4mad") {
+                    preview.contentWindow.changeAeroColor(secondColorPickerColor.style.backgroundColor);
+                    preview.contentWindow.changeAeroGlass(!transparencyChkBox.checked);
+                }
             });
         } else {
             const schemeText = generateCssScheme(scheme);
@@ -883,7 +933,8 @@ function generateCssScheme(scheme, keepEffects = false) {
         'extra-border-size'
     ];
     const shouldBeDeleted = [
-        'extra-border-bottom'
+        'extra-border-bottom',
+        'uses-classic-controls'
     ];
     if (!keepEffects) {
         shouldBeDeleted.push('flat-menus', 'menu-animation', 'menu-shadow');

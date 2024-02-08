@@ -1,0 +1,35 @@
+body {
+  font-family: "Segoe UI", "SegoeUI", "Noto Sans", sans-serif;
+  font-size: 9pt;
+  color: #222222;
+}
+
+.surface {
+  background: var(--surface);
+}
+
+u {
+  text-decoration: none;
+  border-bottom: 0.5px solid #222222;
+}
+
+code {
+  &,
+  * {
+    font-family: monospace;
+  }
+}
+
+pre {
+  display: block;
+  margin: 0;
+  padding: 12px 8px;
+  background: #fff;
+  border: 1px solid var(--button-border-color);
+}
+
+summary {
+  &:focus-visible {
+    outline: 1px dotted #000;
+  }
+}

@@ -57,7 +57,7 @@ function wallpaperAudioListener(audioArray) {
     visBarCtx.clearRect(0, 0, visBar.width, visBar.height);
 
     // Render bars along the full width of the canvas
-    const barWidth = visConfig.barWidth || Math.max(Math.round(1.0 / arraySize * visBar.width), Math.floor(6 * madScaleFactor));
+    const barWidth = Math.round(visConfig.barWidth * madScaleFactor) || Math.max(Math.round(1.0 / arraySize * visBar.width), Math.floor(6 * madScaleFactor));
     const gap = 1;
 
     visBarCtx.fillStyle = visConfig.barColor;

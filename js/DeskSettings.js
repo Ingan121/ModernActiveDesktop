@@ -52,7 +52,7 @@ const BROWSER = 0; // None of the above
 window.runningMode = BROWSER;
 let origRunningMode = BROWSER;
 
-window.scaleFactor = 1;
+window.scaleFactor = "1";
 window.vWidth = window.innerWidth;
 window.vHeight = window.innerHeight;
 
@@ -78,6 +78,8 @@ changeBgImgMode(localStorage.madesktopBgImgMode || "center");
 if (localStorage.madesktopBgVideoMuted) bgVideoView.muted = true;
 if (localStorage.madesktopBgHtmlSrc) bgHtmlView.src = localStorage.madesktopBgHtmlSrc;
 changeColorScheme(localStorage.madesktopColorScheme || "98");
+changeAeroColor(localStorage.madesktopAeroColor);
+changeAeroGlass(localStorage.madesktopAeroNoGlass);
 changeScale(localStorage.madesktopScaleFactor);
 if (localStorage.madesktopDebugMode) activateDebugMode();
 if (localStorage.madesktopDebugLog) toggleDebugLog();
@@ -430,6 +432,24 @@ function changeColorScheme(scheme) {
     announce("scheme-updated");
 }
 
+function changeAeroColor(color) {
+    if (localStorage.madesktopColorScheme === "7css4mad") {
+        document.documentElement.style.setProperty('--title-accent', color || '#4580c4');
+    }
+}
+
+function changeAeroGlass(noGlass) {
+    if (localStorage.madesktopColorScheme === "7css4mad") {
+        if (noGlass) {
+            document.body.dataset.noGlass = true;
+        } else {
+            delete document.body.dataset.noGlass;
+        }
+    } else {
+        delete document.body.dataset.noGlass;
+    }
+}
+
 function announce(type) {
     try {
         bgHtmlView.contentWindow.postMessage({ type }, "*");
@@ -715,6 +735,9 @@ function generateThemeSvgs(targetElement) {
         <path fill-rule="evenodd" clip-rule="evenodd" d="M6 4H8V5H7V6H6V7H5V8H6V9H7V10H8V11H9V4Z" fill="${buttonText}"/></svg>`;
     const scrollRight = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path fill-rule="evenodd" clip-rule="evenodd" d="M10 4H6V11H7V10H8V9H9V8H10V7H9V6H8V5H7V4Z" fill="${buttonText}"/></svg>`;
+    const scrollTrack = `<svg width="2" height="2" viewBox="0 0 2 2" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M1 0H0V1H1V2H2V1H1V0Z" fill="${buttonFace}"/>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M2 0H1V1H0V2H1V1H2V0Z" fill="${buttonHilight}"/></svg>`;
     const radioBorder = `<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path fill-rule="evenodd" clip-rule="evenodd" d="M8 0H4V1H2V2H1V4H0V8H1V10H2V8H1V4H2V2H4V1H8V2H10V1H8V0Z" fill="${buttonShadow}"/>
         <path fill-rule="evenodd" clip-rule="evenodd" d="M8 1H4V2H2V3V4H1V8H2V9H3V8H2V4H3V3H4V2H8V3H10V2H8V1Z" fill="${buttonDkShadow}"/>
@@ -732,36 +755,16 @@ function generateThemeSvgs(targetElement) {
         <path fill-rule="evenodd" clip-rule="evenodd" d="M10 0H11V16H9V18H7V20H5V21H6V19H8V17H10Z" fill="${buttonDkShadow}"/></svg>`;
 
     const css = `
-    ::-webkit-scrollbar-button:vertical:start {
-        background-image: url("data:image/svg+xml,${encodeURIComponent(scrollUp)}");
-        background-position: unset;
-    }
-    ::-webkit-scrollbar-button:vertical:end {
-        background-image: url("data:image/svg+xml,${encodeURIComponent(scrollDown)}");
-        background-position: unset;
-    }
-    ::-webkit-scrollbar-button:horizontal:start {
-        background-image: url("data:image/svg+xml,${encodeURIComponent(scrollLeft)}");
-        background-position: unset;
-    }
-    ::-webkit-scrollbar-button:horizontal:end {
-        background-image: url("data:image/svg+xml,${encodeURIComponent(scrollRight)}");
-        background-position: unset;
-    }
-    input[type="radio"] + label::before {
-        background: url("data:image/svg+xml,${encodeURIComponent(radioBorder)}");
-    }
-    input[type="radio"]:checked + label::after {
-        background: url("data:image/svg+xml,${encodeURIComponent(radioDot)}");
-    }
-    input[type="checkbox"]:checked + label::after {
-        background: url("data:image/svg+xml,${encodeURIComponent(checkmark)}");
-    }
-    input[type="range"]::-webkit-slider-thumb {
-        background: url("data:image/svg+xml,${encodeURIComponent(indicatorThumb)}");
-    }
-    input[type="range"]::-moz-range-thumb {
-        background: url("data:image/svg+xml,${encodeURIComponent(indicatorThumb)}");
+    :root {
+        --scroll-up: url("data:image/svg+xml,${encodeURIComponent(scrollUp)}");
+        --scroll-down: url("data:image/svg+xml,${encodeURIComponent(scrollDown)}");
+        --scroll-left: url("data:image/svg+xml,${encodeURIComponent(scrollLeft)}");
+        --scroll-right: url("data:image/svg+xml,${encodeURIComponent(scrollRight)}");
+        --scroll-track: url("data:image/svg+xml,${encodeURIComponent(scrollTrack)}");
+        --radio-border: url("data:image/svg+xml,${encodeURIComponent(radioBorder)}");
+        --radio-dot: url("data:image/svg+xml,${encodeURIComponent(radioDot)}");
+        --checkmark: url("data:image/svg+xml,${encodeURIComponent(checkmark)}");
+        --indicator-thumb: url("data:image/svg+xml,${encodeURIComponent(indicatorThumb)}");
     }`;
     return css;
 }

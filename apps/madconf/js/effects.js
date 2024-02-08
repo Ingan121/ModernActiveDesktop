@@ -27,7 +27,9 @@ cancelBtn.addEventListener("click", madCloseWindow);
 
 function init(targetDocument) {
     for (const checkbox of checkboxes) {
-        checkbox.checked = targetDocument.getElementById(checkbox.id).checked;
+        const targetCheckbox = targetDocument.getElementById(checkbox.id);
+        checkbox.checked = targetCheckbox.checked;
+        checkbox.disabled = targetCheckbox.disabled;
         checkbox.dispatchEvent(new Event('change'));
     }
     for (const dropdown of dropdowns) {

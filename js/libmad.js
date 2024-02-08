@@ -121,11 +121,7 @@
     }
 
     function processTheme() {
-        if (localStorage.madesktopColorScheme === "xpcss4mad") {
-            styleElement.textContent = "";
-        } else {
-            styleElement.textContent = parentStyleElement2.textContent;
-        }
+        styleElement.textContent = parentStyleElement2.textContent;
 
         if (parent.isDarkColor(getComputedStyle(parent.document.documentElement).getPropertyValue('--button-face'))) {
             if (window.osguiCompatRequired) {

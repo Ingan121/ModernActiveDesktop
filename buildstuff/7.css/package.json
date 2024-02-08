@@ -1,0 +1,52 @@
+{
+  "name": "7.css",
+  "version": "0.16.0",
+  "description": "A design system for building faithful recreations of the Windows 7 UI.",
+  "main": "dist/7.css",
+  "files": [
+    "dist/gui",
+    "dist/7*"
+  ],
+  "scripts": {
+    "build": "node build.js",
+    "deploy": "npm run build && gh-pages -d dist",
+    "release": "npm run build && npm publish"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/khang-nd/7.css.git"
+  },
+  "keywords": [
+    "css",
+    "scss",
+    "windows",
+    "windows7",
+    "gui",
+    "ui-design"
+  ],
+  "author": "khang-nd",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/khang-nd/7.css/issues"
+  },
+  "homepage": "https://khang-nd.github.io/7.css",
+  "devDependencies": {
+    "autoprefixer": "^10.4.8",
+    "chokidar": "^3.3.1",
+    "cssnano": "^5.1.7",
+    "dedent": "^0.7.0",
+    "ejs": "^3.0.2",
+    "gh-pages": "^2.2.0",
+    "glob": "^7.1.6",
+    "highlight.js": ">=10.4.1",
+    "live-server": "^1.1.0",
+    "mkdirp": "^1.0.4",
+    "postcss": "^8.3.5",
+    "postcss-base64": "^0.7.1",
+    "postcss-calc": "^7.0.2",
+    "postcss-css-variables": "^0.14.0",
+    "postcss-import": "^12.0.1",
+    "postcss-nested": "^4.2.1",
+    "postcss-prefix-selector": "^1.15.0"
+  }
+}

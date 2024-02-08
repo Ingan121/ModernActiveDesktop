@@ -302,7 +302,7 @@ function drawClock() {
     if (localStorage.madesktopClockHideDate) {
         document.title = "Clock";
     } else {
-        document.title = "Clock - " + new Date().toLocaleDateString();
+        document.title = "Clock - " + time.toLocaleDateString();
     }
 }
 
