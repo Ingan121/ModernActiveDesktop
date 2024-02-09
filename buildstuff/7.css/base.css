@@ -52,6 +52,7 @@
 .windowContainer[data-style="wnd"]:before,
 #madconf-preview #inactiveWindow:before,
 #madconf-preview #activeWindow:before,
-#msgbox:before {
-    background-color: var(--title-accent, #4580c4);
+#msgbox:before,
+.os-window:before {
+    background: var(--title-accent, #4580c4);
 }

@@ -114,6 +114,13 @@
         } catch {
             document.documentElement.style.setProperty('--hilight-inverted', 'var(--hilight-text)');
         }
+
+        if (window.osguiCompatRequired && localStorage.madesktopColorScheme === "7css4mad") {
+            if (localStorage.madesktopAeroColor) {
+                changeAeroColor(localStorage.madesktopAeroColor);
+            }
+            changeAeroGlass(localStorage.madesktopAeroNoGlass);
+        }
     }
 
     if (styleElement) {
@@ -147,6 +154,18 @@
             document.documentElement.style.setProperty('--hilight-inverted', parent.invertColor(getComputedStyle(document.documentElement).getPropertyValue('--hilight')));
         } catch {
             document.documentElement.style.setProperty('--hilight-inverted', 'var(--hilight-text)');
+        }
+    }
+
+    function changeAeroColor(color) {
+        document.documentElement.style.setProperty('--title-accent', color || '#4580c4');
+    }
+    
+    function changeAeroGlass(noGlass) {
+        if (noGlass) {
+            document.body.dataset.noGlass = true;
+        } else {
+            delete document.body.dataset.noGlass;
         }
     }
 

@@ -64,7 +64,6 @@ document.body.style.zoom = parent.document.body.style.zoom || 1;
 
 new MutationObserver(function (mutations) {
     document.body.style.zoom = parent.document.body.style.zoom || 1;
-    resize();
 }).observe(
     parent.document.body,
     { attributes: true, attributeFilter: ["style"] }

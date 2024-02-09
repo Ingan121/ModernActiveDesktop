@@ -209,6 +209,18 @@
     }
 }
 
+.tool-window {
+    .window-titlebar {
+        height: 14px !important;
+    }
+    .window-button:not(#JustHereToGiveItPriority) {
+        min-width: 0;
+        min-height: 0;
+        width: 13px !important;
+        height: 13px !important;
+    }
+}
+
 .window-minimize-button:not(#JustHereToGiveItPriority) {
     background-image: svg-load("./icon/minimize.svg");
     &:hover {
@@ -255,6 +267,15 @@
     }
     margin-right: 0;
 }
+.os-window.tool-window .window-close-button:not(#JustHereToGiveItPriority) {
+    background-image: svg-load("./icon/close-toolwindow.svg");
+    &:hover {
+        background-image: svg-load("./icon/close-toolwindow-hover.svg") !important;
+    }
+    &:not(:disabled):active {
+        background-image: svg-load("./icon/close-toolwindow-active.svg") !important;
+    }
+}
 .window-button-icon {
     display: none;
 }
@@ -280,10 +301,21 @@
     }
 }
 
+.os-window.tool-window:not(.focused) {
+    .window-close-button:not(#JustHereToGiveItPriority) {
+        background-image: svg-load("./icon/close-toolwindow-inactive.svg");
+    }
+}
+
 .os-window.maximized > .window-titlebar:not(#JustHereToGiveItPriority) {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
     margin-top: -2px;
+}
+
+.os-window.tool-window > .window-titlebar:not(#JustHereToGiveItPriority) {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
 }
 
 .menus {
@@ -316,73 +348,98 @@
 }
 
 /* madconf adjustments */
-#madconf #previewMonitor {
-    content: url("../apps/madconf/images/monitor_xp.png");
+#madconf {
+    #previewMonitor {
+        content: url("../apps/madconf/images/monitor_xp.png");
+    }
+
+    #schemePreview {
+        height: 176px;
+    }
+
+    #itemSizeButtons {
+        opacity: 0;
+    }
+
+    #textColorWrap {
+        margin-left: 9px;
+    }
+
+    #boldToggle,
+    #italicToggle {
+        left: 1px;
+        margin-top: 17px;
+        min-height: 23px;
+    }
+
+    #itemSize {
+        background-image: svg-load("./icon/spin-button-disabled.svg");
+        background-position: right;
+        background-repeat: no-repeat;
+    }
+
+    .window-body {
+        padding-bottom: 0;
+    }
+
+    #creditsMain {
+        height: 120px;
+    }
 }
 
-#madconf #schemePreview {
-    height: 176px;
-}
+#madconf-preview {
+    .title-bar {
+        border: none;
+    }
 
-#madconf .window-body {
-    padding-bottom: 0;
-}
+    #inactiveWindow {
+        height: 118px;
+        background-color: white !important;
+    }
 
-#madconf #creditsMain {
-    height: 120px;
-}
+    #activeWindow {
+        width: 323px;
+        height: 115px;
+        top: 20px;
+        left: 10px;
+        background-color: white !important;
+    }
 
-#madconf-preview .title-bar {
-    border: none;
-}
+    .menu {
+        display: none;
+    }
 
-#madconf-preview #inactiveWindow {
-    height: 118px;
-    background-color: white !important;
-}
+    textarea {
+        margin: 0;
+        width: 322px;
+        height: 90px;
+        box-shadow: none !important;
+        border: none;
+        background-color: transparent;
+        font-weight: normal;
+        background-clip: content-box;
+    }
 
-#madconf-preview #activeWindow {
-    width: 323px;
-    height: 115px;
-    top: 20px;
-    left: 10px;
-    background-color: white !important;
-}
+    #msgbox {
+        width: 143px;
+        height: 95px;
+        top: 41px;
+        left: 100px;
+    }
 
-#madconf-preview .menu {
-    display: none;
-}
+    #msgbox-msg {
+        display: none;
+    }
 
-#madconf-preview textarea {
-    margin: 0;
-    width: 322px;
-    height: 90px;
-    box-shadow: none !important;
-    border: none;
-    background-color: transparent;
-    font-weight: normal;
-    background-clip: content-box;
-}
-
-#madconf-preview #msgbox {
-    width: 143px;
-    height: 95px;
-    top: 41px;
-    left: 100px;
-}
-
-#madconf-preview #msgbox-msg {
-    display: none;
-}
-
-#madconf-preview #msgbox-btn1 {
-    margin-top: 19px;
-    height: 30px;
-    font-weight: normal;
-    box-shadow: inset -1px 1px #cee7ff, inset 1px 2px #98b8ea, inset -2px 2px #bcd4f6, inset 1px -1px #89ade4,
-        inset 2px -2px #89ade4;
-    position: unset;
-    bottom: unset;
+    #msgbox-btn1 {
+        margin-top: 19px;
+        height: 30px;
+        font-weight: normal;
+        box-shadow: inset -1px 1px #cee7ff, inset 1px 2px #98b8ea, inset -2px 2px #bcd4f6, inset 1px -1px #89ade4,
+            inset 2px -2px #89ade4;
+        position: unset;
+        bottom: unset;
+    }
 }
 
 /* Change dialog icons to XP ones */

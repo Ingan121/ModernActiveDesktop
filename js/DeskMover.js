@@ -5,7 +5,7 @@
 'use strict';
 
 class DeskMover {
-    constructor(windowContainer, numStr, openDoc, temp, width, height, style, reinit, centered, top, left, aot, unresizable) {
+    constructor(windowContainer, numStr, openDoc, temp, width, height, style, reinit, centered, top, left, aot, unresizable, noIcon) {
         this.numStr = numStr;
         this.temp = temp;
 
@@ -300,11 +300,15 @@ class DeskMover {
                         this.windowElement.width = width || '398px';
                         this.windowElement.height = height || '423px';
                         this.#toggleResizable();
+                        this.setIcon(false);
                     } else {
                         this.windowElement.width = width || '800px';
                         this.windowElement.height = height || '600px';
                         if (unresizable) {
                             this.#toggleResizable();
+                        }
+                        if (noIcon) {
+                            this.setIcon(false);
                         }
                     }
                     defaultLeft = left || (parseInt(localStorage.madesktopChanViewLeftMargin) || 75) + 250 + 'px';
@@ -714,7 +718,7 @@ class DeskMover {
     openColorPicker(initialColor, expand, callback) {
         const left = parseInt(this.config.xPos) + 4 + 'px';
         const top = parseInt(this.config.yPos) + 26 + 'px';
-        const colorPicker = openWindow("apps/colorpicker/index.html", true, expand ? "447px" : "219px", "298px", "wnd", false, top, left, true, true);
+        const colorPicker = openWindow("apps/colorpicker/index.html", true, expand ? "447px" : "219px", "298px", "wnd", false, top, left, true, true, true);
         const colorPickerWindow = colorPicker.windowElement.contentWindow;
         colorPickerWindow.addEventListener("load", () => {
             colorPickerWindow.choose_color(initialColor, expand, callback);

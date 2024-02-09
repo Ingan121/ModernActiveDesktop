@@ -119,9 +119,13 @@
   --scroll-right: svg-load("./icon/button-right.svg");
   --scroll-track: svg-load("./icon/scrollbar-background.svg");
   --radio-border: svg-load("./icon/radio-border.svg");
+  --radio-border-disabled: svg-load("./icon/radio-border-disabled.svg");
   --radio-dot: svg-load("./icon/radio-dot.svg");
+  --radio-dot-disabled: svg-load("./icon/radio-dot-disabled.svg");
   --checkmark: svg-load("./icon/checkmark.svg");
+  --checkmark-disabled: svg-load("./icon/checkmark-disabled.svg");
   --indicator-thumb: svg-load("./icon/indicator-horizontal.svg");
+  --seek-handle: svg-load("./icon/seek-handle.svg");
 
   --hilight-inverted: #FFFF7F;
 }
@@ -418,11 +422,11 @@ input[type="radio"] + label::before {
   width: var(--radio-width);
   height: var(--radio-width);
   margin-right: var(--radio-label-spacing);
-  background: svg-load("./icon/radio-border.svg");
+  background: var(--radio-border);
 }
 
 input[type="radio"]:active + label::before {
-  background: svg-load("./icon/radio-border-disabled.svg");
+  background: var(--radio-border-disabled);
 }
 
 input[type="radio"]:checked + label::after {
@@ -433,7 +437,7 @@ input[type="radio"]:checked + label::after {
   top: var(--radio-dot-top);
   left: var(--radio-dot-left);
   position: absolute;
-  background: svg-load("./icon/radio-dot.svg");
+  background: var(--radio-dot);
 }
 
 input[type="radio"]:focus + label,
@@ -442,11 +446,11 @@ input[type="checkbox"]:focus + label {
 }
 
 input[type="radio"][disabled] + label::before {
-  background: svg-load("./icon/radio-border-disabled.svg");
+  background: var(--radio-border-disabled);
 }
 
 input[type="radio"][disabled]:checked + label::after {
-  background: svg-load("./icon/radio-dot-disabled.svg");
+  background: var(--radio-dot-disabled);
 }
 
 input[type="checkbox"] + label {
@@ -478,7 +482,7 @@ input[type="checkbox"]:checked + label::after {
   position: absolute;
   top: var(--checkmark-top);
   left: calc(var(--checkbox-left) + var(--checkmark-left));
-  background: svg-load("./icon/checkmark.svg");
+  background: var(--checkmark);
 }
 
 input[type="checkbox"][disabled] + label::before {
@@ -486,7 +490,7 @@ input[type="checkbox"][disabled] + label::before {
 }
 
 input[type="checkbox"][disabled]:checked + label::after {
-  background: svg-load("./icon/checkmark-disabled.svg");
+  background: var(--checkmark-disabled);
 }
 
 input[type="text"],

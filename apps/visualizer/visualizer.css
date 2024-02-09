@@ -273,7 +273,7 @@ canvas {
     display: none;
     width: 13px;
     height: 15px;
-    background-image: url('seekHandle.png');
+    background-image: var(--seek-handle);
     position: relative;
     top: -5px;
     left: calc(0% - 6px);

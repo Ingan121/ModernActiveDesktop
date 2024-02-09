@@ -32,7 +32,9 @@ const combineRadBtn = document.getElementById("radCombine");
 const fixedBarsChkBox = document.getElementById("fixedBarsChkBox");
 const barWidthInput = document.getElementById("barWidthInput");
 
+const diffScaleLabel = document.getElementById("diffScaleLabel");
 const diffScaleInput = document.getElementById("diffScaleInput");
+const diffScaleInfo = document.getElementById("diffScaleInfo");
 
 const okBtn = document.getElementById("okBtn");
 const cancelBtn = document.getElementById("cancelBtn");
@@ -230,6 +232,14 @@ if (localStorage.madesktopVisOnlyAlbumArt) {
     topColorPicker.disabled = true;
     barColorPickerLabel.classList.add("disabled");
     topColorPickerLabel.classList.add("disabled");
+    noProcessingRadBtn.disabled = true;
+    reverseRadBtn.disabled = true;
+    combineRadBtn.disabled = true;
+    fixedBarsChkBox.disabled = true;
+    barWidthInput.disabled = true;
+    diffScaleLabel.classList.add("disabled");
+    diffScaleInput.disabled = true;
+    diffScaleInfo.classList.add("disabled");
 }
 
 window.addEventListener('load', () => {
@@ -238,6 +248,7 @@ window.addEventListener('load', () => {
         barColorPickerColor.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--hilight');
         topColorPickerColor.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--button-text');
     }
+    madResizeTo(null, document.documentElement.offsetHeight);
 });
 
 madSetIcon(false);

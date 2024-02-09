@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 13 15" width="13" height="15">
+<rect fill="white" x="0" y="0" width="11" height="1"/>
+<rect fill="white" x="0" y="1" width="1" height="12"/>
+<rect fill="#c0c0c0" x="1" y="1" width="10" height="2"/>
+<rect fill="#c0c0c0" x="1" y="3" width="1" height="8"/>
+<rect fill="#c0c0c0" x="1" y="11" width="10" height="2"/>
+<rect fill="#c0c0c0" x="1" y="3" width="1" height="8"/>
+<rect fill="#c0c0c0" x="10" y="3" width="1" height="8"/>
+<rect fill="#808080" x="2" y="3" width="8" height="1"/>
+<rect fill="#808080" x="2" y="4" width="1" height="7"/>
+<rect fill="white" x="3" y="4" width="7" height="1"/>
+<rect fill="black" x="6" y="4" width="1" height="1"/>
+<rect fill="white" x="3" y="10" width="7" height="1"/>
+<rect fill="black" x="6" y="10" width="1" height="1"/>
+<rect fill="#c0c0c0" x="11" y="0" width="1" height="1"/>
+<rect fill="#808080" x="11" y="1" width="1" height="13"/>
+<rect fill="#808080" x="0" y="13" width="11" height="1"/>
+<rect fill="black" x="0" y="14" width="13" height="1"/>
+<rect fill="black" x="12" y="0" width="1" height="14"/>
+</svg>

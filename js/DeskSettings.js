@@ -744,15 +744,44 @@ function generateThemeSvgs(targetElement) {
         <path fill-rule="evenodd" clip-rule="evenodd" d="M9 3H10V4H9V3ZM10 8V4H11V8H10ZM8 10V9H9V8H10V9V10H8ZM4 10V11H8V10H4ZM4 10V9H2V10H4Z" fill="${buttonLight}"/>
         <path fill-rule="evenodd" clip-rule="evenodd" d="M11 2H10V4H11V8H10V10H8V11H4V10H2V11H4V12H8V11H10V10H11V8H12V4H11V2Z" fill="${buttonHilight}"/>
         <path fill-rule="evenodd" clip-rule="evenodd" d="M4 2H8V3H9V4H10V8H9V9H8V10H4V9H3V8H2V4H3V3H4V2Z" fill="${windowColor}"/></svg>`;
+    const radioBorderDisabled = `<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M8 0H4V1H2V2H1V4H0V8H1V10H2V8H1V4H2V2H4V1H8V2H10V1H8V0Z" fill="${buttonShadow}"/>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M8 1H4V2H2V3V4H1V8H2V9H3V8H2V4H3V3H4V2H8V3H10V2H8V1Z" fill="${buttonDkShadow}"/>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M9 3H10V4H9V3ZM10 8V4H11V8H10ZM8 10V9H9V8H10V9V10H8ZM4 10V11H8V10H4ZM4 10V9H2V10H4Z" fill="${buttonLight}"/>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M11 2H10V4H11V8H10V10H8V11H4V10H2V11H4V12H8V11H10V10H11V8H12V4H11V2Z" fill="${buttonHilight}"/>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M4 2H8V3H9V4H10V8H9V9H8V10H4V9H3V8H2V4H3V3H4V2Z" fill="${buttonFace}"/></svg>`;
     const radioDot = `<svg width="4" height="4" viewBox="0 0 4 4" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path fill-rule="evenodd" clip-rule="evenodd" d="M3 0H1V1H0V2V3H1V4H3V3H4V2V1H3V0Z" fill="${buttonText}"/></svg>`;
+    const radioDotDisabled = `<svg width="4" height="4" viewBox="0 0 4 4" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M3 0H1V1H0V2V3H1V4H3V3H4V2V1H3V0Z" fill="${buttonShadow}"/></svg>`;
     const checkmark = `<svg width="7" height="7" viewBox="0 0 7 7" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path fill-rule="evenodd" clip-rule="evenodd" d="M7 0H6V1H5V2H4V3H3V4H2V3H1V2H0V5H1V6H2V7H3V6H4V5H5V4H6V3H7V0Z" fill="${buttonText}"/></svg>`;
+    const checkmarkDisabled = `<svg width="7" height="7" viewBox="0 0 7 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M7 0H6V1H5V2H4V3H3V4H2V3H1V2H0V5H1V6H2V7H3V6H4V5H5V4H6V3H7V0Z" fill="${buttonShadow}"/></svg>`;
     const indicatorThumb = `<svg width="11" height="21" viewBox="0 0 11 21" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path fill-rule="evenodd" clip-rule="evenodd" d="M0 0V16H2V18H4V20H5V19H3V17H1V1H10V0Z" fill="${buttonHilight}"/>
         <path fill-rule="evenodd" clip-rule="evenodd" d="M1 1V16H2V17H3V18H4V19H6V18H7V17H8V16H9V1Z" fill="${buttonFace}"/>
         <path fill-rule="evenodd" clip-rule="evenodd" d="M9 1H10V16H8V18H6V20H5V19H7V17H9Z" fill="${buttonShadow}"/>
         <path fill-rule="evenodd" clip-rule="evenodd" d="M10 0H11V16H9V18H7V20H5V21H6V19H8V17H10Z" fill="${buttonDkShadow}"/></svg>`;
+    const seekHandle = `<svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 13 15" width="13" height="15">
+        <rect fill="${buttonHilight}" x="0" y="0" width="11" height="1"/>
+        <rect fill="${buttonHilight}" x="0" y="1" width="1" height="12"/>
+        <rect fill="${buttonFace}" x="1" y="1" width="10" height="2"/>
+        <rect fill="${buttonFace}" x="1" y="3" width="1" height="8"/>
+        <rect fill="${buttonFace}" x="1" y="11" width="10" height="2"/>
+        <rect fill="${buttonFace}" x="1" y="3" width="1" height="8"/>
+        <rect fill="${buttonFace}" x="10" y="3" width="1" height="8"/>
+        <rect fill="${buttonShadow}" x="2" y="3" width="8" height="1"/>
+        <rect fill="${buttonShadow}" x="2" y="4" width="1" height="7"/>
+        <rect fill="${buttonHilight}" x="3" y="4" width="7" height="1"/>
+        <rect fill="${buttonDkShadow}" x="6" y="4" width="1" height="1"/>
+        <rect fill="${buttonHilight}" x="3" y="10" width="7" height="1"/>
+        <rect fill="${buttonDkShadow}" x="6" y="10" width="1" height="1"/>
+        <rect fill="${buttonFace}" x="11" y="0" width="1" height="1"/>
+        <rect fill="${buttonShadow}" x="11" y="1" width="1" height="13"/>
+        <rect fill="${buttonShadow}" x="0" y="13" width="11" height="1"/>
+        <rect fill="${buttonDkShadow}" x="0" y="14" width="13" height="1"/>
+        <rect fill="${buttonDkShadow}" x="12" y="0" width="1" height="14"/></svg>`;
 
     const css = `
     :root {
@@ -762,9 +791,13 @@ function generateThemeSvgs(targetElement) {
         --scroll-right: url("data:image/svg+xml,${encodeURIComponent(scrollRight)}");
         --scroll-track: url("data:image/svg+xml,${encodeURIComponent(scrollTrack)}");
         --radio-border: url("data:image/svg+xml,${encodeURIComponent(radioBorder)}");
+        --radio-border-disabled: url("data:image/svg+xml,${encodeURIComponent(radioBorderDisabled)}");
         --radio-dot: url("data:image/svg+xml,${encodeURIComponent(radioDot)}");
+        --radio-dot-disabled: url("data:image/svg+xml,${encodeURIComponent(radioDotDisabled)}");
         --checkmark: url("data:image/svg+xml,${encodeURIComponent(checkmark)}");
+        --checkmark-disabled: url("data:image/svg+xml,${encodeURIComponent(checkmarkDisabled)}");
         --indicator-thumb: url("data:image/svg+xml,${encodeURIComponent(indicatorThumb)}");
+        --seek-handle: url("data:image/svg+xml,${encodeURIComponent(seekHandle)}");
     }`;
     return css;
 }
@@ -809,17 +842,17 @@ function padZero(str, len) {
 }
 
 // Create a new ActiveDesktop item and initialize it
-function createNewDeskItem(numStr, openDoc, temp, width, height, style, centered, top, left, aot, unresizable) {
+function createNewDeskItem(numStr, openDoc, temp, width, height, style, centered, top, left, aot, unresizable, noIcon) {
     const newContainer = windowContainers[0].cloneNode(true);
     document.body.appendChild(newContainer);
     windowContainers = document.getElementsByClassName("windowContainer");
-    const deskMover = new DeskMover(newContainer, numStr, openDoc, temp, width, height, style, false, centered, top, left, aot, unresizable);
+    const deskMover = new DeskMover(newContainer, numStr, openDoc, temp, width, height, style, false, centered, top, left, aot, unresizable, noIcon);
     deskMovers[numStr] = deskMover;
     return deskMover;
 }
 
 // Create a new AD item, initialize, and increase the saved window count
-function openWindow(openDoc, temp, width, height, style, centered, top, left, aot, unresizable) {
+function openWindow(openDoc, temp, width, height, style, centered, top, left, aot, unresizable, noIcon) {
     let deskMover;
     if (localStorage.madesktopItemVisible === "false" && !(typeof openDoc === "string" || openDoc instanceof String)) {
         windowContainers[0].style.display = "block";
@@ -830,7 +863,7 @@ function openWindow(openDoc, temp, width, height, style, centered, top, left, ao
         if (!temp) {
             localStorage.madesktopOpenWindows += `,${localStorage.madesktopItemCount}`;
         }
-        deskMover = createNewDeskItem(localStorage.madesktopItemCount, openDoc, temp, width, height, style || "wnd", centered, top, left, aot, unresizable);
+        deskMover = createNewDeskItem(localStorage.madesktopItemCount, openDoc, temp, width, height, style || "wnd", centered, top, left, aot, unresizable, noIcon);
         activateWindow(localStorage.madesktopItemCount);
         localStorage.madesktopItemCount++;
     }

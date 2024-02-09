@@ -389,21 +389,7 @@ optMenuItems[0].addEventListener('click', () => { // Configure Visualization but
     closeMenu('opt');
     const left = parseInt(madDeskMover.config.xPos) + 25 + 'px';
     const top = parseInt(madDeskMover.config.yPos) + 80 + 'px';
-    let extraHeight = 0;
-    if (localStorage.madesktopColorScheme === '7css4mad') {
-        extraHeight = 35;
-    }
-    if (parent.scaleFactor.length === 4) {
-        // idk why but its height is different with 5% scaling (125%, 175%, ...)
-        if (localStorage.madesktopColorScheme === '7css4mad') {
-            extraHeight -= 10;
-        } else {
-            extraHeight = 5;
-        }
-    } else if (parent.scaleFactor.length === 3 && localStorage.madesktopColorScheme === '7css4mad') {
-        extraHeight -= 10;
-    }
-    const configWindow = madOpenWindow('apps/visualizer/config.html', true, '400px', 425 + extraHeight + 'px', 'wnd', false, top, left, true, true);
+    const configWindow = madOpenWindow('apps/visualizer/config.html', true, '400px', '425px', 'wnd', false, top, left, true, true, true);
     configWindow.windowElement.addEventListener('load', () => {
         configWindow.windowElement.contentWindow.targetDeskMover = madDeskMover;
     });

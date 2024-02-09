@@ -16,6 +16,7 @@ let savedSchemes = JSON.parse(localStorage.madesktopSavedSchemes || "{}");
 async function main() {
     scheme = parseCssScheme(await getSchemeText());
     let schemeName = "Windows Classic (98)";
+    const parentSchemeElement2 = parent.document.getElementById("style2");
     const preview = document.getElementById("schemePreview");
     const schemeSelector = document.getElementById("schemeSelector");
     const saveAsBtn = document.getElementById("saveAsBtn");
@@ -529,7 +530,7 @@ async function main() {
         } else if (selector.disabled) {
             schemeName = schemeSelector.options[schemeSelector.selectedIndex].textContent;
             schemeSelector.options[0].textContent = schemeName;
-
+            parentSchemeElement2.textContent = preview.contentDocument.getElementById("style").textContent;
             parent.changeColorScheme(schemeSelector.value);
             localStorage.madesktopColorScheme = schemeSelector.value;
             localStorage.madesktopLastSchemeName = schemeName;
@@ -950,7 +951,7 @@ function generateCssScheme(scheme, keepEffects = false) {
     cssScheme += "}\n.window {\n";
     for (const key of belongsInWindow) {
         if (scheme[key]) {
-            cssScheme += `--${key}: ${scheme[key]};\n`;
+            cssScheme += `--${key}: ${scheme[key].replaceAll('!important', '')};\n`;
         }
     }
     cssScheme += "}";

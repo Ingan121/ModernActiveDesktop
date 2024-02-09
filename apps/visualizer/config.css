@@ -4,7 +4,7 @@ body {
 }
 
 p, legend, label,
-:not(button):not([data-disabled]):not(.disabled) > span:not(.label) {
+:not(button):not([data-disabled]):not(.disabled) > span:not(.label):not(.disabled) {
     color: var(--window-text);
 }
 

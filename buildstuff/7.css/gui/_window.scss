@@ -121,8 +121,9 @@
 .os-window {
   font: var(--font);
   box-shadow: 2px 2px 10px 1px var(--window-border-color), inset 0 0 0 1px #fffa !important;
-  border: var(--window-border) var(--window-border-color);
+  border: var(--window-border) var(--window-border-color) !important;
   border-radius: var(--window-border-radius);
+  border-image: none !important;
 
   &::before {
     content: "";
@@ -192,7 +193,7 @@
   }
 
   /* Glass */
-  background-color: transparent;
+  background-color: transparent !important;
   body:not([data-no-glass]) &::before {
     opacity: 0.6;
   }
@@ -211,12 +212,6 @@
   }
 
   background: var(--window-background-glass-stripes);
-
-  > .title-bar {
-    background: transparent;
-    border: 0;
-    box-shadow: inset 0 1px 0 #fffd, inset 1px 0 0 #fffd, inset -1px 0 0 #fffd !important;
-  }
 
   fieldset {
     margin-bottom: 9px;
@@ -240,24 +235,61 @@
   }
 }
 
+/* Inactive window */
+.windowContainer[data-style="wnd"][data-inactive],
+#inactiveWindow,
+#msgbox[data-inactive],
+.os-window:not(.focused) {
+  body:not([data-no-glass]) &::before {
+    opacity: 0.4 !important;
+  }
+  body[data-no-glass] &::before {
+    filter: brightness(1.25);
+  }
+}
+
 .title-bar,
 .os-window > .window-titlebar:not(#JustHereToGiveItPriority) {
   font: var(--font);
-  box-shadow: inset 0 0 0 1px #fff9 !important;
-  border: var(--window-border) var(--window-border-color);
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: inset 0 1px 0 #fffd, inset 1px 0 0 #fffd, inset -1px 0 0 #fffd !important;
   border-radius: var(--window-border-radius) var(--window-border-radius) 0 0;
   padding: var(--window-spacing);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: var(--window-background);
   margin: -3px !important;
+
+  button {
+    &::before {
+      content: "";
+      background: url("./icon/close.png") no-repeat center,
+        var(--control-background), var(--control-background-close-hovered);
+      box-shadow: 0 0 7px 3px #e68e75, var(--control-inset-shadow);
+      border-bottom-right-radius: var(--control-border-radius);
+      opacity: 0 !important;
+      transition: opacity 0.3s linear;
+    }
+
+    &:hover::before,
+    &:focus-visible::before {
+      opacity: 1 !important;
+      transition: opacity 0.1s linear;
+    }
+
+    &:active::before {
+      background: url("./icon/close.png") no-repeat center,
+        var(--control-background), var(--control-background-close-active) !important;
+    }
+  }
 
   /* Active title-bar */
   :not(#inactiveWindow) &:not(.inactive),
+  #activeWindow &:not(#JustHereToGiveItPriority),
   .os-window.focused & {
     .title-bar-controls {
-      border-color: var(--window-border-color);
+      border-color: var(--window-border-color) ;
 
       button {
         border-color: var(--window-border-color);
@@ -267,110 +299,9 @@
           content: none;
         }
 
-        &[aria-label="Minimize"],
-        &.is-minimize {
-          background: url("./icon/minimize.png") no-repeat center 10px,
-            var(--control-background);
-          &::before {
-            content: "";
-            box-shadow: 0 0 7px 3px #5dc4f0, var(--control-inset-shadow);
-            background: url("./icon/minimize.png") no-repeat center 10px,
-              var(--control-background-hovered);
-            border-bottom-left-radius: var(--control-border-radius);
-            opacity: 0;
-            transition: opacity 0.3s linear;
-          }
-
-          &:hover::before,
-          &:focus-visible::before {
-            opacity: 1;
-            transition: opacity 0.1s linear;
-          }
-
-          &:active::before {
-            background: url("./icon/minimize.png") no-repeat center 10px,
-              var(--control-background-active);
-          }
-        }
-
-        &[aria-label="Maximize"],
-        &.is-maximize {
-          background: url("./icon/maximize.png") no-repeat center,
-            var(--control-background);
-          &::before {
-            content: "";
-            box-shadow: 0 0 7px 3px #5dc4f0, var(--control-inset-shadow);
-            background: url("./icon/maximize.png") no-repeat center,
-              var(--control-background-hovered);
-            opacity: 0;
-            transition: opacity 0.3s linear;
-          }
-
-          &:hover::before,
-          &:focus-visible::before {
-            opacity: 1;
-            transition: opacity 0.1s linear;
-          }
-
-          &:active::before {
-            background: url("./icon/maximize.png") no-repeat center,
-              var(--control-background-active);
-          }
-        }
-
-        &[aria-label="Restore"],
-        &.is-restore {
-          background: url("./icon/restore.png") no-repeat center,
-            var(--control-background);
-          &::before {
-            content: "";
-            box-shadow: 0 0 7px 3px #5dc4f0, var(--control-inset-shadow);
-            background: url("./icon/restore.png") no-repeat center,
-              var(--control-background-hovered);
-            opacity: 0;
-            transition: opacity 0.3s linear;
-          }
-
-          &:hover::before,
-          &:focus-visible::before {
-            opacity: 1;
-            transition: opacity 0.1s linear;
-          }
-
-          &:active::before {
-            background: url("./icon/restore.png") no-repeat center,
-              var(--control-background-active);
-          }
-        }
-
-        &[aria-label="Close"],
-        &.is-close,
-        & {
-          background: url("./icon/close.png") no-repeat center,
-            var(--control-background), var(--control-background-close);
-          box-shadow: var(--control-inset-shadow);
-
-          &::before {
-            content: "";
-            background: url("./icon/close.png") no-repeat center,
-              var(--control-background), var(--control-background-close-hovered);
-            box-shadow: 0 0 7px 3px #e68e75, var(--control-inset-shadow);
-            border-bottom-right-radius: var(--control-border-radius);
-            opacity: 0 !important;
-            transition: opacity 0.3s linear;
-          }
-
-          &:hover::before,
-          &:focus-visible::before {
-            opacity: 1 !important;
-            transition: opacity 0.1s linear;
-          }
-
-          &:active::before {
-            background: url("./icon/close.png") no-repeat center,
-              var(--control-background), var(--control-background-close-active);
-          }
-        }
+        background: url("./icon/close.png") no-repeat center,
+          var(--control-background), var(--control-background-close);
+        box-shadow: var(--control-inset-shadow);
 
         &:disabled {
           &[aria-label="Maximize"],
@@ -388,23 +319,6 @@
       }
     }
   }
-
-  .title-bar-controls button {
-    &:hover::before {
-      content: "";
-      background: url("./icon/close.png") no-repeat center,
-        var(--control-background), var(--control-background-close-hovered) !important;
-      box-shadow: 0 0 7px 3px #e68e75, var(--control-inset-shadow) !important;
-      border-bottom-right-radius: var(--control-border-radius) !important;
-      opacity: 1 !important;
-      transition: opacity 0.1s linear !important;
-    }
-
-    &:active::before {
-      background: url("./icon/close.png") no-repeat center,
-        var(--control-background), var(--control-background-close-active);
-    }
-  }
 }
 
 .windowIcon {
@@ -412,13 +326,18 @@
   left: 6px;
 }
 
-.title-bar-text {
+.title-bar-text,
+.window-title {
   color: #000;
   letter-spacing: 0;
   line-height: 3;
   text-shadow: 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff,
     0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff;
-  padding-left: 5px;
+  padding-left: 5px !important;
+}
+
+.window-title {
+  padding-top: 5px !important;
 }
 
 .windowContainer[data-style="wnd"],
@@ -427,7 +346,6 @@
 #msgbox {
   .title-bar-controls {
     display: flex;
-    background: #fff3;
     border: var(--window-border) var(--control-border-color);
     border-top: 0;
     border-radius: 0 0 var(--control-border-radius) var(--control-border-radius);
@@ -445,6 +363,7 @@
       box-shadow: none;
       box-sizing: border-box;
       background: url("./icon/close.png") no-repeat center;
+      min-width: 48px !important;
 
       &::after {
         content: none;
@@ -471,37 +390,6 @@
         right: 0;
         border-radius: 0;
         box-shadow: inset 0 0 0 1px #fff5;
-      }
-
-      &[aria-label="Minimize"],
-      &.is-minimize {
-        &::before {
-          background: url("./icon/minimize.png") no-repeat center 10px;
-        }
-      }
-
-      &[aria-label="Maximize"],
-      &.is-maximize {
-        &::before {
-          background: url("./icon/maximize.png") no-repeat center;
-        }
-      }
-
-      &[aria-label="Restore"],
-      &.is-restore {
-        &::before {
-          background: url("./icon/restore.png") no-repeat center;
-        }
-      }
-
-      &[aria-label="Close"],
-      &.is-close,
-      & {
-        min-width: 48px !important;
-
-        &::before {
-          background: url("./icon/close.png") no-repeat center;
-        }
       }
 
       &:first-child,
@@ -550,16 +438,28 @@
   }
 }
 
-#msgbox .window-body,
-#madconf-preview #msgbox section {
-  background: var(--button-face);
-  box-shadow: var(--button-face) -3px -3px, var(--button-face) 3px 7px, var(--button-face) -3px 7px, var(--button-face) 3px -3px,
-    rgba(0, 0, 0, 0.9) -4px -4px, rgba(0, 0, 0, 0.9) 4px 8px, rgba(0, 0, 0, 0.9) -4px 8px, rgba(0, 0, 0, 0.9) 4px -4px,
-    rgba(255, 255, 255, 0.5) -5px -5px, rgba(255, 255, 255, 0.5) 5px 9px, rgba(255, 255, 255, 0.5) -5px 9px, rgba(255, 255, 255, 0.5) 5px -5px;
+#msgbox .window-body {
+  background-color: white;
+  box-shadow: white -3px -3px, white 3px -3px,
+    rgba(0, 0, 0, 0.9) -4px -4px, rgba(0, 0, 0, 0.9) 4px 1px, rgba(0, 0, 0, 0.9) -4px 1px, rgba(0, 0, 0, 0.9) 4px -4px,
+    rgba(255, 255, 255, 0.5) -5px -5px, rgba(255, 255, 255, 0.5) 5px 2px, rgba(255, 255, 255, 0.5) -5px 2px, rgba(255, 255, 255, 0.5) 5px -5px;
+}
+
+#msgbox-msg {
+  margin-left: 0;
+  margin-right: 8px;
 }
 
 #msgbox-buttons {
+  background-color: #f0f0f0;
   justify-content: right;
+  width: calc(100% + 6px);
+  height: 40px;
+  border-top: solid 1px #dfdfdf;
+  margin-left: -3px;
+  margin-bottom: -3px;
+  padding-right: 11px;
+  box-sizing: border-box;
 }
 
 #windowOutline {
@@ -570,146 +470,476 @@
   box-shadow: none;
 }
 
-/*
-#msgbox .window-body::before {
-  content: "";
-  display: block;
-  position: absolute;
-  top: 28px;
-  left: 12px;
-  width: calc(100% + 4px);
-  height: calc(100% + 4px);
+/* For OS-GUI (JSPaint) */
+.os-window > .window-titlebar:not(#JustHereToGiveItPriority) {
+  margin: -7px !important;
 }
-*/
+
+.window-titlebar img {
+  margin-top: -6px;
+}
+
+.window-title-area {
+  position: unset;
+  margin-top: -6px;
+  margin-left: 2px;
+  height: 26px !important;
+}
+
+:not(.madColorPicker) > .window-content {
+  margin-top: 3px;
+  background-color: var(--button-face) !important;
+  outline: solid 1px rgba(255, 255, 255, 0.5) !important;
+  border: solid 1px rgba(0, 0, 0, 0.9) !important;
+}
+
+.tool-window {
+  padding: 5px !important;
+  .window-titlebar:not(#JustHereToGiveItPriority) {
+    margin: -5px !important;
+    height: 15px !important;
+    border-radius: 0 !important;
+  }
+  .window-title-area {
+    height: 26px !important;
+  }
+  .window-title {
+    padding-top: 10px !important;
+    margin-left: -5px !important;
+  }
+  .window-button {
+    padding: 0;
+    border: var(--window-border) rgba(128, 128, 128, 0.5) !important;
+    border-radius: 3px !important;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5) !important;
+    box-sizing: border-box !important;
+    background: url("./icon/close-toolwindow.png") no-repeat center !important;
+    width: 17px !important;
+    height: 17px !important;
+    margin-right: -1px !important;
+    margin-bottom: 0 !important;
+
+    &::before {
+      content: "";
+      background: url("./icon/close-toolwindow.png") no-repeat center,
+        var(--control-background), var(--control-background-close-hovered) !important;
+      box-shadow: 0 0 7px 3px #e68e75, var(--control-inset-shadow) !important;
+      border-bottom-right-radius: var(--control-border-radius) !important;
+      opacity: 0 !important;
+      transition: opacity 0.3s linear;
+    }
+
+    &:hover::before,
+    &:focus-visible::before {
+      opacity: 1 !important;
+      transition: opacity 0.1s linear;
+    }
+
+    &:active::before {
+      background: url("./icon/close-toolwindow.png") no-repeat center,
+        var(--control-background), var(--control-background-close-active) !important;
+    }
+  }
+  &::before,
+  &::after {
+    border-radius: 0;
+  }
+}
+
+.os-window:not(.tool-window) .window-button:not(#JustHereToGiveItPriority) {
+  margin-top: -12px;
+  margin-left: -2px;
+  margin-right: 0;
+  box-shadow: 0 1px 0 #fffa, 1px 0 0 #fffa, -1px 0 0 #fffa;
+  
+  position: relative;
+  min-width: 29px;
+  min-height: 19px;
+  padding: 0;
+  border: 0;
+  border-right: var(--window-border) var(--control-border-color);
+  border-radius: 0;
+  box-shadow: none;
+  box-sizing: border-box;
+  background-color: transparent;
+
+  &::after {
+    content: none;
+  }
+
+  &:hover,
+  &:active {
+    /* resolve the conflict with button styles */
+    background: none;
+  }
+
+  &:disabled {
+    &::before {
+      opacity: 0.4;
+    }
+  }
+
+  /* Windows without icon and only one button */
+  &:nth-child(2),
+  &:nth-child(2)::before {
+    border-bottom-left-radius: var(--control-border-radius);
+  }
+
+  /* Windows with icon and three buttons */
+  &:nth-child(3),
+  &:nth-child(3)::before {
+    border-bottom-left-radius: var(--control-border-radius);
+  }
+
+  &:last-child,
+  &:last-child::before {
+    border: 0;
+    border-bottom-right-radius: var(--control-border-radius);
+  }
+
+  &:focus {
+    outline: none;
+    animation: none;
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-radius: 0;
+    box-shadow: inset 0 0 0 1px #fff5;
+  }
+}
+
+.window-minimize-button:not(#JustHereToGiveItPriority) {
+  background: url("./icon/minimize.png") no-repeat center 10px;
+}
+
+.window-action-maximize:not(#JustHereToGiveItPriority) {
+  background: url("./icon/maximize.png") no-repeat center;
+}
+
+.window-action-restore:not(#JustHereToGiveItPriority) {
+  background: url("./icon/restore.png") no-repeat center;
+}
+
+.window-close-button:not(#JustHereToGiveItPriority) {
+  background: url("./icon/close.png") no-repeat center;
+}
+
+.os-window:not(.tool-window) .window-close-button:not(#JustHereToGiveItPriority) {
+  min-width: 48px !important;
+}
+
+.os-window.focused {
+  .window-minimize-button:not(#JustHereToGiveItPriority) {
+    background: url("./icon/minimize.png") no-repeat center 10px,
+      var(--control-background);
+  }
+  .window-action-maximize:not(#JustHereToGiveItPriority) {
+    background: url("./icon/maximize.png") no-repeat center,
+      var(--control-background);
+  }
+  .window-action-restore:not(#JustHereToGiveItPriority) {
+    background: url("./icon/restore.png") no-repeat center,
+      var(--control-background);
+  }
+  .window-action-restore:not(#JustHereToGiveItPriority) {
+    background: url("./icon/restore.png") no-repeat center,
+      var(--control-background);
+  }
+  .window-close-button:not(#JustHereToGiveItPriority) {
+    background: url("./icon/close.png") no-repeat center,
+      var(--control-background), var(--control-background-close);
+    box-shadow: var(--control-inset-shadow);
+  }
+}
+
+.tool-window.focused {
+  .window-close-button:not(#JustHereToGiveItPriority) {
+    background: url("./icon/close-toolwindow.png") no-repeat center,
+      var(--control-background), var(--control-background-close) !important;
+    border: var(--window-border) rgba(0, 0, 0, 0.9) !important;
+  }
+}
+
+.os-window:not(#JustHereToGiveItPriority) {
+  .window-button:not(#JustHereToGiveItPriority) {
+    border-color: var(--window-border-color);
+    box-shadow: var(--control-inset-shadow);
+
+    &::after {
+      content: none;
+    }
+  }
+
+  .window-minimize-button:not(#JustHereToGiveItPriority) {
+    &::before {
+      content: "";
+      box-shadow: 0 0 7px 3px #5dc4f0, var(--control-inset-shadow);
+      background: url("./icon/minimize.png") no-repeat center 10px,
+        var(--control-background-hovered);
+      border-bottom-left-radius: var(--control-border-radius);
+      opacity: 0;
+      transition: opacity 0.3s linear;
+    }
+
+    &:hover::before,
+    &:focus-visible::before {
+      opacity: 1;
+      transition: opacity 0.1s linear;
+    }
+
+    &:active::before {
+      background: url("./icon/minimize.png") no-repeat center 10px,
+        var(--control-background-active);
+    }
+  }
+
+  .window-action-maximize:not(#JustHereToGiveItPriority) {
+    &::before {
+      content: "";
+      box-shadow: 0 0 7px 3px #5dc4f0, var(--control-inset-shadow);
+      background: url("./icon/maximize.png") no-repeat center,
+        var(--control-background-hovered);
+      opacity: 0;
+      transition: opacity 0.3s linear;
+    }
+
+    &:hover::before,
+    &:focus-visible::before {
+      opacity: 1;
+      transition: opacity 0.1s linear;
+    }
+
+    &:active::before {
+      background: url("./icon/maximize.png") no-repeat center,
+        var(--control-background-active);
+    }
+  }
+
+  .window-action-restore:not(#JustHereToGiveItPriority) {
+    &::before {
+      content: "";
+      box-shadow: 0 0 7px 3px #5dc4f0, var(--control-inset-shadow);
+      background: url("./icon/restore.png") no-repeat center,
+        var(--control-background-hovered);
+      opacity: 0;
+      transition: opacity 0.3s linear;
+    }
+
+    &:hover::before,
+    &:focus-visible::before {
+      opacity: 1;
+      transition: opacity 0.1s linear;
+    }
+
+    &:active::before {
+      background: url("./icon/restore.png") no-repeat center,
+        var(--control-background-active);
+    }
+  }
+
+  .window-close-button:not(#JustHereToGiveItPriority) {
+    &::before {
+      content: "";
+      background: url("./icon/close.png") no-repeat center,
+        var(--control-background), var(--control-background-close-hovered);
+      box-shadow: 0 0 7px 3px #e68e75, var(--control-inset-shadow);
+      border-bottom-right-radius: var(--control-border-radius);
+      opacity: 0 !important;
+      transition: opacity 0.3s linear;
+    }
+
+    &:hover::before,
+    &:focus-visible::before {
+      opacity: 1 !important;
+      transition: opacity 0.1s linear;
+    }
+
+    &:active::before {
+      background: url("./icon/close.png") no-repeat center,
+        var(--control-background), var(--control-background-close-active) !important;
+    }
+  }
+}
+
+.os-window:not(.tool-window) {
+  padding: 7px !important;
+}
+
+.os-window.maximized {
+  padding: 7px !important;
+  margin-left: -7px !important;
+  margin-top: -7px !important;
+
+  .window-titlebar img {
+    margin-top: -2px;
+  }
+
+  .window-title-area {
+    margin-top: -1px !important;
+  }
+
+  .window-button {
+    margin-top: -2px !important;
+  }
+
+  .window-close-button {
+    margin-right: 5px !important;
+  }
+}
+
+.window-button-icon {
+  display: none;
+}
 
 /* madconf adjustments */
-/*
-#madconf #previewMonitor {
-  content: url("../apps/madconf/images/monitor_xp.png");
-}
-*/
+#madconf {
+  #previewMonitor {
+    content: url("icon/monitor.png");
+  }
 
-#madconf .window {
-  box-shadow: none;
-}
+  .window {
+    box-shadow: none;
+  }
 
-#madconf #schemePreview {
-  height: 176px;
-}
+  #schemePreview {
+    height: 176px;
+  }
 
-#madconf .window-body {
-  padding-bottom: 0;
-}
+  .window-body {
+    padding-bottom: 0;
+  }
 
-#madconf #flatMenuSelector {
-  width: 230px;
-}
+  #textColorWrap {
+    margin-left: 9px;
+  }
 
-#madconf #sysplugOpenOptSelector {
-  width: 250px;
-}
+  #boldToggle,
+  #italicToggle {
+      left: 1px;
+      margin-top: 17px;
+      min-height: 23px;
+  }
 
-#madconf label[for="startSoundChkBox"] {
-  width: 120px;
-}
+  #flatMenuSelector {
+    width: 230px;
+  }
 
-#madconf #creditsMain {
-  height: 120px;
-}
+  #sysplugOpenOptSelector {
+    width: 250px;
+  }
 
-#madconf #changelogBtn {
-  padding-right: 10px;
-}
+  label[for="startSoundChkBox"] {
+    width: 120px;
+  }
 
-#madconf #githubBtn {
-  min-width: 0;
-  padding-left: 9px;
-  padding-right: 9px;
-}
+  #creditsMain {
+    height: 120px;
+  }
 
-#madconf-preview .title-bar {
-  border: none;
-}
+  #changelogBtn {
+    padding-right: 10px;
+  }
 
-#madconf-preview #inactiveWindow {
-  height: 118px;
-  background-color: white !important;
-}
-
-#madconf-preview #activeWindow {
-  width: 323px;
-  height: 115px;
-  top: 20px;
-  left: 10px;
-  background-color: white !important;
+  #githubBtn {
+    min-width: 0;
+    padding-left: 9px;
+    padding-right: 9px;
+  }
 }
 
-#madconf-preview .menu {
-  display: none;
+#madconf-preview {
+  .title-bar {
+    border: none;
+  }
+
+  #inactiveWindow {
+    height: 118px;
+    background-color: white !important;
+  }
+
+  #activeWindow {
+    width: 323px;
+    height: 115px;
+    top: 20px;
+    left: 10px;
+    background-color: white !important;
+  }
+
+  .menu {
+    display: none;
+  }
+
+  textarea {
+    margin: 5px 0 0 4px;
+    width: 316px;
+    height: 84px;
+    box-shadow: none !important;
+    font-weight: normal;
+    background-clip: content-box;
+    outline: solid 1px rgba(255, 255, 255, 0.5);
+    border: solid 1px rgba(0, 0, 0, 0.9) !important;
+    padding: 0;
+  }
+
+  #msgbox {
+    width: 160px;
+    height: 95px;
+    top: 41px;
+    left: 100px;
+  }
+
+  #msgbox-msg {
+    display: none;
+  }
+
+  #msgbox section {
+    margin: 9px 8px;
+    height: 52px;
+    background: var(--button-face);
+    box-shadow: var(--button-face) -3px -3px, var(--button-face) 3px 7px, var(--button-face) -3px 7px, var(--button-face) 3px -3px,
+      rgba(0, 0, 0, 0.9) -4px -4px, rgba(0, 0, 0, 0.9) 4px 8px, rgba(0, 0, 0, 0.9) -4px 8px, rgba(0, 0, 0, 0.9) 4px -4px,
+      rgba(255, 255, 255, 0.5) -5px -5px, rgba(255, 255, 255, 0.5) 5px 9px, rgba(255, 255, 255, 0.5) -5px 9px, rgba(255, 255, 255, 0.5) 5px -5px;
+  }
+
+  #msgbox-btn1 {
+    margin-top: 6px;
+    height: 30px;
+    font-weight: normal;
+    box-shadow: inset -1px 1px #cee7ff, inset 1px 2px #98b8ea, inset -2px 2px #bcd4f6, inset 1px -1px #89ade4,
+        inset 2px -2px #89ade4;
+    position: unset;
+    bottom: unset;
+  }
 }
 
-#madconf-preview textarea {
-  margin: 5px 0 0 4px;
-  width: 316px;
-  height: 84px;
-  box-shadow: none !important;
-  font-weight: normal;
-  background-clip: content-box;
-  outline: solid 1px rgba(255, 255, 255, 0.5);
-  border: solid 1px rgba(0, 0, 0, 0.9) !important;
-  padding: 0;
-}
-
-#madconf-preview #msgbox {
-  width: 160px;
-  height: 95px;
-  top: 41px;
-  left: 100px;
-}
-
-#madconf-preview #msgbox-msg {
-  display: none;
-}
-
-#madconf-preview #msgbox section {
-  margin: 9px 8px;
-  height: 52px;
-}
-
-#madconf-preview #msgbox-btn1 {
-  margin-top: 6px;
-  height: 30px;
-  font-weight: normal;
-  box-shadow: inset -1px 1px #cee7ff, inset 1px 2px #98b8ea, inset -2px 2px #bcd4f6, inset 1px -1px #89ade4,
-      inset 2px -2px #89ade4;
-  position: unset;
-  bottom: unset;
-}
-
-/* Change dialog icons to XP ones */
-/*
+/* Change dialog icons to Vista/7/8 ones */
 #msgbox-icon {
-  margin-top: 3px;
-  margin-left: 6px;
+  margin-top: 5px;
+  margin-left: 7px;
 }
 
 #msgbox-icon[src="images/warning.png"],
 img[src="images/warning-32x32-8bpp.png"] {
-  content: url("../images/xp_warning.png");
+  content: url("icon/warning.png");
 }
 
 #msgbox-icon[src="images/error.png"],
 img[src="images/error-32x32-8bpp.png"] {
-  content: url("../images/xp_error.png");
+  content: url("icon/error.png");
 }
 
 #msgbox-icon[src="images/info.png"],
 img[src="images/info-32x32-8bpp.png"] {
-  content: url("../images/xp_info.png");
+  content: url("icon/info.png");
 }
 
 #msgbox-icon[src="images/question.png"],
 img[src="images/question-32x32-8bpp.png"] {
-  content: url("../images/xp_question.png");
+  content: url("icon/question.png");
 }
-*/
