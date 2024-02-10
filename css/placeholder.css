@@ -11,10 +11,11 @@ body {
 }
 
 .icon {
-    margin-top: 15px;
-    margin-right: 15px;
+    margin-top: 12px;
     text-align: center;
     float: left;
+    width: 58px;
+    text-align: center;
 }
 
 .icon div {

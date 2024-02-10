@@ -12,6 +12,15 @@ const inactiveWindow = document.getElementById("inactiveWindow");
 const activeWindow = document.getElementById("activeWindow");
 const msgbox = document.getElementById("msgbox");
 
+const inactiveTitle = inactiveWindow.getElementsByClassName("title-bar")[0];
+const activeTitle = activeWindow.getElementsByClassName("title-bar")[0];
+const captionButtons = document.querySelectorAll(".window-button");
+const menu = document.getElementsByClassName("menu")[0];
+const textarea = document.getElementsByTagName("textarea")[0];
+const scrollBarOverlay = document.getElementById("scrollBarOverlay");
+const msgboxTitle = msgbox.getElementsByClassName("title-bar")[0];
+const buttonFace = document.getElementById("msgbox-btn1");
+
 function changeColorScheme(scheme) {
     if (scheme === "98") {
         schemeElement.href = "data:text/css,";
@@ -106,6 +115,71 @@ new MutationObserver(function (mutations) {
 
 window.addEventListener("load", processTheme);
 window.addEventListener("resize", processTheme);
+
+document.addEventListener("pointerdown", function () {
+    parent.madDeskMover.bringToTop();
+});
+
+document.addEventListener("click", function () {
+    parent.changeItemSelection("background");
+});
+
+inactiveWindow.addEventListener("click", function (event) {
+    parent.changeItemSelection("inactive-border");
+    event.stopPropagation();
+});
+
+inactiveTitle.addEventListener("click", function (event) {
+    parent.changeItemSelection("inactive-title");
+    event.stopPropagation();
+});
+
+activeWindow.addEventListener("click", function (event) {
+    parent.changeItemSelection("active-border");
+    event.stopPropagation();
+});
+
+activeTitle.addEventListener("click", function (event) {
+    parent.changeItemSelection("active-title");
+    event.stopPropagation();
+});
+
+msgboxTitle.addEventListener("click", function (event) {
+    parent.changeItemSelection("active-title");
+    event.stopPropagation();
+});
+
+captionButtons.forEach(function (button) {
+    button.addEventListener("click", function (event) {
+        parent.changeItemSelection("caption-buttons");
+        event.stopPropagation();
+    });
+});
+
+menu.addEventListener("click", function (event) {
+    parent.changeItemSelection("menu");
+    event.stopPropagation();
+});
+
+textarea.addEventListener("click", function (event) {
+    parent.changeItemSelection("window");
+    event.stopPropagation();
+});
+
+scrollBarOverlay.addEventListener("click", function (event) {
+    parent.changeItemSelection("scrollbar");
+    event.stopPropagation();
+});
+
+msgbox.addEventListener("click", function (event) {
+    parent.changeItemSelection("message-box");
+    event.stopPropagation();
+});
+
+buttonFace.addEventListener("click", function (event) {
+    parent.changeItemSelection("button-face");
+    event.stopPropagation();
+});
 
 function resize() {
     container.style.left = (frameElement.offsetWidth - (activeWindow.offsetLeft + activeWindow.offsetWidth - inactiveWindow.offsetLeft) - 2) / 2 + "px";

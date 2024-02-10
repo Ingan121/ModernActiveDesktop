@@ -4,9 +4,14 @@
 
 'use strict';
 
+const dynQueryStyle = document.getElementById('dynQuery');
 const mainArea = document.getElementById('mainArea');
 const clockCanvas = document.getElementById('analogClock');
 const clockCtx = clockCanvas.getContext('2d');
+
+const digitalClock = document.getElementById('digitalClock');
+const digitalClockTime = document.getElementById('digitalClockTime');
+const digitalClockDate = document.getElementById('digitalClockDate');
 
 const menuBar = document.getElementById('menuBar');
 const settingsMenuBtn = document.getElementById('settingsMenuBtn');
@@ -26,11 +31,31 @@ settingsMenuBtn.addEventListener('pointerdown', (event) => {
     madDeskMover.bringToTop(); // But keep the window activation working
 });
 
+settingsMenuItems[0].addEventListener('click', () => { // Analog button
+    closeSettingsMenu();
+    delete localStorage.madesktopClockDigital;
+    settingsMenuItems[0].classList.add('activeStyle');
+    settingsMenuItems[1].classList.remove('activeStyle');
+    clockCanvas.style.display = 'block';
+    digitalClock.style.display = 'none';
+    updateSize();
+});
+
+settingsMenuItems[1].addEventListener('click', () => { // Digital button
+    closeSettingsMenu();
+    localStorage.madesktopClockDigital = true;
+    settingsMenuItems[1].classList.add('activeStyle');
+    settingsMenuItems[0].classList.remove('activeStyle');
+    clockCanvas.style.display = 'none';
+    digitalClock.style.display = 'table';
+    updateSize();
+});
+
 settingsMenuItems[2].addEventListener('click', () => { // Set Font button
     closeSettingsMenu();
     const left = parseInt(madDeskMover.config.xPos) + 25 + 'px';
-    const top = parseInt(madDeskMover.config.yPos) + 80 + 'px';
-    const configWindow = madOpenWindow('apps/clock/config.html', true, '400px', '260px', 'wnd', false, top, left, true, true);
+    const top = parseInt(madDeskMover.config.yPos) + 50 + 'px';
+    const configWindow = madOpenWindow('apps/clock/config.html', true, '380px', '180px', 'wnd', false, top, left, true, true);
     configWindow.windowElement.addEventListener('load', () => {
         configWindow.windowElement.contentWindow.targetDeskMover = madDeskMover;
     });
@@ -106,6 +131,13 @@ function closeSettingsMenu() {
     delete settingsMenuBtn.dataset.active;
 }
 
+if (localStorage.madesktopClockDigital) {
+    settingsMenuItems[0].classList.remove('activeStyle');
+    settingsMenuItems[1].classList.add('activeStyle');
+    clockCanvas.style.display = 'none';
+    digitalClock.style.display = 'table';
+}
+
 if (localStorage.madesktopClockGMT) {
     settingsMenuItems[3].classList.add('checkedItem');
 }
@@ -130,16 +162,35 @@ const colors = {
 updateSize();
 
 function updateSize() {
-    if (mainArea.offsetHeight > mainArea.offsetWidth) {
-        clockCanvas.style.height = 'auto';
-        clockCanvas.style.width = '100%';
+    if (localStorage.madesktopClockDigital) {
+        // Unscale this to get consistent media query results
+        // It's scaled appropriately with vw/vh anyway
+        digitalClock.style.zoom = 1 / madScaleFactor;
+        // And CSS doesn't allow variables in media queries, damn it
+        if (localStorage.madesktopClockNoOutline) {
+            dynQueryStyle.textContent = '';
+        } else {
+            dynQueryStyle.textContent = `
+                @media (min-width: ${315 * madScaleFactor}px) and (min-height: ${129 * madScaleFactor}px) {
+                    #digitalClockTime {
+                        color: var(--button-face);
+                        text-shadow: -1px -1px 0 var(--button-hilight), 2px 2px 0 var(--button-shadow);
+                    }
+                }`;
+        }
     } else {
-        clockCanvas.style.height = '100%';
-        clockCanvas.style.width = 'auto';
+        if (mainArea.offsetHeight > mainArea.offsetWidth) {
+            clockCanvas.style.height = 'auto';
+            clockCanvas.style.width = '100%';
+        } else {
+            clockCanvas.style.height = '100%';
+            clockCanvas.style.width = 'auto';
+        }
+        const clientRect = clockCanvas.getBoundingClientRect();
+        clockCanvas.height = Math.round(clientRect.height * madScaleFactor);
+        clockCanvas.width = Math.round(clientRect.width * madScaleFactor);
+        colors.background = getComputedStyle(document.documentElement).getPropertyValue('--button-face');
     }
-    const clientRect = clockCanvas.getBoundingClientRect();
-    clockCanvas.height = Math.round(clientRect.height * madScaleFactor);
-    clockCanvas.width = Math.round(clientRect.width * madScaleFactor);
     drawClock();
 }
 
@@ -265,7 +316,6 @@ function drawMinuteHand(time) {
     clockCtx.stroke();
 }
 
-
 function drawSecondHand(time) {
     clockCtx.resetTransform();
     const radius = clockCanvas.width / 2;
@@ -283,9 +333,6 @@ function drawSecondHand(time) {
 }
 
 function drawClock() {
-    clockCtx.clearRect(0, 0, clockCanvas.width, clockCanvas.height);
-    drawBackground();
-    drawNumbers();
     let time;
     if (localStorage.madesktopClockGMT) {
         const now = new Date();
@@ -294,23 +341,36 @@ function drawClock() {
     } else {
         time = new Date();
     }
-    drawHourHand(time);
-    drawMinuteHand(time);
-    if (!localStorage.madesktopClockHideSeconds) {
-        drawSecondHand(time);
-    }
-    if (localStorage.madesktopClockHideDate) {
+    if (localStorage.madesktopClockDigital) {
+        digitalClockTime.textContent = time.toLocaleTimeString();
+        digitalClockDate.textContent = time.toLocaleDateString();
         document.title = "Clock";
     } else {
-        document.title = "Clock - " + time.toLocaleDateString();
+        clockCtx.clearRect(0, 0, clockCanvas.width, clockCanvas.height);
+        drawBackground();
+        drawNumbers();
+        drawHourHand(time);
+        drawMinuteHand(time);
+        if (!localStorage.madesktopClockHideSeconds) {
+            drawSecondHand(time);
+        }
+        if (localStorage.madesktopClockHideDate) {
+            document.title = "Clock";
+        } else {
+            document.title = "Clock - " + time.toLocaleDateString();
+        }
     }
+}
+
+function configChanged() {
+    updateSize();
 }
 
 setInterval(drawClock, 1000);
 
 window.addEventListener("message", (event) => {
     if (event.data.type === "scheme-updated") {
-        if (localStorage.madesktopColorScheme !== 'custom' && localStorage.madesktopColorScheme !== '98') {
+        if (localStorage.madesktopColorScheme !== 'custom' && localStorage.madesktopColorScheme !== '98' && !localStorage.madesktopClockDigital) {
             location.reload();
         }
         colors.background = getComputedStyle(document.documentElement).getPropertyValue('--button-face');

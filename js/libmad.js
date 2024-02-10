@@ -221,7 +221,7 @@
     };
 
     // custom dropdown
-    class madSelect extends HTMLElement {
+    class MadSelect extends HTMLElement {
         constructor() {
             super();
             this.selectedIndexReal = 0;
@@ -310,7 +310,7 @@
             });
         }
     }
-    customElements.define("mad-select", madSelect);
+    customElements.define("mad-select", MadSelect);
 
     // expose MAD APIs
     window.madDeskMover = deskMover;

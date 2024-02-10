@@ -163,8 +163,10 @@ async function main() {
         if (schemeSelector.options[schemeSelector.selectedIndex].dataset.inconfigurable) {
             selector.value = "background";
             selector.disabled = true;
+            preview.style.pointerEvents = "none";
         } else {
             selector.disabled = false;
+            preview.style.pointerEvents = "auto";
         }
 
         if (scheme["flat-menus"] === "mbcm") {
@@ -598,6 +600,7 @@ async function main() {
         schemeSelector.value = localStorage.madesktopColorScheme;
         if (schemeSelector.options[schemeSelector.selectedIndex].dataset.inconfigurable) {
             selector.disabled = true;
+            preview.style.pointerEvents = "none";
             colorPickerColor.style.backgroundColor = localStorage.madesktopBgColor;
             if (localStorage.madesktopColorScheme === "7css4mad") {
                 secondColorPickerWrap.classList.remove("disabled");
@@ -980,4 +983,9 @@ function getColorValue(themeText, name) {
         }
     }
     return '#' + rgb[1].split(' ').map(x => parseInt(x).toString(16).padStart(2, '0')).join('');
+}
+
+function changeItemSelection(item) {
+    document.getElementById("selector").value = item;
+    document.getElementById("selector").dispatchEvent(new Event("change"));
 }

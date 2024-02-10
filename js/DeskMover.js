@@ -59,6 +59,14 @@ class DeskMover {
                     }
                 }
                 return true;
+            },
+            deleteProperty(target, key) {
+                if (temp) {
+                    delete target[key];
+                } else {
+                    localStorage.removeItem("madesktopItem" + key[0].toUpperCase() + key.slice(1) + numStr);
+                }
+                return true;
             }
         });
 
@@ -287,7 +295,7 @@ class DeskMover {
         if (this.config.src) {
             this.windowElement.src = this.config.src;
         } else {
-            if (this.numStr !== "") {
+            if (this.numStr !== "" || reinit) {
                 // Assign default values
                 if (reinit) {
                     this.changeWndStyle("wnd");
@@ -338,14 +346,6 @@ class DeskMover {
                 this.windowElement.src = url;
                 this.config.src = url;
             } else {
-                if (reinit) {
-                    this.windowContainer.style.top = '200px';
-                    this.windowElement.width = '84px';
-                    this.windowElement.height = '471px';
-                    this.changeWndStyle("ad");
-                    this.adjustElements();
-                    this.windowElement.src = "ChannelBar.html";
-                }
                 if (!localStorage.madesktopItemXPos) {
                     this.windowContainer.style.left = window.vWidth - this.windowContainer.offsetWidth - (parseInt(localStorage.madesktopChanViewRightMargin) || 0) - 100 + 'px';
                 }
@@ -374,19 +374,7 @@ class DeskMover {
             this.windowContainer.remove();
             activateWindow(prevActiveWindow);
         } else {
-            let msg = "";
-            switch (window.runningMode) {
-                case WE:
-                    msg = "click 'Add a new ActiveDesktop item' in the Wallpaper Engine properties panel.";
-                    break;
-                case LW:
-                    msg = "click Add in the Lively Wallpaper customize window.";
-                    break;
-                case BROWSER:
-                    msg = "right click the background and click New.";
-                    break;
-            }
-            madAlert("To show it again, " + msg);
+            this.#clearConfig();
             this.windowContainer.style.display = 'none';
             localStorage.madesktopItemVisible = false;
         }
@@ -844,16 +832,23 @@ class DeskMover {
                     windowOutline.style.padding = this.borderSize + "px";
                 } else {
                     this.borderSize = extraBorderSize + 3;
+                    if (localStorage.madesktopColorScheme === "7css4mad") {
+                        this.borderSize -= 0;
+                    }
                     if (this.config.unresizable) {
                         windowOutline.style.padding = "1px";
                     } else {
                         windowOutline.style.padding = this.borderSize + "px";
                     }
                 }
-                windowOutline.style.left = this.windowContainer.offsetLeft + "px";
-                windowOutline.style.top = this.windowContainer.offsetTop + "px";
-                windowOutline.style.width = this.windowContainer.offsetWidth + "px";
-                windowOutline.style.height = this.windowContainer.offsetHeight + "px";
+                let extraOffset = +(localStorage.madesktopColorScheme === "7css4mad");
+                windowOutline.style.left = this.windowContainer.offsetLeft + extraOffset + "px";
+                windowOutline.style.top = this.windowContainer.offsetTop + extraOffset + "px";
+                windowOutline.style.width = this.windowContainer.offsetWidth - extraOffset * 2 + "px";
+                windowOutline.style.height = this.windowContainer.offsetHeight - extraOffset * 2 + "px";
+                if (localStorage.madesktopDebugMode) {
+                    windowOutline.style.display = "block";
+                }
             }
         }
     }
@@ -869,9 +864,10 @@ class DeskMover {
                 extraBorderSize = parseInt(getComputedStyle(this.windowContainer).getPropertyValue('--extra-border-size'));
                 extraBorderBottom = parseInt(getComputedStyle(this.windowContainer).getPropertyValue('--extra-border-bottom'));
             }
-            log({extraBorderSize, extraBorderBottom})
-            this.windowContainer.style.left = windowOutline.style.left;
-            this.windowContainer.style.top = windowOutline.style.top;
+            let extraOffset = +(localStorage.madesktopColorScheme === "7css4mad");
+            log({ extraBorderSize, extraBorderBottom, extraOffset });
+            this.windowContainer.style.left = parseInt(windowOutline.style.left) - extraOffset + "px";
+            this.windowContainer.style.top = parseInt(windowOutline.style.top) - extraOffset + "px";
             this.windowElement.width = windowOutline.offsetWidth - this.borderSize * 2 + "px";
             this.windowElement.height = windowOutline.offsetHeight - this.windowFrame.offsetTop - extraBorderSize - extraBorderBottom - 6 + "px";
             windowOutline.style.display = "none";
@@ -1175,7 +1171,7 @@ class DeskMover {
                 this.windowTitleText.textContent = title;
                 this.config.title = title;
             } else {
-                this.config.title = null;
+                delete this.config.title;
                 this.windowTitleText.textContent = this.windowElement.contentDocument.title || "ModernActiveDesktop";
             }
         }, "", this.config.title || "");
@@ -1269,18 +1265,19 @@ class DeskMover {
     // Clear configs
     #clearConfig(visOnly) {
         if (!visOnly) {
-            this.config.width = null;
-            this.config.height = null;
-            this.config.xPos = null;
-            this.config.yPos = null;
-            this.config.src = null;
-            this.config.style = null;
-            this.config.unscaled = null;
-            this.config.title = null;
-            this.config.zIndex = null;
-            this.config.active = null;
-            this.config.alwaysOnTop = null;
-            this.config.jspaintHash = null;
+            delete this.config.width;
+            delete this.config.height;
+            delete this.config.xPos;
+            delete this.config.yPos;
+            delete this.config.src;
+            delete this.config.style;
+            delete this.config.unscaled;
+            delete this.config.title;
+            delete this.config.zIndex;
+            delete this.config.active;
+            delete this.config.alwaysOnTop;
+            delete this.config.jspaintHash;
+            clearTimeout(this.timeout);
         }
 
         if (this.isVisualizer) {
@@ -1296,6 +1293,9 @@ class DeskMover {
             delete localStorage.madesktopVisInfoShown;
             delete localStorage.madesktopVisStatusShown;
             delete localStorage.madesktopVisMediaControls;
+            delete localStorage.madesktopVisChannelSeparation;
+            delete localStorage.madesktopVisBarWidth;
+            delete localStorage.madesktopVisDiffScale;
         }
     }
     

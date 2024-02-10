@@ -388,7 +388,7 @@ viewMenuItems[3].addEventListener('click', () => { // Enable Media Controls butt
 optMenuItems[0].addEventListener('click', () => { // Configure Visualization button
     closeMenu('opt');
     const left = parseInt(madDeskMover.config.xPos) + 25 + 'px';
-    const top = parseInt(madDeskMover.config.yPos) + 80 + 'px';
+    const top = parseInt(madDeskMover.config.yPos) + 50 + 'px';
     const configWindow = madOpenWindow('apps/visualizer/config.html', true, '400px', '425px', 'wnd', false, top, left, true, true, true);
     configWindow.windowElement.addEventListener('load', () => {
         configWindow.windowElement.contentWindow.targetDeskMover = madDeskMover;

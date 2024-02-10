@@ -9,7 +9,6 @@
     width: calc(100% - 23px);
     background-color: var(--background);
     margin-left: 5px;
-    pointer-events: none;
     box-shadow: inset -1px -1px var(--button-hilight),
         inset 1px 1px var(--button-shadow),
         inset -2px -2px var(--button-light),

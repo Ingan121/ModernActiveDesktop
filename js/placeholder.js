@@ -10,6 +10,12 @@ if (madRunningMode !== 1) {
 
 function openApp(app) {
     switch(app) {
+        case "channelbar":
+            madResizeTo(84, 471);
+            madMoveTo(parent.vWidth - (parseInt(localStorage.madesktopChanViewRightMargin) || 0) - 184, 200);
+            madChangeWndStyle("ad");
+            madLocReplace("ChannelBar.html");
+            break;
         case "jspaint":
             madResizeTo(268, 355);
             madMoveTo(250, 150);
@@ -36,7 +42,7 @@ function openApp(app) {
             madLocReplace("apps/visualizer/index.html");
             break;
         case "clock":
-            madResizeTo(398, 304);
+            madResizeTo(398, 417);
             madMoveTo(500, 200);
             madChangeWndStyle("wnd");
             madLocReplace("apps/clock/index.html");

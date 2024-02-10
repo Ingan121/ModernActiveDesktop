@@ -346,12 +346,7 @@ function generateCssScheme() {
         --window-text: ${systemPreferences.getColor('window-text')};
         --accent: ${accent};
         --accent-dark: ${shadeColor(accent.substring(0, 6), -27)};
-        --ui-font: "Segoe UI";
-        --caption-font: caption;
-        --menu-font: menu;
-        --message-font: message-box;
-        --status-font: status-bar;
-        --sm-caption-font: small-caption;
+        --ui-font: "Segoe UI", "SegoeUI", "Noto Sans", sans-serif;
       }
       .window {
         --extra-border-size: ${borderSize - 3}px;

@@ -853,20 +853,12 @@ function createNewDeskItem(numStr, openDoc, temp, width, height, style, centered
 
 // Create a new AD item, initialize, and increase the saved window count
 function openWindow(openDoc, temp, width, height, style, centered, top, left, aot, unresizable, noIcon) {
-    let deskMover;
-    if (localStorage.madesktopItemVisible === "false" && !(typeof openDoc === "string" || openDoc instanceof String)) {
-        windowContainers[0].style.display = "block";
-        localStorage.removeItem("madesktopItemVisible");
-        activateWindow(0);
-        deskMover = deskMovers[0];
-    } else {
-        if (!temp) {
-            localStorage.madesktopOpenWindows += `,${localStorage.madesktopItemCount}`;
-        }
-        deskMover = createNewDeskItem(localStorage.madesktopItemCount, openDoc, temp, width, height, style || "wnd", centered, top, left, aot, unresizable, noIcon);
-        activateWindow(localStorage.madesktopItemCount);
-        localStorage.madesktopItemCount++;
+    if (!temp) {
+        localStorage.madesktopOpenWindows += `,${localStorage.madesktopItemCount}`;
     }
+    let deskMover = createNewDeskItem(localStorage.madesktopItemCount, openDoc, temp, width, height, style || "wnd", centered, top, left, aot, unresizable, noIcon);
+    activateWindow(localStorage.madesktopItemCount);
+    localStorage.madesktopItemCount++;
     return deskMover;
 }
 

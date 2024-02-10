@@ -3,7 +3,7 @@ body {
     overflow: hidden;
 }
 
-#madVisConf {
+#madClockConf {
     -webkit-font-smoothing: none;
     font-family: var(--ui-font);
     font-size: 11px;
@@ -15,6 +15,11 @@ form {
 
 #customColors {
     margin-top: 2px;
+    margin-bottom: 5px;
+}
+
+#customColors2 {
+    margin-top: 12px;
     margin-bottom: 5px;
 }
 
@@ -59,12 +64,22 @@ form {
     font-size: 10px;
 }
 
-label[for="dimAlbumArtChkBox"] {
-    margin-top: 3px;
+mad-select {
+    width: 197px;
 }
 
-.topmargin, fieldset {
+label {
+    position: relative;
+    left: 10px;
+}
+
+fieldset {
     margin-top: 5px;
+}
+
+.bottomButtons {
+    margin-top: 5px;
+    justify-content: flex-end;
 }
 
 .disabled {

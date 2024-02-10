@@ -10,8 +10,9 @@
     <link id="scheme" rel="stylesheet" href="data:text/css,">
     <link id="menuStyle" rel="stylesheet" href="">
     <style id="style"></style>
+    <style id="dynQuery"></style>
 </head>
-<body id="madVis">
+<body id="madClock">
     <!-- https://stackoverflow.com/a/68372384 -->
     <svg width="0" height="0">
         <defs>
@@ -28,7 +29,12 @@
     </div>
     <div id="mainArea">
         <canvas id="analogClock"></canvas>
-        <div id="digitalClock"></div>
+        <div id="digitalClock">
+            <span id="digitalClockText">
+                <span id="digitalClockTime">0:00:00 AM</span><br>
+                <span id="digitalClockDate">1/1/2024</span>
+            </span>
+        </div>
     </div>
 
     <div id="settingsMenuBg" class="contextMenuBg window" tabindex="-1">

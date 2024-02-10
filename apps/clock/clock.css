@@ -23,7 +23,7 @@ svg {
     position: relative;
 }
 
-canvas {
+#analogClock {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -33,6 +33,34 @@ canvas {
     max-width: 100%;
     aspect-ratio: 1 / 1;
     z-index: 1;
+}
+
+#digitalClock {
+    display: none;
+    font-size: 30vh;
+    font-family: var(--ui-font);
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    background-color: var(--button-face);
+}
+
+#digitalClockText {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+#digitalClockDate {
+    font-size: 24vh;
+}
+
+@media (max-aspect-ratio: 2/1) {
+    #digitalClock {
+        font-size: 15vw;
+    }
+    #digitalClockDate {
+        font-size: 12vw;
+    }
 }
 
 .menu {

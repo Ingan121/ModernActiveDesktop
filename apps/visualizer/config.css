@@ -97,8 +97,13 @@ p {
     margin: 3px 0;
 }
 
-.topmargin, fieldset {
+fieldset {
     margin-top: 5px;
+}
+
+.bottomButtons {
+    margin-top: 5px;
+    justify-content: flex-end;
 }
 
 .disabled {

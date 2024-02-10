@@ -8,52 +8,65 @@
     <link id="scheme" rel="stylesheet" href="data:text/css,">
     <style id="style"></style>
 </head>
-<body id="madVisConf">
+<body id="madClockConf">
     <div class="window-body">
         <fieldset>
-            <legend>Colors</legend>
-            <form name="colorSelecor">
-                <input id="radDefault" type="radio" name="color" value="default" checked>
-                <label for="radDefault">Default</label><br>
-                <input id="radScheme" type="radio" name="color" value="scheme">
-                <label for="radScheme">Follow color scheme</label><br>
-                <input id="radCustom" type="radio" name="color" value="custom">
-                <label for="radCustom">Custom</label><br>
-                <input id="followAlbumArtChkBox" type="checkbox" name="followAlbumArt">
-                <label for="followAlbumArtChkBox">Follow album art colors if available</label>
-            </form>
-        </fieldset>
-        <fieldset>
             <legend>Custom colors</legend>
-            <section id="customColors" class="field-row disabled">
+            <section id="customColors" class="field-row">
                 <span id="bgColorPickerLabel">Background:</span>
-                <button id="bgColorPicker" class="colorPicker" disabled>
+                <button id="bgColorPicker" class="colorPicker">
                     <div class="colorPicker-color"></div>
                     <div class="colorPicker-bar"></div>
                     <div class="colorPicker-expandMark">⏷</div>
                 </button>
-                <span id="barColorPickerLabel">Bar:</span>
-                <button id="barColorPicker" class="colorPicker" disabled>
-                    <div class="colorPicker-color" style="background-color: #a4eb0c;"></div>
+                <span id="barColorPickerLabel">Primary:</span>
+                <button id="barColorPicker" class="colorPicker">
+                    <div class="colorPicker-color" style="background-color: #008080;"></div>
                     <div class="colorPicker-bar"></div>
                     <div class="colorPicker-expandMark">⏷</div>
                 </button>
-                <span id="topColorPickerLabel">Top:</span>
-                <button id="topColorPicker" class="colorPicker" disabled>
-                    <div class="colorPicker-color" style="background-color: #dfeaf7;"></div>
+                <span id="topColorPickerLabel">Light:</span>
+                <button id="topColorPicker" class="colorPicker">
+                    <div class="colorPicker-color" style="background-color: #00ffff;"></div>
+                    <div class="colorPicker-bar"></div>
+                    <div class="colorPicker-expandMark">⏷</div>
+                </button>
+            </section>
+            <section id="customColors2" class="field-row">
+                <span id="topColorPickerLabel">Highight:</span>
+                <button id="topColorPicker" class="colorPicker">
+                    <div class="colorPicker-color" style="background-color: #ffffff;"></div>
+                    <div class="colorPicker-bar"></div>
+                    <div class="colorPicker-expandMark">⏷</div>
+                </button>
+                <span id="topColorPickerLabel">Shadow:</span>
+                <button id="topColorPicker" class="colorPicker">
+                    <div class="colorPicker-color" style="background-color: #a0a0a0;"></div>
+                    <div class="colorPicker-bar"></div>
+                    <div class="colorPicker-expandMark">⏷</div>
+                </button>
+                <span id="topColorPickerLabel">Dark shadow:</span>
+                <button id="topColorPicker" class="colorPicker">
+                    <div class="colorPicker-color" style="background-color: #000000;"></div>
                     <div class="colorPicker-bar"></div>
                     <div class="colorPicker-expandMark">⏷</div>
                 </button>
             </section>
         </fieldset>
         <fieldset>
-            <legend>Album art</legend>
-            <input id="albumArtChkBox" type="checkbox" name="albumArt">
-            <label for="albumArtChkBox">Show album art</label><br>
-            <input id="dimAlbumArtChkBox" type="checkbox" name="albumArt" disabled>
-            <label for="dimAlbumArtChkBox">Dim album art</label>
+            <legend>Font</legend>
+            <section id="font" class="field-row">
+                <mad-select id="fontSelector">
+                    <option hidden selected></option>
+                    <option value="Pixelated MS Sans Serif">Pixelated MS Sans Serif</option>
+                    <option value="Fixedsys Excelsior">Fixedsys Excelsior</option>
+                </mad-select>
+                <input id="outlineModeChkBox" type="checkbox" name="outlineMode" checked>
+                <label for="outlineModeChkBox">Enable outline mode</label>
+            </section>
         </fieldset>
-        <section class="topmargin field-row" style="justify-content: flex-end;">
+        <section class="bottomButtons field-row"> 
+            <button id="resetBtn">Restore defaults</button>
             <button id="okBtn">OK</button>
             <button id="cancelBtn">Cancel</button>
             <button id="applyBtn">Apply</button>

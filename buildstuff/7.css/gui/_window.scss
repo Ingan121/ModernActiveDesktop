@@ -266,7 +266,7 @@
       content: "";
       background: url("./icon/close.png") no-repeat center,
         var(--control-background), var(--control-background-close-hovered);
-      box-shadow: 0 0 7px 3px #e68e75, var(--control-inset-shadow);
+      box-shadow: 0 0 7px 3px #e68e75, var(--control-inset-shadow) !important;
       border-bottom-right-radius: var(--control-border-radius);
       opacity: 0 !important;
       transition: opacity 0.3s linear;
@@ -815,15 +815,31 @@
     padding-bottom: 0;
   }
 
+  #itemSizeButtons button {
+    line-height: 1px;
+  }
+
+  #itemSizeUp {
+    border-radius: 0;
+    height: 9px;
+  }
+
+  #itemSizeDown {
+    border: var(--button-border);
+    border-color: var(--button-border-color-disabled);
+    border-radius: 0;
+    top: 12px;
+  }
+
   #textColorWrap {
     margin-left: 9px;
   }
 
   #boldToggle,
   #italicToggle {
-      left: 1px;
-      margin-top: 17px;
-      min-height: 23px;
+    left: -2px;
+    margin-top: 17px;
+    min-height: 23px;
   }
 
   #flatMenuSelector {
@@ -864,10 +880,10 @@
   }
 
   #activeWindow {
-    width: 323px;
+    width: 324px;
     height: 115px;
     top: 20px;
-    left: 10px;
+    left: 7px;
     background-color: white !important;
   }
 
@@ -890,7 +906,7 @@
   #msgbox {
     width: 160px;
     height: 95px;
-    top: 41px;
+    top: 38px;
     left: 100px;
   }
 

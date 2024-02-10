@@ -6,6 +6,16 @@ body {
     overflow: hidden;
 }
 
+/* Suppress the :active and :focus style */
+button:active {
+    box-shadow: var(--border-raised-outer), var(--border-raised-inner) !important;
+    text-shadow: 0 0 var(--button-text) !important;
+}
+
+button:focus {
+    outline: none;
+}
+
 .window {
     --extra-title-height: -2px;
     --extra-border-size: 1px;
@@ -127,6 +137,14 @@ textarea {
 
 ::-webkit-scrollbar-track {
     background: var(--scrollbar);
+}
+
+#scrollBarOverlay {
+    position: absolute;
+    width: var(--scrollbar-size);
+    height: calc(84px - var(--extra-border-size) * 2 - var(--extra-title-height));
+    top: calc(26px + var(--extra-title-height) + var(--extra-border-size) + var(--menu-height));
+    right: calc(5px + var(--extra-border-size));
 }
 
 #msgbox {
