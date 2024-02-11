@@ -78,3 +78,9 @@ function copyText(str) {
     document.execCommand('copy');
     document.body.removeChild(tmp);
 }
+
+document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape') {
+        madCloseWindow();
+    }
+});

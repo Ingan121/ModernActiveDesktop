@@ -133,6 +133,7 @@ textarea {
     padding-top: 6px;
     padding-left: 5px;
     overflow-y: scroll;
+    cursor: default;
 }
 
 ::-webkit-scrollbar-track {

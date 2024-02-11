@@ -16,7 +16,7 @@ let savedSchemes = JSON.parse(localStorage.madesktopSavedSchemes || "{}");
 async function main() {
     scheme = parseCssScheme(await getSchemeText());
     let schemeName = "Windows Classic (98)";
-    const parentSchemeElement2 = parent.document.getElementById("style2");
+    const parentSchemeElement = parent.document.getElementById("style");
     const preview = document.getElementById("schemePreview");
     const schemeSelector = document.getElementById("schemeSelector");
     const saveAsBtn = document.getElementById("saveAsBtn");
@@ -532,7 +532,7 @@ async function main() {
         } else if (selector.disabled) {
             schemeName = schemeSelector.options[schemeSelector.selectedIndex].textContent;
             schemeSelector.options[0].textContent = schemeName;
-            parentSchemeElement2.textContent = preview.contentDocument.getElementById("style").textContent;
+            parentSchemeElement.textContent = preview.contentDocument.getElementById("style").textContent;
             parent.changeColorScheme(schemeSelector.value);
             localStorage.madesktopColorScheme = schemeSelector.value;
             localStorage.madesktopLastSchemeName = schemeName;
@@ -893,7 +893,6 @@ function getFontInfo(fontShorthand, familyOnly = false) {
         if (fontInfo.primaryFamily.startsWith('"') || fontInfo.primaryFamily.startsWith("'")) {
             fontInfo.primaryFamily = fontInfo.primaryFamily.slice(1, -1);
         }
-        console.log(fontInfo.primaryFamily);
     }
     if (!fontInfo.primaryFamily) {
         fontInfo.primaryFamily = "Unknown Font";

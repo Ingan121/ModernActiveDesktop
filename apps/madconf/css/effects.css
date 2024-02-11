@@ -1,6 +1,7 @@
 body {
     margin-top: 11px;
     margin-left: 4px;
+    user-select: none;
 }
 
 label:not(.hasDropdown) {

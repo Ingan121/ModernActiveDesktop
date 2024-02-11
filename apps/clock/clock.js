@@ -18,6 +18,7 @@ const settingsMenuBtn = document.getElementById('settingsMenuBtn');
 const settingsMenuBg = document.getElementById('settingsMenuBg');
 const settingsMenu = document.getElementById('settingsMenu');
 const settingsMenuItems = settingsMenu.querySelectorAll('.contextMenuItem');
+const confLabel = document.getElementById('confLabel');
 
 let dblClickTimer, dblClickPositon = null, isTitleHidden = false;
 
@@ -26,9 +27,13 @@ if (madDeskMover.config.noFrames) {
 }
 
 settingsMenuBtn.addEventListener('pointerdown', (event) => {
+    if (settingsMenuBtn.dataset.active) {
+        closeSettingsMenu();
+        return;
+    }
     openSettingsMenu();
     event.preventDefault(); // Prevent focusout event
-    madDeskMover.bringToTop(); // But keep the window activation working
+    madBringToTop(); // But keep the window activation working
 });
 
 settingsMenuItems[0].addEventListener('click', () => { // Analog button
@@ -36,6 +41,7 @@ settingsMenuItems[0].addEventListener('click', () => { // Analog button
     delete localStorage.madesktopClockDigital;
     settingsMenuItems[0].classList.add('activeStyle');
     settingsMenuItems[1].classList.remove('activeStyle');
+    confLabel.innerHTML = "<u>C</u>olors";
     clockCanvas.style.display = 'block';
     digitalClock.style.display = 'none';
     updateSize();
@@ -46,14 +52,15 @@ settingsMenuItems[1].addEventListener('click', () => { // Digital button
     localStorage.madesktopClockDigital = true;
     settingsMenuItems[1].classList.add('activeStyle');
     settingsMenuItems[0].classList.remove('activeStyle');
+    confLabel.innerHTML = "<u>F</u>ont";
     clockCanvas.style.display = 'none';
     digitalClock.style.display = 'table';
     updateSize();
 });
 
-settingsMenuItems[2].addEventListener('click', () => { // Set Font button
+settingsMenuItems[2].addEventListener('click', () => { // Set Font / Colors button
     closeSettingsMenu();
-    const left = parseInt(madDeskMover.config.xPos) + 25 + 'px';
+    const left = parseInt(madDeskMover.config.xPos) + 20 + 'px';
     const top = parseInt(madDeskMover.config.yPos) + 50 + 'px';
     const configWindow = madOpenWindow('apps/clock/config.html', true, '380px', '180px', 'wnd', false, top, left, true, true);
     configWindow.windowElement.addEventListener('load', () => {
@@ -124,16 +131,33 @@ function openSettingsMenu() {
     settingsMenuBg.style.display = 'block';
     settingsMenuBtn.dataset.active = true;
     settingsMenuBg.focus();
+    document.addEventListener('keydown', menuNavigationHandler);
 }
 
 function closeSettingsMenu() {
     settingsMenuBg.style.display = 'none';
     delete settingsMenuBtn.dataset.active;
+    document.removeEventListener('keydown', menuNavigationHandler);
+}
+
+function menuNavigationHandler(event) {
+    const shortcutsKeys = settingsMenuBg.getElementsByTagName('u');
+    if (event.key === "Escape") {
+        closeSettingsMenu();
+        return;
+    }
+    for (const shortcutKey of shortcutsKeys) {
+        if (event.key === shortcutKey.textContent.toLowerCase()) {
+            shortcutKey.parentElement.click();
+            return;
+        }
+    }
 }
 
 if (localStorage.madesktopClockDigital) {
     settingsMenuItems[0].classList.remove('activeStyle');
     settingsMenuItems[1].classList.add('activeStyle');
+    confLabel.innerHTML = "<u>F</u>ont";
     clockCanvas.style.display = 'none';
     digitalClock.style.display = 'table';
 }
@@ -150,14 +174,14 @@ if (localStorage.madesktopClockHideDate) {
     settingsMenuItems[6].classList.remove('checkedItem');
 }
 
-const colors = {
-    main: '#008080',
-    light: '#00ffff',
-    hilight: '#ffffff',
-    shadow: '#a0a0a0',
-    dkShadow: '#000000',
-    background: getComputedStyle(document.documentElement).getPropertyValue('--button-face')
-}
+let colors = {
+    main: localStorage.madesktopClockMainColor || "#008080",
+    light: localStorage.madesktopClockLightColor || "#00ffff",
+    hilight: localStorage.madesktopClockHilightColor || "#ffffff",
+    shadow: localStorage.madesktopClockShadowColor || "#a0a0a0",
+    dkShadow: localStorage.madesktopClockDkShadowColor || "#000000",
+    background: localStorage.madesktopClockBackgroundColor || getComputedStyle(document.documentElement).getPropertyValue('--button-face')
+};
 
 updateSize();
 
@@ -178,6 +202,9 @@ function updateSize() {
                     }
                 }`;
         }
+        if (localStorage.madesktopClockFont) {
+            digitalClock.style.fontFamily = `"${localStorage.madesktopClockFont}"`;
+        }
     } else {
         if (mainArea.offsetHeight > mainArea.offsetWidth) {
             clockCanvas.style.height = 'auto';
@@ -189,7 +216,9 @@ function updateSize() {
         const clientRect = clockCanvas.getBoundingClientRect();
         clockCanvas.height = Math.round(clientRect.height * madScaleFactor);
         clockCanvas.width = Math.round(clientRect.width * madScaleFactor);
-        colors.background = getComputedStyle(document.documentElement).getPropertyValue('--button-face');
+        if (!localStorage.madesktopClockBackgroundColor) {
+            colors.background = getComputedStyle(document.documentElement).getPropertyValue('--button-face');
+        }
     }
     drawClock();
 }
@@ -362,7 +391,8 @@ function drawClock() {
     }
 }
 
-function configChanged() {
+function configChanged(configColors) {
+    colors = configColors;
     updateSize();
 }
 
@@ -370,6 +400,7 @@ setInterval(drawClock, 1000);
 
 window.addEventListener("message", (event) => {
     if (event.data.type === "scheme-updated") {
+        delete localStorage.madesktopClockBackgroundColor;
         if (localStorage.madesktopColorScheme !== 'custom' && localStorage.madesktopColorScheme !== '98' && !localStorage.madesktopClockDigital) {
             location.reload();
         }
@@ -380,16 +411,18 @@ window.addEventListener("message", (event) => {
 
 window.addEventListener('resize', updateSize);
 window.addEventListener('load', function () {
-    colors.background = getComputedStyle(document.documentElement).getPropertyValue('--button-face');
+    if (!localStorage.madesktopClockBackgroundColor) {
+        colors.background = getComputedStyle(document.documentElement).getPropertyValue('--button-face');
+    }
     updateSize();
 });
 
 document.addEventListener('click', (event) => {
     if (dblClickPositon !== null && event.clientX === dblClickPositon.x && event.clientY === dblClickPositon.y) {
-        clearTimeout(dblClickTimer);
         dblClickPositon = null;
         toggleTitle();
     }
+    clearTimeout(dblClickTimer);
     dblClickPositon = { x: event.clientX, y: event.clientY };
     dblClickTimer = setTimeout(() => {
         dblClickPositon = null;
@@ -400,10 +433,12 @@ function toggleTitle() {
     if (isTitleHidden) {
         menuBar.style.display = 'flex';
         madChangeWndStyle('wnd');
+        madExtendMoveTarget(false);
         isTitleHidden = false;
     } else {
         menuBar.style.display = 'none';
         madChangeWndStyle('noframes');
+        madExtendMoveTarget(true, toggleTitle);
         isTitleHidden = true;
     }
 }

@@ -4,7 +4,7 @@
 
 'use strict';
 
-if (madRunningMode !== 1) {
+if (madRunningMode === 0) {
     document.getElementById("visIcon").style.display = "none";
 }
 

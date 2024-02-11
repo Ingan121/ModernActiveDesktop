@@ -68,13 +68,18 @@
             <legend>Visualization</legend>
             <div id="visConfArea">
                 <input id="fixedBarsChkBox" type="checkbox">
-                <label for="fixedBarsChkBox">Fixed bar width: </label>
-                <input id="barWidthInput" type="number" name="barWidth" value="6" step="1" disabled>
+                <label for="fixedBarsChkBox">Fixed bar width:</label>
+                <input id="barWidthInput" type="number" name="barWidth" value="6" step="1" placeholder="6" disabled>
+                <br>
+                <span id="primaryScaleLabel">Primary scale:</span>
+                <input id="primaryScaleInput" type="number" name="primaryScale" value="1.0" max="1.0" step="0.01" placeholder="1.0">
                 <span id="diffScaleLabel">Difference scale</span>
-                <input id="diffScaleInput" type="number" name="diffScale" value="0.07" step="0.001">
+                <input id="diffScaleInput" type="number" name="diffScale" value="0.07" max="1.0" step="0.001" placeholder="0.07">
             </div>
-            <p id="diffScaleInfo">* Decrease difference scale if you think the bars reach the top too fast.<br>
-               * Pre-3.2 value was 0.15 and the default value is 0.07 now.</p>
+            <p id="diffScaleInfo">
+                * Adjust the scale values if you think the bars reach the top too fast.<br>
+                * Pre-3.2 difference scale was 0.15.
+            </p>
         </fieldset>
         <section class="bottomButtons field-row">
             <button id="okBtn">OK</button>

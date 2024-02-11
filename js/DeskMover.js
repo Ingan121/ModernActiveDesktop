@@ -35,6 +35,11 @@ class DeskMover {
         this.timeout2; // for handling context menu auto opening
         this.timeout3; // for handling context menu auto closing
 
+        // for handling window double click
+        this.dblClickPositon = null;
+        this.dblClickEvent = null;
+        this.dblClickTimer;
+
         this.contextMenuOpening = false;
         this.shouldNotCloseConfMenu = false;
 
@@ -301,7 +306,7 @@ class DeskMover {
                     this.changeWndStyle("wnd");
                 }
                 let url = "placeholder.html";
-                let defaultLeft = window.vWidth - this.windowContainer.offsetWidth - (parseInt(localStorage.madesktopChanViewRightMargin) || 0) - 500 + 'px';
+                let defaultLeft = window.vWidth - (parseInt(localStorage.madesktopChanViewRightMargin) || 0) - 600 + 'px';
                 let defaultTop = '200px';
                 if ((typeof openDoc === "string" || openDoc instanceof String) && openDoc != "placeholder.html" && !reinit) {
                     if (openDoc.startsWith("apps/madconf/")) {
@@ -351,6 +356,7 @@ class DeskMover {
                 }
             }
         }
+        this.windowElement.contentWindow.focus();
         /* Init complete */
     }
 
@@ -358,6 +364,9 @@ class DeskMover {
         if (this.numStr !== "") {
             this.windowContainer.style.display = "none";
             this.windowContainer.innerHTML = "";
+            if (this.beforeClose) {
+                this.beforeClose(localStorage, window);
+            }
             if (!this.temp) {
                 this.#clearConfig();
                 let openWindows = localStorage.madesktopOpenWindows.split(',');
@@ -366,6 +375,7 @@ class DeskMover {
             }
             if (this.isVisualizer) {
                 window.visDeskMover = null;
+                window.livelyAudioListener = () => {};
             }
             if (this.isConfigurator) {
                 window.confDeskMover = null;
@@ -386,14 +396,15 @@ class DeskMover {
         this.confMenuBg.style.removeProperty('--context-menu-left');
         this.confMenuBg.style.removeProperty('--context-menu-top');
         // Windows without icons aren't designed to look good in different sizes yet
+        // So just hide the menus for now
         if (this.windowTitlebar.classList.contains("noIcon")) {
-            this.contextMenuBg.style.height = "34px";
-            this.contextMenuItems[2].style.pointerEvents = "none";
-            this.contextMenuItems[2].style.opacity = "0";
+            this.contextMenuBg.style.height = "17px";
+            this.contextMenuItems[3].style.pointerEvents = "none";
+            this.contextMenuItems[3].style.opacity = "0";
         } else {
             this.contextMenuBg.style.height = "";
-            this.contextMenuItems[2].style.pointerEvents = "";
-            this.contextMenuItems[2].style.opacity = "";
+            this.contextMenuItems[3].style.pointerEvents = "";
+            this.contextMenuItems[3].style.opacity = "";
         }
         this.contextMenuBg.style.display = "block";
 
@@ -407,6 +418,8 @@ class DeskMover {
         iframeClickEventCtrl(false);
         isContextMenuOpen = true;
         this.contextMenuBg.focus();
+        openedMenu = this.contextMenuBg;
+        document.addEventListener('keydown', menuNavigationHandler);
     }
 
     openContextMenuFromRightClick(event) {
@@ -416,24 +429,27 @@ class DeskMover {
         this.confMenuBg.style.setProperty('--context-menu-left', this.posInContainer.x + 'px');
         this.confMenuBg.style.setProperty('--context-menu-top', this.posInContainer.y + 'px');
         // Windows without icons aren't designed to look good in different sizes yet
+        // So just hide the menus for now
         if (this.windowTitlebar.classList.contains("noIcon")) {
-            this.contextMenuBg.style.height = "34px";
-            this.contextMenuItems[2].style.pointerEvents = "none";
-            this.contextMenuItems[2].style.opacity = "0";
+            this.contextMenuBg.style.height = "17px";
+            this.contextMenuItems[3].style.pointerEvents = "none";
+            this.contextMenuItems[3].style.opacity = "0";
         } else {
             this.contextMenuBg.style.height = "";
-            this.contextMenuItems[2].style.pointerEvents = "";
-            this.contextMenuItems[2].style.opacity = "";
+            this.contextMenuItems[3].style.pointerEvents = "";
+            this.contextMenuItems[3].style.opacity = "";
         }
         this.contextMenuBg.style.display = "block";
         iframeClickEventCtrl(false);
         isContextMenuOpen = true;
         this.contextMenuBg.focus();
+        openedMenu = this.contextMenuBg;
+        document.addEventListener('keydown', menuNavigationHandler);
         event.preventDefault();
     }
 
     closeContextMenu() {
-        if (this.contextMenuOpening) {
+        if (isContextMenuOpen && this.contextMenuOpening) {
             if (this.contextMenuOpening === this.posInContainer && this.config.style === "wnd")
             {
                 this.closeWindow();
@@ -446,12 +462,16 @@ class DeskMover {
         this.closeConfMenu();
         iframeClickEventCtrl(true);
         isContextMenuOpen = false;
+        openedMenu = null;
+        document.removeEventListener('keydown', menuNavigationHandler);
     }
 
     openConfMenu() {
         this.contextMenuItems[0].dataset.active = true;
         this.confMenuBg.style.display = "block";
         iframeClickEventCtrl(false);
+        openedMenu = this.confMenuBg;
+        openedMenuCloseFunc = this.closeConfMenu.bind(this);
     }
 
     closeConfMenu() {
@@ -460,6 +480,8 @@ class DeskMover {
         }
         delete this.contextMenuItems[0].dataset.active;
         this.confMenuBg.style.display = "none";
+        openedMenu = this.contextMenuBg;
+        openedMenuCloseFunc = null;
     }
 
     #delayedCloseConfMenu(delay) { 
@@ -738,10 +760,34 @@ class DeskMover {
         this.#saveConfig();
     }
 
+    extendMoveTarget(isExtended, dblClickEvent) {
+        if (isExtended) {
+            this.windowElement.style.pointerEvents = "none";
+            this.dblClickEvent = (event) => {
+                if (this.dblClickPositon !== null && event.clientX === this.dblClickPositon.x && event.clientY === this.dblClickPositon.y) {
+                    this.dblClickPositon = null;
+                    dblClickEvent(event);
+                    event.preventDefault();
+                }
+                clearTimeout(this.dblClickTimer);
+                this.dblClickPositon = { x: event.clientX, y: event.clientY };
+                this.dblClickTimer = setTimeout(() => {
+                    this.dblClickPositon = null;
+                }, 500);
+            }
+            this.windowFrame.addEventListener("pointerdown", this.dblClickEvent);
+            this.#docMouseUp();
+        } else {
+            this.windowElement.style.pointerEvents = "";
+            this.windowFrame.removeEventListener("pointerdown", this.dblClickEvent);
+            this.dblClickEvent = null;
+        }
+    }
+
     #wcMouseDown(event) {
         this.bringToTop();
         if (event.button !== 0) return;
-        if ((this.windowFrame.style.borderColor !== "transparent" || this.config.style !== "ad") && !this.mouseOverWndBtns) {
+        if ((this.windowFrame.style.borderColor !== "transparent" || this.config.style !== "ad" || this.dblClickEvent) && !this.mouseOverWndBtns) {
             iframeClickEventCtrl(false);
             this.isDown = true;
             this.offset = [
@@ -1190,6 +1236,7 @@ class DeskMover {
         this.windowContainer.style.zIndex = this.config.alwaysOnTop ? ++lastAoTZIndex : ++lastZIndex;
         activateWindow(this.numStr || 0);
         saveZOrder();
+        this.windowElement.contentWindow.focus();
     }
 
     #updatePrevOffset() {
@@ -1309,8 +1356,7 @@ class DeskMover {
             if ((this.posInWindow.x <= 15 || 
                 this.posInWindow.x >= this.windowElement.offsetWidth - 15 || 
                 this.posInWindow.y <= 50 || 
-                this.posInWindow.y >= this.windowElement.offsetHeight - 15) &&
-                !this.config.noFrames
+                this.posInWindow.y >= this.windowElement.offsetHeight - 15)
             ) {
                 if (this.config.style === "ad") {
                     this.windowFrame.style.borderColor = "var(--button-face)";

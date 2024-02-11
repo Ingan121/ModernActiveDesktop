@@ -49,16 +49,18 @@
         window.madCloseWindow = window.close;
         window.madResizeTo = window.resizeTo;
         window.madMoveTo = window.moveTo;
+        window.madBringToTop = window.focus;
 
         window.madSetIcon = noop;
         window.madChangeWndStyle = noop;
         window.madOpenMiniColorPicker = noop;
         window.madOpenColorPicker = noop;
         window.madPlaySound = noop;
+        window.madExtendMoveTarget = noop;
         return;
     }
 
-    const parentStyleElement2 = parent.document.getElementById("style2");
+    const parentStyleElement = parent.document.getElementById("style");
     const parentSchemeElement = parent.document.getElementById("scheme");
     const parentMenuStyleElement = parent.document.getElementById("menuStyle");
     const schemeElement = document.getElementById("scheme");
@@ -128,7 +130,7 @@
     }
 
     function processTheme() {
-        styleElement.textContent = parentStyleElement2.textContent;
+        styleElement.textContent = parentStyleElement.textContent;
 
         if (parent.isDarkColor(getComputedStyle(parent.document.documentElement).getPropertyValue('--button-face'))) {
             if (window.osguiCompatRequired) {
@@ -317,6 +319,7 @@
     window.madOpenWindow = parent.openWindow;
     window.madOpenConfig = parent.openConfig;
 
+    window.madBringToTop = deskMover.bringToTop.bind(deskMover);
     window.madOpenDropdown = deskMover.openDropdown.bind(deskMover);
     window.madOpenMiniColorPicker = deskMover.openMiniColorPicker.bind(deskMover);
     window.madOpenColorPicker = deskMover.openColorPicker.bind(deskMover);
@@ -325,6 +328,7 @@
     window.madMoveTo = deskMover.moveTo.bind(deskMover);
     window.madSetIcon = deskMover.setIcon.bind(deskMover);
     window.madChangeWndStyle = deskMover.changeWndStyle.bind(deskMover);
+    window.madExtendMoveTarget = deskMover.extendMoveTarget.bind(deskMover);
     window.madCloseWindow = deskMover.closeWindow.bind(deskMover);
 
     window.madAlert = parent.madAlert;

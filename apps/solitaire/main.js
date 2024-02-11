@@ -725,6 +725,8 @@ const helpMenuBg = document.getElementById('helpMenuBg');
 const helpMenu = document.getElementById('helpMenu');
 const helpMenuItem = helpMenu.querySelector('.contextMenuItem');
 
+let openedMenu = null;
+
 gameMenuBtn.addEventListener('pointerdown', (event) => {
     if (gameMenuBtn.dataset.active) {
         closeGameMenu();
@@ -732,7 +734,7 @@ gameMenuBtn.addEventListener('pointerdown', (event) => {
     }
     openGameMenu();
     event.preventDefault(); // Prevent focusout event
-    madDeskMover.bringToTop(); // But keep the window activation working
+    madBringToTop(); // But keep the window activation working
 });
 
 gameMenuItems[0].addEventListener('click', () => { // Deal button
@@ -782,11 +784,15 @@ function openGameMenu() {
     gameMenuBg.style.display = 'block';
     gameMenuBtn.dataset.active = true;
     gameMenuBg.focus();
+    openedMenu = gameMenuBg;
+    document.addEventListener('keydown', menuNavigationHandler);
 }
 
 function closeGameMenu() {
     gameMenuBg.style.display = 'none';
     delete gameMenuBtn.dataset.active;
+    openedMenu = null;
+    document.removeEventListener('keydown', menuNavigationHandler);
 }
 
 helpMenuBtn.addEventListener('pointerdown', (event) => {
@@ -796,7 +802,7 @@ helpMenuBtn.addEventListener('pointerdown', (event) => {
     }
     openHelpMenu();
     event.preventDefault(); // Prevent focusout event
-    madDeskMover.bringToTop(); // But keep the window activation working
+    madBringToTop(); // But keep the window activation working
 });
 
 helpMenuBtn.addEventListener('mouseover', () => {
@@ -823,17 +829,38 @@ function openHelpMenu() {
     helpMenuBg.style.display = 'block';
     helpMenuBtn.dataset.active = true;
     helpMenuBg.focus();
+    openedMenu = helpMenuBg;
+    document.addEventListener('keydown', menuNavigationHandler);
 }
 
 function closeHelpMenu() {
     helpMenuBg.style.display = 'none';
     delete helpMenuBtn.dataset.active;
+    openedMenu = null;
+    document.removeEventListener('keydown', menuNavigationHandler);
 }
 
 helpMenuItem.addEventListener('click', () => {
     closeHelpMenu();
     window.open('https://github.com/rjanjic/js-solitaire/', '_blank');
 });
+
+function menuNavigationHandler(event) {
+    if (!openedMenu) {
+        return;
+    }
+    if (event.key === "Escape") {
+        openedMenu.blur();
+        return;
+    }
+    const shortcutsKeys = openedMenu.getElementsByTagName('u');
+    for (const shortcutKey of shortcutsKeys) {
+        if (event.key === shortcutKey.textContent.toLowerCase()) {
+            shortcutKey.parentElement.click();
+            return;
+        }
+    }
+}
 
 function randomBack() {
     let back = Math.floor(Math.random() * 24) + 1;

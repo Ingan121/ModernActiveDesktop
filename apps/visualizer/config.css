@@ -73,9 +73,15 @@ label[for="dimAlbumArtChkBox"] {
 }
 
 #barWidthInput,
+#primaryScaleInput,
 #diffScaleInput {
     width: 40px;
     text-align: right;
+}
+
+#primaryScaleInput,
+#diffScaleInput {
+    margin-top: 3px;
 }
 
 input[type=number]::-webkit-inner-spin-button, 

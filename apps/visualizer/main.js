@@ -8,8 +8,8 @@ if (parent === window) {
     alert("This page is not meant to be opened directly. Please open it from ModernActiveDesktop.");
 } else if (!frameElement) {
     alert("MADVis is being cross-origin restricted. Please run ModernActiveDesktop with a web server.");
-} else if (madRunningMode !== 1) {
-    madAlert("Sorry, but the visualizer is only available for Wallpaper Engine.", null, "error");
+} else if (madRunningMode === 0) {
+    madAlert("Sorry, but the visualizer is only available for Wallpaper Engine and Lively Wallpaper.", null, "error");
     madDeskMover.isVisualizer = true;
     madCloseWindow();
 } else if (parent.visDeskMover && parent.visDeskMover !== madDeskMover) {
@@ -27,6 +27,8 @@ if (parent === window) {
     parent.visDeskMover = madDeskMover;
     madDeskMover.isVisualizer = true;
 }
+
+const log = top.log;
 
 const schemeElement = document.getElementById("scheme");
 const menuBar = document.getElementById('menuBar');
@@ -94,6 +96,7 @@ const NO_MEDINT_MSG = isWin10
     ? 'Media integration support is disabled. Please enable it in Wallpaper Engine settings -> General -> Media integration support.'
     : 'This feature requires Windows 10 or higher.';
 
+let openedMenu = null;
 let mouseOverMenu = false;
 let mediaIntegrationAvailable = isWin10;
 
@@ -114,7 +117,7 @@ for (const menuName of ['vis', 'view', 'opt', 'help']) {
         }
         openMenu(menuName);
         event.preventDefault(); // Prevent focusout event
-        madDeskMover.bringToTop(); // But keep the window activation working
+        madBringToTop(); // But keep the window activation working
     });
 
     menuBg.addEventListener('focusout', () => {
@@ -389,7 +392,7 @@ optMenuItems[0].addEventListener('click', () => { // Configure Visualization but
     closeMenu('opt');
     const left = parseInt(madDeskMover.config.xPos) + 25 + 'px';
     const top = parseInt(madDeskMover.config.yPos) + 50 + 'px';
-    const configWindow = madOpenWindow('apps/visualizer/config.html', true, '400px', '425px', 'wnd', false, top, left, true, true, true);
+    const configWindow = madOpenWindow('apps/visualizer/config.html', true, '400px', '435px', 'wnd', false, top, left, true, true, true);
     configWindow.windowElement.addEventListener('load', () => {
         configWindow.windowElement.contentWindow.targetDeskMover = madDeskMover;
     });
@@ -419,6 +422,8 @@ function openMenu(menuName) {
     menuBar.dataset.active = true;
     menuBtn.dataset.active = true;
     menuBg.focus();
+    openedMenu = menuBg;
+    document.addEventListener('keydown', menuNavigationHandler);
 }
 
 function closeMenu(menuName) {
@@ -428,6 +433,25 @@ function closeMenu(menuName) {
     delete menuBtn.dataset.active;
     if (!mouseOverMenu) {
         delete menuBar.dataset.active;
+    }
+    openedMenu = null;
+    document.removeEventListener('keydown', menuNavigationHandler);
+}
+
+function menuNavigationHandler(event) {
+    if (!openedMenu) {
+        return;
+    }
+    if (event.key === "Escape") {
+        openedMenu.blur();
+        return;
+    }
+    const shortcutsKeys = openedMenu.getElementsByTagName('u');
+    for (const shortcutKey of shortcutsKeys) {
+        if (event.key === shortcutKey.textContent.toLowerCase()) {
+            shortcutKey.parentElement.click();
+            return;
+        }
     }
 }
 
@@ -519,13 +543,13 @@ function wallpaperMediaPropertiesListener(event) {
     }
 
     titleValue.textContent = event.title;
-    subtitleValue.textContent = event.subtitle;
+    subtitleValue.textContent = event.subTitle;
     artistValue.textContent = artist;
-    albumValue.textContent = event.album;
+    albumValue.textContent = event.albumTitle;
     albumArtistValue.textContent = event.albumArtist;
-    genreValue.textContent = event.genre;
+    genreValue.textContent = event.genres.replaceAll(',', ', ');
 
-    if (event.subtitle) {
+    if (event.subTitle) {
         subtitleText.style.display = 'block';
     } else {
         subtitleText.style.display = 'none';
@@ -535,7 +559,7 @@ function wallpaperMediaPropertiesListener(event) {
     } else {
         artistText.style.display = 'none';
     }
-    if (event.album) {
+    if (event.albumTitle) {
         albumText.style.display = 'block';
     } else {
         albumText.style.display = 'none';
@@ -545,7 +569,7 @@ function wallpaperMediaPropertiesListener(event) {
     } else {
         albumArtistText.style.display = 'none';
     }
-    if (event.genre) {
+    if (event.genres) {
         genreText.style.display = 'block';
     } else {
         genreText.style.display = 'none';
@@ -684,13 +708,15 @@ function updateSchemeColor() {
 }
 
 function setupMediaListeners() {
-    if (!isWin10) {
-        wallpaperMediaStatusListener({ enabled: false });
-        return;
+    if (madRunningMode === 1) {
+        if (!isWin10) {
+            wallpaperMediaStatusListener({ enabled: false });
+            return;
+        }
+        window.wallpaperRegisterMediaStatusListener(wallpaperMediaStatusListener);
+        window.wallpaperRegisterMediaPropertiesListener(wallpaperMediaPropertiesListener);
+        window.wallpaperRegisterMediaPlaybackListener(wallpaperMediaPlaybackListener);
+        window.wallpaperRegisterMediaTimelineListener(wallpaperMediaTimelineListener);
+        window.wallpaperRegisterMediaThumbnailListener(wallpaperMediaThumbnailListener);
     }
-    window.wallpaperRegisterMediaStatusListener(wallpaperMediaStatusListener);
-    window.wallpaperRegisterMediaPropertiesListener(wallpaperMediaPropertiesListener);
-    window.wallpaperRegisterMediaPlaybackListener(wallpaperMediaPlaybackListener);
-    window.wallpaperRegisterMediaTimelineListener(wallpaperMediaTimelineListener);
-    window.wallpaperRegisterMediaThumbnailListener(wallpaperMediaThumbnailListener);
 }

@@ -56,7 +56,6 @@
     padding: calc((var(--menu-height) - 14px) / 2) 5px 2px 5px;
     border: solid 1px transparent;
     user-select: none;
-    cursor: default;
 }
 
 .menu > div:hover {
@@ -84,6 +83,7 @@
     animation: cmDropdown 0.25s linear;
     background-color: var(--menu);
     color: var(--menu-text);
+    cursor: default;
 }
 
 .contextMenuBg u {

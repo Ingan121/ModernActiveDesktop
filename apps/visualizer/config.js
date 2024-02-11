@@ -32,6 +32,8 @@ const combineRadBtn = document.getElementById("radCombine");
 const fixedBarsChkBox = document.getElementById("fixedBarsChkBox");
 const barWidthInput = document.getElementById("barWidthInput");
 
+const primaryScaleLabel = document.getElementById("primaryScaleLabel");
+const primaryScaleInput = document.getElementById("primaryScaleInput");
 const diffScaleLabel = document.getElementById("diffScaleLabel");
 const diffScaleInput = document.getElementById("diffScaleInput");
 const diffScaleInfo = document.getElementById("diffScaleInfo");
@@ -54,11 +56,19 @@ for (const colorPicker of colorPickers) {
 for (const textbox of textboxes) {
     textbox.addEventListener("click", function () {
         if (madRunningMode === 1) {
-            madPrompt("Enter value", function (res) {
+            let extraMsg = '';
+            if (textbox.placeholder) {
+                extraMsg = ' (Leave empty to reset)';
+            }
+            madPrompt("Enter value" + extraMsg, function (res) {
                 if (res === null) return;
-                textbox.value = res;
+                if (res === '') {
+                    textbox.value = textbox.placeholder;
+                } else {
+                    textbox.value = res;
+                }
                 textbox.dispatchEvent(new Event('change'));
-            }, '', textbox.value);
+            }, textbox.placeholder, textbox.value);
         }
     });
 }
@@ -158,6 +168,7 @@ window.apply = function () {
         delete localStorage.madesktopVisBarWidth;
     }
 
+    localStorage.madesktopVisPrimaryScale = primaryScaleInput.value;
     localStorage.madesktopVisDiffScale = diffScaleInput.value;
     window.targetDeskMover.windowElement.contentWindow.configChanged();
 }
@@ -221,6 +232,10 @@ if (localStorage.madesktopVisBarWidth) {
     barWidthInput.disabled = false;
 }
 
+if (localStorage.madesktopVisPrimaryScale) {
+    primaryScaleInput.value = localStorage.madesktopVisPrimaryScale;
+}
+
 if (localStorage.madesktopVisDiffScale) {
     diffScaleInput.value = localStorage.madesktopVisDiffScale;
 }
@@ -237,6 +252,8 @@ if (localStorage.madesktopVisOnlyAlbumArt) {
     combineRadBtn.disabled = true;
     fixedBarsChkBox.disabled = true;
     barWidthInput.disabled = true;
+    primaryScaleLabel.classList.add("disabled");
+    primaryScaleInput.disabled = true;
     diffScaleLabel.classList.add("disabled");
     diffScaleInput.disabled = true;
     diffScaleInfo.classList.add("disabled");
@@ -252,3 +269,9 @@ window.addEventListener('load', () => {
 });
 
 madSetIcon(false);
+
+document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape') {
+        madCloseWindow();
+    }
+});

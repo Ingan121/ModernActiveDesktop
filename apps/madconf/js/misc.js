@@ -88,7 +88,6 @@ if (isWin10) {
         sysplugOpenOptSelector.disabled = false;
         getSysplugOWConfig();
     }
-
     sysplugOpenOptSelector.selectedIndex = config.sysplugOpenOpt;
 } else {
     sysplugChkBox.disabled = true;
@@ -194,7 +193,6 @@ sysplugChkBox.addEventListener('change', function () {
     if (this.checked) {
         checkSysplug();
         sysplugOpenOptSelector.disabled = false;
-        getSysplugOWConfig();
     } else {
         sysplugOpenOptSelector.disabled = true;
     }
@@ -245,6 +243,7 @@ function checkSysplug() {
                 connectionStatus.textContent = "System plugin is outdated! Please update the system plugin with the guide.";
             } else {
                 connectionStatus.textContent = "System plugin connection successful!";
+                getSysplugOWConfig();
             }
         })
         .catch(error => {

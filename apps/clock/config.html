@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Font</title>
+    <title>Clock Properties</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="../../css/98.css">
     <link rel="stylesheet" href="config.css">
@@ -11,42 +11,42 @@
 <body id="madClockConf">
     <div class="window-body">
         <fieldset>
-            <legend>Custom colors</legend>
+            <legend>Analog clock colors</legend>
             <section id="customColors" class="field-row">
-                <span id="bgColorPickerLabel">Background:</span>
-                <button id="bgColorPicker" class="colorPicker">
+                <span id="backgroundColorPickerLabel">Background:</span>
+                <button id="backgroundColorPicker" class="colorPicker">
                     <div class="colorPicker-color"></div>
                     <div class="colorPicker-bar"></div>
                     <div class="colorPicker-expandMark">⏷</div>
                 </button>
-                <span id="barColorPickerLabel">Primary:</span>
-                <button id="barColorPicker" class="colorPicker">
+                <span id="mainColorPickerLabel">Primary:</span>
+                <button id="mainColorPicker" class="colorPicker">
                     <div class="colorPicker-color" style="background-color: #008080;"></div>
                     <div class="colorPicker-bar"></div>
                     <div class="colorPicker-expandMark">⏷</div>
                 </button>
-                <span id="topColorPickerLabel">Light:</span>
-                <button id="topColorPicker" class="colorPicker">
+                <span id="lightColorPickerLabel">Light:</span>
+                <button id="lightColorPicker" class="colorPicker">
                     <div class="colorPicker-color" style="background-color: #00ffff;"></div>
                     <div class="colorPicker-bar"></div>
                     <div class="colorPicker-expandMark">⏷</div>
                 </button>
             </section>
             <section id="customColors2" class="field-row">
-                <span id="topColorPickerLabel">Highight:</span>
-                <button id="topColorPicker" class="colorPicker">
+                <span id="hilightColorPickerLabel">Higlight:</span>
+                <button id="hilightColorPicker" class="colorPicker">
                     <div class="colorPicker-color" style="background-color: #ffffff;"></div>
                     <div class="colorPicker-bar"></div>
                     <div class="colorPicker-expandMark">⏷</div>
                 </button>
-                <span id="topColorPickerLabel">Shadow:</span>
-                <button id="topColorPicker" class="colorPicker">
+                <span id="shadowColorPickerLabel">Shadow:</span>
+                <button id="shadowColorPicker" class="colorPicker">
                     <div class="colorPicker-color" style="background-color: #a0a0a0;"></div>
                     <div class="colorPicker-bar"></div>
                     <div class="colorPicker-expandMark">⏷</div>
                 </button>
-                <span id="topColorPickerLabel">Dark shadow:</span>
-                <button id="topColorPicker" class="colorPicker">
+                <span id="dkShadowColorPickerLabel">Dark shadow:</span>
+                <button id="dkShadowColorPicker" class="colorPicker">
                     <div class="colorPicker-color" style="background-color: #000000;"></div>
                     <div class="colorPicker-bar"></div>
                     <div class="colorPicker-expandMark">⏷</div>
@@ -56,12 +56,12 @@
         <fieldset>
             <legend>Font</legend>
             <section id="font" class="field-row">
-                <mad-select id="fontSelector">
+                <mad-select id="fontSelector" disabled>
                     <option hidden selected></option>
                     <option value="Pixelated MS Sans Serif">Pixelated MS Sans Serif</option>
                     <option value="Fixedsys Excelsior">Fixedsys Excelsior</option>
                 </mad-select>
-                <input id="outlineModeChkBox" type="checkbox" name="outlineMode" checked>
+                <input id="outlineModeChkBox" type="checkbox" name="outlineMode" checked disabled>
                 <label for="outlineModeChkBox">Enable outline mode</label>
             </section>
         </fieldset>

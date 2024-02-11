@@ -12,7 +12,6 @@ const bgVideoView = document.getElementById("bgVideo");
 const schemeElement = document.getElementById("scheme");
 const menuStyleElement = document.getElementById("menuStyle");
 const styleElement = document.getElementById("style");
-const styleElement2 = document.getElementById("style2");
 const msgboxBg = document.getElementById("msgboxBg");
 const msgbox = document.getElementById("msgbox");
 const msgboxTitlebar = msgbox.getElementsByClassName("title-bar")[0];
@@ -30,6 +29,7 @@ const mainMenuItems = mainMenu.getElementsByClassName("contextMenuItem");
 const runningModeLabel = document.getElementById("runmode");
 const simulatedModeLabel = document.getElementById("simmode");
 const debugMenu = document.getElementById("debug");
+const jsRunBtn = document.getElementById("jsRunBtn");
 const debugLogBtn = document.getElementById("debugLogBtn");
 const toggleModeBtn = document.getElementById("toggleModeBtn");
 
@@ -41,6 +41,8 @@ const NO_SYSPLUG_ALERT = "System plugin is not running. Please make sure you hav
 let lastZIndex = parseInt(localStorage.madesktopItemCount) || 0;
 let lastAoTZIndex = lastZIndex + 50000;
 let isContextMenuOpen = false;
+let openedMenu = null;
+let openedMenuCloseFunc = null;
 let activeWindow = 0;
 let prevActiveWindow = 0;
 let startupRan = false;
@@ -96,7 +98,7 @@ initSimpleMover(debugMenu, debugMenu, debugMenu.querySelectorAll("a"));
 // Migrate old configs
 if (localStorage.madesktopNonADStyle) {
     for (let i = 0; i < localStorage.madesktopItemCount; i++) localStorage.setItem("madesktopItemStyle" + (i || ""), "nonad");
-    localStorage.removeItem("madesktopNonADStyle");
+    delete localStorage.madesktopNonADStyle;
     location.reload();
     throw new Error("Refreshing...");
 }
@@ -122,7 +124,7 @@ if (localStorage.madesktopDestroyedItems) {
         }
     }
     localStorage.madesktopOpenWindows = openWindows;
-    localStorage.removeItem("madesktopDestroyedItems");
+    delete localStorage.madesktopDestroyedItems;
 } else if (!localStorage.madesktopOpenWindows) {
     let openWindows = [0];
     for (let i = 1; i < localStorage.madesktopItemCount; i++) {
@@ -130,7 +132,7 @@ if (localStorage.madesktopDestroyedItems) {
     }
     localStorage.madesktopOpenWindows = openWindows;
 }
-localStorage.removeItem("madesktopLastCustomScale");
+delete localStorage.madesktopLastCustomScale;
 // Mistake that I made in previous versions
 if (localStorage.madesktopCustomColor) {
     if (localStorage.madesktopCustomColor.includes("--menu-highlight")) {
@@ -150,9 +152,9 @@ if (localStorage.madesktopItemCount > 1) {
 
 if (localStorage.madesktopLastVer) {
     if (!localStorage.madesktopLastVer.startsWith("3.2")) { // Update from 3.1 and below
-        localStorage.removeItem("madesktopHideWelcome");
-        localStorage.removeItem("madesktopCheckedChanges");
-        localStorage.removeItem("madesktopCheckedConfigs");
+        delete localStorage.madesktopHideWelcome;
+        delete localStorage.madesktopCheckedChanges;
+        delete localStorage.madesktopCheckedConfigs;
         openWindow("placeholder.html");
 
         if (localStorage.madesktopColorScheme === "xpcss4mad") {
@@ -186,6 +188,8 @@ bgHtmlView.addEventListener('load', function () {
 
 if (typeof wallpaperOnVideoEnded === "function") { // Check if running in Wallpaper Engine
     runningMode = WE;
+} else if (location.href.startsWith("localfolder://")) { // Check if running in Lively Wallpaper
+    runningMode = LW;
 }
 
 // Main context menu things (only for browser uses)
@@ -198,6 +202,8 @@ window.addEventListener('contextmenu', function (event) {
     isContextMenuOpen = true;
     event.preventDefault();
     mainMenuBg.focus();
+    openedMenu = mainMenuBg;
+    document.addEventListener("keydown", menuNavigationHandler);
 }, false);
 
 mainMenuBg.addEventListener('focusout', closeMainMenu);
@@ -211,6 +217,13 @@ mainMenuItems[1].addEventListener('click', () => { // Properties button
     closeMainMenu();
     openConfig();
 });
+
+function closeMainMenu() {
+    mainMenuBg.style.display = "none";
+    isContextMenuOpen = false;
+    openedMenu = null;
+    document.removeEventListener("keydown", menuNavigationHandler);
+}
 
 msgboxBg.addEventListener('click', flashDialog);
 
@@ -292,20 +305,36 @@ window.wallpaperPropertyListener = {
 };
 
 function livelyPropertyListener(name, val) {
-    switch (name) {
-        case "bgcolor":
-            // Only this is called on startup
-            runningMode = LW;
-            runningModeLabel.textContent = "Lively Wallpaper";
-            origRunningMode = runningMode;
-            simulatedModeLabel.textContent = "";
-            changeBgColor(val);
-            break;
-        case "properties":
-            openConfig();
-            break;
-        default:
-            wallpaperPropertyListener.applyUserProperties({ [name]: { value: val } });
+    wallpaperPropertyListener.applyUserProperties({ [name]: { value: val } });
+}
+
+function livelyAudioListener(audioArray) {}
+
+function livelyCurrentTrack(data) {
+    let obj = JSON.parse(data);
+    if (window.visDeskMover) {
+        const visWindow = window.visDeskMover.windowElement.contentWindow;
+        //when no track is playing its null
+        if (obj !== null) {
+            visWindow.wallpaperMediaPropertiesListener({
+                title: obj["Title"],
+                subTitle: obj["Subtitle"],
+                artist: obj["Artist"],
+                albumTitle: obj["AlbumTitle"],
+                albumArtist: obj["AlbumArtist"],
+                genres: obj["Genres"].join(",")
+            });
+            visWindow.wallpaperMediaThumbnailListener({
+                thumbnail: "data:image/png;base64," + obj["Thumbnail"] ?? ""
+            });
+        } else {
+            visWindow.wallpaperMediaPropertiesListener({
+                title: null
+            });
+            visWindow.wallpaperMediaThumbnailListener({
+                thumbnail: "data:image/png;base64,"
+            });
+        }
     }
 }
 
@@ -712,7 +741,7 @@ function isDarkColor(color) {
 }
 
 function processTheme() {
-    styleElement2.textContent = generateThemeSvgs();
+    styleElement.textContent = generateThemeSvgs();
 }
 
 function generateThemeSvgs(targetElement) {
@@ -871,11 +900,6 @@ function openConfig(page) {
     } else {
         openWindow(`apps/madconf/${page || 'background'}.html`, true);
     }
-}
-
-function closeMainMenu() {
-    mainMenuBg.style.display = "none";
-    isContextMenuOpen = false;
 }
 
 // Required as mouse movements over iframes are not detectable in the parent document
@@ -1298,6 +1322,28 @@ function flashDialog() {
     }, 60);
 }
 
+function menuNavigationHandler(event) {
+    if (!openedMenu) {
+        return;
+    }
+    if (event.key === "Escape") {
+        isContextMenuOpen = false;
+        if (openedMenuCloseFunc) {
+            openedMenuCloseFunc();
+        } else {
+            openedMenu.blur();
+        }
+        return;
+    }
+    const shortcutsKeys = openedMenu.getElementsByTagName('u');
+    for (const shortcutKey of shortcutsKeys) {
+        if (event.key === shortcutKey.textContent.toLowerCase()) {
+            shortcutKey.parentElement.click();
+            return;
+        }
+    }
+}
+
 function playSound(sound) {
     if (!localStorage.madesktopAlertSndMuted) {
         soundScheme[sound].currentTime = 0;
@@ -1331,25 +1377,15 @@ function log(str, level, caller = new Error().stack.split('\n')[2].trim().slice(
 }
 
 // Just for debugging
-function debug() {
+function debug(event) {
     madPrompt("Enter JavaScript code to run.", function (res) {
         eval(res);
     });
-    function loadEruda() { // Load Eruda devtools (but Chrome DevTools is better)
-        const script = document.createElement('script');
-        script.src="https://cdn.jsdelivr.net/npm/eruda";
-        document.body.appendChild(script);
-        script.onload = function () {
-            eruda.init();
-        };
-    }
+    event.preventDefault();
 }
 
 function activateDebugMode() {
-    if (styleElement.textContent.length) return;
-    styleElement.textContent = `
-        .debug { display: block; }
-        .windowMenuBg { height: 85px; }`;
+    document.body.dataset.debugMode = true;
     debugMenu.style.top = 0;
     debugMenu.style.right = 0;
     debugMenu.style.left = "auto";
@@ -1360,8 +1396,8 @@ function activateDebugMode() {
 }
 
 function deactivateDebugMode() {
-    styleElement.textContent = "";
-    localStorage.removeItem("madesktopDebugMode");
+    delete document.body.dataset.debugMode;
+    delete localStorage.madesktopDebugMode;
     if (debugLog) toggleDebugLog();
     if (runningMode !== origRunningMode) {
         runningMode = origRunningMode;
@@ -1375,7 +1411,7 @@ function toggleDebugLog() {
     if (debugLog) {
         localStorage.madesktopDebugLog = true;
     } else {
-        localStorage.removeItem("madesktopDebugLog");
+        delete localStorage.madesktopDebugLog;
     }
 }
 
@@ -1400,9 +1436,6 @@ function toggleRunningMode() {
 }
 
 function showErrors() {
-    document.getElementById("errorMsg").style.display = "none";
-    errorWnd.style.animation = "none";
-    errorWnd.style.paddingTop = "8px";
     errorWnd.style.display = "block";
 }
 
@@ -1433,6 +1466,9 @@ if (runningMode === WE) {
     // Dummy listener to make Wallpaper Engine recognize MAD supporting audio visualization
     window.wallpaperRegisterAudioListener(() => {});
 } else {
+    if (runningMode === LW) {
+        runningModeLabel.textContent = "Lively Wallpaper";
+    }
     startup();
     if (location.href.startsWith("file:///") && runningMode === BROWSER) {
         madAlert("You are running ModernActiveDesktop as a local file. Please use a web server to host it for full functionality.", null, "warning");
@@ -1452,4 +1488,5 @@ window.addEventListener('load', function () {
 });
 
 // Initialization complete
-errorWnd.style.display = "none";
+jsRunBtn.addEventListener('click', debug);
+document.body.dataset.initComplete = true;

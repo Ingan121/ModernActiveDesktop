@@ -401,13 +401,13 @@ function onRequest(req, res) {
   res.setHeader('Access-Control-Allow-Origin', cors);
 
   if (req.headers.origin && req.headers.origin !== 'null') {
-    // Allow CORS for localhost
-    if (new URL(req.headers.origin).hostname.match(/^(localhost|127(.[0-9]{1,3}){3})$/)) {
+    // Allow CORS for localhost and Lively Wallpaper
+    if (new URL(req.headers.origin).hostname.match(/^(localhost|127(.[0-9]{1,3}){3})$/) || req.headers.origin.startsWith('localfolder://')) {
       res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
     } else if (args.cors !== "*" && req.headers.origin !== cors && req.headers.origin !== 'file://') {
-      // (Last one is what WE sends)
+      // (Last one is what Wallpaper Engine sends)
       // Abort if CORS is not allowed
-      // This is to prevent any website from accessing your system
+      // This is to prevent arbitrary website from accessing your system
       // Request can proceed even if CORS is not allowed
       // (JS can't get the response but system changes like MediaControl will still be made)
       // So explicitly abort the request if CORS is not allowed

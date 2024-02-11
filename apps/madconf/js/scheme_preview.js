@@ -117,7 +117,7 @@ window.addEventListener("load", processTheme);
 window.addEventListener("resize", processTheme);
 
 document.addEventListener("pointerdown", function () {
-    parent.madDeskMover.bringToTop();
+    parent.madBringToTop();
 });
 
 document.addEventListener("click", function () {

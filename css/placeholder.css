@@ -8,6 +8,7 @@ body {
     background-color: var(--window);
     font-family: var(--ui-font);
     overflow: hidden;
+    user-select: none;
 }
 
 .icon {
@@ -16,6 +17,7 @@ body {
     float: left;
     width: 58px;
     text-align: center;
+    cursor: default;
 }
 
 .icon div {

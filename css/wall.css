@@ -655,6 +655,53 @@ body[data-cm-shadow] .contextMenuBg {
     background-color: var(--button-face);
 }
 
-.debug {
+#debugLabel {
     display: none;
+}
+
+#debugLabel + br {
+    display: none;
+}
+
+.debug {
+    animation: appear 4s;
+}
+
+body[data-init-complete] #errorWnd {
+    display: none;
+    animation: none;
+    padding-top: 8px;
+}
+
+body[data-init-complete] #errorMsg {
+    display: none;
+}
+
+body[data-init-complete] .debug {
+    display: none;
+    animation: none;
+}
+
+body[data-init-complete] #initNotCompleteLabel {
+    display: none;
+}
+
+body[data-init-complete] #initNotCompleteLabel + br {
+    display: none;
+}
+
+body[data-debug-mode] .debug {
+    display: block;
+}
+
+body[data-debug-mode] #debugLabel {
+    display: inline;
+}
+
+body[data-debug-mode] #debugLabel + br {
+    display: inline;
+}
+
+body[data-debug-mode] .windowMenuBg {
+    height: 85px;
 }

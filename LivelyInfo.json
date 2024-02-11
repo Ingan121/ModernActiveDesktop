@@ -1,5 +1,5 @@
 {
-  "AppVersion": "2.3",
+  "AppVersion": "3.2",
   "Title": "Windows 98 Desktop Experience",
   "Thumbnail": "preview.jpg",
   "Preview": "preview.jpg",
@@ -9,6 +9,6 @@
   "Contact": "https://github.com/Ingan121/ModernActiveDesktop",
   "Type": 1,
   "FileName": "index.html",
-  "Arguments": null,
+  "Arguments": "--cache \"C:\\MADLivelyStorage\" --audio --system-nowplaying",
   "IsAbsolutePath": false
 }

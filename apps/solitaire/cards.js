@@ -12,3 +12,9 @@ for (const card of cards) {
         window.backFile = `url(${this.getAttribute('src')})`;
     });
 }
+
+document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape') {
+        madCloseWindow();
+    }
+});

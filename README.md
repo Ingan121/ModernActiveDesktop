@@ -3,7 +3,7 @@
 
 * ModernActiveDesktop, also known as Windows 98 Desktop Experience, aims to replicate the original Active Desktop behavior and improve the Classic Theme experience on modern Windows.
 * This wallpaper includes Windows 98's Channel Bar, the startup sound, a music visualizer, and various apps like paint and solitaire.
-* Designed for Wallpaper Engine.
+* Designed for Wallpaper Engine and Lively Wallpaper.
 <br><br><img src="docs/images/screenshot.png" width="480px" height="270px" title="Screenshot"><br>
 * [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2278898637)
 * [Try in your browser](https://www.ingan121.com/mad/)

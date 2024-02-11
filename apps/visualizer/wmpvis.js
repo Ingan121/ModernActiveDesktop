@@ -4,8 +4,6 @@
 
 'use strict';
 
-const log = top.log;
-
 const visBarCtx = visBar.getContext('2d');
 const visTopCtx = visTop.getContext('2d');
 
@@ -22,7 +20,8 @@ let visConfig = {
     desktopVisOnlyAlbumArt: localStorage.madesktopVisOnlyAlbumArt,
     barWidth: parseInt(localStorage.madesktopVisBarWidth),
     channelSeparation: parseInt(localStorage.madesktopVisChannelSeparation) || 2, // 1 = no processing (pre-3.2 behavior), 2 = reverse right, 3 = combine
-    diffScale: parseFloat(localStorage.madesktopVisDiffScale) || 0.07 // idk what to call this lol, pre-3.2 value was 0.15
+    primaryScale: parseFloat(localStorage.madesktopVisPrimaryScale || 1.0),
+    diffScale: parseFloat(localStorage.madesktopVisDiffScale || 0.07) // idk what to call this lol, pre-3.2 value was 0.15
 };
 
 updateSize();
@@ -94,7 +93,7 @@ function wallpaperAudioListener(audioArray) {
     let allZero = true;
     for (var i = 0; i < audioArray.length; ++i) {
         // Create an audio bar with its hight depending on the audio volume level of the current frequency
-        const height = Math.round(visBar.height * Math.min(audioArray[i], 1));
+        const height = Math.round(visBar.height * Math.min(audioArray[i], 1) * visConfig.primaryScale);
         if (height > lastBar[i]) {
             lastBar[i] = height;
             visBarCtx.fillRect(leftMargin + barWidth * i, visBar.height - height, barWidth - gap, height);
@@ -160,7 +159,8 @@ function updateVisConfig() {
         desktopVisOnlyAlbumArt: localStorage.madesktopVisOnlyAlbumArt,
         barWidth: parseInt(localStorage.madesktopVisBarWidth),
         channelSeparation: parseInt(localStorage.madesktopVisChannelSeparation) || 2,
-        diffScale: parseFloat(localStorage.madesktopVisDiffScale) || 0.07
+        primaryScale: parseFloat(localStorage.madesktopVisPrimaryScale || 1.0),
+        diffScale: parseFloat(localStorage.madesktopVisDiffScale || 0.07)
     };
     arraySize = visConfig.channelSeparation === 3 ? 64 : 128;
     visTopCtx.clearRect(0, 0, visTop.width, visTop.height);
@@ -178,31 +178,35 @@ new MutationObserver(function (mutations) {
     { attributes: true, attributeFilter: ["style"] }
 );
 
-pausedAlert.addEventListener('click', () => {
-    window.wallpaperRegisterAudioListener(wallpaperAudioListener);
-    setupMediaListeners();
-});
-
-// Register the audio listener provided by Wallpaper Engine.
-window.wallpaperRegisterAudioListener(wallpaperAudioListener);
-setupMediaListeners();
-
-// Any iframe load in MAD invalidates this somehow
-setInterval(() => {
-    // But don't infinitely re-register, as this will cause winrtutil32.exe spawning and instantly dying repeatedly
-    // And that will cause the wallpaper32/64.exe to freeze eventually
-    // Only re-register if we've not had an update in the last 200ms
-    if (updateCnt === 0 && !triedRegistering) {
+if (madRunningMode === 1) {
+    pausedAlert.addEventListener('click', () => {
         window.wallpaperRegisterAudioListener(wallpaperAudioListener);
         setupMediaListeners();
-        // Only try once, as having a maximized window, etc also causes the update to stop
-        // It will begin updating again when such conditions are no longer met
-        triedRegistering = true;
-        timeout = setTimeout(() => {
-            pausedAlert.style.display = 'block';
-        }, 500);
-    }
-    updateCnt = 0;
-}, 200);
+    });
+
+    // Register the audio listener provided by Wallpaper Engine.
+    window.wallpaperRegisterAudioListener(wallpaperAudioListener);
+    setupMediaListeners();
+
+    // Any iframe load in MAD invalidates this somehow
+    setInterval(() => {
+        // But don't infinitely re-register, as this will cause winrtutil32.exe spawning and instantly dying repeatedly
+        // And that will cause the wallpaper32/64.exe to freeze eventually
+        // Only re-register if we've not had an update in the last 200ms
+        if (updateCnt === 0 && !triedRegistering) {
+            window.wallpaperRegisterAudioListener(wallpaperAudioListener);
+            setupMediaListeners();
+            // Only try once, as having a maximized window, etc also causes the update to stop
+            // It will begin updating again when such conditions are no longer met
+            triedRegistering = true;
+            timeout = setTimeout(() => {
+                pausedAlert.style.display = 'block';
+            }, 500);
+        }
+        updateCnt = 0;
+    }, 200);
+} else if (madRunningMode === 2) {
+    top.livelyAudioListener = wallpaperAudioListener;
+}
 
 configChanged();

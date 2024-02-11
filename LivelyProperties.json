@@ -1,19 +1,13 @@
 {
     "additem" : 
     {
-        "text" : "Add a new ActiveDesktop item",
+        "text" : "Open a new window",
         "type" : "button",
         "value" : "Add"
     },
-    "bgcolor" : 
+    "openproperties" : 
     {
-        "text" : "Background color",
-        "type" : "color",
-        "value" : "#008080"
-    },
-    "properties" : 
-    {
-        "text" : "Show more properties",
+        "text" : "Show more options",
         "type" : "button",
         "value" : "Show"
     }
