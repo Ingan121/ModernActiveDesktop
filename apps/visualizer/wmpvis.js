@@ -38,6 +38,7 @@ function wallpaperAudioListener(audioArray) {
     triedRegistering = false;
     clearTimeout(timeout);
     pausedAlert.style.display = 'none';
+    extraAlert.style.display = 'none';
 
     if (window.noupdate || visConfig.desktopVisOnlyAlbumArt) {
         return;
@@ -182,6 +183,9 @@ if (madRunningMode === 1) {
     pausedAlert.addEventListener('click', () => {
         window.wallpaperRegisterAudioListener(wallpaperAudioListener);
         setupMediaListeners();
+        setTimeout(() => {
+            extraAlert.style.display = 'block';
+        }, 1000);
     });
 
     // Register the audio listener provided by Wallpaper Engine.

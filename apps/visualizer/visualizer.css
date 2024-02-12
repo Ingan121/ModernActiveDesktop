@@ -55,6 +55,15 @@ canvas {
     z-index: 3;
 }
 
+#extraAlert {
+    display: none;
+}
+
+a {
+    color: white !important;
+    text-decoration: underline !important;
+}
+
 .menu {
     position: absolute;
     z-index: 4;

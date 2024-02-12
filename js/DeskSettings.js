@@ -184,6 +184,7 @@ if (localStorage.madesktopItemVisible === "false") {
 bgHtmlView.addEventListener('load', function () {
     this.contentDocument.body.style.zoom = scaleFactor;
     hookIframeSize(bgHtmlView);
+    bgHtmlView.contentDocument.addEventListener("contextmenu", openMainMenu, false);
 });
 
 if (typeof wallpaperOnVideoEnded === "function") { // Check if running in Wallpaper Engine
@@ -193,18 +194,19 @@ if (typeof wallpaperOnVideoEnded === "function") { // Check if running in Wallpa
 }
 
 // Main context menu things (only for browser uses)
-window.addEventListener('contextmenu', function (event) {
-    if (isContextMenuOpen) return;
-    mainMenuBg.style.left = event.clientX + "px";
-    mainMenuBg.style.top = event.clientY + "px";
-    mainMenuBg.style.display = "block";
-    iframeClickEventCtrl(false);
-    isContextMenuOpen = true;
-    event.preventDefault();
-    mainMenuBg.focus();
-    openedMenu = mainMenuBg;
-    document.addEventListener("keydown", menuNavigationHandler);
-}, false);
+window.addEventListener('contextmenu', openMainMenu, false);
+
+for (const elem of mainMenuItems) {
+    elem.onmouseover = () => {
+        for (const item of mainMenuItems) {
+            delete item.dataset.active;
+        }
+        elem.dataset.active = true;
+    }
+    elem.onmouseleave = () => {
+        delete elem.dataset.active;
+    }
+}
 
 mainMenuBg.addEventListener('focusout', closeMainMenu);
 
@@ -217,6 +219,19 @@ mainMenuItems[1].addEventListener('click', () => { // Properties button
     closeMainMenu();
     openConfig();
 });
+
+function openMainMenu (event) {
+    if (isContextMenuOpen) return;
+    mainMenuBg.style.left = event.clientX + "px";
+    mainMenuBg.style.top = event.clientY + "px";
+    mainMenuBg.style.display = "block";
+    iframeClickEventCtrl(false);
+    isContextMenuOpen = true;
+    event.preventDefault();
+    mainMenuBg.focus();
+    openedMenu = mainMenuBg;
+    document.addEventListener("keydown", menuNavigationHandler);
+}
 
 function closeMainMenu() {
     mainMenuBg.style.display = "none";
@@ -1172,20 +1187,26 @@ function madAlert(msg, callback, icon = "info") {
     msgboxBtn2.style.display = "none";
     msgboxInput.style.display = "none";
 
+    document.addEventListener('keypress', keypress);
     document.addEventListener('keyup', keyup);
     msgboxBtn1.addEventListener('click', close);
     msgboxCloseBtn.addEventListener('click', close);
 
     showDialog();
 
+    function keypress(event) {
+        if (event.key === "Enter") {
+            close();
+        }
+    }
     function keyup(event) {
-        switch (event.key) {
-            case "Enter": case "Escape":
-                close();
+        if (event.key === "Escape") {
+            close();
         }
     }
     function close() {
         msgboxBg.style.display = "none";
+        document.removeEventListener('keypress', keypress);
         document.removeEventListener('keyup', keyup);
         msgboxBtn1.removeEventListener('click', close);
         msgboxCloseBtn.removeEventListener('click', close);
@@ -1203,6 +1224,7 @@ function madConfirm(msg, callback) {
     msgboxBtn2.style.display = "block";
     msgboxInput.style.display = "none";
 
+    document.addEventListener('keypress', keypress);
     document.addEventListener('keyup', keyup);
     msgboxBtn1.addEventListener('click', ok);
     msgboxBtn2.addEventListener('click', close);
@@ -1210,13 +1232,16 @@ function madConfirm(msg, callback) {
 
     showDialog();
 
+    function keypress(event) {
+        // Handle enter in keypress to prevent this from being triggered along with the context menu enter key
+        if (event.key === "Enter") {
+            ok();
+        }
+    }
     function keyup(event) {
-        switch (event.key) {
-            case "Enter":
-                ok();
-                break;
-            case "Escape":
-                close();
+        // Aaand escape cannot be handled in keypress so it's here
+        if (event.key === "Escape") {
+            close();
         }
     }
     function ok() {
@@ -1230,6 +1255,7 @@ function madConfirm(msg, callback) {
         if (callback) callback(false);
     }
     function removeEvents() {
+        document.removeEventListener('keypress', keypress);
         document.removeEventListener('keyup', keyup);
         msgboxBtn1.removeEventListener('click', ok);
         msgboxBtn2.removeEventListener('click', close);
@@ -1251,6 +1277,7 @@ function madPrompt(msg, callback, hint, text) {
     msgboxInput.placeholder = hint || "";
     msgboxInput.value = text || "";
 
+    document.addEventListener('keypress', keypress);
     document.addEventListener('keyup', keyup);
     msgboxBtn1.addEventListener('click', ok);
     msgboxBtn2.addEventListener('click', close);
@@ -1259,13 +1286,14 @@ function madPrompt(msg, callback, hint, text) {
     showDialog();
     msgboxInput.focus();
 
+    function keypress(event) {
+        if (event.key === "Enter") {
+            ok();
+        }
+    }
     function keyup(event) {
-        switch (event.key) {
-            case "Enter":
-                ok();
-                break;
-            case "Escape":
-                close();
+        if (event.key === "Escape") {
+            close();
         }
     }
     function ok() {
@@ -1279,9 +1307,9 @@ function madPrompt(msg, callback, hint, text) {
         if (callback) callback(null);
     }
     function removeEvents() {
+        document.removeEventListener('keypress', keypress);
         document.removeEventListener('keyup', keyup);
         msgboxBtn1.removeEventListener('click', ok);
-        msgboxInput.removeEventListener('keyup', ok);
         msgboxBtn2.removeEventListener('click', close);
         msgboxCloseBtn.removeEventListener('click', close);
         deskMovers[activeWindow].windowTitlebar.classList.remove("inactive");
@@ -1326,22 +1354,93 @@ function menuNavigationHandler(event) {
     if (!openedMenu) {
         return;
     }
-    if (event.key === "Escape") {
-        isContextMenuOpen = false;
-        if (openedMenuCloseFunc) {
-            openedMenuCloseFunc();
-        } else {
-            openedMenu.blur();
-        }
-        return;
+    let menuItems;
+    if (localStorage.madesktopDebugMode) {
+        menuItems = openedMenu.querySelectorAll('.contextMenuItem');
+    } else {
+        menuItems = openedMenu.querySelectorAll('.contextMenuItem:not(.debug)');
     }
-    const shortcutsKeys = openedMenu.getElementsByTagName('u');
-    for (const shortcutKey of shortcutsKeys) {
-        if (event.key === shortcutKey.textContent.toLowerCase()) {
-            shortcutKey.parentElement.click();
-            return;
-        }
+    const activeItem = openedMenu.querySelector('.contextMenuItem[data-active]');
+    const activeItemIndex = Array.from(menuItems).indexOf(activeItem);
+    switch (event.key) {
+        case "Escape":
+            isContextMenuOpen = false;
+            if (openedMenuCloseFunc) {
+                openedMenuCloseFunc(true);
+                openedMenu.querySelector('.contextMenuItem').dataset.active = true;
+            } else {
+                openedMenu.blur();
+            }
+            break;
+        case "ArrowUp":
+            if (activeItem) {
+                delete activeItem.dataset.active;
+                if (activeItemIndex > 0) {
+                    menuItems[activeItemIndex - 1].dataset.active = true;
+                } else {
+                    menuItems[menuItems.length - 1].dataset.active = true;
+                }
+            } else {
+                menuItems[menuItems.length - 1].dataset.active = true;
+            }
+            break;
+        case "ArrowDown":
+            if (activeItem) {
+                delete activeItem.dataset.active;
+                if (activeItemIndex < menuItems.length - 1) {
+                    menuItems[activeItemIndex + 1].dataset.active = true;
+                } else {
+                    menuItems[0].dataset.active = true;
+                }
+            } else {
+                menuItems[0].dataset.active = true;
+            }
+            break;
+        case "ArrowLeft":
+            if (openedMenu.classList.contains('confMenuBg')) {
+                openedMenuCloseFunc(true);
+                openedMenu.querySelector('.contextMenuItem').dataset.active = true;
+            }
+            break;
+        case "ArrowRight":
+            if (activeItem && activeItem.querySelector('.submenuMark')) {
+                activeItem.click();
+                openedMenu.querySelector('.contextMenuItem').dataset.active = true;
+            }
+            break;
+        case "Enter":
+            if (activeItem) {
+                activeItem.click();
+                if (openedMenu) {
+                    openedMenu.querySelector('.contextMenuItem').dataset.active = true;
+                }
+            } else {
+                isContextMenuOpen = false;
+                if (openedMenuCloseFunc) {
+                    openedMenuCloseFunc(true);
+                } else {
+                    openedMenu.blur();
+                }
+                break;
+            }
+            break;
+        default:
+            const shortcutsKeys = openedMenu.getElementsByTagName('u');
+            for (const shortcutKey of shortcutsKeys) {
+                if (event.key === shortcutKey.textContent.toLowerCase()) {
+                    for (const item of menuItems) {
+                        delete item.dataset.active;
+                    }
+                    shortcutKey.parentElement.click();
+                    if (openedMenu) {
+                        openedMenu.querySelector('.contextMenuItem').dataset.active = true;
+                    }
+                    return;
+                }
+            }
     }
+    event.preventDefault();
+    event.stopPropagation();
 }
 
 function playSound(sound) {

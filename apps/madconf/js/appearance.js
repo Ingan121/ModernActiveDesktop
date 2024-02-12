@@ -647,6 +647,9 @@ async function main() {
     if (localStorage.madesktopLastSchemeName) {
         schemeName = localStorage.madesktopLastSchemeName;
         schemeSelector.options[0].textContent = schemeName;
+    } else if (localStorage.madesktopColorScheme === "98" || !localStorage.madesktopColorScheme) {
+        schemeName = "Windows Classic (98)";
+        schemeSelector.options[0].textContent = schemeName;
     }
 
     FontDetective.each(font => {
@@ -678,6 +681,7 @@ async function main() {
     }
 
     function setFont() {
+        appendModified();
         const option = selector.value;
         if (itemMappings[option].font) {
             let fontShorthand = '';
@@ -792,8 +796,9 @@ async function main() {
                     'window': getColorValue(text, 'Window'),
                     'window-frame': getColorValue(text, 'WindowFrame'),
                     'window-text': getColorValue(text, 'WindowText')
-                }
+                };
                 schemeSelector.selectedIndex = 0;
+                selector.disabled = false;
                 applyPreview();
                 selector.dispatchEvent(new Event("change"));
             } catch {
@@ -803,6 +808,7 @@ async function main() {
             try {
                 scheme = JSON.parse(text);
                 schemeSelector.selectedIndex = 0;
+                selector.disabled = false;
                 applyPreview();
                 selector.dispatchEvent(new Event("change"));
             } catch {
@@ -861,10 +867,14 @@ async function getSchemeText(scheme = parent.document.getElementById("scheme").h
     if (scheme === "../../schemes/98.css" || scheme === "data:text/css,") {
         return schemeText;
     } else {
-        await fetch(scheme).then(res => res.text()).then(text => {
-            schemeText = text;
-        });
-        return schemeText;
+        try {
+            await fetch(scheme).then(res => res.text()).then(text => {
+                schemeText = text;
+            });
+            return schemeText;
+        } catch {
+            return schemeText;
+        }
     }
 }
 
@@ -962,7 +972,7 @@ function generateCssScheme(scheme, keepEffects = false) {
 
 // Parse *.theme files
 function getColorValue(themeText, name) {
-    let rgb = themeText.match(`${name}=(.*)\r\n`);
+    let rgb = themeText.match(`\n${name}=(.*)\r\n`);
     if (!rgb) {
         switch (name) {
             case 'ButtonAlternateFace':
@@ -981,7 +991,7 @@ function getColorValue(themeText, name) {
                 throw new Error(`Color not found for ${name}`);
         }
     }
-    return '#' + rgb[1].split(' ').map(x => parseInt(x).toString(16).padStart(2, '0')).join('');
+    return '#' + rgb[1].trim().split(' ').map(x => parseInt(x).toString(16).padStart(2, '0')).join('');
 }
 
 function changeItemSelection(item) {

@@ -324,5 +324,5 @@ function scrollIntoView(elem) {
     const height = elem.getBoundingClientRect().height;
     const parentTop = elem.parentElement.getBoundingClientRect().top;
     const parentHeight = elem.parentElement.getBoundingClientRect().height;
-    elem.parentElement.scrollBy(0, top - parentTop + height - parentHeight + 6);
+    elem.parentElement.scrollBy(0, top - parentTop + height - parentHeight + 26);
 }

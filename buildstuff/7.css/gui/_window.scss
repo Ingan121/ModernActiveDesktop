@@ -815,6 +815,11 @@
     padding-bottom: 0;
   }
 
+  &.madconf-misc .window-body {
+    margin-top: 4px;
+    margin-bottom: 4px;
+  }
+
   #itemSizeButtons button {
     line-height: 1px;
   }

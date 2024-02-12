@@ -26,6 +26,18 @@ if (madDeskMover.config.noFrames) {
     toggleTitle();
 }
 
+for (const elem of settingsMenuItems) {
+    elem.onmouseover = () => {
+        for (const item of settingsMenuItems) {
+            delete item.dataset.active;
+        }
+        elem.dataset.active = true;
+    }
+    elem.onmouseleave = () => {
+        delete elem.dataset.active;
+    }
+}
+
 settingsMenuBtn.addEventListener('pointerdown', (event) => {
     if (settingsMenuBtn.dataset.active) {
         closeSettingsMenu();
@@ -127,6 +139,9 @@ function openSettingsMenu() {
         case 'fade':
             settingsMenuBg.style.animation = 'fade 0.2s';
     }
+    for (const item of settingsMenuItems) {
+        delete item.dataset.active;
+    }
     settingsMenuBg.style.left = settingsMenuBtn.offsetLeft + 'px';
     settingsMenuBg.style.display = 'block';
     settingsMenuBtn.dataset.active = true;
@@ -141,17 +156,61 @@ function closeSettingsMenu() {
 }
 
 function menuNavigationHandler(event) {
-    const shortcutsKeys = settingsMenuBg.getElementsByTagName('u');
-    if (event.key === "Escape") {
-        closeSettingsMenu();
-        return;
+    let menuItems;
+    if (localStorage.madesktopDebugMode) {
+        menuItems = settingsMenuBg.querySelectorAll('.contextMenuItem');
+    } else {
+        menuItems = settingsMenuBg.querySelectorAll('.contextMenuItem:not(.debug)');
     }
-    for (const shortcutKey of shortcutsKeys) {
-        if (event.key === shortcutKey.textContent.toLowerCase()) {
-            shortcutKey.parentElement.click();
-            return;
-        }
+    const activeItem = settingsMenuBg.querySelector('.contextMenuItem[data-active]');
+    const activeItemIndex = Array.from(menuItems).indexOf(activeItem);
+    switch (event.key) {
+        case "Escape":
+            settingsMenuBg.blur();
+            break;
+        case "ArrowUp":
+            if (activeItem) {
+                delete activeItem.dataset.active;
+                if (activeItemIndex > 0) {
+                    menuItems[activeItemIndex - 1].dataset.active = true;
+                } else {
+                    menuItems[menuItems.length - 1].dataset.active = true;
+                }
+            } else {
+                menuItems[menuItems.length - 1].dataset.active = true;
+            }
+            break;
+        case "ArrowDown":
+            if (activeItem) {
+                delete activeItem.dataset.active;
+                if (activeItemIndex < menuItems.length - 1) {
+                    menuItems[activeItemIndex + 1].dataset.active = true;
+                } else {
+                    menuItems[0].dataset.active = true;
+                }
+            } else {
+                menuItems[0].dataset.active = true;
+            }
+            break;
+        case "Enter":
+            if (activeItem) {
+                activeItem.click();
+            } else {
+                settingsMenuBg.blur();
+                break;
+            }
+            break;
+        default:
+            const shortcutsKeys = settingsMenuBg.getElementsByTagName('u');
+            for (const shortcutKey of shortcutsKeys) {
+                if (event.key === shortcutKey.textContent.toLowerCase()) {
+                    shortcutKey.parentElement.click();
+                    return;
+                }
+            }
     }
+    event.preventDefault();
+    event.stopPropagation();
 }
 
 if (localStorage.madesktopClockDigital) {
@@ -371,8 +430,17 @@ function drawClock() {
         time = new Date();
     }
     if (localStorage.madesktopClockDigital) {
-        digitalClockTime.textContent = time.toLocaleTimeString();
-        digitalClockDate.textContent = time.toLocaleDateString();
+        const timestr = time.toLocaleTimeString();
+        if (localStorage.madesktopClockHideSeconds) {
+            digitalClockTime.textContent = timestr.slice(0, -6) + timestr.slice(-3);
+        } else {
+            digitalClockTime.textContent = timestr;
+        }
+        if (localStorage.madesktopClockHideDate) {
+            digitalClockDate.textContent = "";
+        } else {
+            digitalClockDate.textContent = time.toLocaleDateString();
+        }
         document.title = "Clock";
     } else {
         clockCtx.clearRect(0, 0, clockCanvas.width, clockCanvas.height);
@@ -432,11 +500,17 @@ document.addEventListener('click', (event) => {
 function toggleTitle() {
     if (isTitleHidden) {
         menuBar.style.display = 'flex';
+        mainArea.style.marginTop = '';
+        document.body.classList.remove('window');
         madChangeWndStyle('wnd');
         madExtendMoveTarget(false);
         isTitleHidden = false;
     } else {
         menuBar.style.display = 'none';
+        mainArea.style.marginTop = '0';
+        if (localStorage.madesktopClockDigital) {
+            document.body.classList.add('window');
+        }
         madChangeWndStyle('noframes');
         madExtendMoveTarget(true, toggleTitle);
         isTitleHidden = true;

@@ -38,6 +38,7 @@ const albumArt = document.getElementById('albumArt');
 const visBar = document.getElementById('bar');
 const visTop = document.getElementById('top');
 const pausedAlert = document.getElementById('pausedAlert');
+const extraAlert = document.getElementById('extraAlert');
 
 const statusArea = document.getElementById('statusArea');
 const playIcon = document.getElementById('play');
@@ -70,6 +71,8 @@ const infoAreaSeparator = document.getElementById('infoAreaSeparator');
 const statusBar = document.getElementById('statusBar');
 const statusText = document.getElementById('statusText').querySelector('p');
 const timeText = document.getElementById('timeText').querySelector('p');
+
+const menuOrder = ['vis', 'view', 'opt', 'help'];
 
 const visMenuBtn = document.getElementById('visMenuBtn');
 const visMenuBg = document.getElementById('visMenuBg');
@@ -105,9 +108,22 @@ let lastMusic = null;
 let schemeBarColor = null;
 let schemeTopColor = null;
 
-for (const menuName of ['vis', 'view', 'opt', 'help']) {
+for (const menuName of menuOrder) {
     const menuBtn = document.getElementById(menuName + 'MenuBtn');
     const menuBg = document.getElementById(menuName + 'MenuBg');
+    const menuItems = menuBg.querySelectorAll('.contextMenuItem');
+
+    for (const elem of menuItems) {
+        elem.onmouseover = () => {
+            for (const item of menuItems) {
+                delete item.dataset.active;
+            }
+            elem.dataset.active = true;
+        }
+        elem.onmouseleave = () => {
+            delete elem.dataset.active;
+        }
+    }
 
     menuBtn.addEventListener('pointerdown', (event) => {
         if (menuBtn.dataset.active) {
@@ -406,6 +422,7 @@ helpMenuItems[0].addEventListener('click', () => { // About Visualizer button
 function openMenu(menuName) {
     const menuBtn = document.getElementById(menuName + 'MenuBtn');
     const menuBg = document.getElementById(menuName + 'MenuBg');
+    const menuItems = menuBg.querySelectorAll('.contextMenuItem');
 
     switch (localStorage.madesktopCmAnimation) {
         case 'none':
@@ -416,6 +433,9 @@ function openMenu(menuName) {
             break;
         case 'fade':
             menuBg.style.animation = 'fade 0.2s';
+    }
+    for (const item of menuItems) {
+        delete item.dataset.active;
     }
     menuBg.style.left = menuBtn.offsetLeft + 'px';
     menuBg.style.display = 'block';
@@ -442,17 +462,75 @@ function menuNavigationHandler(event) {
     if (!openedMenu) {
         return;
     }
-    if (event.key === "Escape") {
-        openedMenu.blur();
-        return;
+    let menuItems;
+    if (localStorage.madesktopDebugMode) {
+        menuItems = openedMenu.querySelectorAll('.contextMenuItem');
+    } else {
+        menuItems = openedMenu.querySelectorAll('.contextMenuItem:not(.debug)');
     }
-    const shortcutsKeys = openedMenu.getElementsByTagName('u');
-    for (const shortcutKey of shortcutsKeys) {
-        if (event.key === shortcutKey.textContent.toLowerCase()) {
-            shortcutKey.parentElement.click();
-            return;
-        }
+    const activeItem = openedMenu.querySelector('.contextMenuItem[data-active]');
+    const activeItemIndex = Array.from(menuItems).indexOf(activeItem);
+    switch (event.key) {
+        case "Escape":
+            openedMenu.blur();
+            break;
+        case "ArrowUp":
+            if (activeItem) {
+                delete activeItem.dataset.active;
+                if (activeItemIndex > 0) {
+                    menuItems[activeItemIndex - 1].dataset.active = true;
+                } else {
+                    menuItems[menuItems.length - 1].dataset.active = true;
+                }
+            } else {
+                menuItems[menuItems.length - 1].dataset.active = true;
+            }
+            break;
+        case "ArrowDown":
+            if (activeItem) {
+                delete activeItem.dataset.active;
+                if (activeItemIndex < menuItems.length - 1) {
+                    menuItems[activeItemIndex + 1].dataset.active = true;
+                } else {
+                    menuItems[0].dataset.active = true;
+                }
+            } else {
+                menuItems[0].dataset.active = true;
+            }
+            break;
+        case "ArrowLeft":
+            const prevMenu = menuOrder[(menuOrder.indexOf(openedMenu.id.slice(0, -6)) + menuOrder.length - 1) % menuOrder.length];
+            closeMenu(openedMenu.id.slice(0, -6));
+            openMenu(prevMenu);
+            openedMenu.querySelector('.contextMenuItem').dataset.active = true;
+            menuBar.dataset.active = true;
+            break;
+        case "ArrowRight":
+            const nextMenu = menuOrder[(menuOrder.indexOf(openedMenu.id.slice(0, -6)) + 1) % menuOrder.length];
+            closeMenu(openedMenu.id.slice(0, -6));
+            openMenu(nextMenu);
+            openedMenu.querySelector('.contextMenuItem').dataset.active = true;
+            menuBar.dataset.active = true;
+            break;
+        case "Enter":
+            if (activeItem) {
+                activeItem.click();
+            } else {
+                openedMenu.blur();
+                break;
+            }
+            break;
+        default:
+            const shortcutsKeys = openedMenu.getElementsByTagName('u');
+            for (const shortcutKey of shortcutsKeys) {
+                if (event.key === shortcutKey.textContent.toLowerCase()) {
+                    shortcutKey.parentElement.click();
+                    return;
+                }
+            }
     }
+    event.preventDefault();
+    event.stopPropagation();
 }
 
 function mediaControl(action, title = lastMusic.title) {

@@ -727,6 +727,24 @@ const helpMenuItem = helpMenu.querySelector('.contextMenuItem');
 
 let openedMenu = null;
 
+for (const elem of gameMenuItems) {
+    elem.onmouseover = () => {
+        for (const item of gameMenuItems) {
+            delete item.dataset.active;
+        }
+        elem.dataset.active = true;
+    }
+    elem.onmouseleave = () => {
+        delete elem.dataset.active;
+    }
+}
+helpMenuItem.onmouseover = () => {
+    helpMenuItem.dataset.active = true;
+}
+helpMenuItem.onmouseleave = () => {
+    delete helpMenuItem.dataset.active
+}
+
 gameMenuBtn.addEventListener('pointerdown', (event) => {
     if (gameMenuBtn.dataset.active) {
         closeGameMenu();
@@ -780,6 +798,9 @@ function openGameMenu() {
         case 'fade':
             gameMenuBg.style.animation = 'fade 0.2s';
     }
+    for (const item of gameMenuItems) {
+        delete item.dataset.active;
+    }
     gameMenuBg.style.left = gameMenuBtn.offsetLeft + 'px';
     gameMenuBg.style.display = 'block';
     gameMenuBtn.dataset.active = true;
@@ -825,6 +846,7 @@ function openHelpMenu() {
         case 'fade':
             helpMenuBg.style.animation = 'fade 0.2s';
     }
+    delete helpMenuItem.dataset.active;
     helpMenuBg.style.left = helpMenuBtn.offsetLeft + 'px';
     helpMenuBg.style.display = 'block';
     helpMenuBtn.dataset.active = true;
@@ -849,17 +871,72 @@ function menuNavigationHandler(event) {
     if (!openedMenu) {
         return;
     }
-    if (event.key === "Escape") {
-        openedMenu.blur();
-        return;
+    let menuItems;
+    if (localStorage.madesktopDebugMode) {
+        menuItems = openedMenu.querySelectorAll('.contextMenuItem');
+    } else {
+        menuItems = openedMenu.querySelectorAll('.contextMenuItem:not(.debug)');
     }
-    const shortcutsKeys = openedMenu.getElementsByTagName('u');
-    for (const shortcutKey of shortcutsKeys) {
-        if (event.key === shortcutKey.textContent.toLowerCase()) {
-            shortcutKey.parentElement.click();
-            return;
-        }
+    const activeItem = openedMenu.querySelector('.contextMenuItem[data-active]');
+    const activeItemIndex = Array.from(menuItems).indexOf(activeItem);
+    switch (event.key) {
+        case "Escape":
+            openedMenu.blur();
+            break;
+        case "ArrowUp":
+            if (activeItem) {
+                delete activeItem.dataset.active;
+                if (activeItemIndex > 0) {
+                    menuItems[activeItemIndex - 1].dataset.active = true;
+                } else {
+                    menuItems[menuItems.length - 1].dataset.active = true;
+                }
+            } else {
+                menuItems[menuItems.length - 1].dataset.active = true;
+            }
+            break;
+        case "ArrowDown":
+            if (activeItem) {
+                delete activeItem.dataset.active;
+                if (activeItemIndex < menuItems.length - 1) {
+                    menuItems[activeItemIndex + 1].dataset.active = true;
+                } else {
+                    menuItems[0].dataset.active = true;
+                }
+            } else {
+                menuItems[0].dataset.active = true;
+            }
+            break;
+        case "ArrowLeft": case "ArrowRight":
+            if (helpMenuBtn.dataset.active) {
+                closeHelpMenu();
+                openGameMenu();
+                openedMenu.querySelector('.contextMenuItem').dataset.active = true;
+            } else {
+                closeGameMenu();
+                openHelpMenu();
+                openedMenu.querySelector('.contextMenuItem').dataset.active = true;
+            }
+            break;
+        case "Enter":
+            if (activeItem) {
+                activeItem.click();
+            } else {
+                openedMenu.blur();
+                break;
+            }
+            break;
+        default:
+            const shortcutsKeys = openedMenu.getElementsByTagName('u');
+            for (const shortcutKey of shortcutsKeys) {
+                if (event.key === shortcutKey.textContent.toLowerCase()) {
+                    shortcutKey.parentElement.click();
+                    return;
+                }
+            }
     }
+    event.preventDefault();
+    event.stopPropagation();
 }
 
 function randomBack() {

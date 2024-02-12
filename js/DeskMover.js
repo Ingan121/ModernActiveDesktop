@@ -115,12 +115,26 @@ class DeskMover {
             this.windowTitlebar.addEventListener('contextmenu', this.openContextMenuFromRightClick.bind(this));
             
             // Changes the active status correctly
-            for (let i = 0; i < this.contextMenuItems.length; i++) {
-                const elem = this.contextMenuItems[i];
+            for (const elem of this.contextMenuItems) {
                 elem.onmouseover = () => {
-                    if (elem !== this.contextMenuItems[0]) {
-                        delete this.contextMenuItems[0].dataset.active;
+                    for (const item of this.contextMenuItems) {
+                        delete item.dataset.active;
                     }
+                    elem.dataset.active = true;
+                }
+                elem.onmouseleave = () => {
+                    delete elem.dataset.active;
+                }
+            }
+            for (const elem of this.confMenuItems) {
+                elem.onmouseover = () => {
+                    for (const item of this.confMenuItems) {
+                        delete item.dataset.active;
+                    }
+                    elem.dataset.active = true;
+                }
+                elem.onmouseleave = () => {
+                    delete elem.dataset.active;
                 }
             }
         
@@ -406,6 +420,9 @@ class DeskMover {
             this.contextMenuItems[3].style.pointerEvents = "";
             this.contextMenuItems[3].style.opacity = "";
         }
+        for (const item of this.contextMenuItems) {
+            delete item.dataset.active;
+        }
         this.contextMenuBg.style.display = "block";
 
         // For handling window icon double click
@@ -439,6 +456,9 @@ class DeskMover {
             this.contextMenuItems[3].style.pointerEvents = "";
             this.contextMenuItems[3].style.opacity = "";
         }
+        for (const item of this.contextMenuItems) {
+            delete item.dataset.active;
+        }
         this.contextMenuBg.style.display = "block";
         iframeClickEventCtrl(false);
         isContextMenuOpen = true;
@@ -467,6 +487,9 @@ class DeskMover {
     }
 
     openConfMenu() {
+        for (const item of this.confMenuItems) {
+            delete item.dataset.active;
+        }
         this.contextMenuItems[0].dataset.active = true;
         this.confMenuBg.style.display = "block";
         iframeClickEventCtrl(false);
@@ -474,8 +497,8 @@ class DeskMover {
         openedMenuCloseFunc = this.closeConfMenu.bind(this);
     }
 
-    closeConfMenu() {
-        if (this.shouldNotCloseConfMenu) {
+    closeConfMenu(force) {
+        if (this.shouldNotCloseConfMenu && !force) {
             return
         }
         delete this.contextMenuItems[0].dataset.active;
@@ -508,6 +531,7 @@ class DeskMover {
         if (style === "noframes") {
             style = "ad";
             this.config.noFrames = true;
+            clearTimeout(this.timeout);
         } else if (style !== "ad") {
             this.config.noFrames = false;
         }

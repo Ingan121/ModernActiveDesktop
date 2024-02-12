@@ -145,13 +145,11 @@ body[data-cm-shadow] .contextMenuBg {
     margin-right: 5px;
 }
 
-.contextMenuItem:hover,
 .contextMenuItem[data-active] {
     background-color: var(--hilight);
     color: var(--hilight-text);
 }
 
-.contextMenuItem:hover u,
 .contextMenuItem[data-active] u {
     border-bottom-color: var(--hilight-text);
 }
