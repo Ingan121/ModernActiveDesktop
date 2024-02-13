@@ -17,6 +17,8 @@ const soundSchemeSelector = document.getElementById('soundSchemeSelector');
 const noDisableChkBox = document.getElementById('noDisableChkBox');
 const leftIconArea = document.getElementById('leftIconArea');
 const rightIconArea = document.getElementById('rightIconArea');
+const topIconArea = document.getElementById('topIconArea');
+const bottomIconArea = document.getElementById('bottomIconArea');
 const connectTestBtn = document.getElementById('connectTestBtn');
 const connectionStatus = document.getElementById('connectionStatus');
 const showGuideBtn = document.getElementById('showGuideBtn');
@@ -33,7 +35,9 @@ let config = {
     soundScheme: localStorage.madesktopSoundScheme || "98",
     noDisable: localStorage.madesktopNoDeactivate,
     leftIcon: localStorage.madesktopChanViewLeftMargin || '75px',
-    rightIcon: localStorage.madesktopChanViewRightMargin || 0
+    rightIcon: localStorage.madesktopChanViewRightMargin || 0,
+    topIcon: localStorage.madesktopChanViewTopMargin || 0,
+    bottomIcon: localStorage.madesktopChanViewBottomMargin || '48px'
 };
 
 switch (config.dpi * 100) {
@@ -115,6 +119,8 @@ if (config.noDisable) {
 
 leftIconArea.value = config.leftIcon;
 rightIconArea.value = config.rightIcon;
+topIconArea.value = config.topIcon;
+bottomIconArea.value = config.bottomIcon;
 
 window.apply = function () {
     parent.changeScale(config.dpi);
@@ -156,6 +162,8 @@ window.apply = function () {
 
     localStorage.madesktopChanViewLeftMargin = config.leftIcon;
     localStorage.madesktopChanViewRightMargin = config.rightIcon;
+    localStorage.madesktopChanViewTopMargin = config.topIcon;
+    localStorage.madesktopChanViewBottomMargin = config.bottomIcon;
 
     parent.announce("sysplug-option-changed");
 }
@@ -224,6 +232,14 @@ leftIconArea.addEventListener('change', function () {
 
 rightIconArea.addEventListener('change', function () {
     config.rightIcon = this.value;
+});
+
+topIconArea.addEventListener('change', function () {
+    config.topIcon = this.value;
+});
+
+bottomIconArea.addEventListener('change', function () {
+    config.bottomIcon = this.value;
 });
 
 connectTestBtn.addEventListener('click', checkSysplug);

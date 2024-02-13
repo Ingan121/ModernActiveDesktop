@@ -72,8 +72,6 @@ const statusBar = document.getElementById('statusBar');
 const statusText = document.getElementById('statusText').querySelector('p');
 const timeText = document.getElementById('timeText').querySelector('p');
 
-const menuOrder = ['vis', 'view', 'opt', 'help'];
-
 const visMenuBtn = document.getElementById('visMenuBtn');
 const visMenuBg = document.getElementById('visMenuBg');
 const visMenu = document.getElementById('visMenu');
@@ -99,7 +97,6 @@ const NO_MEDINT_MSG = isWin10
     ? 'Media integration support is disabled. Please enable it in Wallpaper Engine settings -> General -> Media integration support.'
     : 'This feature requires Windows 10 or higher.';
 
-let openedMenu = null;
 let mouseOverMenu = false;
 let mediaIntegrationAvailable = isWin10;
 
@@ -107,50 +104,6 @@ let lastAlbumArt = null;
 let lastMusic = null;
 let schemeBarColor = null;
 let schemeTopColor = null;
-
-for (const menuName of menuOrder) {
-    const menuBtn = document.getElementById(menuName + 'MenuBtn');
-    const menuBg = document.getElementById(menuName + 'MenuBg');
-    const menuItems = menuBg.querySelectorAll('.contextMenuItem');
-
-    for (const elem of menuItems) {
-        elem.onmouseover = () => {
-            for (const item of menuItems) {
-                delete item.dataset.active;
-            }
-            elem.dataset.active = true;
-        }
-        elem.onmouseleave = () => {
-            delete elem.dataset.active;
-        }
-    }
-
-    menuBtn.addEventListener('pointerdown', (event) => {
-        if (menuBtn.dataset.active) {
-            mouseOverMenu = false;
-            closeMenu(menuName);
-            return;
-        }
-        openMenu(menuName);
-        event.preventDefault(); // Prevent focusout event
-        madBringToTop(); // But keep the window activation working
-    });
-
-    menuBg.addEventListener('focusout', () => {
-        closeMenu(menuName);
-    });
-
-    menuBtn.addEventListener('mouseover', () => {
-        if (menuBar.dataset.active) {
-            mouseOverMenu = true;
-            openMenu(menuName);
-        }
-    });
-
-    menuBtn.addEventListener('mouseout', () => {
-        mouseOverMenu = false;
-    });
-}
 
 playIcon.addEventListener('click', () => {
     if (!playIcon.dataset.active) {
@@ -185,7 +138,7 @@ if (localStorage.madesktopVisMenuAutohide) {
 }
 
 if (localStorage.madesktopVisInfoShown) {
-    viewMenuItems[1].classList.add('checkedItem');
+    viewMenuItems[2].classList.add('checkedItem');
     infoArea.style.display = 'block';
     infoMainArea.style.display = 'flex';
     if (localStorage.madesktopVisStatusShown) {
@@ -197,7 +150,7 @@ if (localStorage.madesktopVisInfoShown) {
 }
 
 if (localStorage.madesktopVisStatusShown) {
-    viewMenuItems[2].classList.add('checkedItem');
+    viewMenuItems[3].classList.add('checkedItem');
     statusArea.style.display = 'flex';
     infoArea.style.display = 'block';
     statusBar.style.display = 'flex';
@@ -208,9 +161,9 @@ if (localStorage.madesktopVisStatusShown) {
 }
 
 if (localStorage.sysplugIntegration) {
-    viewMenuItems[3].classList.remove('disabled');
+    viewMenuItems[4].classList.remove('disabled');
     if (localStorage.madesktopVisMediaControls) {
-        viewMenuItems[3].classList.add('checkedItem');
+        viewMenuItems[4].classList.add('checkedItem');
         statusArea.dataset.controllable = true;
     }
 } else {
@@ -222,8 +175,9 @@ if (localStorage.madesktopVisOnlyAlbumArt) {
     visMenuItems[1].classList.remove('activeStyle');
 }
 
+madDeskMover.menu = new MadMenu(menuBar, ['vis', 'view', 'opt', 'help']);
+
 visMenuItems[0].addEventListener('click', () => { // Album Art button
-    closeMenu('vis');
     if (!mediaIntegrationAvailable) {
         madAlert(NO_MEDINT_MSG, null, isWin10 ? 'info' : 'error');
         return;
@@ -241,7 +195,6 @@ visMenuItems[0].addEventListener('click', () => { // Album Art button
 });
 
 visMenuItems[1].addEventListener('click', () => { // WMP Bars button
-    closeMenu('vis');
     delete localStorage.madesktopVisOnlyAlbumArt;
     visMenuItems[0].classList.remove('activeStyle');
     visMenuItems[1].classList.add('activeStyle');
@@ -255,7 +208,6 @@ visMenuItems[2].addEventListener('click', () => { // Exit button
 });
 
 viewMenuItems[0].addEventListener('click', () => { // Autohide Menu Bar button
-    closeMenu('view');
     if (localStorage.madesktopVisMenuAutohide) {
         delete localStorage.madesktopVisMenuAutohide;
         viewMenuItems[0].classList.remove('checkedItem');
@@ -270,8 +222,21 @@ viewMenuItems[0].addEventListener('click', () => { // Autohide Menu Bar button
     updateSize();
 });
 
-viewMenuItems[1].addEventListener('click', () => { // Information button
-    closeMenu('view');
+viewMenuItems[1].addEventListener('click', () => { // Fullscreen button
+    if (madDeskMover.isFullscreen) {
+        madDeskMover.exitFullscreen();
+        delete document.body.dataset.fullscreen;
+        viewMenuItems[1].classList.remove('checkedItem');
+    } else {
+        madDeskMover.enterFullscreen();
+        document.body.dataset.fullscreen = true;
+        viewMenuItems[1].classList.add('checkedItem');
+    }
+    updateSize();
+});
+
+
+viewMenuItems[2].addEventListener('click', () => { // Information button
     if (!mediaIntegrationAvailable) {
         madAlert(NO_MEDINT_MSG, null, isWin10 ? 'info' : 'error');
         return;
@@ -280,7 +245,7 @@ viewMenuItems[1].addEventListener('click', () => { // Information button
     const currentHeight = parseInt(madDeskMover.config.height);
     if (localStorage.madesktopVisInfoShown) {
         delete localStorage.madesktopVisInfoShown;
-        viewMenuItems[1].classList.remove('checkedItem');
+        viewMenuItems[2].classList.remove('checkedItem');
 
         let infoAreaHeight = infoMainArea.offsetHeight + 1;
         infoMainArea.style.display = 'none';
@@ -296,7 +261,7 @@ viewMenuItems[1].addEventListener('click', () => { // Information button
         madResizeTo(undefined, currentHeight - infoAreaHeight);
     } else {
         localStorage.madesktopVisInfoShown = true;
-        viewMenuItems[1].classList.add('checkedItem');
+        viewMenuItems[2].classList.add('checkedItem');
 
         infoArea.style.display = 'block';
         infoMainArea.style.display = 'flex';
@@ -319,8 +284,7 @@ viewMenuItems[1].addEventListener('click', () => { // Information button
     }
 });
 
-viewMenuItems[2].addEventListener('click', () => { // Playback Status button
-    closeMenu('view');
+viewMenuItems[3].addEventListener('click', () => { // Playback Status button
     if (!mediaIntegrationAvailable) {
         madAlert(NO_MEDINT_MSG, null, isWin10 ? 'info' : 'error');
         return;
@@ -330,7 +294,7 @@ viewMenuItems[2].addEventListener('click', () => { // Playback Status button
     const currentHeight = parseInt(madDeskMover.config.height);
     if (localStorage.madesktopVisStatusShown) {
         delete localStorage.madesktopVisStatusShown;
-        viewMenuItems[2].classList.remove('checkedItem');
+        viewMenuItems[3].classList.remove('checkedItem');
 
         let statusAreaHeight = statusArea.offsetHeight + 7;
         statusArea.style.display = 'none';
@@ -350,12 +314,12 @@ viewMenuItems[2].addEventListener('click', () => { // Playback Status button
 
         if (localStorage.madesktopVisMediaControls) {
             delete localStorage.madesktopVisMediaControls;
-            viewMenuItems[3].classList.remove('checkedItem');
+            viewMenuItems[4].classList.remove('checkedItem');
             delete statusArea.dataset.controllable;
         }
     } else {
         localStorage.madesktopVisStatusShown = true;
-        viewMenuItems[2].classList.add('checkedItem');
+        viewMenuItems[3].classList.add('checkedItem');
 
         statusArea.style.display = 'flex';
         infoArea.style.display = 'block';
@@ -377,8 +341,7 @@ viewMenuItems[2].addEventListener('click', () => { // Playback Status button
     }
 });
 
-viewMenuItems[3].addEventListener('click', () => { // Enable Media Controls button
-    closeMenu('view');
+viewMenuItems[4].addEventListener('click', () => { // Enable Media Controls button
     if (!mediaIntegrationAvailable) {
         madAlert(NO_MEDINT_MSG, null, isWin10 ? 'info' : 'error');
         return;
@@ -386,15 +349,15 @@ viewMenuItems[3].addEventListener('click', () => { // Enable Media Controls butt
 
     if (localStorage.madesktopVisMediaControls) {
         delete localStorage.madesktopVisMediaControls;
-        viewMenuItems[3].classList.remove('checkedItem');
+        viewMenuItems[4].classList.remove('checkedItem');
         delete statusArea.dataset.controllable;
     } else {
         if (localStorage.sysplugIntegration) {
             localStorage.madesktopVisMediaControls = true;
-            viewMenuItems[3].classList.add('checkedItem');
+            viewMenuItems[4].classList.add('checkedItem');
             statusArea.dataset.controllable = true;
             if (!localStorage.madesktopVisStatusShown) {
-                viewMenuItems[2].click();
+                viewMenuItems[3].click();
             }
         } else {
             madAlert('This feature requires system plugin integration.', () => {
@@ -405,7 +368,6 @@ viewMenuItems[3].addEventListener('click', () => { // Enable Media Controls butt
 });
 
 optMenuItems[0].addEventListener('click', () => { // Configure Visualization button
-    closeMenu('opt');
     const left = parseInt(madDeskMover.config.xPos) + 25 + 'px';
     const top = parseInt(madDeskMover.config.yPos) + 50 + 'px';
     const configWindow = madOpenWindow('apps/visualizer/config.html', true, '400px', '435px', 'wnd', false, top, left, true, true, true);
@@ -415,123 +377,8 @@ optMenuItems[0].addEventListener('click', () => { // Configure Visualization but
 });
 
 helpMenuItems[0].addEventListener('click', () => { // About Visualizer button
-    closeMenu('help');
     madOpenConfig('about');
 });
-
-function openMenu(menuName) {
-    const menuBtn = document.getElementById(menuName + 'MenuBtn');
-    const menuBg = document.getElementById(menuName + 'MenuBg');
-    const menuItems = menuBg.querySelectorAll('.contextMenuItem');
-
-    switch (localStorage.madesktopCmAnimation) {
-        case 'none':
-            menuBg.style.animation = 'none';
-            break;
-        case 'slide':
-            menuBg.style.animation = 'cmDropdown 0.25s linear';
-            break;
-        case 'fade':
-            menuBg.style.animation = 'fade 0.2s';
-    }
-    for (const item of menuItems) {
-        delete item.dataset.active;
-    }
-    menuBg.style.left = menuBtn.offsetLeft + 'px';
-    menuBg.style.display = 'block';
-    menuBar.dataset.active = true;
-    menuBtn.dataset.active = true;
-    menuBg.focus();
-    openedMenu = menuBg;
-    document.addEventListener('keydown', menuNavigationHandler);
-}
-
-function closeMenu(menuName) {
-    const menuBtn = document.getElementById(menuName + 'MenuBtn');
-    const menuBg = document.getElementById(menuName + 'MenuBg');
-    menuBg.style.display = 'none';
-    delete menuBtn.dataset.active;
-    if (!mouseOverMenu) {
-        delete menuBar.dataset.active;
-    }
-    openedMenu = null;
-    document.removeEventListener('keydown', menuNavigationHandler);
-}
-
-function menuNavigationHandler(event) {
-    if (!openedMenu) {
-        return;
-    }
-    let menuItems;
-    if (localStorage.madesktopDebugMode) {
-        menuItems = openedMenu.querySelectorAll('.contextMenuItem');
-    } else {
-        menuItems = openedMenu.querySelectorAll('.contextMenuItem:not(.debug)');
-    }
-    const activeItem = openedMenu.querySelector('.contextMenuItem[data-active]');
-    const activeItemIndex = Array.from(menuItems).indexOf(activeItem);
-    switch (event.key) {
-        case "Escape":
-            openedMenu.blur();
-            break;
-        case "ArrowUp":
-            if (activeItem) {
-                delete activeItem.dataset.active;
-                if (activeItemIndex > 0) {
-                    menuItems[activeItemIndex - 1].dataset.active = true;
-                } else {
-                    menuItems[menuItems.length - 1].dataset.active = true;
-                }
-            } else {
-                menuItems[menuItems.length - 1].dataset.active = true;
-            }
-            break;
-        case "ArrowDown":
-            if (activeItem) {
-                delete activeItem.dataset.active;
-                if (activeItemIndex < menuItems.length - 1) {
-                    menuItems[activeItemIndex + 1].dataset.active = true;
-                } else {
-                    menuItems[0].dataset.active = true;
-                }
-            } else {
-                menuItems[0].dataset.active = true;
-            }
-            break;
-        case "ArrowLeft":
-            const prevMenu = menuOrder[(menuOrder.indexOf(openedMenu.id.slice(0, -6)) + menuOrder.length - 1) % menuOrder.length];
-            closeMenu(openedMenu.id.slice(0, -6));
-            openMenu(prevMenu);
-            openedMenu.querySelector('.contextMenuItem').dataset.active = true;
-            menuBar.dataset.active = true;
-            break;
-        case "ArrowRight":
-            const nextMenu = menuOrder[(menuOrder.indexOf(openedMenu.id.slice(0, -6)) + 1) % menuOrder.length];
-            closeMenu(openedMenu.id.slice(0, -6));
-            openMenu(nextMenu);
-            openedMenu.querySelector('.contextMenuItem').dataset.active = true;
-            menuBar.dataset.active = true;
-            break;
-        case "Enter":
-            if (activeItem) {
-                activeItem.click();
-            } else {
-                openedMenu.blur();
-                break;
-            }
-            break;
-        default:
-            const shortcutsKeys = openedMenu.getElementsByTagName('u');
-            for (const shortcutKey of shortcutsKeys) {
-                if (event.key === shortcutKey.textContent.toLowerCase()) {
-                    shortcutKey.parentElement.click();
-                    return;
-                }
-            }
-    }
-    event.preventDefault();
-    event.stopPropagation();
-}
 
 function mediaControl(action, title = lastMusic.title) {
     if (!localStorage.sysplugIntegration || !localStorage.madesktopVisMediaControls) {
@@ -556,17 +403,17 @@ function wallpaperMediaStatusListener(event) {
         wallpaperMediaPropertiesListener({});
         
         if (localStorage.madesktopVisInfoShown) {
-            viewMenuItems[1].click();
-        }
-        if (localStorage.madesktopVisStatusShown) {
             viewMenuItems[2].click();
         }
-        if (localStorage.madesktopVisMediaControls) {
+        if (localStorage.madesktopVisStatusShown) {
             viewMenuItems[3].click();
         }
-        viewMenuItems[1].classList.add('disabled');
+        if (localStorage.madesktopVisMediaControls) {
+            viewMenuItems[4].click();
+        }
         viewMenuItems[2].classList.add('disabled');
         viewMenuItems[3].classList.add('disabled');
+        viewMenuItems[4].classList.add('disabled');
 
         delete localStorage.madesktopVisOnlyAlbumArt;
         visMenuItems[0].classList.remove('activeStyle');
@@ -575,10 +422,10 @@ function wallpaperMediaStatusListener(event) {
         visTop.style.display = 'block';
         visMenuItems[0].classList.add('disabled');
     } else {
-        viewMenuItems[1].classList.remove('disabled');
         viewMenuItems[2].classList.remove('disabled');
+        viewMenuItems[3].classList.remove('disabled');
         if (localStorage.sysplugIntegration) {
-            viewMenuItems[3].classList.remove('disabled');
+            viewMenuItems[4].classList.remove('disabled');
         }
         visMenuItems[0].classList.remove('disabled');
     }
@@ -721,7 +568,7 @@ function wallpaperMediaThumbnailListener(event) {
         albumArt.src = event.thumbnail;
     }
     if (localStorage.madesktopVisFollowAlbumArt) {
-        mainArea.style.backgroundColor = event.primaryColor;
+        document.body.style.backgroundColor = event.primaryColor;
     }
     lastAlbumArt = event;
 }
@@ -734,11 +581,11 @@ function configChanged() {
     }
 
     if (localStorage.madesktopVisFollowAlbumArt && lastAlbumArt) {
-        mainArea.style.backgroundColor = lastAlbumArt.primaryColor;
+        document.body.style.backgroundColor = lastAlbumArt.primaryColor;
     } else if (localStorage.madesktopVisUseSchemeColors) {
         updateSchemeColor();
     } else {
-        mainArea.style.backgroundColor = localStorage.madesktopVisBgColor || 'black';
+        document.body.style.backgroundColor = localStorage.madesktopVisBgColor || 'black';
     }
 
     if (localStorage.madesktopVisDimAlbumArt) {
@@ -765,12 +612,12 @@ window.addEventListener("message", (event) => {
             break;
         case "sysplug-option-changed":
             if (localStorage.sysplugIntegration && isWin10) {
-                viewMenuItems[3].classList.remove('disabled');
+                viewMenuItems[4].classList.remove('disabled');
             } else {
-                viewMenuItems[3].classList.add('disabled');
+                viewMenuItems[4].classList.add('disabled');
                 if (localStorage.madesktopVisMediaControls) {
                     delete localStorage.madesktopVisMediaControls;
-                    viewMenuItems[3].classList.remove('checkedItem');
+                    viewMenuItems[4].classList.remove('checkedItem');
                     delete statusArea.dataset.controllable;
                 }
             }
@@ -781,7 +628,7 @@ function updateSchemeColor() {
     schemeBarColor = getComputedStyle(document.documentElement).getPropertyValue('--hilight');
     schemeTopColor = getComputedStyle(document.documentElement).getPropertyValue('--button-text');
     if (localStorage.madesktopVisUseSchemeColors && (!lastAlbumArt || !localStorage.madesktopVisFollowAlbumArt)) {
-        mainArea.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--button-face');
+        document.body.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--button-face');
     }
 }
 

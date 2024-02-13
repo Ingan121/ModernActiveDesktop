@@ -35,6 +35,13 @@
     }
 }
 
+:root {
+    --mad-margin-top: 0px;
+    --mad-margin-left: 75px;
+    --mad-margin-right: 0px;
+    --mad-margin-bottom: 48px;
+}
+
 .menu {
     display: flex;
     margin-top: 0;
@@ -58,7 +65,7 @@
     user-select: none;
 }
 
-.menu > div:hover {
+.menu:not([data-active]) > div:hover {
     border-color: var(--button-hilight) var(--button-shadow) var(--button-shadow) var(--button-hilight);
 }
 
@@ -92,6 +99,10 @@
 
 body[data-cm-shadow] .contextMenuBg {
     box-shadow: var(--border-window-outer), var(--border-window-inner), 5px 5px 4px -4px rgba(0, 0, 0, 0.75) !important;
+}
+
+body[data-fullscreen] .contextMenuBg {
+    top: calc(var(--mad-margin-top) + var(--menu-height));
 }
 
 .contextMenuBg:focus {

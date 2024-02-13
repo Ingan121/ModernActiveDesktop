@@ -35,39 +35,41 @@
         <canvas id="bar"></canvas>
         <canvas id="top"></canvas>
     </div>
-    <div id="statusArea">
-        <div id="play" class="statusButton"><p>▶</p></div>
-        <div id="pause" class="statusButton" data-disabled="1"><p>⏸</p></div>
-        <div id="stop" class="statusButton" data-active="1"><p>⏹</p></div>
-        <div id="vertbar"></div>
-        <div id="prev" class="statusButton"><p>⏮</p></div>
-        <div id="next" class="statusButton"><p>⏭</p></div>
-        <div id="seekBar" class="statusItem"><div id="seekHandle"></div></div>
-    </div>
-    <div id="infoArea">
-        <div id="infoMainArea">
-            <div id="leftArea">
-                <div id="title" class="infoItem"><p>Title:</p></div>
-                <div id="subtitle" class="infoItem"><p>Subtitle:</p></div>
-                <div id="artist" class="infoItem"><p>Artist:</p></div>
-                <div id="album" class="infoItem"><p>Album:</p></div>
-                <div id="albumArtist" class="infoItem"><p>Album Artist:</p></div>
-                <div id="genre" class="infoItem"><p>Genre:</p></div>
-            </div>
-            <div id="rightArea">
-                <div id="titleValue" class="infoItem"><p></p></div>
-                <div id="subtitleValue" class="infoItem"><p></p></div>
-                <div id="artistValue" class="infoItem"><p></p></div>
-                <div id="albumValue" class="infoItem"><p></p></div>
-                <div id="albumArtistValue" class="infoItem"><p></p></div>
-                <div id="genreValue" class="infoItem"><p></p></div>
-            </div>
+    <div id="bottomArea">
+        <div id="statusArea">
+            <div id="play" class="statusButton"><p>▶</p></div>
+            <div id="pause" class="statusButton" data-disabled="1"><p>⏸</p></div>
+            <div id="stop" class="statusButton" data-active="1"><p>⏹</p></div>
+            <div id="vertbar"></div>
+            <div id="prev" class="statusButton"><p>⏮</p></div>
+            <div id="next" class="statusButton"><p>⏭</p></div>
+            <div id="seekBar" class="statusItem"><div id="seekHandle"></div></div>
         </div>
-        <hr id="infoAreaSeparator">
-        <div id="statusBar">
-            <div id="statusText" class="infoItem"><p><span>Stopped</span></p></div>
-            <div id="timeText" class="infoItem"><p><span>00:00 / 00:00</span></p></div>
-            <img id="speaker" src="speaker.png">
+        <div id="infoArea">
+            <div id="infoMainArea">
+                <div id="leftArea">
+                    <div id="title" class="infoItem"><p>Title:</p></div>
+                    <div id="subtitle" class="infoItem"><p>Subtitle:</p></div>
+                    <div id="artist" class="infoItem"><p>Artist:</p></div>
+                    <div id="album" class="infoItem"><p>Album:</p></div>
+                    <div id="albumArtist" class="infoItem"><p>Album Artist:</p></div>
+                    <div id="genre" class="infoItem"><p>Genre:</p></div>
+                </div>
+                <div id="rightArea">
+                    <div id="titleValue" class="infoItem"><p></p></div>
+                    <div id="subtitleValue" class="infoItem"><p></p></div>
+                    <div id="artistValue" class="infoItem"><p></p></div>
+                    <div id="albumValue" class="infoItem"><p></p></div>
+                    <div id="albumArtistValue" class="infoItem"><p></p></div>
+                    <div id="genreValue" class="infoItem"><p></p></div>
+                </div>
+            </div>
+            <hr id="infoAreaSeparator">
+            <div id="statusBar">
+                <div id="statusText" class="infoItem"><p><span>Stopped</span></p></div>
+                <div id="timeText" class="infoItem"><p><span>00:00 / 00:00</span></p></div>
+                <img id="speaker" src="speaker.png">
+            </div>
         </div>
     </div>
 
@@ -82,6 +84,7 @@
     <div id="viewMenuBg" class="contextMenuBg window" tabindex="-1">
         <div id="viewMenu" class="contextMenu window-body">
             <div class="contextMenuItem"><p><u>A</u>utohide Menu Bar</p></div>
+            <div class="contextMenuItem"><p><u>F</u>ullscreen</p></div>
             <div class="contextMenuItem"><p><u>I</u>nformation</p></div>
             <div class="contextMenuItem"><p>Playback <u>S</u>tatus</p></div>
             <div class="contextMenuItem disabled"><p><u>E</u>nable Media Controls</p></div>
@@ -98,6 +101,7 @@
         </div>
     </div>
     <script src="../../js/libmad.js"></script>
+    <script src="../../js/libmad-menu.js"></script>
     <script src="main.js"></script>
     <script src="wmpvis.js"></script>
 </body>

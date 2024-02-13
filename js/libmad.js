@@ -71,10 +71,16 @@
     const config = deskMover.config;
 
     applyScheme(true);
+    applyMargins();
 
     window.addEventListener("message", (event) => {
-        if (event.data.type === "scheme-updated") {
-            applyScheme();
+        switch (event.data.type) {
+            case "scheme-updated":
+                applyScheme();
+                break;
+            case "sysplug-option-changed":
+                applyMargins();
+                break;
         }
     });
 
@@ -123,6 +129,13 @@
             }
             changeAeroGlass(localStorage.madesktopAeroNoGlass);
         }
+    }
+
+    function applyMargins() {
+        document.documentElement.style.setProperty('--mad-margin-top', parseInt(localStorage.madesktopChanViewTopMargin || 0) + 'px');
+        document.documentElement.style.setProperty('--mad-margin-left', parseInt(localStorage.madesktopChanViewLeftMargin || 75) + 'px');
+        document.documentElement.style.setProperty('--mad-margin-right', parseInt(localStorage.madesktopChanViewRightMargin || 0) + 'px');
+        document.documentElement.style.setProperty('--mad-margin-bottom', parseInt(localStorage.madesktopChanViewBottomMargin || 48) + 'px');
     }
 
     if (styleElement) {

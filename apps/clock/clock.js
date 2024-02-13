@@ -26,30 +26,9 @@ if (madDeskMover.config.noFrames) {
     toggleTitle();
 }
 
-for (const elem of settingsMenuItems) {
-    elem.onmouseover = () => {
-        for (const item of settingsMenuItems) {
-            delete item.dataset.active;
-        }
-        elem.dataset.active = true;
-    }
-    elem.onmouseleave = () => {
-        delete elem.dataset.active;
-    }
-}
-
-settingsMenuBtn.addEventListener('pointerdown', (event) => {
-    if (settingsMenuBtn.dataset.active) {
-        closeSettingsMenu();
-        return;
-    }
-    openSettingsMenu();
-    event.preventDefault(); // Prevent focusout event
-    madBringToTop(); // But keep the window activation working
-});
+madDeskMover.menu = new MadMenu(menuBar, ['settings']);
 
 settingsMenuItems[0].addEventListener('click', () => { // Analog button
-    closeSettingsMenu();
     delete localStorage.madesktopClockDigital;
     settingsMenuItems[0].classList.add('activeStyle');
     settingsMenuItems[1].classList.remove('activeStyle');
@@ -60,7 +39,6 @@ settingsMenuItems[0].addEventListener('click', () => { // Analog button
 });
 
 settingsMenuItems[1].addEventListener('click', () => { // Digital button
-    closeSettingsMenu();
     localStorage.madesktopClockDigital = true;
     settingsMenuItems[1].classList.add('activeStyle');
     settingsMenuItems[0].classList.remove('activeStyle');
@@ -71,7 +49,6 @@ settingsMenuItems[1].addEventListener('click', () => { // Digital button
 });
 
 settingsMenuItems[2].addEventListener('click', () => { // Set Font / Colors button
-    closeSettingsMenu();
     const left = parseInt(madDeskMover.config.xPos) + 20 + 'px';
     const top = parseInt(madDeskMover.config.yPos) + 50 + 'px';
     const configWindow = madOpenWindow('apps/clock/config.html', true, '380px', '180px', 'wnd', false, top, left, true, true);
@@ -81,7 +58,6 @@ settingsMenuItems[2].addEventListener('click', () => { // Set Font / Colors butt
 });
 
 settingsMenuItems[3].addEventListener('click', function () { // GMT button
-    closeSettingsMenu();
     if (localStorage.madesktopClockGMT) {
         this.classList.remove('checkedItem');
         delete localStorage.madesktopClockGMT;
@@ -93,12 +69,10 @@ settingsMenuItems[3].addEventListener('click', function () { // GMT button
 });
 
 settingsMenuItems[4].addEventListener('click', () => { // No Title button
-    closeSettingsMenu();
     toggleTitle();
 });
 
 settingsMenuItems[5].addEventListener('click', function () { // Seconds button
-    closeSettingsMenu();
     if (localStorage.madesktopClockHideSeconds) {
         this.classList.add('checkedItem');
         delete localStorage.madesktopClockHideSeconds;
@@ -110,7 +84,6 @@ settingsMenuItems[5].addEventListener('click', function () { // Seconds button
 });
 
 settingsMenuItems[6].addEventListener('click', function () { // Date button
-    closeSettingsMenu();
     if (localStorage.madesktopClockHideDate) {
         this.classList.add('checkedItem');
         delete localStorage.madesktopClockHideDate;
@@ -122,96 +95,8 @@ settingsMenuItems[6].addEventListener('click', function () { // Date button
 });
 
 settingsMenuItems[7].addEventListener('click', () => { // About Clock button
-    closeSettingsMenu();
     madOpenConfig('about');
 });
-
-settingsMenuBg.addEventListener('focusout', closeSettingsMenu);
-
-function openSettingsMenu() {
-    switch (localStorage.madesktopCmAnimation) {
-        case 'none':
-            settingsMenuBg.style.animation = 'none';
-            break;
-        case 'slide':
-            settingsMenuBg.style.animation = 'cmDropdown 0.25s linear';
-            break;
-        case 'fade':
-            settingsMenuBg.style.animation = 'fade 0.2s';
-    }
-    for (const item of settingsMenuItems) {
-        delete item.dataset.active;
-    }
-    settingsMenuBg.style.left = settingsMenuBtn.offsetLeft + 'px';
-    settingsMenuBg.style.display = 'block';
-    settingsMenuBtn.dataset.active = true;
-    settingsMenuBg.focus();
-    document.addEventListener('keydown', menuNavigationHandler);
-}
-
-function closeSettingsMenu() {
-    settingsMenuBg.style.display = 'none';
-    delete settingsMenuBtn.dataset.active;
-    document.removeEventListener('keydown', menuNavigationHandler);
-}
-
-function menuNavigationHandler(event) {
-    let menuItems;
-    if (localStorage.madesktopDebugMode) {
-        menuItems = settingsMenuBg.querySelectorAll('.contextMenuItem');
-    } else {
-        menuItems = settingsMenuBg.querySelectorAll('.contextMenuItem:not(.debug)');
-    }
-    const activeItem = settingsMenuBg.querySelector('.contextMenuItem[data-active]');
-    const activeItemIndex = Array.from(menuItems).indexOf(activeItem);
-    switch (event.key) {
-        case "Escape":
-            settingsMenuBg.blur();
-            break;
-        case "ArrowUp":
-            if (activeItem) {
-                delete activeItem.dataset.active;
-                if (activeItemIndex > 0) {
-                    menuItems[activeItemIndex - 1].dataset.active = true;
-                } else {
-                    menuItems[menuItems.length - 1].dataset.active = true;
-                }
-            } else {
-                menuItems[menuItems.length - 1].dataset.active = true;
-            }
-            break;
-        case "ArrowDown":
-            if (activeItem) {
-                delete activeItem.dataset.active;
-                if (activeItemIndex < menuItems.length - 1) {
-                    menuItems[activeItemIndex + 1].dataset.active = true;
-                } else {
-                    menuItems[0].dataset.active = true;
-                }
-            } else {
-                menuItems[0].dataset.active = true;
-            }
-            break;
-        case "Enter":
-            if (activeItem) {
-                activeItem.click();
-            } else {
-                settingsMenuBg.blur();
-                break;
-            }
-            break;
-        default:
-            const shortcutsKeys = settingsMenuBg.getElementsByTagName('u');
-            for (const shortcutKey of shortcutsKeys) {
-                if (event.key === shortcutKey.textContent.toLowerCase()) {
-                    shortcutKey.parentElement.click();
-                    return;
-                }
-            }
-    }
-    event.preventDefault();
-    event.stopPropagation();
-}
 
 if (localStorage.madesktopClockDigital) {
     settingsMenuItems[0].classList.remove('activeStyle');

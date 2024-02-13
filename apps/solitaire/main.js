@@ -716,6 +716,7 @@ function initSolitaire() {
 window.onload = initSolitaire;
 
 /* MAD Additions */
+const menuBar = document.getElementById('menuBar');
 const gameMenuBtn = document.getElementById('gameMenuBtn');
 const gameMenuBg = document.getElementById('gameMenuBg');
 const gameMenu = document.getElementById('gameMenu');
@@ -725,44 +726,14 @@ const helpMenuBg = document.getElementById('helpMenuBg');
 const helpMenu = document.getElementById('helpMenu');
 const helpMenuItem = helpMenu.querySelector('.contextMenuItem');
 
-let openedMenu = null;
-
-for (const elem of gameMenuItems) {
-    elem.onmouseover = () => {
-        for (const item of gameMenuItems) {
-            delete item.dataset.active;
-        }
-        elem.dataset.active = true;
-    }
-    elem.onmouseleave = () => {
-        delete elem.dataset.active;
-    }
-}
-helpMenuItem.onmouseover = () => {
-    helpMenuItem.dataset.active = true;
-}
-helpMenuItem.onmouseleave = () => {
-    delete helpMenuItem.dataset.active
-}
-
-gameMenuBtn.addEventListener('pointerdown', (event) => {
-    if (gameMenuBtn.dataset.active) {
-        closeGameMenu();
-        return;
-    }
-    openGameMenu();
-    event.preventDefault(); // Prevent focusout event
-    madBringToTop(); // But keep the window activation working
-});
+madDeskMover.menu = new MadMenu(menuBar, ['game', 'help']);
 
 gameMenuItems[0].addEventListener('click', () => { // Deal button
-    closeGameMenu();
     resetGame();
 });
 
 gameMenuItems[1].addEventListener('click', (event) => { // Deck button
     event.stopPropagation();
-    closeGameMenu();
     const left = parseInt(madDeskMover.config.xPos) + 25 + 'px';
     const top = parseInt(madDeskMover.config.yPos) + 80 + 'px';
     const backPicker = madOpenWindow('apps/solitaire/cards.html', true, '323px', '295px', 'wnd', false, top, left, true, true, true);
@@ -778,166 +749,10 @@ gameMenuItems[2].addEventListener('click', () => { // Exit button
     madCloseWindow();
 });
 
-gameMenuBtn.addEventListener('mouseover', () => {
-    if (helpMenuBtn.dataset.active) {
-        closeHelpMenu();
-        openGameMenu();
-    }
-});
-
-gameMenuBg.addEventListener('focusout', closeGameMenu);
-
-function openGameMenu() {
-    switch (localStorage.madesktopCmAnimation) {
-        case 'none':
-            gameMenuBg.style.animation = 'none';
-            break;
-        case 'slide':
-            gameMenuBg.style.animation = 'cmDropdown 0.25s linear';
-            break;
-        case 'fade':
-            gameMenuBg.style.animation = 'fade 0.2s';
-    }
-    for (const item of gameMenuItems) {
-        delete item.dataset.active;
-    }
-    gameMenuBg.style.left = gameMenuBtn.offsetLeft + 'px';
-    gameMenuBg.style.display = 'block';
-    gameMenuBtn.dataset.active = true;
-    gameMenuBg.focus();
-    openedMenu = gameMenuBg;
-    document.addEventListener('keydown', menuNavigationHandler);
-}
-
-function closeGameMenu() {
-    gameMenuBg.style.display = 'none';
-    delete gameMenuBtn.dataset.active;
-    openedMenu = null;
-    document.removeEventListener('keydown', menuNavigationHandler);
-}
-
-helpMenuBtn.addEventListener('pointerdown', (event) => {
-    if (helpMenuBtn.dataset.active) {
-        closeHelpMenu();
-        return;
-    }
-    openHelpMenu();
-    event.preventDefault(); // Prevent focusout event
-    madBringToTop(); // But keep the window activation working
-});
-
-helpMenuBtn.addEventListener('mouseover', () => {
-    if (gameMenuBtn.dataset.active) {
-        closeGameMenu();
-        openHelpMenu();
-    }
-});
-
-helpMenuBg.addEventListener('focusout', closeHelpMenu);
-
-function openHelpMenu() {
-    switch (localStorage.madesktopCmAnimation) {
-        case 'none':
-            helpMenuBg.style.animation = 'none';
-            break;
-        case 'slide':
-            helpMenuBg.style.animation = 'cmDropdown 0.25s linear';
-            break;
-        case 'fade':
-            helpMenuBg.style.animation = 'fade 0.2s';
-    }
-    delete helpMenuItem.dataset.active;
-    helpMenuBg.style.left = helpMenuBtn.offsetLeft + 'px';
-    helpMenuBg.style.display = 'block';
-    helpMenuBtn.dataset.active = true;
-    helpMenuBg.focus();
-    openedMenu = helpMenuBg;
-    document.addEventListener('keydown', menuNavigationHandler);
-}
-
-function closeHelpMenu() {
-    helpMenuBg.style.display = 'none';
-    delete helpMenuBtn.dataset.active;
-    openedMenu = null;
-    document.removeEventListener('keydown', menuNavigationHandler);
-}
-
 helpMenuItem.addEventListener('click', () => {
     closeHelpMenu();
     window.open('https://github.com/rjanjic/js-solitaire/', '_blank');
 });
-
-function menuNavigationHandler(event) {
-    if (!openedMenu) {
-        return;
-    }
-    let menuItems;
-    if (localStorage.madesktopDebugMode) {
-        menuItems = openedMenu.querySelectorAll('.contextMenuItem');
-    } else {
-        menuItems = openedMenu.querySelectorAll('.contextMenuItem:not(.debug)');
-    }
-    const activeItem = openedMenu.querySelector('.contextMenuItem[data-active]');
-    const activeItemIndex = Array.from(menuItems).indexOf(activeItem);
-    switch (event.key) {
-        case "Escape":
-            openedMenu.blur();
-            break;
-        case "ArrowUp":
-            if (activeItem) {
-                delete activeItem.dataset.active;
-                if (activeItemIndex > 0) {
-                    menuItems[activeItemIndex - 1].dataset.active = true;
-                } else {
-                    menuItems[menuItems.length - 1].dataset.active = true;
-                }
-            } else {
-                menuItems[menuItems.length - 1].dataset.active = true;
-            }
-            break;
-        case "ArrowDown":
-            if (activeItem) {
-                delete activeItem.dataset.active;
-                if (activeItemIndex < menuItems.length - 1) {
-                    menuItems[activeItemIndex + 1].dataset.active = true;
-                } else {
-                    menuItems[0].dataset.active = true;
-                }
-            } else {
-                menuItems[0].dataset.active = true;
-            }
-            break;
-        case "ArrowLeft": case "ArrowRight":
-            if (helpMenuBtn.dataset.active) {
-                closeHelpMenu();
-                openGameMenu();
-                openedMenu.querySelector('.contextMenuItem').dataset.active = true;
-            } else {
-                closeGameMenu();
-                openHelpMenu();
-                openedMenu.querySelector('.contextMenuItem').dataset.active = true;
-            }
-            break;
-        case "Enter":
-            if (activeItem) {
-                activeItem.click();
-            } else {
-                openedMenu.blur();
-                break;
-            }
-            break;
-        default:
-            const shortcutsKeys = openedMenu.getElementsByTagName('u');
-            for (const shortcutKey of shortcutsKeys) {
-                if (event.key === shortcutKey.textContent.toLowerCase()) {
-                    shortcutKey.parentElement.click();
-                    return;
-                }
-            }
-    }
-    event.preventDefault();
-    event.stopPropagation();
-}
 
 function randomBack() {
     let back = Math.floor(Math.random() * 24) + 1;

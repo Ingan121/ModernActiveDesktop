@@ -40,6 +40,9 @@ class DeskMover {
         this.dblClickEvent = null;
         this.dblClickTimer;
 
+        this.firstLoadSuccess = false;
+        this.isFullscreen = false;
+
         this.contextMenuOpening = false;
         this.shouldNotCloseConfMenu = false;
 
@@ -808,6 +811,23 @@ class DeskMover {
         }
     }
 
+    enterFullscreen() {
+        this.windowElement.style.top = -(this.windowFrame.offsetTop + this.windowContainer.offsetTop + 3) + "px";
+        this.windowElement.style.left = -(this.windowFrame.offsetLeft + this.windowContainer.offsetLeft + 3) + "px";
+        this.windowElement.style.width = window.vWidth + "px";
+        this.windowElement.style.height = window.vHeight + "px";
+        this.isFullscreen = true;
+    }
+
+    exitFullscreen() {
+        this.windowElement.style.top = "";
+        this.windowElement.style.left = "";
+        this.windowElement.style.width = "";
+        this.windowElement.style.height = "";
+        this.adjustElements();
+        this.isFullscreen = false;
+    }
+
     #wcMouseDown(event) {
         this.bringToTop();
         if (event.button !== 0) return;
@@ -1124,6 +1144,22 @@ class DeskMover {
     }
     
     async #weLoad () {
+        if (!this.windowElement.contentWindow) {
+            // Cross-origin iframe
+            return;
+        }
+        if (window.runningMode === WE) {
+            if (this.windowElement.contentWindow.location.href === "chrome-error://chromewebdata/") {
+                madAlert("ModernActiveDesktop cannot load this URL due to a security policy. Please try another URL.", () => {
+                    if (this.firstLoadSuccess) {
+                        this.windowElement.src = this.config.src || "placeholder.html";
+                    } else {
+                        this.closeWindow();
+                    }
+                }, "error");
+                return;
+            }
+        }
         this.windowElement.contentDocument.addEventListener('mousemove', this.#weConMouseMove.bind(this));
         this.windowElement.contentDocument.addEventListener('mousedown', this.bringToTop.bind(this));
         
@@ -1136,6 +1172,7 @@ class DeskMover {
             this.windowElement.contentDocument.body.style.zoom = window.scaleFactor;
         }
         hookIframeSize(this.windowElement, this.numStr || 0);
+        this.firstLoadSuccess = true;
     }
 
     #reset() {
@@ -1222,6 +1259,7 @@ class DeskMover {
                 // required for some cases like an invalid URL being entered
                 this.windowElement.contentWindow.document.write();
             }
+            this.firstLoadSuccess = false;
             this.windowElement.src = url;
             this.config.src = url;
 

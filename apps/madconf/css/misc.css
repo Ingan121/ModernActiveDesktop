@@ -22,6 +22,10 @@
     width: 130px;
 }
 
+#iconAreaLabel {
+    margin-right: 55px;
+}
+
 .window-body {
     padding-bottom: 7px;
 }

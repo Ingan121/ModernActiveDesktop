@@ -66,7 +66,7 @@ a {
 
 .menu {
     position: absolute;
-    z-index: 4;
+    z-index: 5;
 }
 
 .menu:hover,
@@ -75,7 +75,7 @@ a {
 }
 
 .contextMenuBg {
-    z-index: 5;
+    z-index: 6;
 }
 
 #visMenuBg {
@@ -89,7 +89,7 @@ a {
 
 #viewMenuBg {
     width: 160px;
-    height: 68px;
+    height: 85px;
     left: 56px;
 }
 
@@ -127,6 +127,14 @@ a {
 #visMenu > .contextMenuItem:not(.hasIcon):not(.activeStyle):not(.checkedItem) > p,
 #viewMenu > .contextMenuItem:not(.hasIcon):not(.activeStyle):not(.checkedItem) > p {
     padding-left: 20px;
+}
+
+#bottomArea {
+    background-color: var(--button-face);
+}
+
+#bottomArea:hover {
+    opacity: 1 !important;
 }
 
 .statusButton {
@@ -367,4 +375,27 @@ a {
     height: 11px;
     margin-top: 5px;
     margin-right: 8px;
+}
+
+body[data-fullscreen] {
+    padding-top: var(--mad-margin-top);
+    padding-left: var(--mad-margin-left);
+    padding-right: var(--mad-margin-right);
+    padding-bottom: var(--mad-margin-bottom);
+}
+
+body[data-fullscreen] #mainArea {
+    margin-top: 0;
+}
+
+body[data-fullscreen] #menuBar {
+    opacity: 0;
+}
+
+body[data-fullscreen] #bottomArea {
+    position: absolute;
+    width: 100%;
+    bottom: var(--mad-margin-bottom);
+    opacity: 0;
+    z-index: 4;
 }
