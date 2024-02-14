@@ -19,6 +19,7 @@
         window.madOpenConfig = function (page) {
             madOpenWindow(`apps/madconf/${page}.html`, false, 398, 423);
         }
+        window.madOpenExternal = madOpenWindow;
         window.madOpenDropdown = function (elem) {
             return;
         }
@@ -50,6 +51,11 @@
         window.madResizeTo = window.resizeTo;
         window.madMoveTo = window.moveTo;
         window.madBringToTop = window.focus;
+
+        window.madEnterFullscreen = function () {
+            document.documentElement.requestFullscreen();
+        }
+        window.madExitFullscreen = document.exitFullscreen;
 
         window.madSetIcon = noop;
         window.madChangeWndStyle = noop;
@@ -331,6 +337,7 @@
     window.madDeskMover = deskMover;
     window.madOpenWindow = parent.openWindow;
     window.madOpenConfig = parent.openConfig;
+    window.madOpenExternal = parent.openExternal;
 
     window.madBringToTop = deskMover.bringToTop.bind(deskMover);
     window.madOpenDropdown = deskMover.openDropdown.bind(deskMover);
@@ -342,6 +349,8 @@
     window.madSetIcon = deskMover.setIcon.bind(deskMover);
     window.madChangeWndStyle = deskMover.changeWndStyle.bind(deskMover);
     window.madExtendMoveTarget = deskMover.extendMoveTarget.bind(deskMover);
+    window.madEnterFullscreen = deskMover.enterFullscreen.bind(deskMover);
+    window.madExitFullscreen = deskMover.exitFullscreen.bind(deskMover);
     window.madCloseWindow = deskMover.closeWindow.bind(deskMover);
 
     window.madAlert = parent.madAlert;

@@ -1,0 +1,175 @@
+html,body {
+    height: 100%;
+    user-select: none;
+    margin: 0;
+    overflow: hidden
+}
+
+* {
+    font-family: var(--ui-font);
+}
+
+#windowBtnContainer {
+    width: 40px;
+    height: 26px;
+    background-color: black;
+    margin-left: 5px;
+    display: none;
+}
+
+body[data-fullscreen] #windowBtnContainer {
+    display: block;
+}
+
+.windowBtn {
+    width: 15px;
+    height: 13px;
+    position: absolute;
+    top: 2px;
+    border: solid 1px transparent;
+}
+
+.windowBtn > p {
+    color: var(--button-shadow);
+    font-size: 12px;
+    text-align: center;
+    margin-top: -3px;
+}
+
+.windowBtn:hover {
+    border-top: solid 1px white;
+    border-left: solid 1px white;
+    border-bottom: solid 1px rgb(128, 128, 128);
+    border-right: solid 1px rgb(128, 128, 128);
+}
+
+.windowBtn:hover:active {
+    border-bottom: solid 1px white;
+    border-right: solid 1px white;
+    border-top: solid 1px rgb(128, 128, 128);
+    border-left: solid 1px rgb(128, 128, 128);
+}
+
+.toolbarButton {
+    height: 24px;
+    float: left;
+    margin-left: 2px;
+    margin-right: 3px;
+    border: solid 1px transparent;
+}
+
+.toolbarButtonImage {
+    margin-top: 2px;
+    margin-bottom: 2px;
+    margin-left: 7px;
+    margin-right: 7px;
+}
+
+.toolbarButton:hover {
+    border-top: solid 1px white;
+    border-left: solid 1px white;
+    border-bottom: solid 1px rgb(128, 128, 128);
+    border-right: solid 1px rgb(128, 128, 128);
+}
+
+.toolbarButton:hover:active {
+    border-bottom: solid 1px white;
+    border-right: solid 1px white;
+    border-top: solid 1px rgb(128, 128, 128);
+    border-left: solid 1px rgb(128, 128, 128);
+}
+
+#back-button:hover:not([data-disabled='true']) .toolbarButtonImage {
+    content: url('images/Back_hover.png');
+}
+
+#back-button[data-disabled='true'] .toolbarButtonImage {
+    content: url('images/Back_disabled.png');
+}
+
+#forward-button:hover:not([data-disabled='true']) .toolbarButtonImage {
+    content: url('images/Forward_hover.png');
+}
+
+#forward-button[data-disabled='true'] .toolbarButtonImage {
+    content: url('images/Forward_disabled.png');
+}
+
+#refresh-stop-button[data-status='refresh'] .toolbarButtonImage {
+    content: url('images/Refresh.png');
+}
+
+#refresh-stop-button[data-status='refresh']:hover .toolbarButtonImage {
+    content: url('images/Refresh_hover.png');
+}
+
+#refresh-stop-button[data-status='stop'] .toolbarButtonImage {
+    content: url('images/Stop.png');
+}
+
+#refresh-stop-button[data-status='stop']:hover .toolbarButtonImage {
+    content: url('images/Stop_hover.png');
+}
+
+body::after { /* preload images */
+    position: absolute; width: 0; height: 0; overflow: hidden; z-index: -1; 
+    content: url('images/Back_hover.png') url('images/Forward_hover.png') url('images/Refresh.png') url('images/Refresh_hover.png') url('images/Stop_hover.png');
+}
+
+#grabber {
+    width: 1px;
+    height: 20px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    margin-left: 2px;
+    margin-right: 2px;
+    border-top: solid 1px white;
+    border-left: solid 1px white;
+    border-bottom: solid 1px rgb(128, 128, 128);
+    border-right: solid 1px rgb(128, 128, 128);
+    float: left;
+    cursor: e-resize;
+}
+
+#container {
+    width: 100%;
+    height: 100%;
+    background-color: var(--button-face);
+}
+
+#toolbar {
+    height: 26px;
+    display: flex;
+    background-color: var(--button-face);
+}
+
+
+.rightalign {
+    display: flex;
+    margin-left: auto;
+}
+
+#urlbar {
+    width: 500px !important;
+    margin-top: 2px;
+    margin-left: 3px;
+}
+
+label {
+    font-size: 15px !important;
+}
+
+::selection {
+    color: var(--hilight-text);
+    background-color: var(--hilight);
+}
+
+#iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background-color: white;
+    position: absolute;
+    top: 26px;
+    background-color: var(--window);
+}

@@ -15,6 +15,7 @@ apps/solitaire/cards
 apps/solitaire/icon.png
 apps/visualizer/speaker.png
 apps/clock/icon.png
+apps/channelviewer/images
 
 # system plugin installation
 /systemplugin

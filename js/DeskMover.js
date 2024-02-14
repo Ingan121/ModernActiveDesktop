@@ -811,21 +811,43 @@ class DeskMover {
         }
     }
 
-    enterFullscreen() {
-        this.windowElement.style.top = -(this.windowFrame.offsetTop + this.windowContainer.offsetTop + 3) + "px";
-        this.windowElement.style.left = -(this.windowFrame.offsetLeft + this.windowContainer.offsetLeft + 3) + "px";
-        this.windowElement.style.width = window.vWidth + "px";
-        this.windowElement.style.height = window.vHeight + "px";
+    enterFullscreen(withMargins) {
+        let marginTop = 0, marginLeft = 0, marginRight = 0, marginBottom = 0;
+        if (withMargins) {
+            marginTop = parseInt(localStorage.madesktopChanViewTopMargin) || 0;
+            marginLeft = parseInt(localStorage.madesktopChanViewLeftMargin) || 75;
+            marginRight = parseInt(localStorage.madesktopChanViewRightMargin) || 0;
+            marginBottom = parseInt(localStorage.madesktopChanViewBottomMargin) || 48;
+        }
+        // This doesn't require user gesture
+        // There's no visual difference between this and the real fullscreen in Wallpaper Engine
+        const outlineSize = parseInt(getComputedStyle(this.windowElement).getPropertyValue('outline-width'));
+        this.windowElement.style.top = -(this.windowFrame.offsetTop + this.windowContainer.offsetTop + outlineSize + 3) + marginTop + "px";
+        this.windowElement.style.left = -(this.windowFrame.offsetLeft + this.windowContainer.offsetLeft + outlineSize + 3) + marginLeft + "px";
+        this.windowElement.style.width = window.vWidth - marginLeft - marginRight + "px";
+        this.windowElement.style.height = window.vHeight - marginTop - marginBottom + "px";
         this.isFullscreen = true;
+        this.windowElement.contentDocument.body.dataset.fullscreen = true;
+        // But try this anyway for browser usage
+        if (window.runningMode === BROWSER) {
+            this.windowElement.requestFullscreen();
+        }
     }
 
-    exitFullscreen() {
+    async exitFullscreen() {
         this.windowElement.style.top = "";
         this.windowElement.style.left = "";
         this.windowElement.style.width = "";
         this.windowElement.style.height = "";
-        this.adjustElements();
         this.isFullscreen = false;
+        delete this.windowElement.contentDocument.body.dataset.fullscreen;
+        if (document.fullscreenElement) {
+            document.exitFullscreen();
+            await asyncTimeout(100);
+            this.adjustElements();
+        } else {
+            this.adjustElements();
+        }
     }
 
     #wcMouseDown(event) {

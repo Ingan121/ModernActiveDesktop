@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>ChannelViewer</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="ChannelViewer.css">
+        <link rel="stylesheet" href="../../css/98.css">
+        <link id="scheme" rel="stylesheet" href="data:text/css,">
+        <link id="menuStyle" rel="stylesheet" href="">
+        <style id="style"></style>
+    </head>
+    <body>
+        <div id="container">
+            <div id="toolbar">
+                <div class="grabber"></div>
+                <div id="back-button" class="toolbarButton" onclick="browserViewCtl('back');" data-disabled="true">
+                    <img class="toolbarButtonImage" src="images/Back.png">
+                </div>
+                <div id="forward-button" class="toolbarButton" onclick="browserViewCtl('forward');" data-disabled="true">
+                    <img class="toolbarButtonImage" src="images/Forward.png">
+                </div>
+                <div id="refresh-stop-button" class="toolbarButton" onclick="browserViewCtl(this.dataset.status);" data-status="stop">
+                    <img class="toolbarButtonImage" src="images/Stop.png">
+                </div>
+                <div class="grabber"></div>
+                <input id="urlbar" type="text" onclick="this.select();" onkeyup="if (event.key == 'Enter') go(this.value)">
+                <div class="rightalign">
+                    <div id="windowBtnContainer">
+                        <div style="float: left;">
+                            <div class="windowBtn" style="right: 17px;" onclick="madExitFullscreen();">
+                                <p>🗗</p>
+                            </div>
+                            <div class="windowBtn" style="right: 0;" onclick="madCloseWindow();">
+                                <p>🗙</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <iframe id="iframe" src="data:text/plain,Loading..."></iframe>
+        </div>
+        <script src="../../js/libmad.js"></script>
+        <script src="../../js/libmad-menu.js"></script>
+        <script src="ChannelViewer.js"></script>
+    </body>
+</html>

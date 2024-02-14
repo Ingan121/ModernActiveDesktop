@@ -17,6 +17,9 @@
         let deskMover;
         function openChannelViewer() {
             deskMover = madOpenWindow('ChannelViewer.html', true);
+            deskMover.windowElement.addEventListener('load', () => {
+                deskMover.windowElement.requestFullscreen();
+            });
         }
         function fullscreen() {
             deskMover.windowElement.contentDocument.body.requestFullscreen();

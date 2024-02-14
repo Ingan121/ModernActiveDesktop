@@ -917,6 +917,30 @@ function openConfig(page) {
     }
 }
 
+function openExternal(url) {
+    let deskMover = null;
+    if (localStorage.sysplugIntegration) {
+        fetch("http://localhost:3031/open", { method: "POST", body: url })
+            .then(response => response.text())
+            .then(responseText => {
+                if (responseText != "OK") {
+                    alert("An error occured!\nSystem plugin response: " + responseText);
+                    deskMover = openWindow('apps/channelviewer/index.html?page=' + encodeURIComponent(url), true);
+                }
+            })
+            .catch(error => {
+                alert("System plugin is not running. Please make sure you have installed it properly.");
+                deskMover = openWindow('apps/channelviewer/index.html?page=' + encodeURIComponent(url), true);
+            });
+    } else {
+        deskMover = openWindow('apps/channelviewer/index.html?page=' + encodeURIComponent(url), true);
+    }
+    if (deskMover) {
+        deskMover.enterFullscreen(true);
+    }
+    return deskMover;
+}
+
 // Required as mouse movements over iframes are not detectable in the parent document
 function iframeClickEventCtrl(clickable) {
     log(clickable ? "clickable" : "unclickable", "debug", new Error().stack.split('\n')[2].trim().slice(3).split(' ')[0] + " -> iframeClickEventCtrl");

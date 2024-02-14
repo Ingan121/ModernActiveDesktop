@@ -224,12 +224,10 @@ viewMenuItems[0].addEventListener('click', () => { // Autohide Menu Bar button
 
 viewMenuItems[1].addEventListener('click', () => { // Fullscreen button
     if (madDeskMover.isFullscreen) {
-        madDeskMover.exitFullscreen();
-        delete document.body.dataset.fullscreen;
+        madExitFullscreen();
         viewMenuItems[1].classList.remove('checkedItem');
     } else {
-        madDeskMover.enterFullscreen();
-        document.body.dataset.fullscreen = true;
+        madEnterFullscreen();
         viewMenuItems[1].classList.add('checkedItem');
     }
     updateSize();

@@ -385,10 +385,11 @@ body[data-cm-shadow] .contextMenuBg {
 }
 
 .contextMenu hr {
-    margin-top: 3px;
-    margin-bottom: 4px;
-    border-top-color: var(--button-shadow);
-    border-bottom-color: var(--button-hilight);
+    width: 100%;
+    margin: 3px 0 4px 1px;
+    border: none;
+    border-top: solid 1px var(--button-shadow);
+    border-bottom: solid 1px var(--button-hilight);
 }
 
 .submenuMark {

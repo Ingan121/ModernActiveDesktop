@@ -16,7 +16,6 @@ html, body {
     margin-top: var(--menu-height);
     height: 100%;
     position: relative;
-    background-color: black;
 }
 
 #albumArt {
@@ -394,7 +393,7 @@ body[data-fullscreen] #menuBar {
 
 body[data-fullscreen] #bottomArea {
     position: absolute;
-    width: 100%;
+    width: calc(100% - var(--mad-margin-left) - var(--mad-margin-right));
     bottom: var(--mad-margin-bottom);
     opacity: 0;
     z-index: 4;
