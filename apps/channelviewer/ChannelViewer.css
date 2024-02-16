@@ -5,8 +5,61 @@ html,body {
     overflow: hidden
 }
 
+body {
+    display: flex;
+    flex-direction: column;
+}
+
 * {
     font-family: var(--ui-font);
+}
+
+#toolbars {
+    border-top: solid 1px var(--button-hilight);
+    border-left: solid 1px var(--button-hilight);
+    outline: solid 1px var(--button-shadow);
+    box-shadow: var(--button-hilight) -1px 2px, var(--button-hilight) 2px 2px, var(--button-hilight) 2px -1px, var(--button-hilight) 2px 2px;
+    margin: 1px 2px 2px 1px;
+}
+
+#toolbars > div:not(:first-child) {
+    border-top: solid 1px var(--button-hilight);
+}
+
+#toolbars > div:not(:last-child) {
+    border-bottom: solid 1px var(--button-shadow);
+}
+
+#menuBar {
+    height: calc(var(--menu-height) + 4px);
+    margin-bottom: 0;
+}
+
+.menuBtn {
+    margin: 2px 0;
+}
+
+.grabber {
+    width: 3px;
+    height: calc(100% - 4px);
+    margin-top: 2px;
+    margin-bottom: 2px;
+    margin-left: 2px;
+    margin-right: 2px;
+    box-shadow: inset -1px -1px var(--button-shadow), inset 1px 1px var(--button-hilight);
+    cursor: e-resize;
+    padding: 0 !important;
+}
+
+.separator {
+    width: 0px;
+    height: calc(100% - 4px);
+    margin-top: 2px;
+    margin-bottom: 2px;
+    margin-left: 2px;
+    margin-right: 2px;
+    border-left: solid 1px var(--button-shadow);
+    border-right: solid 1px var(--button-hilight);
 }
 
 #windowBtnContainer {
@@ -15,10 +68,9 @@ html,body {
     background-color: black;
     margin-left: 5px;
     display: none;
-}
-
-body[data-fullscreen] #windowBtnContainer {
-    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
 }
 
 .windowBtn {
@@ -51,6 +103,7 @@ body[data-fullscreen] #windowBtnContainer {
 }
 
 .toolbarButton {
+    width: 27px;
     height: 24px;
     float: left;
     margin-left: 2px;
@@ -59,10 +112,8 @@ body[data-fullscreen] #windowBtnContainer {
 }
 
 .toolbarButtonImage {
-    margin-top: 2px;
-    margin-bottom: 2px;
-    margin-left: 7px;
-    margin-right: 7px;
+    margin: 2px;
+    margin-left: 4px;
 }
 
 .toolbarButton:hover {
@@ -77,6 +128,36 @@ body[data-fullscreen] #windowBtnContainer {
     border-right: solid 1px white;
     border-top: solid 1px rgb(128, 128, 128);
     border-left: solid 1px rgb(128, 128, 128);
+}
+
+.toolbarButtonLabel {
+    display: none;
+}
+
+#back-button,
+#forward-button {
+    margin-right: 0;
+}
+
+#back-expand-button,
+#forward-expand-button {
+    margin-left: 0;
+    width: 12px;
+}
+
+#back-expand-button span,
+#forward-expand-button span {
+    font-size: 10px;
+    line-height: 24px;
+    margin-left: 1px;
+}
+
+#back-button:hover + #back-expand-button,
+#forward-button:hover + #forward-expand-button {
+    border-top: solid 1px white;
+    border-left: solid 1px white;
+    border-bottom: solid 1px rgb(128, 128, 128);
+    border-right: solid 1px rgb(128, 128, 128);
 }
 
 #back-button:hover:not([data-disabled='true']) .toolbarButtonImage {
@@ -95,46 +176,29 @@ body[data-fullscreen] #windowBtnContainer {
     content: url('images/Forward_disabled.png');
 }
 
-#refresh-stop-button[data-status='refresh'] .toolbarButtonImage {
-    content: url('images/Refresh.png');
-}
-
-#refresh-stop-button[data-status='refresh']:hover .toolbarButtonImage {
+#refresh-button:hover .toolbarButtonImage {
     content: url('images/Refresh_hover.png');
 }
 
-#refresh-stop-button[data-status='stop'] .toolbarButtonImage {
-    content: url('images/Stop.png');
+#stop-button:hover .toolbarButtonImage {
+    content: url('images/Stop_hover.png');
 }
 
-#refresh-stop-button[data-status='stop']:hover .toolbarButtonImage {
-    content: url('images/Stop_hover.png');
+#home-button:hover .toolbarButtonImage {
+    content: url('images/Home_hover.png');
+}
+
+#fullscreen-button:hover .toolbarButtonImage {
+    content: url('images/Fullscreen_hover.png');
+}
+
+#print-button:hover .toolbarButtonImage {
+    content: url('images/Print_hover.png');
 }
 
 body::after { /* preload images */
     position: absolute; width: 0; height: 0; overflow: hidden; z-index: -1; 
-    content: url('images/Back_hover.png') url('images/Forward_hover.png') url('images/Refresh.png') url('images/Refresh_hover.png') url('images/Stop_hover.png');
-}
-
-#grabber {
-    width: 1px;
-    height: 20px;
-    margin-top: 2px;
-    margin-bottom: 2px;
-    margin-left: 2px;
-    margin-right: 2px;
-    border-top: solid 1px white;
-    border-left: solid 1px white;
-    border-bottom: solid 1px rgb(128, 128, 128);
-    border-right: solid 1px rgb(128, 128, 128);
-    float: left;
-    cursor: e-resize;
-}
-
-#container {
-    width: 100%;
-    height: 100%;
-    background-color: var(--button-face);
+    content: url('images/Back_hover.png') url('images/Forward_hover.png') url('images/Refresh_hover.png') url('images/Stop_hover.png') url('images/Home_hover.png') url('images/Fullscreen_hover.png') url('images/Print_hover.png');
 }
 
 #toolbar {
@@ -143,20 +207,23 @@ body::after { /* preload images */
     background-color: var(--button-face);
 }
 
-
-.rightalign {
+#addressBar {
+    width: 100%;
+    height: 22px;
     display: flex;
-    margin-left: auto;
+    background-color: var(--button-face);
+}
+
+#addressText {
+    font-size: 11px;
+    margin-top: 6px;
+    margin-left: 2px;
 }
 
 #urlbar {
-    width: 500px !important;
-    margin-top: 2px;
-    margin-left: 3px;
-}
-
-label {
-    font-size: 15px !important;
+    width: 100%;
+    height: 22px;
+    margin: 0 4px 0 3px;
 }
 
 ::selection {
@@ -166,10 +233,65 @@ label {
 
 #iframe {
     width: 100%;
-    height: 100%;
+    height: -webkit-fill-available;
     border: none;
     background-color: white;
-    position: absolute;
-    top: 26px;
     background-color: var(--window);
+}
+
+body[data-fullscreen] #toolbars {
+    border: none;
+    outline: none;
+    box-shadow: none;
+    margin: 0;
+}
+
+body[data-fullscreen] #toolbar {
+    border: none;
+}
+
+body[data-fullscreen] #menuBar {
+    display: none;
+}
+
+body[data-fullscreen] #addressBar {
+    display: none;
+}
+
+body[data-fullscreen] #windowBtnContainer {
+    display: block;
+}
+
+.contextMenuBg {
+    top: calc(var(--menu-height) + 4px);
+}
+
+#fileMenuBg {
+    width: 100px;
+    height: 86px;
+}
+
+#editMenuBg {
+    width: 100px;
+    height: 77px;
+}
+
+#viewMenuBg {
+    width: 110px;
+    height: 129px;
+}
+
+#goMenuBg {
+    width: 120px;
+    height: 77px;
+}
+
+#favoritesMenuBg {
+    width: 130px;
+    height: 43px;
+}
+
+#helpMenuBg {
+    width: 140px;
+    height: 17px;
 }

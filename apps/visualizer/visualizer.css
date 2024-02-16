@@ -82,18 +82,10 @@ a {
     height: 60px;
 }
 
-#visMenu {
-    width: 118px;
-}
-
 #viewMenuBg {
     width: 160px;
     height: 85px;
     left: 56px;
-}
-
-#viewMenu {
-    width: 158px;
 }
 
 #optMenuBg {
@@ -102,18 +94,10 @@ a {
     left: 93px;
 }
 
-#optMenu {
-    width: 158px;
-}
-
 #helpMenuBg {
     width: 130px;
     height: 17px;
     left: 140px;
-}
-
-#helpMenu {
-    width: 128px;
 }
 
 #statusArea {

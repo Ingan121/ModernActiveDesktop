@@ -917,7 +917,7 @@ function openConfig(page) {
     }
 }
 
-function openExternal(url) {
+function openExternal(url, fullscreen) {
     let deskMover = null;
     if (localStorage.sysplugIntegration) {
         fetch("http://localhost:3031/open", { method: "POST", body: url })
@@ -925,18 +925,20 @@ function openExternal(url) {
             .then(responseText => {
                 if (responseText != "OK") {
                     alert("An error occured!\nSystem plugin response: " + responseText);
-                    deskMover = openWindow('apps/channelviewer/index.html?page=' + encodeURIComponent(url), true);
+                    deskMover = openWindow('apps/channelviewer/index.html?page=' + encodeURIComponent(url), true, "1024px", "768px");
                 }
             })
             .catch(error => {
                 alert("System plugin is not running. Please make sure you have installed it properly.");
-                deskMover = openWindow('apps/channelviewer/index.html?page=' + encodeURIComponent(url), true);
+                deskMover = openWindow('apps/channelviewer/index.html?page=' + encodeURIComponent(url), true, "1024px", "768px");
             });
     } else {
-        deskMover = openWindow('apps/channelviewer/index.html?page=' + encodeURIComponent(url), true);
+        deskMover = openWindow('apps/channelviewer/index.html?page=' + encodeURIComponent(url), true, "1024px", "768px");
     }
-    if (deskMover) {
-        deskMover.enterFullscreen(true);
+    if (deskMover && fullscreen) {
+        deskMover.windowElement.contentWindow.addEventListener("load", function () {
+            deskMover.enterFullscreen(true);
+        });
     }
     return deskMover;
 }
@@ -1608,6 +1610,11 @@ window.addEventListener('load', function () {
     }
 
     document.dispatchEvent(new Event("mouseup")); // Re-calculate title bar height after loading scheme css
+});
+
+// Prevent scrolling when deskMover gets focus, iframe loads, etc.
+document.addEventListener('scroll', function () {
+    document.documentElement.scrollTo(0, 0);
 });
 
 // Initialization complete

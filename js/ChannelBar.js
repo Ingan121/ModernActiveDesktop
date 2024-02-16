@@ -7,6 +7,6 @@
 const activeChannelItems = document.getElementsByClassName("ActiveChannelItem");
 for (const activeChannelItem of activeChannelItems) {
     activeChannelItem.addEventListener('click', function () {
-        parent.openExternal(this.dataset.url);
+        parent.openExternal(this.dataset.url, true);
     });
 }

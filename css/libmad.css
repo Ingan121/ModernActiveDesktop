@@ -59,24 +59,24 @@
     border-bottom-color: var(--menu-text);
 }
 
-.menu > div {
+.menuBtn {
     padding: calc((var(--menu-height) - 14px) / 2) 5px 2px 5px;
     border: solid 1px transparent;
     user-select: none;
 }
 
-.menu:not([data-active]) > div:hover {
+.menu:not([data-active]) > .menuBtn:hover {
     border-color: var(--button-hilight) var(--button-shadow) var(--button-shadow) var(--button-hilight);
 }
 
-.menu > div:active,
-.menu > div[data-active] {
+.menuBtn:active,
+.menuBtn[data-active] {
     border-color: var(--button-shadow) var(--button-hilight) var(--button-hilight) var(--button-shadow);
     padding-top: calc((var(--menu-height) - 14px) / 2 + 1px);
 }
 
-.menu > div:active > span,
-.menu > div[data-active] > span {
+.menuBtn:active > span,
+.menuBtn[data-active] > span {
     margin-top: 1px;
     margin-left: 1px;
     margin-right: -1px;
@@ -110,6 +110,7 @@ body[data-fullscreen] .contextMenuBg {
 }
 
 .contextMenu {
+    width: calc(100% - 8px);
     position: absolute;
     bottom: 3px;
     margin: 0 !important;

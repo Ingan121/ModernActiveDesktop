@@ -29,7 +29,10 @@ class DeskMover {
 
         this.mousePosition, this.posInWindow, this.posInContainer;
         this.offset = [0, 0];
-        this.isDown = false, this.resizingMode = "none", this.mouseOverWndBtns = false;
+        this.isDown = false;
+        this.resizingMode = "none";
+        this.mouseOverWndBtns = false;
+        this.noFrames = false;
 
         this.timeout; // for handling ActiveDesktop style window frame hiding
         this.timeout2; // for handling context menu auto opening
@@ -281,7 +284,7 @@ class DeskMover {
         if (this.config.yPos) {
             this.windowContainer.style.top = this.config.yPos;
         }
-        this.changeWndStyle(this.config.style || style || "ad");
+        this.changeWndStyle(this.config.style || style || "ad", !!this.config.style);
         if (this.config.unscaled) {
             this.confMenuItems[3].classList.remove("checkedItem");
         } else {
@@ -313,6 +316,7 @@ class DeskMover {
             delete this.windowContainer.dataset.inactive;
             this.windowTitlebar.classList.remove("inactive");
         }
+        this.noFrames = this.config.noFrames;
         
         if (this.config.src) {
             this.windowElement.src = this.config.src;
@@ -530,13 +534,22 @@ class DeskMover {
         }
     }
 
-    changeWndStyle(style) {
+    changeWndStyle(style, temp) {
+        if (!temp && !style) {
+            style = this.config.style;
+        }
         if (style === "noframes") {
             style = "ad";
-            this.config.noFrames = true;
+            if (!temp) {
+                this.config.noFrames = true;
+            }
+            this.noFrames = true;
             clearTimeout(this.timeout);
-        } else if (style !== "ad") {
-            this.config.noFrames = false;
+        } else {
+            if (!temp) {
+                this.config.noFrames = false;
+            }
+            this.noFrames = false;
         }
         switch (style) {
             case "nonad":
@@ -581,7 +594,9 @@ class DeskMover {
                 this.confMenuItems[1].classList.remove("activeStyle");
                 this.confMenuItems[2].classList.add("activeStyle");
         }
-        this.config.style = style;
+        if (!temp) {
+            this.config.style = style;
+        }
         this.windowContainer.dataset.style = style;
         this.adjustElements();
     }
@@ -812,6 +827,7 @@ class DeskMover {
     }
 
     enterFullscreen(withMargins) {
+        this.changeWndStyle("noframes", true);
         let marginTop = 0, marginLeft = 0, marginRight = 0, marginBottom = 0;
         if (withMargins) {
             marginTop = parseInt(localStorage.madesktopChanViewTopMargin) || 0;
@@ -835,6 +851,7 @@ class DeskMover {
     }
 
     async exitFullscreen() {
+        this.changeWndStyle();
         this.windowElement.style.top = "";
         this.windowElement.style.left = "";
         this.windowElement.style.width = "";
@@ -844,10 +861,8 @@ class DeskMover {
         if (document.fullscreenElement) {
             document.exitFullscreen();
             await asyncTimeout(100);
-            this.adjustElements();
-        } else {
-            this.adjustElements();
         }
+        this.adjustElements();
     }
 
     #wcMouseDown(event) {
@@ -1166,7 +1181,7 @@ class DeskMover {
     }
     
     async #weLoad () {
-        if (!this.windowElement.contentWindow) {
+        if (!this.windowElement.contentDocument) {
             // Cross-origin iframe
             return;
         }
@@ -1433,7 +1448,7 @@ class DeskMover {
     // Update the visibility of window components based on the cursor's position
     // Replicates the original ActiveDesktop behavior
     #updateWindowComponentVisibility() {
-        if (this.config.style === "ad" && !this.config.noFrames) {
+        if (this.config.style === "ad" && !this.noFrames) {
             this.windowElement.style.borderColor = "var(--button-face)";
         }
         if (typeof this.posInWindow !== 'undefined') {
@@ -1448,7 +1463,7 @@ class DeskMover {
                 }
                 if (this.config.style === "wnd") {
                     this.windowTitlebar.style.display = "flex";
-                } else if (this.posInWindow.y <= 50 || this.config.style === "nonad") {
+                } else if ((this.posInWindow.y <= 50 && !this.noFrames) || this.config.style === "nonad") {
                     this.windowTitlebar.style.display = "block";
                 } else {
                     this.windowTitlebar.style.display = "none";

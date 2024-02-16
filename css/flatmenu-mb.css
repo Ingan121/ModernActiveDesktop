@@ -17,23 +17,23 @@
     background-color: var(--menu-bar);
 }
 
-.menu > div:hover,
-.menu > div:active,
-.menu > div[data-active] {
+.menuBtn:hover,
+.menuBtn:active,
+.menuBtn[data-active] {
     border-color: var(--hilight) !important;
     color: var(--hilight-text) !important;
     background-color: var(--menu-hilight) !important;
     padding-top: calc((var(--menu-height) - 14px) / 2) !important;
 }
 
-.menu > div:hover span,
-.menu > div:active span,
-.menu > div[data-active] span {
+.menuBtn:hover span,
+.menuBtn:active span,
+.menuBtn[data-active] span {
     margin: 0;
 }
 
-.menu > div:hover u,
-.menu > div:active u,
-.menu > div[data-active] u {
+.menuBtn:hover u,
+.menuBtn:active u,
+.menuBtn[data-active] u {
     border-bottom-color: var(--hilight-text);
 }

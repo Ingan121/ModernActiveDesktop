@@ -8,6 +8,7 @@
     if (!frameElement) {
         // minimal MAD APIs fallback for non-MAD environments (or in cross-origin restricted mode)
         const noop = () => {};
+        window.madDeskMover = {};
         window.madScaleFactor = 1;
         window.madRunningMode = 0;
         window.madOpenWindow = function (url, temp, width, height, style) {
@@ -19,7 +20,9 @@
         window.madOpenConfig = function (page) {
             madOpenWindow(`apps/madconf/${page}.html`, false, 398, 423);
         }
-        window.madOpenExternal = madOpenWindow;
+        window.madOpenExternal = function (url) {
+            window.open(url, "_blank");
+        }
         window.madOpenDropdown = function (elem) {
             return;
         }

@@ -320,10 +320,6 @@ body {
     height: 51px;
 }
 
-#gameMenu {
-    width: 98px;
-}
-
 #helpMenuBtn {
     margin-left: 3px;
 }
@@ -332,8 +328,4 @@ body {
     width: 120px;
     height: 17px;
     left: 42px;
-}
-
-#helpMenu {
-    width: 118px;
 }

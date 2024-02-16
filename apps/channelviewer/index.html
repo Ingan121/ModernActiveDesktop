@@ -4,42 +4,132 @@
         <title>ChannelViewer</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="ChannelViewer.css">
         <link rel="stylesheet" href="../../css/98.css">
+        <link rel="stylesheet" href="../../css/libmad.css">
+        <link rel="stylesheet" href="ChannelViewer.css">
         <link id="scheme" rel="stylesheet" href="data:text/css,">
         <link id="menuStyle" rel="stylesheet" href="">
         <style id="style"></style>
     </head>
     <body>
-        <div id="container">
+        <div id="toolbars">
+            <div id="menuBar" class="menu">
+                <div class="grabber"></div>
+                <div id="fileMenuBtn" class="menuBtn"><span><u>F</u>ile</span></div>
+                <div id="editMenuBtn" class="menuBtn"><span><u>E</u>dit</span></div>
+                <div id="viewMenuBtn" class="menuBtn"><span><u>V</u>iew</span></div>
+                <div id="goMenuBtn" class="menuBtn"><span><u>G</u>o</span></div>
+                <div id="favoritesMenuBtn" class="menuBtn"><span>F<u>a</u>vorites</span></div>
+                <div id="helpMenuBtn" class="menuBtn"><span><u>H</u>elp</span></div>
+            </div>
             <div id="toolbar">
                 <div class="grabber"></div>
-                <div id="back-button" class="toolbarButton" onclick="browserViewCtl('back');" data-disabled="true">
+                <div id="back-button" class="toolbarButton" data-disabled="true">
                     <img class="toolbarButtonImage" src="images/Back.png">
+                    <span class="toolbarButtonLabel">Back</span>
                 </div>
-                <div id="forward-button" class="toolbarButton" onclick="browserViewCtl('forward');" data-disabled="true">
+                <div id="back-expand-button" class="toolbarButton">
+                    <span>⏷</span>
+                </div>
+                <div id="forward-button" class="toolbarButton" data-disabled="true">
                     <img class="toolbarButtonImage" src="images/Forward.png">
+                    <span class="toolbarButtonLabel">Forward</span>
                 </div>
-                <div id="refresh-stop-button" class="toolbarButton" onclick="browserViewCtl(this.dataset.status);" data-status="stop">
+                <div id="forward-expand-button" class="toolbarButton">
+                    <span>⏷</span>
+                </div>
+                <div id="stop-button" class="toolbarButton">
                     <img class="toolbarButtonImage" src="images/Stop.png">
+                    <span class="toolbarButtonLabel">Stop</span>
                 </div>
-                <div class="grabber"></div>
-                <input id="urlbar" type="text" onclick="this.select();" onkeyup="if (event.key == 'Enter') go(this.value)">
-                <div class="rightalign">
-                    <div id="windowBtnContainer">
-                        <div style="float: left;">
-                            <div class="windowBtn" style="right: 17px;" onclick="madExitFullscreen();">
-                                <p>🗗</p>
-                            </div>
-                            <div class="windowBtn" style="right: 0;" onclick="madCloseWindow();">
-                                <p>🗙</p>
-                            </div>
+                <div id="refresh-button" class="toolbarButton">
+                    <img class="toolbarButtonImage" src="images/Refresh.png">
+                    <span class="toolbarButtonLabel">Refresh</span>
+                </div>
+                <div id="home-button" class="toolbarButton">
+                    <img class="toolbarButtonImage" src="images/Home.png">
+                    <span class="toolbarButtonLabel">Home</span>
+                </div>
+                <div class="separator"></div>
+                <div id="fullscreen-button" class="toolbarButton">
+                    <img class="toolbarButtonImage" src="images/FullScreen.png">
+                    <span class="toolbarButtonLabel">Full Screen</span>
+                </div>
+                <div id="print-button" class="toolbarButton">
+                    <img class="toolbarButtonImage" src="images/Print.png">
+                    <span class="toolbarButtonLabel">Print</span>
+                </div>
+                <div id="windowBtnContainer">
+                    <div style="float: left;">
+                        <div class="windowBtn" style="right: 17px;" onclick="madExitFullscreen();">
+                            <p>🗗</p>
+                        </div>
+                        <div class="windowBtn" style="right: 0;" onclick="madCloseWindow();">
+                            <p>🗙</p>
                         </div>
                     </div>
                 </div>
             </div>
-            <iframe id="iframe" src="data:text/plain,Loading..."></iframe>
+            <div id="addressBar">
+                <div class="grabber"></div>
+                <span id="addressText">Address</span>
+                <input id="urlbar" type="text">
+            </div>
         </div>
+        <div id="fileMenuBg" class="contextMenuBg window" tabindex="-1">
+            <div id="fileMenu" class="contextMenu window-body">
+                <div class="contextMenuItem"><p><u>N</u>ew window</p></div>
+                <div class="contextMenuItem"><p><u>O</u>pen</p></div>
+                <hr>
+                <div class="contextMenuItem"><p><u>P</u>rint</p></div>
+                <hr>
+                <div class="contextMenuItem"><p><u>C</u>lose</p></div>
+            </div>
+        </div>
+        <div id="editMenuBg" class="contextMenuBg window" tabindex="-1">
+            <div id="editMenu" class="contextMenu window-body">
+                <div class="contextMenuItem"><p><u>C</u>ut</p></div>
+                <div class="contextMenuItem"><p><u>C</u>opy</p></div>
+                <div class="contextMenuItem"><p><u>P</u>aste</p></div>
+                <hr>
+                <div class="contextMenuItem"><p><u>S</u>elect all</p></div>
+            </div>
+        </div>
+        <div id="viewMenuBg" class="contextMenuBg window" tabindex="-1">
+            <div id="viewMenu" class="contextMenu window-body">
+                <div class="contextMenuItem"><p><u>T</u>oolbars</p></div>
+                <hr>
+                <div class="contextMenuItem"><p>Sto<u>p</u></p></div>
+                <div class="contextMenuItem"><p><u>R</u>efresh</p></div>
+                <hr>
+                <div class="contextMenuItem"><p>Sour<u>c</u>e</p></div>
+                <div class="contextMenuItem"><p><u>F</u>ull Screen</p></div>
+                <hr>
+                <div class="contextMenuItem"><p>Internet <u>O</u>ptions</p></div>
+            </div>
+        </div>
+        <div id="goMenuBg" class="contextMenuBg window" tabindex="-1">
+            <div id="goMenu" class="contextMenu window-body">
+                <div class="contextMenuItem"><p><u>B</u>ack</p></div>
+                <div class="contextMenuItem"><p><u>F</u>orward</p></div>
+                <hr>
+                <div class="contextMenuItem"><p><u>H</u>ome Page</p></div>
+                <div class="contextMenuItem"><p><u>S</u>earch the Web</p></div>
+            </div>
+        </div>
+        <div id="favoritesMenuBg" class="contextMenuBg window" tabindex="-1">
+            <div id="favoritesMenu" class="contextMenu window-body">
+                <div class="contextMenuItem"><p><u>A</u>dd to Favorites...</p></div>
+                <div class="contextMenuItem"><p><u>O</u>rganize Favorites...</p></div>
+                <hr>
+            </div>
+        </div>
+        <div id="helpMenuBg" class="contextMenuBg window" tabindex="-1">
+            <div id="helpMenu" class="contextMenu window-body">
+                <div class="contextMenuItem"><p><u>A</u>bout ChannelViewer</p></div>
+            </div>
+        </div>
+        <iframe id="iframe"></iframe>
         <script src="../../js/libmad.js"></script>
         <script src="../../js/libmad-menu.js"></script>
         <script src="ChannelViewer.js"></script>

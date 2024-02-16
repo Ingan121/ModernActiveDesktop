@@ -72,25 +72,10 @@ const statusBar = document.getElementById('statusBar');
 const statusText = document.getElementById('statusText').querySelector('p');
 const timeText = document.getElementById('timeText').querySelector('p');
 
-const visMenuBtn = document.getElementById('visMenuBtn');
-const visMenuBg = document.getElementById('visMenuBg');
-const visMenu = document.getElementById('visMenu');
-const visMenuItems = visMenu.querySelectorAll('.contextMenuItem');
-
-const viewMenuBtn = document.getElementById('viewMenuBtn');
-const viewMenuBg = document.getElementById('viewMenuBg');
-const viewMenu = document.getElementById('viewMenu');
-const viewMenuItems = viewMenu.querySelectorAll('.contextMenuItem');
-
-const optMenuBtn = document.getElementById('optMenuBtn');
-const optMenuBg = document.getElementById('optMenuBg');
-const optMenu = document.getElementById('optMenu');
-const optMenuItems = optMenu.querySelectorAll('.contextMenuItem');
-
-const helpMenuBtn = document.getElementById('helpMenuBtn');
-const helpMenuBg = document.getElementById('helpMenuBg');
-const helpMenu = document.getElementById('helpMenu');
-const helpMenuItems = helpMenu.querySelectorAll('.contextMenuItem');
+const visMenuItems = document.querySelectorAll('#visMenu .contextMenuItem');
+const viewMenuItems = document.querySelectorAll('#viewMenu .contextMenuItem');
+const optMenuItems = document.querySelectorAll('#optMenu .contextMenuItem');
+const helpMenuItems = document.querySelectorAll('#helpMenu .contextMenuItem');
 
 const isWin10 = navigator.userAgent.includes('Windows NT 10.0');
 const NO_MEDINT_MSG = isWin10
@@ -135,6 +120,11 @@ if (localStorage.madesktopVisMenuAutohide) {
     viewMenuItems[0].classList.add('checkedItem');
     mainArea.style.marginTop = '0';
     menuBar.style.opacity = '0';
+}
+
+if (localStorage.madesktopVisFullscreen) {
+    madEnterFullscreen();
+    viewMenuItems[1].classList.add('checkedItem');
 }
 
 if (localStorage.madesktopVisInfoShown) {
@@ -226,9 +216,11 @@ viewMenuItems[1].addEventListener('click', () => { // Fullscreen button
     if (madDeskMover.isFullscreen) {
         madExitFullscreen();
         viewMenuItems[1].classList.remove('checkedItem');
+        delete localStorage.madesktopVisFullscreen;
     } else {
         madEnterFullscreen();
         viewMenuItems[1].classList.add('checkedItem');
+        localStorage.madesktopVisFullscreen = true;
     }
     updateSize();
 });
