@@ -750,7 +750,6 @@ gameMenuItems[2].addEventListener('click', () => { // Exit button
 });
 
 helpMenuItem.addEventListener('click', () => {
-    closeHelpMenu();
     window.open('https://github.com/rjanjic/js-solitaire/', '_blank');
 });
 

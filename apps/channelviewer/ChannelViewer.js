@@ -27,9 +27,11 @@ const viewMenuItems = document.querySelectorAll("#viewMenu .contextMenuItem");
 const goMenuItems = document.querySelectorAll("#goMenu .contextMenuItem");
 const favoritesMenuItems = document.querySelectorAll("#favoritesMenu .contextMenuItem");
 const helpMenuItems = document.querySelectorAll("#helpMenu .contextMenuItem");
+const toolbarsMenuItems = document.querySelectorAll("#toolbarsMenu .contextMenuItem");
 
 const iframe = document.getElementById("iframe");
 
+let title = "";
 let didFirstLoad = false;
 let isCrossOrigin = madRunningMode !== 1; // Wallpaper Engine disables all cross-origin iframe restrictions
 let doHistoryCounting = !isCrossOrigin;
@@ -39,7 +41,7 @@ let historyForward = 0;
 let historyUrls = [];
 let didHistoryNav = true;
 
-madDeskMover.menu = new MadMenu(menuBar, ['file', 'edit', 'view', 'go', 'favorites', 'help']);
+madDeskMover.menu = new MadMenu(menuBar, ['file', 'edit', 'view', 'go', 'favorites', 'help'], ['toolbars']);
 
 fileMenuItems[0].addEventListener("click", function () { // New window button
     madOpenExternal("about:blank");
@@ -47,8 +49,9 @@ fileMenuItems[0].addEventListener("click", function () { // New window button
 
 fileMenuItems[1].addEventListener("click", function () { // Open button
     madPrompt("Enter URL", function (url) {
+        if (url === null) return;
         iframe.src = url;
-    }, iframe.src);
+    });
 });
 
 fileMenuItems[2].addEventListener("click", function () { // Print button
@@ -91,10 +94,6 @@ editMenuItems[3].addEventListener("click", function () { // Select all button
     }
 });
 
-viewMenuItems[0].addEventListener("click", function () { // Toolbars button
-    // TODO: add submenu support for libmandmenu
-});
-
 viewMenuItems[1].addEventListener("click", function () { // Stop button
     window.stop();
 });
@@ -107,7 +106,7 @@ viewMenuItems[3].addEventListener("click", function () { // Source button
     if (isCrossOrigin) {
         madAlert("Sorry, but advanced features are unavailable for this webpage. Please consult the internet options.", null, "warning");
     } else {
-        madOpenExternal("data:text/plain," + encodeURIComponent(iframe.contentDocument.documentElement.outerHTML));
+        madOpenExternal("data:text/plain," + encodeURIComponent(iframe.contentDocument.documentElement.outerHTML), false, "popup");
     }
 });
 
@@ -118,7 +117,7 @@ viewMenuItems[4].addEventListener("click", function () { // Full Screen button
 viewMenuItems[5].addEventListener("click", function () { // Internet Options button
     const left = parseInt(madDeskMover.config.xPos) + 25 + 'px';
     const top = parseInt(madDeskMover.config.yPos) + 50 + 'px';
-    const configWindow = madOpenWindow('apps/channelviewer/config.html', true, '400px', '435px', 'wnd', false, top, left, true, true, true);
+    const configWindow = madOpenWindow('apps/inetcpl/general.html', true, '400px', '435px', 'wnd', false, top, left, true, true, true);
     configWindow.windowElement.addEventListener('load', () => {
         configWindow.windowElement.contentWindow.targetDeskMover = madDeskMover;
     });
@@ -137,13 +136,13 @@ goMenuItems[2].addEventListener("click", function () { // Home Page button
 });
 
 goMenuItems[3].addEventListener("click", function () { // Search the Web button
-    iframe.src = "https://www.google.com/"; // gonna add x-frame-bypass support later
+    go("https://www.google.com/");
 });
 
 favoritesMenuItems[0].addEventListener("click", function () { // Add to Favorites button
     madPrompt("Enter a name for this page", function (name) {
         // TODO: add favorites support (with json)
-    }, iframe.contentDocument.title);
+    }, title, title);
 });
 
 favoritesMenuItems[1].addEventListener("click", function () { // Organize Favorites button
@@ -155,6 +154,7 @@ helpMenuItems[0].addEventListener("click", function () { // About ChannelViewer 
 });
 
 backButton.addEventListener("click", function () {
+    handleWeirdError();
     if (doHistoryCounting && historyIndex > 1) {
         historyIndex--;
         historyForward++;
@@ -165,6 +165,7 @@ backButton.addEventListener("click", function () {
 });
 
 forwardButton.addEventListener("click", function () {
+    handleWeirdError();
     if (doHistoryCounting && historyForward > 0) {
         historyIndex++;
         historyForward--;
@@ -175,6 +176,7 @@ forwardButton.addEventListener("click", function () {
 });
 
 refreshButton.addEventListener("click", function () {
+    handleWeirdError();
     if (isCrossOrigin) {
         iframe.src = iframe.src;
     } else {
@@ -188,7 +190,8 @@ stopButton.addEventListener("click", function () {
 });
 
 homeButton.addEventListener("click", function () {
-    iframe.src = localStorage.madesktopChanViewHome || "https://www.ingan121.com/";
+    handleWeirdError();
+    go(localStorage.madesktopChanViewHome || "https://www.ingan121.com/");
 });
 
 fullscreenButton.addEventListener("click", function () {
@@ -211,8 +214,9 @@ iframe.addEventListener('load', function () {
 urlbar.addEventListener('click', function () {
     if (madRunningMode === 1) {
         madPrompt("Enter URL", function (url) {
-            iframe.src = url;
-        }, iframe.src);
+            if (url === null) return;
+            go(url);
+        }, "", urlbar.value);
     } else {
         urlbar.select();
     }
@@ -220,7 +224,7 @@ urlbar.addEventListener('click', function () {
 
 urlbar.addEventListener('keyup', function (e) {
     if (e.key === "Enter") {
-        iframe.src = urlbar.value;
+        go(urlbar.value);
     }
 });
 
@@ -281,7 +285,7 @@ function hookIframeSize(iframe) {
             document.title = iframe.contentDocument.activeElement.href + " - ChannelViewer";
             urlbar.value = iframe.contentDocument.activeElement.href
         }
-    })
+    });
     iframe.contentDocument.addEventListener('submit', e => {
         if (frameElement && iframe.contentDocument.activeElement && iframe.contentDocument.activeElement.form && iframe.contentDocument.activeElement.form.action) {
             let url = iframe.contentDocument.activeElement.form.action;
@@ -290,7 +294,15 @@ function hookIframeSize(iframe) {
             }
             document.title = url + " - ChannelViewer";
         }
-    })
+    });
+}
+
+function go(url) {
+    handleWeirdError();
+    urlbar.value = url;
+    iframe.removeAttribute("srcdoc");
+    iframe.src = url;
+    madDeskMover.config.src = "apps/channelviewer/index.html?page=" + encodeURIComponent(url);
 }
 
 // I DON'T KNOW WHY BUT having a width of about 800px (unscaled) crashes Wallpaper Engine CEF when loading disney.com
@@ -334,19 +346,18 @@ function changeHistoryButtonStatus() {
 
 function updateTitle() {
     if (isCrossOrigin) {
-        if (iframe.src.startsWith("about:") || iframe.src.startsWith("chrome:") || iframe.src.startsWith("data:")) {
-            document.title = "ChannelViewer";
-        } else {
-            document.title = iframe.src + " - ChannelViewer";
-        }
+        document.title = "ChannelViewer";
     } else {
         if (iframe.contentDocument.title) {
-            document.title = iframe.contentDocument.title + " - ChannelViewer";
+            title = iframe.contentDocument.title;
+            document.title = title + " - ChannelViewer";
         } else {
             let url = iframe.contentDocument.location.href;
             if (url.startsWith("about:") || url.startsWith("chrome:") || url.startsWith("data:")) {
+                title = "";
                 document.title = "ChannelViewer";
             } else {
+                title = url;
                 document.title = url + " - ChannelViewer";
             }
         }
@@ -363,17 +374,112 @@ function printIframe() {
     }
 }
 
-const url = new URL(location.href);
-if (url.searchParams.get("sb") !== null) {
-    iframe.sandbox = "allow-modals allow-scripts";
+async function getFavicon() {
+    // well IE4-6 didn't put favicon neither in the title bar nor in the address bar
+    // TODO: make this optional
+    return 'images/html.png';
+    try {
+        const madBase = location.href.split('/').slice(0, -1).join('/') + '/';
+        const loc = iframe.contentWindow.location.href;
+        const doc = iframe.contentDocument;
+        const url = new URL(loc);
+
+        // Get the favicon from the page
+        const iconElem = doc.querySelector("link[rel*='icon']") || doc.querySelector("link[rel*='shortcut icon']") || { href: url.origin + '/favicon.ico', notFound: true };
+        let path = iconElem.href;
+        log('Favicon path from page: ' + path);
+
+        // Use a generic icon for local/MAD files (ChannelList) and data URLs
+        if (loc.startsWith("file:///") || loc.startsWith("data:") || loc.startsWith(madBase)) {
+            if (iconElem.notFound) {
+                return 'images/html.png';
+            } else {
+                return path;
+            }
+        }
+
+        // Check if the favicon exists
+        await fetch(path).then(response => {
+            if (!response.ok) {
+                log('Favicon not found, using a generic icon', 'log', 'ChannelViewer - getFavicon');
+                path = 'images/html.png';
+            }
+        });
+        return path;
+    } catch (e) {
+        log('Error getting favicon');
+        console.log(e);
+        return 'images/html.png';
+    }
 }
-let page = url.searchParams.get("page");
-if (!page.startsWith('http') && !page.startsWith('about') && !page.startsWith('chrome') && !page.startsWith('data') && !page.startsWith('file') && !page.startsWith('ws') && !page.startsWith('wss') && !page.startsWith('blob') && !page.startsWith('javascript')) {
-    page = "../../" + page;
+
+// based on x-frame-bypass
+// https://github.com/niutech/x-frame-bypass
+async function forceLoad(url) {
+    log("Loading with X-Frame-Bypass: " + url, "log", "ChannelViewer");
+    let data = await fetchProxy(url, null, 0).then(res => res.text()).catch(e => {
+        iframe.srcdoc = "Navigation canceled"
+    });
+
+    if (data) {
+        iframe.srcdoc = data.replace(/<head([^>]*)>/i, `<head$1>
+        <base href="${url}">`);
+    }
+}
+
+async function fetchProxy(url, options, i) {
+    const proxies = (options || {}).proxies || [
+        '', // no proxy - will work fine in Wallpaper Engine or any environments with same-origin policy disabled
+        'http://localhost:3031/proxy/', // ModernActiveDesktop System Plugin
+        // 'https://cors-anywhere.herokuapp.com/', // rate limited
+        // 'https://yacdn.org/proxy/', // dead
+        'https://api.codetabs.com/v1/proxy/?quest='
+    ]
+    try {
+        const res = await fetch(proxies[i] + url, options);
+        if (!res.ok)
+            throw new Error(`${res.status} ${res.statusText}`);
+        return res;
+    } catch (error) {
+        if (i === proxies.length - 1)
+            throw error;
+        return this.fetchProxy(url, options, i + 1);
+    }
+}
+
+function init() {
+    const url = new URL(location.href);
+    if (url.searchParams.get("sb") !== null) {
+        iframe.sandbox = "allow-modals allow-scripts";
+    }
+    let page = url.searchParams.get("page");
+    if (!page.startsWith('http') && !page.startsWith('about') && !page.startsWith('chrome') && !page.startsWith('data') && !page.startsWith('file') && !page.startsWith('ws') && !page.startsWith('wss') && !page.startsWith('blob') && !page.startsWith('javascript')) {
+        page = "../../" + page;
+    }
+    // Parse window.open third argument converted to query string (in DeskSettings.js)
+    let width = url.searchParams.get("width") || url.searchParams.get("innerWidth");
+    if (width) {
+        madResizeTo(width, null);
+    }
+    let height = url.searchParams.get("height") || url.searchParams.get("innerHeight");
+    if (height) {
+        madResizeTo(null, height);
+    }
+    let left = url.searchParams.get("left") || url.searchParams.get("screenX");
+    let top = url.searchParams.get("top") || url.searchParams.get("screenY");
+    if (left && top) {
+        madMoveTo(left, top);
+    }
+    let popup = !!width || !!height || !!left || !!top || url.searchParams.get("popup") !== null;
+    if (popup) {
+        toolbars.style.display = "none";
+    }
+    return page;
 }
 
 window.addEventListener('load', function () {
     handleWeirdError();
+    let page = init();
     iframe.src = page || localStorage.madesktopChanViewHome || "about:blank";
     document.title = page ? page + " - ChannelViewer" : "ChannelViewer";
     urlbar.value = page;
@@ -384,11 +490,22 @@ iframe.addEventListener('load', function () {
         isCrossOrigin = true;
         changeAdvFeatures();
         updateTitle();
-        if (didFirstLoad) {
-            urlbar.value = "*" + iframe.src;
-        }
+        madSetIcon('images/html.png');
+        urlbar.value = "*" + iframe.src;
         didFirstLoad = true;
         return;
+    }
+
+    if (madRunningMode === 1) {
+        if (iframe.contentWindow.location.href === "chrome-error://chromewebdata/") {
+            iframe.contentWindow.location.replace("about:srcdoc");
+            if (!iframe.srcdoc) {
+                didHistoryNav = false;
+            }
+            // TODO: make this follow the history using saved historyUrls
+            forceLoad(urlbar.value);
+            return;
+        }
     }
 
     isCrossOrigin = false;
@@ -397,6 +514,9 @@ iframe.addEventListener('load', function () {
     }
     updateTitle();
     changeAdvFeatures();
+    getFavicon().then(icon => {
+        madSetIcon(icon);
+    });
     if (doHistoryCounting) {
         if (didHistoryNav) {
             historyLength = Math.max(historyLength, historyIndex + 1);
@@ -406,7 +526,11 @@ iframe.addEventListener('load', function () {
         didHistoryNav = true;
         log("History: " + historyIndex + " / " + historyLength + " / " + historyForward, "log", "ChannelViewer");
     }
-    urlbar.value = iframe.contentWindow.location.href;
+    if (iframe.contentWindow.location.href !== "about:srcdoc") {
+        urlbar.value = iframe.contentWindow.location.href;
+    }
+    historyUrls[historyIndex] = iframe.contentWindow.location.href;
+    historyUrls = historyUrls.slice(0, historyLength);
     changeHistoryButtonStatus();
     iframe.contentDocument.addEventListener('pointerdown', madBringToTop);
     didFirstLoad = true;

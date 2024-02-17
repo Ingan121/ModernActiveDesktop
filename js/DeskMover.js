@@ -1489,7 +1489,7 @@ class DeskMover {
 
 function initSimpleMover(container, titlebar, exclusions) {
     let offset = [0, 0], isDown = false, mouseOverWndBtns = false;
-    
+
     titlebar.addEventListener('mousedown', function (event) {
         if (!mouseOverWndBtns) {
             isDown = true;
@@ -1508,7 +1508,7 @@ function initSimpleMover(container, titlebar, exclusions) {
             }
         }
     });
-    
+
     document.addEventListener('mouseup', function () {
         if (isDown && localStorage.madesktopOutlineMode && windowOutline.style.display !== "none") {
             container.style.left = windowOutline.style.left;
@@ -1518,14 +1518,14 @@ function initSimpleMover(container, titlebar, exclusions) {
         }
         isDown = false;
         iframeClickEventCtrl(true);
-        
+
         // Keep the window inside the visible area
         if (container.offsetLeft < -container.offsetWidth + 60) container.style.left = -titlebar.offsetWidth + 60 + 'px';
         if (container.offsetTop < 0) container.style.top = 0;
         if (container.offsetLeft + 60 > window.vWidth) container.style.left = window.vWidth - 60 + 'px';
         if (container.offsetTop + 50 > window.vHeight) container.style.top = window.vHeight - 50 + 'px';
     });
-    
+
     document.addEventListener('mousemove', function (event) {
         if (isDown) {
             let target = container;

@@ -41,6 +41,12 @@ function openApp(app) {
             madChangeWndStyle("wnd");
             madLocReplace("apps/visualizer/index.html");
             break;
+        case "cv":
+            madResizeTo(1024, 768);
+            madMoveTo(500, 200);
+            madChangeWndStyle("wnd");
+            madLocReplace("apps/channelviewer/index.html");
+            break;
         case "clock":
             madResizeTo(398, 417);
             madMoveTo(500, 200);

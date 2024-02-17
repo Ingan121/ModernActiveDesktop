@@ -62,6 +62,9 @@ window.deskMovers = {};
 window.visDeskMover = null;
 window.confDeskMover = null;
 
+let msgboxLoopDetector = null;
+let msgboxLoopCount = 0;
+
 let debugLog = false;
 
 // Load configs
@@ -93,6 +96,10 @@ changeSoundScheme(localStorage.madesktopSoundScheme || "98");
 
 deskMovers[0] = new DeskMover(windowContainers[0], "");
 initSimpleMover(msgbox, msgboxTitlebar, [msgboxCloseBtn]);
+if (localStorage.madesktopChanViewTopMargin || localStorage.madesktopChanViewRightMargin) {
+    debugMenu.style.top = localStorage.madesktopChanViewTopMargin || "0";
+    debugMenu.style.right = localStorage.madesktopChanViewRightMargin || "0";
+}
 initSimpleMover(debugMenu, debugMenu, debugMenu.querySelectorAll("a"));
 
 // Migrate old configs
@@ -917,7 +924,10 @@ function openConfig(page) {
     }
 }
 
-function openExternal(url, fullscreen) {
+function openExternal(url, fullscreen, specs = "") {
+    if (specs) {
+        specs = "&" + specs.replaceAll(",", "&");
+    }
     let deskMover = null;
     if (localStorage.sysplugIntegration) {
         fetch("http://localhost:3031/open", { method: "POST", body: url })
@@ -925,15 +935,15 @@ function openExternal(url, fullscreen) {
             .then(responseText => {
                 if (responseText != "OK") {
                     alert("An error occured!\nSystem plugin response: " + responseText);
-                    deskMover = openWindow('apps/channelviewer/index.html?page=' + encodeURIComponent(url), true, "1024px", "768px");
+                    deskMover = openWindow('apps/channelviewer/index.html?page=' + encodeURIComponent(url) + specs, true, "1024px", "768px");
                 }
             })
             .catch(error => {
                 alert("System plugin is not running. Please make sure you have installed it properly.");
-                deskMover = openWindow('apps/channelviewer/index.html?page=' + encodeURIComponent(url), true, "1024px", "768px");
+                deskMover = openWindow('apps/channelviewer/index.html?page=' + encodeURIComponent(url) + specs, true, "1024px", "768px");
             });
     } else {
-        deskMover = openWindow('apps/channelviewer/index.html?page=' + encodeURIComponent(url), true, "1024px", "768px");
+        deskMover = openWindow('apps/channelviewer/index.html?page=' + encodeURIComponent(url) + specs, true, "1024px", "768px");
     }
     if (deskMover && fullscreen) {
         deskMover.windowElement.contentWindow.addEventListener("load", function () {
@@ -999,40 +1009,12 @@ function hookIframeSize(iframe, num) {
 
     // Also hook window.open as this doesn't work in WE
     // Try to use sysplug, and if unavailable, just prompt for URL copy
-    if (runningMode !== BROWSER) {
-        iframe.contentWindow.open = function (url) {
-            if (localStorage.sysplugIntegration) {
-                fetch("http://localhost:3031/open", { method: "POST", body: url })
-                    .then(response => response.text())
-                    .then(responseText => {
-                        if (responseText !== "OK") {
-                            madAlert("An error occured!\nSystem plugin response: " + responseText, function () {
-                                copyPrompt(url);
-                            }, "error");
-                        }
-                    })
-                    .catch(error => {
-                        madAlert("System plugin is not running. Please make sure you have installed it properly.", function () {
-                            copyPrompt(url);
-                        }, "warning");
-                    });
-            } else copyPrompt(url);
-        
-            function copyPrompt(url) {
-                if (prompt("Paste this URL in the browser's address bar. Click OK to copy.", url)) {
-                const tmp = document.createElement("textarea");
-                document.body.appendChild(tmp);
-                tmp.value = url;
-                tmp.select();
-                document.execCommand('copy');
-                document.body.removeChild(tmp);
-                }
-            }
-        }
+    iframe.contentWindow.open = function (url, name, specs) {
+        openExternal(url);
+    }
 
-        iframe.contentWindow.close = function () {
-            deskMovers[num].closeWindow();
-        }
+    iframe.contentWindow.close = function () {
+        deskMovers[num].closeWindow();
     }
 
     // Listen for title changes
@@ -1152,7 +1134,7 @@ async function getFavicon(iframe) {
         // Check if the favicon exists
         await fetch(path).then(response => {
             if (!response.ok) {
-                log('Favicon not found, using generic icon', 'log', 'getFavicon');
+                log('Favicon not found, using a generic icon', 'log', 'getFavicon');
                 path = 'images/html.png';
             }
         });
@@ -1348,6 +1330,14 @@ function preventDefault(event) {
 }
 
 function showDialog() {
+    if (msgboxLoopCount++ > 5) {
+        return;
+    }
+    msgboxLoopDetector = setTimeout(function () {
+        clearTimeout(msgboxLoopDetector);
+        msgboxLoopCount = 0;
+    }, 5000);
+
     if (!localStorage.madesktopNoDeactivate) {
         deskMovers[activeWindow].windowTitlebar.classList.add("inactive");
     }

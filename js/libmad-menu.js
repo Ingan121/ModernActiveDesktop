@@ -5,31 +5,55 @@
 'use strict';
 
 class MadMenu {
-    constructor(menuBar, menuOrder) {
+    constructor(menuBar, menuOrder, submenus = []) {
         this.menuBar = menuBar;
         this.menuOrder = menuOrder;
+        this.submenus = submenus;
         this.openedMenu = null;
         this.mouseOverMenu = false;
         this.handlingKeyEvent = false;
         this.boundMenuNavigationHandler = this.menuNavigationHandler.bind(this);
+        this.submenuOpenTimer = null;
+        this.submenuCloseTimer = null;
+        this.shouldNotCloseSubmenu = false;
+        this.menuHierarchy = {};
 
         for (const menuName of menuOrder) {
+            this.menuHierarchy[menuName] = [];
             const menuBtn = document.getElementById(menuName + 'MenuBtn');
             const menuBg = document.getElementById(menuName + 'MenuBg');
             const menuItems = menuBg.querySelectorAll('.contextMenuItem');
 
             for (const elem of menuItems) {
+                if (elem.dataset.submenu) {
+                    this.menuHierarchy[menuName].push(elem.dataset.submenu);
+                }
                 elem.addEventListener('mouseover', () => {
                     for (const item of menuItems) {
                         delete item.dataset.active;
                     }
                     elem.dataset.active = true;
+                    if (elem.dataset.submenu) {
+                        this.submenuOpenTimer = setTimeout(() => {
+                            this.openMenu(elem.dataset.submenu, true);
+                        }, 300);
+                    } else if (this.menuHierarchy[menuName].length > 0) {
+                        this.delayedCloseMenu(this.menuHierarchy[menuName][0], true);
+                    }
                 });
                 elem.addEventListener('mouseleave', () => {
                     delete elem.dataset.active;
+                    clearTimeout(this.submenuOpenTimer);
+                    if (elem.dataset.submenu) {
+                        this.delayedCloseMenu(elem.dataset.submenu, true);
+                    }
                 });
                 elem.addEventListener('click', () => {
-                    this.closeMenu(menuName);
+                    if (elem.dataset.submenu) {
+                        this.openMenu(elem.dataset.submenu, true);
+                    } else {
+                        this.closeMenu(menuName);
+                    }
                 });
             }
 
@@ -44,7 +68,10 @@ class MadMenu {
                 madBringToTop(); // But keep the window activation working
             });
 
-            menuBg.addEventListener('focusout', () => {
+            menuBg.addEventListener('focusout', (event) => {
+                if (event.relatedTarget && event.relatedTarget.dataset.submenuOf === menuName) {
+                    return;
+                }
                 this.closeMenu(menuName);
             });
 
@@ -55,53 +82,165 @@ class MadMenu {
                 }
             });
 
-            menuBtn.addEventListener('mouseout', () => {
+            menuBtn.addEventListener('mouseleave', () => {
                 this.mouseOverMenu = false;
+            });
+        }
+
+        for (const submenu of submenus) {
+            const menuBg = document.getElementById(submenu + 'MenuBg');
+            const menuItems = menuBg.querySelectorAll('.contextMenuItem');
+            const parentMenuBg = document.getElementById(menuBg.dataset.submenuOf + 'MenuBg');
+            const parentMenuItemIndex = Array.from(parentMenuBg.querySelectorAll('.contextMenuItem')).findIndex((elem) => elem.dataset.submenu === submenu);
+            const parentMenuItem = parentMenuBg.querySelectorAll('.contextMenuItem')[parentMenuItemIndex];
+
+            for (const elem of menuItems) {
+                elem.addEventListener('mouseover', () => {
+                    for (const item of menuItems) {
+                        delete item.dataset.active;
+                    }
+                    elem.dataset.active = true;
+                });
+                elem.addEventListener('mouseleave', () => {
+                    delete elem.dataset.active;
+                });
+                elem.addEventListener('click', () => {
+                    this.closeMenu(submenu, true);
+                    this.closeMenu(menuBg.dataset.submenuOf);
+                });
+            }
+
+            menuBg.addEventListener('mouseover', () => {
+                this.mouseOverMenu = true;
+                this.shouldNotCloseSubmenu = true;
+                clearTimeout(this.submenuCloseTimer);
+                parentMenuItem.dataset.active = true;
+            });
+
+            menuBg.addEventListener('mouseleave', () => {
+                this.mouseOverMenu = false;
+                this.shouldNotCloseSubmenu = false;
+            });
+
+            menuBg.addEventListener('focusout', (event) => {
+                if (menuBg.style.display === 'none') {
+                    return;
+                }
+                this.shouldNotCloseSubmenu = false;
+                this.closeMenu(submenu, true);
+                if (event.relatedTarget && event.relatedTarget.id && event.relatedTarget.id === parentMenuBg.id) {
+                    return;
+                }
+                this.closeMenu(menuBg.dataset.submenuOf);
             });
         }
     }
 
-    openMenu(menuName) {
-        const menuBtn = document.getElementById(menuName + 'MenuBtn');
+    openMenu(menuName, isSubmenu = false) {
         const menuBg = document.getElementById(menuName + 'MenuBg');
         const menuItems = menuBg.querySelectorAll('.contextMenuItem');
+        let menuBtn;
+        let parentMenuBg;
+        let parentMenuItem;
+        
+        if (isSubmenu) {
+            parentMenuBg = document.getElementById(menuBg.dataset.submenuOf + 'MenuBg');
+            if (parentMenuBg.style.display === 'none') {
+                return;
+            }
+            let parentMenuItemIndex = Array.from(parentMenuBg.querySelectorAll('.contextMenuItem')).findIndex((elem) => elem.dataset.submenu === menuName);
+            parentMenuItem = parentMenuBg.querySelectorAll('.contextMenuItem')[parentMenuItemIndex];
+        } else {
+            menuBtn = document.getElementById(menuName + 'MenuBtn');
+        }
     
         switch (localStorage.madesktopCmAnimation) {
             case 'none':
                 menuBg.style.animation = 'none';
                 break;
             case 'slide':
-                menuBg.style.animation = 'cmDropdown 0.25s linear';
+                if (isSubmenu) {
+                    menuBg.style.animation = 'cmDropright 0.25s linear';
+                } else {
+                    menuBg.style.animation = 'cmDropdown 0.25s linear';
+                }
                 break;
             case 'fade':
                 menuBg.style.animation = 'fade 0.2s';
         }
+
         for (const item of menuItems) {
             delete item.dataset.active;
         }
-        if (madDeskMover.isFullscreen) {
-            menuBg.style.left = menuBtn.offsetLeft + parseInt(localStorage.madesktopChanViewLeftMargin || '75px') + 'px';
+        let left = 0;
+        if (isSubmenu) {
+            left = parentMenuBg.offsetLeft + parentMenuBg.offsetWidth - 6;
         } else {
-            menuBg.style.left = menuBtn.offsetLeft + 'px';
+            left = menuBtn.offsetLeft;
         }
+        if (madDeskMover.isFullscreen) {
+            left += parseInt(localStorage.madesktopChanViewLeftMargin || '75px');
+        }
+        menuBg.style.left = left + 'px';
         menuBg.style.display = 'block';
         this.menuBar.dataset.active = true;
-        menuBtn.dataset.active = true;
+        if (isSubmenu) {
+            parentMenuItem.dataset.active = true;
+        } else {
+            menuBtn.dataset.active = true;
+        }
         menuBg.focus();
         this.openedMenu = menuBg;
         document.addEventListener('keydown', this.boundMenuNavigationHandler);
     }
     
-    closeMenu(menuName) {
-        const menuBtn = document.getElementById(menuName + 'MenuBtn');
+    closeMenu(menuName, isSubmenu = false) {
+        if ((isSubmenu && this.shouldNotCloseSubmenu)) {
+            return;
+        }
         const menuBg = document.getElementById(menuName + 'MenuBg');
+        let menuBtn;
+        let parentMenuBg;
+        let parentMenuItem;
+
+        if (isSubmenu) {
+            parentMenuBg = document.getElementById(menuBg.dataset.submenuOf + 'MenuBg');
+            let parentMenuItemIndex = Array.from(parentMenuBg.querySelectorAll('.contextMenuItem')).findIndex((elem) => elem.dataset.submenu === menuName);
+            parentMenuItem = parentMenuBg.querySelectorAll('.contextMenuItem')[parentMenuItemIndex];
+        } else {
+            menuBtn = document.getElementById(menuName + 'MenuBtn');
+        }
+
+        if (this.submenuCloseTimer) {
+            clearTimeout(this.submenuCloseTimer);
+        }
+
         menuBg.style.display = 'none';
-        delete menuBtn.dataset.active;
+        if (isSubmenu) {
+            delete parentMenuItem.dataset.active;
+        } else {
+            delete menuBtn.dataset.active;
+        }
         if (!this.mouseOverMenu) {
             delete this.menuBar.dataset.active;
         }
         this.openedMenu = null;
         document.removeEventListener('keydown', this.boundMenuNavigationHandler);
+        if (isSubmenu && parentMenuBg.style.display !== 'none') {
+            parentMenuBg.focus();
+            this.openedMenu = parentMenuBg;
+            document.addEventListener('keydown', this.boundMenuNavigationHandler);
+        }
+        //console.log(menuName + ': ' + new Error().stack);
+    }
+
+    delayedCloseMenu(menuName, isSubmenu = false, delay) {
+        if (typeof delay !== "number") {
+            delay = 300;
+        }
+        this.submenuCloseTimer = setTimeout(() => {
+            this.closeMenu(menuName, isSubmenu);
+        }, delay);
     }
 
     menuNavigationHandler(event) {
@@ -147,6 +286,12 @@ class MadMenu {
                 }
                 break;
             case "ArrowLeft":
+                if (this.openedMenu.dataset.submenuOf) {
+                    this.closeMenu(this.openedMenu.id.slice(0, -6), true);
+                    this.openedMenu.querySelector('.contextMenuItem').dataset.active = true;
+                    this.menuBar.dataset.active = true;
+                    break;
+                }
                 if (this.menuOrder.length === 1) {
                     break;
                 }
@@ -157,11 +302,23 @@ class MadMenu {
                 this.menuBar.dataset.active = true;
                 break;
             case "ArrowRight":
+                if (activeItem && activeItem.dataset.submenu) {
+                    this.openMenu(activeItem.dataset.submenu, true);
+                    this.openedMenu.querySelector('.contextMenuItem').dataset.active = true;
+                    this.menuBar.dataset.active = true;
+                    break;
+                }
                 if (this.menuOrder.length === 1) {
                     break;
                 }
-                const nextMenu = this.menuOrder[(this.menuOrder.indexOf(this.openedMenu.id.slice(0, -6)) + 1) % this.menuOrder.length];
-                this.closeMenu(this.openedMenu.id.slice(0, -6));
+                let nextMenu;
+                if (this.openedMenu.dataset.submenuOf) {
+                    nextMenu = this.menuOrder[(this.menuOrder.indexOf(this.openedMenu.dataset.submenuOf) + 1) % this.menuOrder.length];
+                    this.closeMenu(this.openedMenu.id.slice(0, -6), true);
+                } else {
+                    nextMenu = this.menuOrder[(this.menuOrder.indexOf(this.openedMenu.id.slice(0, -6)) + 1) % this.menuOrder.length];
+                    this.closeMenu(this.openedMenu.id.slice(0, -6));
+                }
                 this.openMenu(nextMenu);
                 this.openedMenu.querySelector('.contextMenuItem').dataset.active = true;
                 this.menuBar.dataset.active = true;

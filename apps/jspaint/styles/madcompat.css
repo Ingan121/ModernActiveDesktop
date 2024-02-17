@@ -171,24 +171,3 @@ body[data-cm-shadow] .menu-popup {
 body[data-cm-fade] .menu-popup {
     animation: fade 0.2s;
 }
-
-::-webkit-scrollbar-button:vertical:start {
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center center;
-}
-::-webkit-scrollbar-button:vertical:end {
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center center;
-}
-::-webkit-scrollbar-button:horizontal:start {
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center center;
-}
-::-webkit-scrollbar-button:horizontal:end {
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center center;
-}
