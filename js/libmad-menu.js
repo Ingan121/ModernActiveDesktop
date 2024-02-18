@@ -33,6 +33,7 @@ class MadMenu {
                         delete item.dataset.active;
                     }
                     elem.dataset.active = true;
+                    clearTimeout(this.submenuOpenTimer);
                     if (elem.dataset.submenu) {
                         this.submenuOpenTimer = setTimeout(() => {
                             this.openMenu(elem.dataset.submenu, true);
@@ -105,8 +106,10 @@ class MadMenu {
                     delete elem.dataset.active;
                 });
                 elem.addEventListener('click', () => {
+                    this.shouldNotCloseSubmenu = false;
                     this.closeMenu(submenu, true);
                     this.closeMenu(menuBg.dataset.submenuOf);
+                    delete this.menuBar.dataset.active;
                 });
             }
 
@@ -158,15 +161,16 @@ class MadMenu {
             case 'none':
                 menuBg.style.animation = 'none';
                 break;
+            case 'fade':
+                menuBg.style.animation = 'fade 0.2s';
+                break;
             case 'slide':
+            default:
                 if (isSubmenu) {
                     menuBg.style.animation = 'cmDropright 0.25s linear';
                 } else {
                     menuBg.style.animation = 'cmDropdown 0.25s linear';
                 }
-                break;
-            case 'fade':
-                menuBg.style.animation = 'fade 0.2s';
         }
 
         for (const item of menuItems) {
@@ -221,7 +225,7 @@ class MadMenu {
         } else {
             delete menuBtn.dataset.active;
         }
-        if (!this.mouseOverMenu) {
+        if (!this.mouseOverMenu && !isSubmenu) {
             delete this.menuBar.dataset.active;
         }
         this.openedMenu = null;

@@ -1187,13 +1187,18 @@ class DeskMover {
         }
         if (window.runningMode === WE) {
             if (this.windowElement.contentWindow.location.href === "chrome-error://chromewebdata/") {
-                madAlert("ModernActiveDesktop cannot load this URL due to a security policy. Please try another URL.", () => {
-                    if (this.firstLoadSuccess) {
+                if (this.firstLoadSuccess) {
+                    madAlert("ModernActiveDesktop cannot load this URL due to a security policy.", () => {
                         this.windowElement.src = this.config.src || "placeholder.html";
-                    } else {
+                    }, "error");
+                } else {
+                    madConfirm("ModernActiveDesktop cannot load this URL due to a security policy. Do you want to open this page in ChannelViewer instead?", res => {
+                        if (res) {
+                            openExternal(this.config.src);
+                        }
                         this.closeWindow();
-                    }
-                }, "error");
+                    });
+                };
                 return;
             }
         }

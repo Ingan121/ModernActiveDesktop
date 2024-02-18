@@ -16,6 +16,7 @@ apps/solitaire/icon.png
 apps/visualizer/speaker.png
 apps/clock/icon.png
 apps/channelviewer/images
+apps/channelviewer/ieres
 
 # system plugin installation
 /systemplugin

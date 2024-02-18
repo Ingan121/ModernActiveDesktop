@@ -333,9 +333,9 @@ function livelyPropertyListener(name, val) {
 function livelyAudioListener(audioArray) {}
 
 function livelyCurrentTrack(data) {
-    let obj = JSON.parse(data);
     if (window.visDeskMover) {
         const visWindow = window.visDeskMover.windowElement.contentWindow;
+        const obj = JSON.parse(data);
         //when no track is playing its null
         if (obj !== null) {
             visWindow.wallpaperMediaPropertiesListener({
@@ -1010,7 +1010,7 @@ function hookIframeSize(iframe, num) {
     // Also hook window.open as this doesn't work in WE
     // Try to use sysplug, and if unavailable, just prompt for URL copy
     iframe.contentWindow.open = function (url, name, specs) {
-        openExternal(url);
+        openExternal(url, false, specs);
     }
 
     iframe.contentWindow.close = function () {
@@ -1026,6 +1026,15 @@ function hookIframeSize(iframe, num) {
         iframe.contentDocument.querySelector('title'),
         { subtree: true, characterData: true, childList: true }
     );
+
+    iframe.contentDocument.addEventListener('click', (event) => {
+        if (iframe.contentDocument.activeElement && iframe.contentDocument.activeElement.href &&
+            iframe.contentDocument.activeElement.target === "_blank")
+        {
+            openExternal(iframe.contentDocument.activeElement.href);
+            event.preventDefault();
+        }
+    });
 }
 
 // Save current window z-order
@@ -1437,7 +1446,6 @@ function menuNavigationHandler(event) {
                 } else {
                     openedMenu.blur();
                 }
-                break;
             }
             break;
         default:
@@ -1602,7 +1610,7 @@ window.addEventListener('load', function () {
     document.dispatchEvent(new Event("mouseup")); // Re-calculate title bar height after loading scheme css
 });
 
-// Prevent scrolling when deskMover gets focus, iframe loads, etc.
+// Prevent scrolling when a partly off-screen deskMover gets focus, its iframe loads, etc.
 document.addEventListener('scroll', function () {
     document.documentElement.scrollTo(0, 0);
 });

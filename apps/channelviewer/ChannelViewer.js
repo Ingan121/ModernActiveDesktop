@@ -12,7 +12,9 @@ const toolbar = document.getElementById("toolbar");
 const addressBar = document.getElementById("addressBar");
 
 const backButton = document.getElementById("back-button");
+const backExpandButton = document.getElementById("back-expand-button");
 const forwardButton = document.getElementById("forward-button");
+const forwardExpandButton = document.getElementById("forward-expand-button");
 const refreshButton = document.getElementById("refresh-button");
 const stopButton = document.getElementById("stop-button");
 const homeButton = document.getElementById("home-button");
@@ -29,6 +31,9 @@ const favoritesMenuItems = document.querySelectorAll("#favoritesMenu .contextMen
 const helpMenuItems = document.querySelectorAll("#helpMenu .contextMenuItem");
 const toolbarsMenuItems = document.querySelectorAll("#toolbarsMenu .contextMenuItem");
 
+const historyMenuBg = document.getElementById("historyMenuBg");
+const historyMenu = document.getElementById("historyMenu");
+
 const iframe = document.getElementById("iframe");
 
 let title = "";
@@ -37,9 +42,9 @@ let isCrossOrigin = madRunningMode !== 1; // Wallpaper Engine disables all cross
 let doHistoryCounting = !isCrossOrigin;
 let historyLength = 0;
 let historyIndex = 0;
-let historyForward = 0;
-let historyUrls = [];
+let historyItems = [];
 let didHistoryNav = true;
+let saveTimer;
 
 madDeskMover.menu = new MadMenu(menuBar, ['file', 'edit', 'view', 'go', 'favorites', 'help'], ['toolbars']);
 
@@ -153,27 +158,118 @@ helpMenuItems[0].addEventListener("click", function () { // About ChannelViewer 
     madOpenConfig("about");
 });
 
+toolbarsMenuItems[0].addEventListener("click", function () { // Standard Buttons button
+    if (localStorage.madesktopChanViewHideToolbar) {
+        toolbar.style.display = "";
+        toolbarsMenuItems[0].classList.add("checkedItem");
+        delete localStorage.madesktopChanViewHideToolbar;
+    } else {
+        toolbar.style.display = "none";
+        toolbarsMenuItems[0].classList.remove("checkedItem");
+        localStorage.madesktopChanViewHideToolbar = true;
+    }
+});
+
+toolbarsMenuItems[1].addEventListener("click", function () { // Address Bar button
+    if (localStorage.madesktopChanViewHideAddressBar) {
+        addressBar.style.display = "";
+        toolbarsMenuItems[1].classList.add("checkedItem");
+        delete localStorage.madesktopChanViewHideAddressBar;
+    } else {
+        addressBar.style.display = "none";
+        toolbarsMenuItems[1].classList.remove("checkedItem");
+        localStorage.madesktopChanViewHideAddressBar = true;
+    }
+});
+
 backButton.addEventListener("click", function () {
     handleWeirdError();
-    if (doHistoryCounting && historyIndex > 1) {
+    if (!backButton.dataset.disabled && doHistoryCounting && historyIndex > 1) {
         historyIndex--;
-        historyForward++;
-        didHistoryNav = false;
+        go(historyItems[historyIndex - 1][0], true);
     }
-    history.back();
     changeHistoryButtonStatus();
 });
 
 forwardButton.addEventListener("click", function () {
     handleWeirdError();
-    if (doHistoryCounting && historyForward > 0) {
+    if (!forwardButton.dataset.disabled && doHistoryCounting && historyLength >= historyIndex) {
         historyIndex++;
-        historyForward--;
-        didHistoryNav = false;
+        go(historyItems[historyIndex - 1][0], true);
     }
-    history.forward();
     changeHistoryButtonStatus();
 });
+
+for (const expandButton of [backExpandButton, forwardExpandButton]) {
+    const parentButton = document.getElementById(expandButton.id.replace("-expand", ""));
+    expandButton.addEventListener("mouseover", function () {
+        if (!expandButton.dataset.disabled) {
+            parentButton.dataset.hover = true;
+        }
+    });
+    expandButton.addEventListener("mouseleave", function () {
+        if (historyMenuBg.style.display !== "block") {
+            delete parentButton.dataset.hover;
+        }
+    });
+    expandButton.addEventListener("click", function () {
+        if (expandButton.dataset.disabled) {
+            return;
+        }
+        for (const historyItem of historyItems) {
+            const item = document.createElement("div");
+            item.classList.add("contextMenuItem");
+            const p = document.createElement("p");
+            p.textContent = historyItem[1] || historyItem[0];
+            item.addEventListener("click", function () {
+                historyIndex = historyItems.indexOf(historyItem) + 1;
+                go(historyItem[0], true);
+                closeHistoryMenu();
+            });
+            item.appendChild(p);
+            historyMenu.appendChild(item);
+        }
+        const menuItems = historyMenu.querySelectorAll(".contextMenuItem");
+        if (menuItems.length === 0) {
+            return;
+        }
+        historyMenuBg.style.height = menuItems.length * 17 + "px";
+        for (const item of menuItems) {
+            item.addEventListener("mouseover", function () {
+                for (const item of menuItems) {
+                    delete item.dataset.active;
+                }
+                item.dataset.active = true;
+            });
+            item.addEventListener("mouseleave", function () {
+                delete item.dataset.active;
+            });
+        }
+
+        switch (localStorage.madesktopCmAnimation) {
+            case 'none':
+                historyMenuBg.style.animation = 'none';
+                break;
+            case 'slide':
+                historyMenuBg.style.animation = 'cmDropdown 0.25s linear';
+                break;
+            case 'fade':
+                historyMenuBg.style.animation = 'fade 0.2s';
+        }
+
+        for (const item of menuItems) {
+            delete item.dataset.active;
+        }
+        const rect = expandButton.getBoundingClientRect();
+        historyMenuBg.style.top = rect.bottom + "px";
+        historyMenuBg.style.left = rect.left - backButton.offsetWidth + "px";
+        historyMenuBg.style.display = "block";
+        expandButton.dataset.active = true;
+        parentButton.dataset.hover = true;
+        historyMenuBg.focus();
+        document.addEventListener('keydown', historyMenuNavigationHandler);
+    });
+}
 
 refreshButton.addEventListener("click", function () {
     handleWeirdError();
@@ -206,12 +302,17 @@ printButton.addEventListener("click", function () {
     printIframe();
 });
 
-iframe.addEventListener('load', function () {
-    this.contentDocument.body.style.zoom = parent.scaleFactor;
-    hookIframeSize(this);
-});
-
-urlbar.addEventListener('click', function () {
+urlbar.addEventListener('click', function (event) {
+    if (event.offsetX <= 24 * madScaleFactor) {
+        if (isCrossOrigin) {
+            madAlert("This page is from a different origin. Advanced features are not available for this page.", null, "info");
+        } else if (iframe.srcdoc) {
+            madAlert("This page does not allow embedding normally, so it was forcefully loaded. Advanced features are available, but the page may not work properly, especially if it has complex scripts.", null, "warning");
+        } else {
+            madAlert("This page was loaded normally, and advanced features are available.", null, "info");
+        }
+        return;
+    }
     if (madRunningMode === 1) {
         madPrompt("Enter URL", function (url) {
             if (url === null) return;
@@ -227,6 +328,16 @@ urlbar.addEventListener('keyup', function (e) {
         go(urlbar.value);
     }
 });
+
+if (localStorage.madesktopChanViewHideToolbar) {
+    toolbar.style.display = "none";
+    toolbarsMenuItems[0].classList.remove("checkedItem");
+}
+
+if (localStorage.madesktopChanViewHideAddressBar) {
+    addressBar.style.display = "none";
+    toolbarsMenuItems[1].classList.remove("checkedItem");
+}
 
 window.addEventListener('focus', function () {
     iframe.style.pointerEvents = "auto";
@@ -265,8 +376,8 @@ function hookIframeSize(iframe) {
     // Also hook window.open as this doesn't work in WE
     // Try to use sysplug, and if unavailable, just prompt for URL copy
     if (madRunningMode !== 0) {
-        iframe.contentWindow.open = function (url) {
-            madOpenExternal(url);
+        iframe.contentWindow.open = function (url, name, specs) {
+            madOpenExternal(url, false, specs);
         }
     }
 
@@ -274,20 +385,29 @@ function hookIframeSize(iframe) {
         if (doHistoryCounting) {
             historyLength = Math.max(historyLength, historyIndex + 1);
             historyIndex++;
-            historyForward = 0;
+            historyItems[historyIndex - 1] = [arguments[2]];
             changeHistoryButtonStatus();
         }
         return window.history.pushState.apply(this, arguments);
     }
 
     iframe.contentDocument.addEventListener('click', e => {
-        if (frameElement && iframe.contentDocument.activeElement && iframe.contentDocument.activeElement.href) {
+        if (iframe.contentDocument.activeElement && iframe.contentDocument.activeElement.href) {
             document.title = iframe.contentDocument.activeElement.href + " - ChannelViewer";
-            urlbar.value = iframe.contentDocument.activeElement.href
+            urlbar.value = iframe.contentDocument.activeElement.href;
+        } else if (iframe.contentDocument.activeElement.matches("input[type='text'], input[type='search'], input[type='url'], input[type='tel'], input[type='email'], input[type='password'], textarea")) {
+            if (madRunningMode === 1) {
+                madPrompt("Enter value", function (res) {
+                    if (res === null) return;
+                    iframe.contentDocument.activeElement.value = res;
+                    iframe.contentDocument.activeElement.dispatchEvent(new Event('input', { bubbles: true }));
+                    iframe.contentDocument.activeElement.dispatchEvent(new Event('change', { bubbles: true }));
+                }, '', iframe.contentDocument.activeElement.value);
+            }
         }
     });
     iframe.contentDocument.addEventListener('submit', e => {
-        if (frameElement && iframe.contentDocument.activeElement && iframe.contentDocument.activeElement.form && iframe.contentDocument.activeElement.form.action) {
+        if (iframe.contentDocument.activeElement && iframe.contentDocument.activeElement.form && iframe.contentDocument.activeElement.form.action) {
             let url = iframe.contentDocument.activeElement.form.action;
             if (iframe.contentDocument.activeElement.form.method !== 'post') {
                 url = iframe.contentDocument.activeElement.form.action + '?' + new URLSearchParams(new FormData(iframe.contentDocument.activeElement.form))
@@ -297,12 +417,77 @@ function hookIframeSize(iframe) {
     });
 }
 
-function go(url) {
+function go(url, noHistory) {
     handleWeirdError();
+    if (noHistory) {
+        didHistoryNav = false;
+    }
     urlbar.value = url;
     iframe.removeAttribute("srcdoc");
     iframe.src = url;
-    madDeskMover.config.src = "apps/channelviewer/index.html?page=" + encodeURIComponent(url);
+
+    // Save it later, as some sites may crash Wallpaper Engine CEF upon loading
+    // Prevents the user from being stuck in a crash loop
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+        madDeskMover.config.src = "apps/channelviewer/index.html?page=" + encodeURIComponent(url);
+    }, 10000);
+}
+
+function closeHistoryMenu() {
+    historyMenuBg.style.display = "none";
+    historyMenu.innerHTML = "";
+    delete backButton.dataset.hover;
+    delete backExpandButton.dataset.active;
+    delete forwardButton.dataset.hover;
+    delete forwardExpandButton.dataset.active;
+    document.removeEventListener('keydown', historyMenuNavigationHandler);
+}
+
+historyMenuBg.addEventListener("focusout", closeHistoryMenu);
+
+function historyMenuNavigationHandler(event) {
+    if (historyMenuBg.style.display === "none") {
+        return;
+    }
+    let menuItems = historyMenu.querySelectorAll(".contextMenuItem");
+    let activeItem = historyMenu.querySelector(".contextMenuItem[data-active]");
+    let activeItemIndex = Array.from(menuItems).indexOf(activeItem);
+    switch (event.key) {
+        case "Escape":
+            closeHistoryMenu();
+            break;
+        case "ArrowUp":
+            if (activeItem) {
+                delete activeItem.dataset.active;
+                if (activeItemIndex > 0) {
+                    menuItems[activeItemIndex - 1].dataset.active = true;
+                } else {
+                    menuItems[menuItems.length - 1].dataset.active = true;
+                }
+            } else {
+                menuItems[menuItems.length - 1].dataset.active = true;
+            }
+            break;
+        case "ArrowDown":
+            if (activeItem) {
+                delete activeItem.dataset.active;
+                if (activeItemIndex < menuItems.length - 1) {
+                    menuItems[activeItemIndex + 1].dataset.active = true;
+                } else {
+                    menuItems[0].dataset.active = true;
+                }
+            } else {
+                menuItems[0].dataset.active = true;
+            }
+            break;
+        case "Enter":
+            if (activeItem) {
+                activeItem.click();
+            } else {
+                closeHistoryMenu();
+            }
+    }
 }
 
 // I DON'T KNOW WHY BUT having a width of about 800px (unscaled) crashes Wallpaper Engine CEF when loading disney.com
@@ -324,14 +509,18 @@ function changeHistoryButtonStatus() {
     if (doHistoryCounting) {
         if (historyIndex <= 1) {
             backButton.dataset.disabled = true;
+            backExpandButton.dataset.disabled = true;
         } else {
             delete backButton.dataset.disabled;
+            delete backExpandButton.dataset.disabled;
         }
 
-        if (historyForward <= 0) {
+        if (historyLength <= historyIndex) {
             forwardButton.dataset.disabled = true;
+            forwardExpandButton.dataset.disabled = true;
         } else {
             delete forwardButton.dataset.disabled;
+            delete forwardExpandButton.dataset.disabled;
         }
     } else {
         if (didFirstLoad) {
@@ -341,6 +530,8 @@ function changeHistoryButtonStatus() {
             backButton.dataset.disabled = true;
             forwardButton.dataset.disabled = true;
         }
+        backExpandButton.dataset.disabled = true;
+        forwardExpandButton.dataset.disabled = true;
     }
 }
 
@@ -418,21 +609,23 @@ async function getFavicon() {
 async function forceLoad(url) {
     log("Loading with X-Frame-Bypass: " + url, "log", "ChannelViewer");
     let data = await fetchProxy(url, null, 0).then(res => res.text()).catch(e => {
-        iframe.srcdoc = "Navigation canceled"
+        iframe.removeAttribute("srcdoc");
+        didHistoryNav = false;
+        iframe.src = "ieres/NavigationCanceled.html";
     });
 
     if (data) {
         iframe.srcdoc = data.replace(/<head([^>]*)>/i, `<head$1>
-        <base href="${url}">`);
+        <base href="${url}">
+        <script>
+            history.replaceState(null, "", "${url}");
+        </script>`);
     }
 }
 
 async function fetchProxy(url, options, i) {
     const proxies = (options || {}).proxies || [
         '', // no proxy - will work fine in Wallpaper Engine or any environments with same-origin policy disabled
-        'http://localhost:3031/proxy/', // ModernActiveDesktop System Plugin
-        // 'https://cors-anywhere.herokuapp.com/', // rate limited
-        // 'https://yacdn.org/proxy/', // dead
         'https://api.codetabs.com/v1/proxy/?quest='
     ]
     try {
@@ -452,25 +645,28 @@ function init() {
     if (url.searchParams.get("sb") !== null) {
         iframe.sandbox = "allow-modals allow-scripts";
     }
-    let page = url.searchParams.get("page");
+    const page = url.searchParams.get("page");
+    if (!page) {
+        return null;
+    }
     if (!page.startsWith('http') && !page.startsWith('about') && !page.startsWith('chrome') && !page.startsWith('data') && !page.startsWith('file') && !page.startsWith('ws') && !page.startsWith('wss') && !page.startsWith('blob') && !page.startsWith('javascript')) {
         page = "../../" + page;
     }
     // Parse window.open third argument converted to query string (in DeskSettings.js)
-    let width = url.searchParams.get("width") || url.searchParams.get("innerWidth");
+    const width = url.searchParams.get("width") || url.searchParams.get("innerWidth");
     if (width) {
         madResizeTo(width, null);
     }
-    let height = url.searchParams.get("height") || url.searchParams.get("innerHeight");
+    const height = url.searchParams.get("height") || url.searchParams.get("innerHeight");
     if (height) {
         madResizeTo(null, height);
     }
-    let left = url.searchParams.get("left") || url.searchParams.get("screenX");
+    const left = url.searchParams.get("left") || url.searchParams.get("screenX");
     let top = url.searchParams.get("top") || url.searchParams.get("screenY");
     if (left && top) {
         madMoveTo(left, top);
     }
-    let popup = !!width || !!height || !!left || !!top || url.searchParams.get("popup") !== null;
+    const popup = !!width || !!height || !!left || !!top || url.searchParams.get("popup") !== null;
     if (popup) {
         toolbars.style.display = "none";
     }
@@ -499,19 +695,19 @@ iframe.addEventListener('load', function () {
     if (madRunningMode === 1) {
         if (iframe.contentWindow.location.href === "chrome-error://chromewebdata/") {
             iframe.contentWindow.location.replace("about:srcdoc");
-            if (!iframe.srcdoc) {
-                didHistoryNav = false;
-            }
-            // TODO: make this follow the history using saved historyUrls
             forceLoad(urlbar.value);
             return;
         }
+    }
+    if (iframe.contentWindow.location.href === "about:srcdoc" && !iframe.srcdoc) {
+        return;
     }
 
     isCrossOrigin = false;
     if (!didFirstLoad) {
         doHistoryCounting = true;
     }
+    this.contentDocument.body.style.zoom = parent.scaleFactor;
     updateTitle();
     changeAdvFeatures();
     getFavicon().then(icon => {
@@ -519,18 +715,18 @@ iframe.addEventListener('load', function () {
     });
     if (doHistoryCounting) {
         if (didHistoryNav) {
-            historyLength = Math.max(historyLength, historyIndex + 1);
+            historyLength = historyIndex + 1;
             historyIndex++;
-            historyForward = 0;
         }
         didHistoryNav = true;
-        log("History: " + historyIndex + " / " + historyLength + " / " + historyForward, "log", "ChannelViewer");
+        log("History: " + historyIndex + " / " + historyLength, "log", "ChannelViewer");
     }
     if (iframe.contentWindow.location.href !== "about:srcdoc") {
         urlbar.value = iframe.contentWindow.location.href;
     }
-    historyUrls[historyIndex] = iframe.contentWindow.location.href;
-    historyUrls = historyUrls.slice(0, historyLength);
+    historyItems[historyIndex - 1] = [urlbar.value, title];
+    historyItems = historyItems.slice(0, historyLength);
+    hookIframeSize(this);
     changeHistoryButtonStatus();
     iframe.contentDocument.addEventListener('pointerdown', madBringToTop);
     didFirstLoad = true;

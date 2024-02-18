@@ -36,7 +36,7 @@ function openApp(app) {
                 madAlert("Audio recording is not enabled. Please enable it in the Wallpaper Engine properties panel.", null, "error");
                 return;
             }
-            madResizeTo(480, 380);
+            madResizeTo(725, 380);
             madMoveTo(500, 200);
             madChangeWndStyle("wnd");
             madLocReplace("apps/visualizer/index.html");
