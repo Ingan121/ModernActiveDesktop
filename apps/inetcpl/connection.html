@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Internet Options</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../../css/98.css">
+    <link rel="stylesheet" href="css/connection.css">
+    <link id="scheme" rel="stylesheet" href="data:text/css,">
+    <style id="style"></style>
+</head>
+<body>
+    <div id="madconf" class="madconf-inet-general window-body">
+        <menu role="tablist">
+            <li class="tab" role="tab" data-pagename="general"><a href="#tabs">General</a></li>
+            <li class="tab" role="tab" data-pagename="connection" aria-selected="true"><a href="#tabs">Connection</a></li>
+        </menu>
+        <div class="window" role="tabpanel">
+            <div class="window-body">
+                <fieldset>
+                    <legend>CORS proxy</legend>
+                    <img src="images/proxy.png" alt="Home page icon">
+                    <div id="proxyFieldMain" class="fieldMain">
+                        <p>You can change which proxy to use for fetching resources.</p>
+                        <p id="proxyInputWrap">
+                            <span>Pro<u>x</u>y:</span>
+                            <input id="proxyInput" type="text" value="https://api.codetabs.com/v1/proxy/?quest=">
+                        </p>
+                        <div id="proxyButtons" class="field-row">
+                            <button id="useCurrentBtn">Use <u>d</u>efault</button>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend>Advanced</legend>
+                    <img src="images/advanced.png" alt="Home page icon">
+                    <div id="advancedFieldMain" class="fieldMain">
+                        <input id="advChkBox" type="checkbox" checked>
+                        <label for="advChkBox">Load all pages with advanced features</label>
+                        <ul>
+                            <li>ChannelViewer will try to load all pages with a CORS proxy.</li>
+                            <li>Advanced features will be enabled for all Web pages, including those from another origin.</li>
+                            <li>Web pages that doesn't allow embedding normally will also be force loaded.</li>
+                            <li>Do note that some pages might not function correctly, especially those with complex scripts.</li>
+                        </ul>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+        <section class="bottomButtons field-row">
+            <button id="okBtn">OK</button>
+            <button id="cancelBtn">Cancel</button>
+            <button id="applyBtn"><u>A</u>pply</button>
+        </section>
+    </div>
+
+    <script src="../../js/libmad.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/connection.js"></script>
+</body>
+</html>

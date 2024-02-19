@@ -4,101 +4,44 @@
     <title>Internet Options</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="../../css/98.css">
-    <link rel="stylesheet" href="general.css">
+    <link rel="stylesheet" href="css/general.css">
     <link id="scheme" rel="stylesheet" href="data:text/css,">
     <style id="style"></style>
 </head>
 <body>
-    <div id="madconf" class="madconf-inet window-body">
+    <div id="madconf" class="madconf-inet-general window-body">
         <menu role="tablist">
-            <li class="tab" role="tab" aria-selected="true"><a href="#tabs">General</a></li>
-            <li class="tab" role="tab"><a href="#tabs">Connection</a></li>
+            <li class="tab" role="tab" data-pagename="general" aria-selected="true"><a href="#tabs">General</a></li>
+            <li class="tab" role="tab" data-pagename="connection"><a href="#tabs">Connection</a></li>
         </menu>
         <div class="window" role="tabpanel">
             <div class="window-body">
                 <fieldset>
-                    <legend>Display scaling</legend>
-                    <div class="field-row">
-                        100%
-                        <input id="dpiSlider" type="range" min="0" max="8" value="0" />
-                        300%
-                        <mad-select id="dpiSelector">
-                            <option value="1">100%</option>
-                            <option value="1.25">125%</option>
-                            <option value="1.5">150%</option>
-                            <option value="1.75">175%</option>
-                            <option value="2">200%</option>
-                            <option value="2.25">225%</option>
-                            <option value="2.5">250%</option>
-                            <option value="2.75">275%</option>
-                            <option value="3">300%</option>
-                            <option value="3.25">325%</option>
-                            <option value="3.5">350%</option>
-                            <option value="3.75">375%</option>
-                            <option value="4">400%</option>
-                            <option value="custom">Custom</option>
-                        </mad-select>
-                    </div>
-                </fieldset>
-                <fieldset>
-                    <legend>System plugin integration</legend>
-                    <input id="sysplugChkBox" type="checkbox">
-                    <label for="sysplugChkBox">Enable system plugin integration</label>
-                    <div class="field-row">
-                        Open pages in...
-                        <mad-select id="sysplugOpenOptSelector" disabled>
-                            <option>Classic style channel viewer</option>
-                            <option>Classic style channel viewer (fullscreen)</option>
-                            <option>System default browser</option>
-                        </mad-select>
-                    </div>
-                    <div class="topmargin field-row">
-                        <button id="connectTestBtn">Check connectivity</button>
-                        <button id="showGuideBtn">Show setup guide</button>
-                    </div>
-                    <p id="connectionStatus">Click the above button to begin the connectivity check</p>
-                </fieldset>
-                <fieldset>
-                    <legend>Sounds</legend>
-                    <div class="field-row">
-                        <div id="soundChkBoxes">
-                            <input id="startSoundChkBox" type="checkbox">
-                            <label for="startSoundChkBox">Play startup sound</label><br>
-                            <input id="alertSoundChkBox" type="checkbox">
-                            <label for="alertSoundChkBox">Play alert sounds</label>
-                        </div>
-                        <div id="schemeArea">
-                            <span id="soundSchemeLabel">Sound Scheme:</span>
-                            <mad-select id="soundSchemeSelector">
-                                <option value="3">Windows 3.x</option>
-                                <option value="95">Windows 95</option>
-                                <option value="nt4">Windows NT 4.0</option>
-                                <option value="98" selected>Windows 98</option>
-                                <option value="2k">Windows 2000 / Me</option>
-                                <option value="xp">Windows XP</option>
-                                <option value="vista">Windows Vista</option>
-                                <option value="7">Windows 7</option>
-                                <option value="8">Windows 8</option>
-                                <option value="10">Windows 10</option>
-                                <option value="11">Windows 11</option>
-                            </mad-select>
+                    <legend>Home page</legend>
+                    <img src="images/homepage.png" alt="Home page icon">
+                    <div id="homePageFieldMain" class="fieldMain">
+                        <p>You can change which page to use for your home page.</p>
+                        <p id="homePageInputWrap">
+                            <span>Add<u>r</u>ess:</span>
+                            <input id="homePageInput" type="text" value="https://www.ingan121.com/">
+                        </p>
+                        <div id="homePageButtons" class="field-row">
+                            <button id="useCurrentBtn" disabled>Use <u>c</u>urrent</button>
+                            <button id="useDefaultBtn">Use <u>d</u>efault</button>
+                            <button id="useBlankBtn">Use <u>b</u>lank</button>
                         </div>
                     </div>
                 </fieldset>
                 <fieldset>
-                    <legend>Window management</legend>
-                    <span id="iconAreaLabel">Wallpaper margin (icon area):</span>
-                    <input id="noDisableChkBox" type="checkbox">
-                    <label for="noDisableChkBox">Do not deactivate windows</label><br>
-                    <div class="topmargin field-row">
-                        <label for="leftIconArea">Left</label>
-                        <input id="leftIconArea" class="shortInput" type="text" value="75px"/>
-                        <label for="rightIconArea">Right</label>
-                        <input id="rightIconArea" class="shortInput" type="text" value="0"/>
-                        <label for="topIconArea">Top</label>
-                        <input id="topIconArea" class="shortInput" type="text" value="0"/>
-                        <label for="bottomIconArea">Bottom</label>
-                        <input id="bottomIconArea" class="shortInput" type="text" value="48px"/>
+                    <legend>Advanced</legend>
+                    <img src="images/advanced.png" alt="Home page icon">
+                    <div id="advancedFieldMain" class="fieldMain">
+                        <input id="jsChkBox" type="checkbox" checked>
+                        <label for="jsChkBox">Enable JavaScript</label><br>
+                        <input id="autoFullscrnChkBox" type="checkbox" checked>
+                        <label for="autoFullscrnChkBox">Launch Channels in full screen window</label><br>
+                        <input id="injectStyleChkBox" type="checkbox" checked>
+                        <label for="injectStyleChkBox">Enable classic styling</label>
                     </div>
                 </fieldset>
             </div>
@@ -111,6 +54,7 @@
     </div>
 
     <script src="../../js/libmad.js"></script>
-    <script src="js/config.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/general.js"></script>
 </body>
 </html>

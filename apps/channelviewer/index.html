@@ -12,7 +12,7 @@
         <link id="menuStyle" rel="stylesheet" href="">
         <style id="style"></style>
     </head>
-    <body>
+    <body id="madChanView">
         <div id="toolbars">
             <div id="menuBar" class="menu">
                 <div class="grabber"></div>
@@ -23,7 +23,7 @@
                 <div id="favoritesMenuBtn" class="menuBtn"><span>F<u>a</u>vorites</span></div>
                 <div id="helpMenuBtn" class="menuBtn"><span><u>H</u>elp</span></div>
             </div>
-            <div id="toolbar">
+            <div id="toolbar" class="bottomLabels">
                 <div class="grabber"></div>
                 <div id="back-button" class="toolbarButton" data-disabled="true">
                     <img class="toolbarButtonImage" src="images/Back.png">
@@ -54,7 +54,7 @@
                 <div class="separator"></div>
                 <div id="fullscreen-button" class="toolbarButton">
                     <img class="toolbarButtonImage" src="images/FullScreen.png">
-                    <span class="toolbarButtonLabel">Full Screen</span>
+                    <span class="toolbarButtonLabel">Fullscreen</span>
                 </div>
                 <div id="print-button" class="toolbarButton">
                     <img class="toolbarButtonImage" src="images/Print.png">
@@ -77,7 +77,7 @@
                 <input id="urlbar" type="text">
             </div>
         </div>
-        <iframe id="iframe" class="clientEdge" sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-presentation allow-same-origin allow-scripts"></iframe>
+        <iframe id="iframe" class="clientEdge forcedClientEdge" sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-presentation allow-same-origin allow-scripts"></iframe>
 
         <div id="fileMenuBg" class="contextMenuBg window" tabindex="-1">
             <div id="fileMenu" class="contextMenu window-body">
@@ -138,8 +138,8 @@
                 <div class="contextMenuItem checkedItem"><p><u>A</u>ddress Bar</p></div>
                 <hr>
                 <div class="contextMenuItem"><p>Labels on <u>r</u>ight</p></div>
-                <div class="contextMenuItem"><p>Labels on <u>b</u>ottom</p></div>
-                <div class="contextMenuItem activeStyle"><p><u>N</u>o labels</p></div>
+                <div class="contextMenuItem activeStyle"><p>Labels on <u>b</u>ottom</p></div>
+                <div class="contextMenuItem"><p><u>N</u>o labels</p></div>
             </div>
         </div>
         <div id="historyMenuBg" class="contextMenuBg window" tabindex="-1">

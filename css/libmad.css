@@ -180,12 +180,14 @@ body[data-fullscreen] .contextMenuBg {
     right: -2px;
 }
 
-.disabled {
+.disabled,
+[data-disabled] {
     color: var(--button-shadow) !important;
     text-shadow: 1px 1px 0 var(--button-hilight) !important;
 }
 
 .disabled u,
-button[disabled] u {
+button[disabled] u,
+[data-disabled] u {
     border-bottom-color: var(--button-shadow);
 }

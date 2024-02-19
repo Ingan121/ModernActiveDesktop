@@ -20,6 +20,7 @@ body {
     outline: solid 1px var(--button-shadow);
     box-shadow: var(--button-hilight) -1px 2px, var(--button-hilight) 2px 2px, var(--button-hilight) 2px -1px, var(--button-hilight) 2px 2px;
     margin: 1px 2px 2px 1px;
+    background-color: var(--button-face);
 }
 
 #toolbars > div:not(:first-child) {
@@ -33,11 +34,12 @@ body {
 #menuBar {
     height: calc(var(--menu-height) + 4px);
     margin-bottom: 0;
+    background-color: transparent;
 }
 
 .menuBtn {
-    margin: 2px 0;
-    padding: calc((var(--menu-height) - 14px) / 2) 7px 2px 8px;
+    margin: 1px 0;
+    padding: calc((var(--menu-height) - 14px) / 2 + 1px) 7px 2px 8px;
 }
 
 #fileMenuBtn {
@@ -102,7 +104,7 @@ body {
 }
 
 .toolbarButton {
-    width: 27px;
+    min-width: 27px;
     height: 24px;
     float: left;
     border: solid 1px transparent;
@@ -139,7 +141,7 @@ body {
 
 #back-button,
 #forward-button {
-    width: 26px;
+    min-width: 26px;
 }
 
 #back-button .toolbarButtonImage {
@@ -151,7 +153,7 @@ body {
 
 #back-expand-button,
 #forward-expand-button {
-    width: 12px;
+    min-width: 12px;
 }
 
 #back-expand-button span,
@@ -215,20 +217,18 @@ body::after { /* preload images */
 #toolbar {
     height: 26px;
     display: flex;
-    background-color: var(--button-face);
 }
 
 #addressBar {
     width: 100%;
     height: 22px;
     display: flex;
-    background-color: var(--button-face);
 }
 
 #addressText {
     font-size: 11px;
-    margin-top: 6px;
     margin-left: 2px;
+    line-height: 24px;
 }
 
 #urlbar {
@@ -254,6 +254,49 @@ body::after { /* preload images */
     background-color: white;
     background-color: var(--window);
     padding: 2px;
+}
+
+body:not([data-fullscreen]) #toolbar.bottomLabels {
+    height: 40px;
+}
+
+body:not([data-fullscreen]) #toolbar.bottomLabels .toolbarButton {
+    height: 38px;
+}
+
+body:not([data-fullscreen]) #toolbar.bottomLabels .toolbarButton:not(#back-expand-button):not(#forward-expand-button) {
+    min-width: 53px;
+}
+
+body:not([data-fullscreen]) #toolbar.bottomLabels .toolbarButtonImage {
+    margin-left: 17px;
+}
+
+body:not([data-fullscreen]) #toolbar.bottomLabels #back-button .toolbarButtonImage {
+    margin-left: 21px;
+}
+
+body:not([data-fullscreen]) #toolbar.bottomLabels #forward-button .toolbarButtonImage {
+    margin-left: 20px;
+}
+
+body:not([data-fullscreen]) #toolbar.bottomLabels #back-expand-button span,
+body:not([data-fullscreen]) #toolbar.bottomLabels #forward-expand-button span {
+    line-height: 36px;
+}
+
+body:not([data-fullscreen]) #toolbar.bottomLabels .toolbarButtonLabel {
+    display: block;
+    text-align: center;
+    position: relative;
+    bottom: 4px;
+}
+
+body:not([data-fullscreen]) #toolbar.rightLabels #back-button .toolbarButtonLabel {
+    display: inline;
+    position: relative;
+    top: -8px;
+    margin-right: 5px;
 }
 
 body[data-fullscreen] #toolbars {

@@ -163,7 +163,7 @@
     left: 103px;
 }
 
-.clientEdge {
+.clientEdge:not(.forcedClientEdge) {
     box-shadow: none !important;
 }
 

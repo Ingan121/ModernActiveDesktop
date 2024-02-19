@@ -466,7 +466,7 @@
   background: white;
 }
 
-.clientEdge {
+.clientEdge:not(.forcedClientEdge) {
   box-shadow: none;
 }
 
@@ -852,7 +852,7 @@
   }
 
   #sysplugOpenOptSelector {
-    width: 250px;
+    width: 260px;
   }
 
   label[for="startSoundChkBox"] {
@@ -943,14 +943,18 @@
   }
 }
 
-#madVis {
-  #mainArea {
-      padding: 0 !important;
+#madChanView {
+  #toolbars {
+      border: none;
+      outline: none;
+      box-shadow: none;
+      margin: 0;
+      background-color: #d3daed;
+      outline: solid 1px #b6bccc;
   }
 
-  canvas {
-      width: 100%;
-      height: 100%;
+  .menu {
+    outline: none;
   }
 }
 

@@ -182,8 +182,8 @@
     left: 4px;
 }
 
-.clientEdge {
-    box-shadow: none !important;
+.clientEdge:not(.forcedClientEdge) { /* Some themed XP programs (i.e. IE6) still use the classic client edge */
+    box-shadow: #7f9db9 -1px -1px inset, #7f9db9 1px 1px inset;
 }
 
 /* For OS-GUI */
@@ -446,14 +446,18 @@
     }
 }
 
-#madVis {
-    #mainArea {
-        padding: 0 !important;
+#madChanView {
+    #toolbars {
+        border: none;
+        outline: none;
+        box-shadow: none;
+        margin: 0;
+        background-image: linear-gradient(to right, #edede5, #ede8cd);
     }
 
-    canvas {
-        width: 100%;
-        height: 100%;
+    #windowBtnContainer {
+        color: gray;
+        background-color: white;
     }
 }
 

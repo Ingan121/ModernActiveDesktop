@@ -1,0 +1,42 @@
+@import '../../madconf/css/common.css';
+
+fieldset {
+    margin: 0 4px;
+    position: relative;
+}
+
+img {
+    position: absolute;
+    top: 5px;
+}
+
+.fieldMain {
+    margin-left: 42px;
+}
+
+#homePageFieldMain {
+    margin-top: -6px;
+}
+
+#homePageInputWrap {
+    display: flex;
+    width: 100%;
+    margin-top: 6px;
+}
+
+#homePageInputWrap span {
+    margin: 2px 19px 0 2px;
+}
+
+#homePageInput {
+    width: 100%;
+}
+
+#homePageButtons {
+    margin-top: 8px;
+    justify-content: flex-end;
+}
+
+#advancedFieldMain {
+    margin-left: 50px;
+}

@@ -1,0 +1,46 @@
+@import '../../madconf/css/common.css';
+
+fieldset {
+    margin: 0 4px;
+    position: relative;
+}
+
+img {
+    position: absolute;
+    top: 5px;
+}
+
+.fieldMain {
+    margin-left: 42px;
+}
+
+#proxyFieldMain {
+    margin-top: -6px;
+}
+
+#proxyInputWrap {
+    display: flex;
+    width: 100%;
+    margin-top: 6px;
+}
+
+#proxyInputWrap span {
+    margin: 2px 19px 0 2px;
+}
+
+#proxyInput {
+    width: 100%;
+}
+
+#proxyButtons {
+    margin-top: 8px;
+    justify-content: flex-end;
+}
+
+#advancedFieldMain {
+    margin-left: 50px;
+}
+
+ul {
+    padding-left: 15px;
+}

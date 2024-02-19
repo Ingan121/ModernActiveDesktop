@@ -169,7 +169,17 @@ class DeskMover {
             
             this.contextMenuItems[3].addEventListener('click', () => { // Reload button
                 this.closeContextMenu();
-                this.windowElement.contentWindow.location.reload();
+                if (this.config.src.startsWith('apps/jspaint/')) {
+                    this.windowElement.src = this.config.src;
+                } else if (this.config.src.startsWith('apps/channelviewer/')) {
+                    if (localStorage.madesktopDebugMode) {
+                        this.windowElement.src = this.config.src;
+                    } else {
+                        this.windowElement.contentDocument.getElementById('refresh-button').click();
+                    }
+                } else {
+                    this.windowElement.contentWindow.location.reload();
+                }
             });
             
             this.contextMenuItems[4].addEventListener('click', () => { // Close button

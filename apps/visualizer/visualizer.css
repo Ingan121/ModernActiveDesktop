@@ -16,7 +16,8 @@ html, body {
     margin-top: var(--menu-height);
     height: 100%;
     position: relative;
-    padding: 2px !important;
+    padding: 1px;
+    box-shadow: var(--button-hilight) -1px -1px inset, var(--button-shadow) 1px 1px inset
 }
 
 #albumArt {
@@ -33,8 +34,8 @@ html, body {
 
 canvas {
     position: absolute;
-    width: calc(100% - 4px);
-    height: calc(100% - 4px);
+    width: calc(100% - 2px);
+    height: calc(100% - 2px);
 }
 
 #top {
@@ -370,10 +371,12 @@ body[data-fullscreen] {
 
 body[data-fullscreen] #mainArea {
     margin-top: 0;
+    box-shadow: none;
 }
 
 body[data-fullscreen] #menuBar {
     opacity: 0;
+    width: calc(100% - var(--mad-margin-left) - var(--mad-margin-right));
 }
 
 body[data-fullscreen] #bottomArea {

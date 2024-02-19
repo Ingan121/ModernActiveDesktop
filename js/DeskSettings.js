@@ -924,9 +924,9 @@ function openConfig(page) {
     }
 }
 
-function openExternal(url, fullscreen, specs = "") {
+function openExternal(url, fullscreen, specs = "", temp = true) {
     if (specs) {
-        specs = "&" + specs.replaceAll(",", "&");
+        specs = "&" + specs.replaceAll(" ", "").replaceAll(",", "&");
     }
     let deskMover = null;
     if (localStorage.sysplugIntegration) {
@@ -935,17 +935,17 @@ function openExternal(url, fullscreen, specs = "") {
             .then(responseText => {
                 if (responseText != "OK") {
                     alert("An error occured!\nSystem plugin response: " + responseText);
-                    deskMover = openWindow('apps/channelviewer/index.html?page=' + encodeURIComponent(url) + specs, true, "1024px", "768px");
+                    deskMover = openWindow('apps/channelviewer/index.html?page=' + encodeURIComponent(url) + specs, temp, "1024px", "768px");
                 }
             })
             .catch(error => {
                 alert("System plugin is not running. Please make sure you have installed it properly.");
-                deskMover = openWindow('apps/channelviewer/index.html?page=' + encodeURIComponent(url) + specs, true, "1024px", "768px");
+                deskMover = openWindow('apps/channelviewer/index.html?page=' + encodeURIComponent(url) + specs, temp, "1024px", "768px");
             });
     } else {
-        deskMover = openWindow('apps/channelviewer/index.html?page=' + encodeURIComponent(url) + specs, true, "1024px", "768px");
+        deskMover = openWindow('apps/channelviewer/index.html?page=' + encodeURIComponent(url) + specs, temp, "1024px", "768px");
     }
-    if (deskMover && fullscreen) {
+    if (deskMover && fullscreen && !localStorage.madesktopChanViewNoAutoFullscrn) {
         deskMover.windowElement.contentWindow.addEventListener("load", function () {
             deskMover.enterFullscreen(true);
         });
@@ -1010,7 +1010,8 @@ function hookIframeSize(iframe, num) {
     // Also hook window.open as this doesn't work in WE
     // Try to use sysplug, and if unavailable, just prompt for URL copy
     iframe.contentWindow.open = function (url, name, specs) {
-        openExternal(url, false, specs);
+        const deskMover = openExternal(url, false, specs);
+        return deskMover.windowElement.contentWindow;
     }
 
     iframe.contentWindow.close = function () {
@@ -1618,3 +1619,8 @@ document.addEventListener('scroll', function () {
 // Initialization complete
 jsRunBtn.addEventListener('click', debug);
 document.body.dataset.initComplete = true;
+
+localStorage.madesktopFailCount = ++localStorage.madesktopFailCount || 1;
+setTimeout(function () {
+    delete localStorage.madesktopFailCount;
+}, 10000);
