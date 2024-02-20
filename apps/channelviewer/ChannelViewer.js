@@ -10,6 +10,7 @@ const toolbars = document.getElementById("toolbars");
 const menuBar = document.getElementById("menuBar");
 const toolbar = document.getElementById("toolbar");
 const addressBar = document.getElementById("addressBar");
+const statusBar = document.getElementById("statusBar");
 
 const backButton = document.getElementById("back-button");
 const backExpandButton = document.getElementById("back-expand-button");
@@ -31,21 +32,34 @@ const favoritesMenuItems = document.querySelectorAll("#favoritesMenu .contextMen
 const helpMenuItems = document.querySelectorAll("#helpMenu .contextMenuItem");
 const toolbarsMenuItems = document.querySelectorAll("#toolbarsMenu .contextMenuItem");
 
+const favoritesMenuBtn = document.getElementById("favoritesMenuBtn");
+const favoritesMenuBg = document.getElementById("favoritesMenuBg");
+const favoritesMenu = document.getElementById("favoritesMenu");
+
 const historyMenuBg = document.getElementById("historyMenuBg");
 const historyMenu = document.getElementById("historyMenu");
+
+const throbber = document.getElementById("throbber");
+const fullscreenThrobber = document.getElementById("windowBtnContainer");
+const statusText = document.getElementById("statusText");
+const statusZone = document.getElementById("zone");
+const statusZoneText = document.getElementById("zoneText");
+
+const madBase = parent.location.href.split('/').slice(0, -1).join('/') + '/';
 
 window.iframe = document.getElementById("iframe");
 
 let title = "";
+let favorites = JSON.parse(localStorage.madesktopChanViewFavorites || "[]");
 let didFirstLoad = false;
 let isCrossOrigin = madRunningMode !== 1; // Wallpaper Engine disables all cross-origin iframe restrictions
-let doHistoryCounting = !isCrossOrigin;
 let historyLength = 0;
 let historyIndex = 0;
 let historyItems = [];
 let didHistoryNav = true;
 let saveTimer;
 let preCrashUrl = '';
+let pageSetStatusText = '';
 
 madDeskMover.menu = new MadMenu(menuBar, ['file', 'edit', 'view', 'go', 'favorites', 'help'], ['toolbars']);
 
@@ -100,15 +114,27 @@ editMenuItems[3].addEventListener("click", function () { // Select all button
     }
 });
 
-viewMenuItems[1].addEventListener("click", function () { // Stop button
+viewMenuItems[1].addEventListener("click", function () { // Status Bar button
+    if (localStorage.madesktopChanViewHideStatusBar) {
+        statusBar.style.display = "";
+        viewMenuItems[1].classList.add("checkedItem");
+        delete localStorage.madesktopChanViewHideStatusBar;
+    } else {
+        statusBar.style.display = "none";
+        viewMenuItems[1].classList.remove("checkedItem");
+        localStorage.madesktopChanViewHideStatusBar = true;
+    }
+});
+
+viewMenuItems[2].addEventListener("click", function () { // Stop button
     window.stop();
 });
 
-viewMenuItems[2].addEventListener("click", function () { // Refresh button
+viewMenuItems[3].addEventListener("click", function () { // Refresh button
     refreshButton.click();
 });
 
-viewMenuItems[3].addEventListener("click", function () { // Source button
+viewMenuItems[4].addEventListener("click", function () { // Source button
     if (isCrossOrigin) {
         madAlert("Sorry, but advanced features are unavailable for this webpage. Please consult the internet options.", null, "warning");
     } else {
@@ -116,11 +142,11 @@ viewMenuItems[3].addEventListener("click", function () { // Source button
     }
 });
 
-viewMenuItems[4].addEventListener("click", function () { // Full Screen button
+viewMenuItems[5].addEventListener("click", function () { // Full Screen button
     fullscreenButton.click();
 });
 
-viewMenuItems[5].addEventListener("click", function () { // Internet Options button
+viewMenuItems[6].addEventListener("click", function () { // Internet Options button
     const left = parseInt(madDeskMover.config.xPos) + 25 + 'px';
     const top = parseInt(madDeskMover.config.yPos) + 50 + 'px';
     const configWindow = madOpenWindow('apps/inetcpl/general.html?currentPage=' + encodeURIComponent(historyItems[historyIndex - 1][0]), true, '400px', '427px', 'wnd', false, top, left, true, true, true);
@@ -145,9 +171,50 @@ goMenuItems[3].addEventListener("click", function () { // Search the Web button
     go("https://www.google.com/?igu=1");
 });
 
+favoritesMenuBtn.addEventListener("click", function () {
+    const prevMenuItems = Array.from(favoritesMenu.querySelectorAll(".contextMenuItem")).slice(2);
+    if (prevMenuItems.length > 0) {
+        for (const item of prevMenuItems) {
+            item.remove();
+        }
+    }
+    let maxLen = 0;
+    for (const favorite of favorites) {
+        appendFavoriteItem(favorite);
+        if ((favorite[1] || favorite[0]).length > maxLen) {
+            maxLen = favorite[1].length;
+        }
+    }
+    const menuItems = Array.from(favoritesMenu.querySelectorAll(".contextMenuItem")).slice(2);
+    favoritesMenuBg.style.width = maxLen * 7 + "px";
+    favoritesMenuBg.style.height = (menuItems.length + 2) * 20 + 9 + "px";
+    if (menuItems.length === 0) {
+        return;
+    }
+    for (const item of menuItems) {
+        item.addEventListener("mouseover", function () {
+            for (const item of menuItems) {
+                delete item.dataset.active;
+            }
+            item.dataset.active = true;
+        });
+        item.addEventListener("mouseleave", function () {
+            delete item.dataset.active;
+        });
+    }
+});
+
 favoritesMenuItems[0].addEventListener("click", function () { // Add to Favorites button
-    madPrompt("Enter a name for this page", function (name) {
-        // TODO: add favorites support (with json)
+    madPrompt("Enter a name for this page", async function (name) {
+        if (name === null) return;
+        const iconBlob = await getFavicon(true);
+        if (iconBlob) {
+            const icon = await getDataUrl(iconBlob);
+            favorites.push([iframe.contentWindow.location.href, name, icon]);
+        } else {
+            favorites.push([iframe.contentWindow.location.href, name]);
+        }
+        localStorage.madesktopChanViewFavorites = JSON.stringify(favorites);
     }, title, title);
 });
 
@@ -218,7 +285,9 @@ toolbarsMenuItems[4].addEventListener("click", function () { // No labels button
 
 backButton.addEventListener("click", function () {
     handleWeirdError();
-    if (!backButton.dataset.disabled && doHistoryCounting && historyIndex > 1) {
+    if (isCrossOrigin) {
+        history.back();
+    } else if (!backButton.dataset.disabled && historyIndex > 1) {
         historyIndex--;
         go(historyItems[historyIndex - 1][0], true);
     }
@@ -227,7 +296,9 @@ backButton.addEventListener("click", function () {
 
 forwardButton.addEventListener("click", function () {
     handleWeirdError();
-    if (!forwardButton.dataset.disabled && doHistoryCounting && historyLength >= historyIndex) {
+    if (isCrossOrigin) {
+        history.forward();
+    } else if (!forwardButton.dataset.disabled && historyLength >= historyIndex) {
         historyIndex++;
         go(historyItems[historyIndex - 1][0], true);
     }
@@ -242,71 +313,11 @@ for (const expandButton of [backExpandButton, forwardExpandButton]) {
         }
     });
     expandButton.addEventListener("mouseleave", function () {
-        if (historyMenuBg.style.display !== "block") {
+        if (historyMenuBg.style.display !== "block" || historyMenuBg.dataset.currentParent !== parentButton.id) {
             delete parentButton.dataset.hover;
         }
     });
-    expandButton.addEventListener("click", function () {
-        if (expandButton.dataset.disabled) {
-            return;
-        }
-        for (const historyItem of historyItems) {
-            const item = document.createElement("div");
-            item.classList.add("contextMenuItem");
-            const p = document.createElement("p");
-            p.textContent = historyItem[1] || historyItem[0];
-            item.addEventListener("click", function () {
-                historyIndex = historyItems.indexOf(historyItem) + 1;
-                go(historyItem[0], true);
-                closeHistoryMenu();
-            });
-            item.appendChild(p);
-            if (parentButton === backButton) {
-                historyMenu.insertBefore(item, historyMenu.firstChild);
-            } else {
-                historyMenu.appendChild(item);
-            }
-        }
-        const menuItems = historyMenu.querySelectorAll(".contextMenuItem");
-        if (menuItems.length === 0) {
-            return;
-        }
-        historyMenuBg.style.height = menuItems.length * 17 + "px";
-        for (const item of menuItems) {
-            item.addEventListener("mouseover", function () {
-                for (const item of menuItems) {
-                    delete item.dataset.active;
-                }
-                item.dataset.active = true;
-            });
-            item.addEventListener("mouseleave", function () {
-                delete item.dataset.active;
-            });
-        }
-
-        switch (localStorage.madesktopCmAnimation) {
-            case 'none':
-                historyMenuBg.style.animation = 'none';
-                break;
-            case 'slide':
-                historyMenuBg.style.animation = 'cmDropdown 0.25s linear';
-                break;
-            case 'fade':
-                historyMenuBg.style.animation = 'fade 0.2s';
-        }
-
-        for (const item of menuItems) {
-            delete item.dataset.active;
-        }
-        const rect = expandButton.getBoundingClientRect();
-        historyMenuBg.style.top = rect.bottom + "px";
-        historyMenuBg.style.left = rect.left - parentButton.offsetWidth + "px";
-        historyMenuBg.style.display = "block";
-        expandButton.dataset.active = true;
-        parentButton.dataset.hover = true;
-        historyMenuBg.focus();
-        document.addEventListener('keydown', historyMenuNavigationHandler);
-    });
+    expandButton.addEventListener("click", openHistoryMenu);
 }
 
 refreshButton.addEventListener("click", function () {
@@ -392,6 +403,11 @@ switch (localStorage.madesktopChanViewLabels) {
         toolbarsMenuItems[4].classList.add("activeStyle");
 }
 
+if (localStorage.madesktopChanViewHideStatusBar) {
+    statusBar.style.display = "none";
+    viewMenuItems[1].classList.remove("checkedItem");
+}
+
 if (localStorage.madesktopChanViewNoJs) {
     iframe.sandbox = "allow-forms allow-modals allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-presentation allow-same-origin";
 }
@@ -408,7 +424,7 @@ window.addEventListener('blur', function () {
 
 new MutationObserver(function (mutations) {
     handleWeirdError();
-    iframe.contentDocument.body.style.zoom = parent.scaleFactor;
+    iframe.contentDocument.body.style.zoom = madScaleFactor;
 }).observe(
     document.body,
     { attributes: true, attributeFilter: ["style"] }
@@ -426,6 +442,15 @@ function hookIframeSize(iframe) {
         innerHeight: {
             get: function () {
                 return iframe.clientHeight;
+            }
+        },
+        status: {
+            get: function () {
+                return pageSetStatusText;
+            },
+            set: function (val) {
+                pageSetStatusText = val;
+                statusText.textContent = val;
             }
         }
     });
@@ -448,16 +473,14 @@ function hookIframeSize(iframe) {
     iframe.contentWindow.close = madCloseWindow;
 
     iframe.contentWindow.history.pushState = function () {
-        if (doHistoryCounting) {
-            historyLength = Math.max(historyLength, historyIndex + 1);
-            historyIndex++;
-            let url = arguments[2];
-            if (!url.startsWith("http")) {
-                url = new URL(url, iframe.contentWindow.location.href).href;
-            }
-            historyItems[historyIndex - 1] = [url];
-            changeHistoryButtonStatus();
+        historyLength = Math.max(historyLength, historyIndex + 1);
+        historyIndex++;
+        let url = arguments[2];
+        if (!url.startsWith("http")) {
+            url = new URL(url, iframe.contentWindow.location.href).href;
         }
+        historyItems[historyIndex - 1] = [url];
+        changeHistoryButtonStatus();
         delayedSave();
         return window.history.pushState.apply(this, arguments);
     }
@@ -523,6 +546,16 @@ function hookIframeSize(iframe) {
             document.title = url + " - ChannelViewer";
         }
     });
+    iframe.contentDocument.addEventListener('mousemove', (event) => {
+        const hoverElement = iframe.contentDocument.elementFromPoint(event.clientX, event.clientY);
+        if (hoverElement && hoverElement.tagName === "A" && hoverElement.href) {
+            statusText.textContent = hoverElement.href;
+        } else if (statusText.textContent !== "Done" && statusText.textContent !== pageSetStatusText) {
+            statusText.textContent = pageSetStatusText;
+        }
+    });
+
+    iframe.contentWindow.addEventListener('beforeunload', loadStart);
 }
 
 function go(url, noHistory) {
@@ -537,6 +570,85 @@ function go(url, noHistory) {
     iframe.removeAttribute("srcdoc");
     iframe.src = url;
     preCrashUrl = '';
+}
+
+function openHistoryMenu() {
+    if (this.dataset.disabled) {
+        return;
+    }
+    const parentButton = document.getElementById(this.id.replace("-expand", ""));
+    historyMenuBg.dataset.currentParent = parentButton.id;
+    let maxLen = 0;
+    if (parentButton === backButton) {
+        for (let i = historyIndex - 2; i >= 0; i--) {
+            appendHistoryItem(historyItems[i]);
+            if ((historyItems[i][1] || historyItems[i][0]).length > maxLen) {
+                maxLen = historyItems[i][1].length;
+            }
+        }
+    } else {
+        for (let i = historyIndex; i < historyLength; i++) {
+            appendHistoryItem(historyItems[i]);
+            if ((historyItems[i][1].length || historyItems[i][0]) > maxLen) {
+                maxLen = historyItems[i][1].length;
+            }
+        }
+    }
+    const menuItems = historyMenu.querySelectorAll(".contextMenuItem");
+    if (menuItems.length === 0) {
+        return;
+    }
+    // Yeah I know its not that accurate
+    historyMenuBg.style.width = maxLen * 8 + "px";
+    historyMenuBg.style.height = menuItems.length * 17 + "px";
+    for (const item of menuItems) {
+        item.addEventListener("mouseover", function () {
+            for (const item of menuItems) {
+                delete item.dataset.active;
+            }
+            item.dataset.active = true;
+        });
+        item.addEventListener("mouseleave", function () {
+            delete item.dataset.active;
+        });
+    }
+
+    switch (localStorage.madesktopCmAnimation) {
+        case 'none':
+            historyMenuBg.style.animation = 'none';
+            break;
+        case 'slide':
+            historyMenuBg.style.animation = 'cmDropdown 0.25s linear';
+            break;
+        case 'fade':
+            historyMenuBg.style.animation = 'fade 0.2s';
+    }
+
+    for (const item of menuItems) {
+        delete item.dataset.active;
+    }
+    const rect = this.getBoundingClientRect();
+    historyMenuBg.style.top = rect.bottom + "px";
+    historyMenuBg.style.left = rect.left - parentButton.offsetWidth + "px";
+    historyMenuBg.style.display = "block";
+    this.dataset.active = true;
+    parentButton.dataset.hover = true;
+    historyMenuBg.focus();
+    document.addEventListener('keydown', historyMenuNavigationHandler);
+}
+
+function appendHistoryItem(historyItem) {
+    const item = document.createElement("div");
+    item.classList.add("contextMenuItem");
+    const p = document.createElement("p");
+    p.textContent = historyItem[1] || historyItem[0];
+    item.addEventListener("click", function () {
+        historyIndex = historyItems.indexOf(historyItem) + 1;
+        go(historyItem[0], true);
+        closeHistoryMenu();
+    });
+    item.appendChild(p);
+    historyMenu.appendChild(item);
 }
 
 function closeHistoryMenu() {
@@ -595,6 +707,23 @@ function historyMenuNavigationHandler(event) {
     }
 }
 
+function appendFavoriteItem(favorite) {
+    const item = document.createElement("div");
+    item.classList.add("contextMenuItem");
+    item.classList.add("favoriteItem");
+    const p = document.createElement("p");
+    p.textContent = favorite[1];
+    item.addEventListener("click", function () {
+        go(favorite[0], true);
+        favoritesMenuBg.blur();
+    });
+    item.appendChild(p);
+    if (favorite[2]) {
+        item.style.backgroundImage = "url(" + favorite[2] + ")";
+    }
+    favoritesMenu.appendChild(item);
+}
+
 // I DON'T KNOW WHY BUT having a width of about 800px (unscaled) crashes Wallpaper Engine CEF when loading disney.com
 function handleWeirdError() {
     if (madRunningMode === 1 && window.innerWidth * madScaleFactor > 750 && window.innerWidth * madScaleFactor < 850) {
@@ -603,15 +732,8 @@ function handleWeirdError() {
     }
 }
 
-function changeAdvFeatures() {
-    if (isCrossOrigin) {
-        doHistoryCounting = false;
-    }
-    changeHistoryButtonStatus();
-}
-
 function changeHistoryButtonStatus() {
-    if (doHistoryCounting) {
+    if (!isCrossOrigin) {
         if (historyIndex <= 1) {
             backButton.dataset.disabled = true;
             backExpandButton.dataset.disabled = true;
@@ -663,17 +785,18 @@ function updateTitle() {
 function printIframe() {
     if (isCrossOrigin) {
         toolbars.style.display = "none";
+        statusBar.style.display = "none";
+        iframe.style.boxShadow = "none";
         window.print();
-        toolbars.style.display = "block";
+        toolbars.style.display = "";
+        statusBar.style.display = "";
+        iframe.style.boxShadow = "";
     } else {
         iframe.contentWindow.print();
     }
 }
 
-async function getFavicon() {
-    // well IE4-6 didn't put favicon neither in the title bar nor in the address bar
-    // TODO: make this optional
-    return 'images/html.png';
+async function getFavicon(asImage = false) {
     try {
         const madBase = location.href.split('/').slice(0, -1).join('/') + '/';
         const loc = iframe.contentWindow.location.href;
@@ -688,25 +811,52 @@ async function getFavicon() {
         // Use a generic icon for local/MAD files (ChannelList) and data URLs
         if (loc.startsWith("file:///") || loc.startsWith("data:") || loc.startsWith(madBase)) {
             if (iconElem.notFound) {
-                return 'images/html.png';
+                return null;
             } else {
                 return path;
             }
         }
 
         // Check if the favicon exists
-        await fetch(path).then(response => {
+        const result = await fetchProxy(path, null, 0).then(response => {
             if (!response.ok) {
                 log('Favicon not found, using a generic icon', 'log', 'ChannelViewer - getFavicon');
-                path = 'images/html.png';
+                path = null;
+            } else if (asImage) {
+                return response.blob();
             }
         });
+        if (result) {
+            return result;
+        }
         return path;
     } catch (e) {
         log('Error getting favicon');
         console.log(e);
-        return 'images/html.png';
+        return null;
     }
+}
+
+async function getDataUrl(blob) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+    });
+}
+
+function loadStart() {
+    throbber.style.backgroundImage = "url(images/throbber.webp)";
+    fullscreenThrobber.style.backgroundImage = "url(images/throbber26.webp)";
+    statusText.textContent = "Opening page " + urlbar.value;
+}
+
+function loadFinish() {
+    throbber.style.backgroundImage = "";
+    fullscreenThrobber.style.backgroundImage = "";
+    statusText.textContent = "Done";
+    pageSetStatusText = "";
 }
 
 // based on x-frame-bypass
@@ -789,6 +939,7 @@ function init() {
     const popup = !!width || !!height || !!left || !!top || url.searchParams.get("popup") !== null;
     if (popup) {
         toolbars.style.display = "none";
+        statusBar.style.display = "none";
     }
     return page;
 }
@@ -804,17 +955,18 @@ window.addEventListener('load', function () {
         iframe.srcdoc = "ModernActiveDesktop has detected repeated crashes. To protect against further crashes, ChannelViewer has stopped loading the page for now.<br>Please consider closing some ChannelViewers if this persists. Refresh the page to load it anyway.";
     } else {
         iframe.src = page || localStorage.madesktopChanViewHome || "about:blank";
+        loadStart();
     }
 });
 
 iframe.addEventListener('load', function () {
     if (!iframe.contentDocument) {
         isCrossOrigin = true;
-        changeAdvFeatures();
         updateTitle();
         madSetIcon('images/html.png');
-        urlbar.value = "*" + iframe.src;
+        urlbar.value = iframe.src;
         didFirstLoad = true;
+        loadFinish();
         return;
     }
 
@@ -835,25 +987,34 @@ iframe.addEventListener('load', function () {
     }
 
     isCrossOrigin = false;
-    if (!didFirstLoad) {
-        doHistoryCounting = true;
-    }
-    this.contentDocument.body.style.zoom = parent.scaleFactor;
+    this.contentDocument.body.style.zoom = madScaleFactor;
     updateTitle();
-    changeAdvFeatures();
-    getFavicon().then(icon => {
-        madSetIcon(icon);
-    });
-    if (doHistoryCounting) {
-        if (didHistoryNav) {
-            historyLength = historyIndex + 1;
-            historyIndex++;
-        }
-        didHistoryNav = true;
-        log("History: " + historyIndex + " / " + historyLength, "log", "ChannelViewer");
+    if (localStorage.madesktopChanViewShowFavicon) {
+        getFavicon().then(favicon => {
+            if (favicon) {
+                urlbar.style.backgroundImage = `url(${favicon})`;
+            } else {
+                urlbar.style.backgroundImage = '';
+            }
+        });
+    } else {
+        urlbar.style.backgroundImage = '';
     }
+    if (didHistoryNav) {
+        historyLength = historyIndex + 1;
+        historyIndex++;
+    }
+    didHistoryNav = true;
+    log("History: " + historyIndex + " / " + historyLength, "log", "ChannelViewer");
     if (iframe.contentWindow.location.href !== "about:srcdoc") {
         urlbar.value = iframe.contentWindow.location.href;
+    }
+    if (iframe.contentWindow.location.href.startsWith(madBase)) {
+        statusZone.style.backgroundImage = "url(images/zone_local.png)";
+        statusZoneText.textContent = "My Computer";
+    } else {
+        statusZone.style.backgroundImage = "";
+        statusZoneText.textContent = "Internet zone";
     }
     historyItems[historyIndex - 1] = [urlbar.value, title];
     historyItems = historyItems.slice(0, historyLength);
@@ -861,10 +1022,6 @@ iframe.addEventListener('load', function () {
     changeHistoryButtonStatus();
     iframe.contentDocument.addEventListener('pointerdown', madBringToTop);
     didFirstLoad = true;
+    loadFinish();
     delayedSave();
 });
-
-//iframe.contentWindow.onunload = function () {
-    // TODO: add throbber
-    //document.getElementById('loadingText').style.display = 'block';
-//}

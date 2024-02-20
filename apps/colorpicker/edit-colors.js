@@ -169,6 +169,15 @@
 			top: 198,
 		});
 
+		$(result_canvas).on("click", () => {
+			madPrompt("Enter CSS color", function (res) {
+				if (res === null) return;
+				set_color(res);
+				update_inputs("hslrgb");
+				draw();
+			}, '', '');
+		});
+
 		let mouse_down_on_rainbow_canvas = false;
 		let crosshair_shown_on_rainbow_canvas = false;
 		const draw = () => {

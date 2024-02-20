@@ -135,24 +135,27 @@
         <span id="initNotCompleteLabel">Initialization not complete</span><br>
         <a href="javascript:localStorage.clear();location.reload(true);">Reset config</a><br>
         <a href="javascript:location.reload(true);">Refresh</a><br>
-        <a id="jsRunBtn" href="javascript:eval(prompt('Enter JavaScript code to run.'));">Run JavaScript code</a><br>
+        <a id="jsRunBtn" href="javascript:(function(){eval(prompt('Enter JavaScript code to run.'));return;})();">Run JavaScript code</a><br>
         <a href="javascript:showErrors();">Show errors <span id="errorCnt"></span></a><br>
         <a id="debugLogBtn" href="javascript:toggleDebugLog();">Enable debug logging</a><br>
         <a id="toggleModeBtn" href="javascript:toggleRunningMode();">Simulate other environment</a><br>
         <a href="javascript:deactivateDebugMode();">Deactivate debug mode</a>
     </div>
     <script>
-        const errorLog = document.getElementById("errorLog");
-        const errorCnt = document.getElementById("errorCnt");
-        
-        window.onerror = function(msg, url, linenum) {
-            console.log({msg, url, linenum});
-            errorLog.textContent += `${msg} (${url}:${linenum})\n`;
-            errorCnt.textContent = `(${parseInt(errorCnt.textContent.slice(1, -1) || 0) + 1})`;
+        var errorLog = document.getElementById("errorLog");
+        var errorCnt = document.getElementById("errorCnt");
+
+        if (document.documentMode) {
+            errorLog.textContent = "Internet Explorer is NOT supported! Please use a modern browser like Chrome or Edge.\n";
         }
-        
+
+        window.onerror = function (msg, url, linenum) {
+            errorLog.textContent += msg + ' (' + url + ':' + linenum + ')\n';
+            errorCnt.textContent = '(' + (parseInt(errorCnt.textContent.slice(1, -1) || 0) + 1) + ')';
+        }
+
         function copyLog() {
-            const tmp = document.createElement("textarea");
+            var tmp = document.createElement("textarea");
             document.body.appendChild(tmp);
             tmp.value = errorLog.textContent;
             tmp.select();

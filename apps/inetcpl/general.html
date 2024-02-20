@@ -12,7 +12,7 @@
     <div id="madconf" class="madconf-inet-general window-body">
         <menu role="tablist">
             <li class="tab" role="tab" data-pagename="general" aria-selected="true"><a href="#tabs">General</a></li>
-            <li class="tab" role="tab" data-pagename="connection"><a href="#tabs">Connection</a></li>
+            <li id="connectionBtn" class="tab" role="tab" data-pagename="connection"><a href="#tabs">Connection</a></li>
         </menu>
         <div class="window" role="tabpanel">
             <div class="window-body">
@@ -34,8 +34,10 @@
                 </fieldset>
                 <fieldset>
                     <legend>Advanced</legend>
-                    <img src="images/advanced.png" alt="Home page icon">
+                    <img src="images/advanced.png" alt="Advanced icon">
                     <div id="advancedFieldMain" class="fieldMain">
+                        <input id="faviconChkBox" type="checkbox">
+                        <label for="faviconChkBox">Show favicon in the address bar</label><br>
                         <input id="jsChkBox" type="checkbox" checked>
                         <label for="jsChkBox">Enable JavaScript</label><br>
                         <input id="autoFullscrnChkBox" type="checkbox" checked>

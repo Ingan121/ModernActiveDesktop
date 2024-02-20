@@ -46,6 +46,28 @@ body {
     margin-left: 2px;
 }
 
+#throbber {
+    width: 38px;
+    border-left: solid 1px var(--button-hilight);
+    box-shadow: var(--button-shadow) -1px 0;
+    background-color: black;
+    background-image: url(images/throbber.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    margin-left: auto;
+}
+
+#throbber:before {
+    content: '';
+    display: block;
+    width: 1px;
+    height: 1px;
+    position: relative;
+    top: 22px;
+    left: -1px;
+    background-color: white;
+}
+
 .grabber {
     width: 3px;
     height: calc(100% - 4px);
@@ -64,14 +86,19 @@ body {
 }
 
 #windowBtnContainer {
-    width: 40px;
+    width: 70px;
     height: 26px;
     background-color: black;
+    border-left: solid 1px var(--button-hilight);
+    box-shadow: var(--button-shadow) -1px 0;
     margin-left: 5px;
     display: none;
     position: absolute;
     top: 0;
     right: 0;
+    background-image: url('images/throbber26.png');
+    background-position: 5px 0;
+    background-repeat: no-repeat;
 }
 
 .windowBtn {
@@ -211,7 +238,7 @@ body {
 
 body::after { /* preload images */
     position: absolute; width: 0; height: 0; overflow: hidden; z-index: -1; 
-    content: url('images/Back_hover.png') url('images/Forward_hover.png') url('images/Refresh_hover.png') url('images/Stop_hover.png') url('images/Home_hover.png') url('images/Fullscreen_hover.png') url('images/Print_hover.png');
+    content: url('images/Back_hover.png') url('images/Forward_hover.png') url('images/Refresh_hover.png') url('images/Stop_hover.png') url('images/Home_hover.png') url('images/Fullscreen_hover.png') url('images/Print_hover.png') url('images/throbber.webp') url('images/throbber26.webp');
 }
 
 #toolbar {
@@ -236,6 +263,7 @@ body::after { /* preload images */
     height: 22px;
     margin: 0 4px 0 3px;
     background-image: url('images/icon.png');
+    background-size: 16px 16px;
     background-position: 3px 3px;
     background-repeat: no-repeat;
     padding-top: 5px;
@@ -247,6 +275,11 @@ body::after { /* preload images */
     background-color: var(--hilight);
 }
 
+#mainArea {
+    display: flex;
+    flex-direction: column;
+}
+
 #iframe {
     width: calc(100% - 4px);
     height: 100%;
@@ -254,6 +287,57 @@ body::after { /* preload images */
     background-color: white;
     background-color: var(--window);
     padding: 2px;
+}
+
+#statusBar {
+    display: flex;
+    width: 100%;
+    height: 21px;
+    border-top: solid 2px var(--button-face);
+}
+
+#statusMain {
+    width: 100%;
+    padding-left: 24px;
+    box-shadow: var(--button-hilight) -1px -1px inset, var(--button-shadow) 1px 1px inset;
+    background-image: url('images/icon_status.png');
+    background-size: 16px 16px;
+    background-position: 3px 1px;
+    background-repeat: no-repeat;
+    line-height: 18px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#statusRight {
+    display: flex;
+    margin-left: auto;
+}
+
+.emptySpace {
+    width: 22px;
+    height: 18px;
+    margin-right: 2px;
+    box-shadow: var(--button-hilight) -1px -1px inset, var(--button-shadow) 1px 1px inset;
+}
+
+#progressBarSpace {
+    width: 148px;
+    margin-left: 2px;
+}
+
+#zone {
+    width: 290px;
+    height: 18px;
+    padding-left: 24px;
+    box-sizing: border-box;
+    box-shadow: var(--button-hilight) -1px -1px inset, var(--button-shadow) 1px 1px inset;
+    background-image: url('images/zone_internet.png');
+    background-size: 16px 16px;
+    background-position: 3px 1px;
+    background-repeat: no-repeat;
+    line-height: 16px;
 }
 
 body:not([data-fullscreen]) #toolbar.bottomLabels {
@@ -301,6 +385,7 @@ body:not([data-fullscreen]) #toolbar.rightLabels #back-button .toolbarButtonLabe
 
 body[data-fullscreen] #toolbars {
     border: none;
+    border-bottom: solid 1px black;
     outline: none;
     box-shadow: none;
     margin: 0;
@@ -329,6 +414,10 @@ body[data-fullscreen] #iframe {
     width: 100%;
 }
 
+body[data-fullscreen] #statusBar {
+    display: none;
+}
+
 .contextMenuBg {
     top: calc(var(--menu-height) + 4px);
 }
@@ -345,7 +434,7 @@ body[data-fullscreen] #iframe {
 
 #viewMenuBg {
     width: 120px;
-    height: 129px;
+    height: 146px;
 }
 
 #goMenuBg {
@@ -354,8 +443,28 @@ body[data-fullscreen] #iframe {
 }
 
 #favoritesMenuBg {
-    width: 140px;
-    height: 43px;
+    min-width: 150px;
+    max-width: 500px;
+    height: 49px;
+}
+
+#favoritesMenu .contextMenuItem {
+    height: 20px;
+}
+
+#favoritesMenu .contextMenuItem p {
+    padding-top: 4px;
+}
+
+.favoriteItem {
+    background-image: url('images/icon.png');
+    background-size: 16px 16px;
+    background-position: 4px 2px;
+    background-repeat: no-repeat;
+}
+
+#favoritesMenu > .contextMenuItem:not(.hasIcon):not(.activeStyle):not(.checkedItem) > p {
+    padding-left: 21px;
 }
 
 #helpMenuBg {
@@ -373,12 +482,14 @@ body[data-fullscreen] #iframe {
     right: 5px;
 }
 
+#viewMenu > .contextMenuItem:not(.hasIcon):not(.activeStyle):not(.checkedItem) > p,
 #toolbarsMenu > .contextMenuItem:not(.hasIcon):not(.activeStyle):not(.checkedItem) > p {
     padding-left: 20px;
 }
 
 #historyMenuBg {
-    width: 200px;
+    min-width: 60px;
+    max-width: 500px;
     height: 17px;
 }
 

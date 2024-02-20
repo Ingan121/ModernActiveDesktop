@@ -1,17 +1,25 @@
-// common.js for ModernActiveDesktop
+// general.js for ModernActiveDesktop
 // Made by Ingan121
 // Licensed under the MIT License
 
 'use strict';
+
+const connectionBtn = document.getElementById('connectionBtn');
 
 const homePageInput = document.getElementById('homePageInput');
 const useCurrentBtn = document.getElementById('useCurrentBtn');
 const useDefaultBtn = document.getElementById('useDefaultBtn');
 const useBlankBtn = document.getElementById('useBlankBtn');
 
+const faviconChkBox = document.getElementById('faviconChkBox');
 const jsChkBox = document.getElementById('jsChkBox');
 const autoFullscrnChkBox = document.getElementById('autoFullscrnChkBox');
 const injectStyleChkBox = document.getElementById('injectStyleChkBox');
+
+// CORS proxy is not needed in Wallpaper Engine
+if (madRunningMode === 1) {
+    connectionBtn.style.display = 'none';
+}
 
 const currentPage = new URLSearchParams(location.search).get('currentPage');
 if (currentPage) {
@@ -32,6 +40,11 @@ useBlankBtn.addEventListener('click', function () {
 
 window.apply = function () {
     localStorage.madesktopChanViewHome = homePageInput.value;
+    if (faviconChkBox.checked) {
+        localStorage.madesktopChanViewShowFavicon = true;
+    } else {
+        delete localStorage.madesktopChanViewShowFavicon;
+    }
     if (jsChkBox.checked) {
         delete localStorage.madesktopChanViewNoJs;
     } else {
@@ -57,6 +70,10 @@ window.apply = function () {
 
 if (localStorage.madesktopChanViewHome) {
     homePageInput.value = localStorage.madesktopChanViewHome;
+}
+
+if (localStorage.madesktopChanViewShowFavicon) {
+    faviconChkBox.checked = true;
 }
 
 if (localStorage.madesktopChanViewNoJs) {

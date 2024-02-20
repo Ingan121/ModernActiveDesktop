@@ -22,6 +22,7 @@
                 <div id="goMenuBtn" class="menuBtn"><span><u>G</u>o</span></div>
                 <div id="favoritesMenuBtn" class="menuBtn"><span>F<u>a</u>vorites</span></div>
                 <div id="helpMenuBtn" class="menuBtn"><span><u>H</u>elp</span></div>
+                <div id="throbber"></div>
             </div>
             <div id="toolbar" class="bottomLabels">
                 <div class="grabber"></div>
@@ -78,6 +79,20 @@
             </div>
         </div>
         <iframe id="iframe" class="clientEdge forcedClientEdge" sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-presentation allow-same-origin allow-scripts"></iframe>
+        <div id="statusBar">
+            <div id="statusMain">
+                <span id="statusText">Done</span>
+            </div>
+            <div id="statusRight">
+                <div id="progressBarSpace" class="emptySpace"></div>
+                <div class="emptySpace"></div>
+                <div class="emptySpace"></div>
+                <div class="emptySpace"></div>
+                <div id="zone">
+                    <span id="zoneText">Internet zone</span>
+                </div>
+            </div>
+        </div>
 
         <div id="fileMenuBg" class="contextMenuBg window" tabindex="-1">
             <div id="fileMenu" class="contextMenu window-body">
@@ -101,6 +116,7 @@
         <div id="viewMenuBg" class="contextMenuBg window" tabindex="-1">
             <div id="viewMenu" class="contextMenu window-body">
                 <div class="contextMenuItem" data-submenu="toolbars"><p><u>T</u>oolbars</p><p class="submenuMark">⏵</p></div>
+                <div class="contextMenuItem checkedItem"><p><u>S</u>tatus Bar</p></div>
                 <hr>
                 <div class="contextMenuItem"><p>Sto<u>p</u></p></div>
                 <div class="contextMenuItem"><p><u>R</u>efresh</p></div>
