@@ -806,9 +806,13 @@ function closeSidebar() {
 
 // I DON'T KNOW WHY BUT having a width of about 800px (unscaled) crashes Wallpaper Engine CEF when loading disney.com
 function handleWeirdError() {
-    if (madRunningMode === 1 && window.innerWidth * madScaleFactor > 750 && window.innerWidth * madScaleFactor < 850) {
+    if (madRunningMode === 1 && iframe.offsetWidth * madScaleFactor > 750 && iframe.offsetWidth * madScaleFactor < 850) {
         log("Setting width to 1024", "log", "ChannelViewer");
-        madResizeTo(1024, 768);
+        let sidebarWidth = 0;
+        if (mainArea.classList.contains("sidebarOpen")) {
+            sidebarWidth = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--sidebar-width'));
+        }
+        madResizeTo(1024 + sidebarWidth, 768);
     }
 }
 
