@@ -46,14 +46,6 @@
                     <legend>System plugin integration</legend>
                     <input id="sysplugChkBox" type="checkbox">
                     <label for="sysplugChkBox">Enable system plugin integration</label>
-                    <div class="field-row">
-                        Open pages in...
-                        <mad-select id="sysplugOpenOptSelector" disabled>
-                            <option>System plugin ChannelViewer (deprecated)</option>
-                            <option>System plugin ChannelViewer (fullscreen)</option>
-                            <option>System default browser</option>
-                        </mad-select>
-                    </div>
                     <div class="topmargin field-row">
                         <button id="connectTestBtn">Check connectivity</button>
                         <button id="showGuideBtn">Show setup guide</button>
@@ -103,10 +95,13 @@
                         <input id="bottomIconArea" class="shortInput" type="text" value="48px"/>
                     </div>
                 </fieldset>
+                <div class="buttons field-row">
+                    <button id="inetcplBtn">Internet Options</button>
+                    <button id="resetBtn">Reset config</button>
+                </div>
             </div>
         </div>
         <section class="bottomButtons field-row">
-            <button id="resetBtn"><u>R</u>eset config</button>
             <button id="okBtn">OK</button>
             <button id="cancelBtn">Cancel</button>
             <button id="applyBtn"><u>A</u>pply</button>

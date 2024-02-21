@@ -1,3 +1,7 @@
+:root {
+    --sidebar-width: 196px;
+}
+
 html,body {
     height: 100%;
     user-select: none;
@@ -14,7 +18,7 @@ body {
     font-family: var(--ui-font);
 }
 
-#toolbars {
+#toolbars, #sidebar {
     border-top: solid 1px var(--button-hilight);
     border-left: solid 1px var(--button-hilight);
     outline: solid 1px var(--button-shadow);
@@ -23,11 +27,14 @@ body {
     background-color: var(--button-face);
 }
 
-#toolbars > div:not(:first-child) {
+#toolbars > div:not(:first-child),
+#sidebarWindow {
+    border: none;
     border-top: solid 1px var(--button-hilight);
 }
 
-#toolbars > div:not(:last-child) {
+#toolbars > div:not(:last-child),
+#sidebarTitle {
     border-bottom: solid 1px var(--button-shadow);
 }
 
@@ -109,7 +116,7 @@ body {
     border: solid 1px transparent;
 }
 
-.windowBtn > p {
+.windowBtn p {
     color: var(--button-shadow);
     font-size: 12px;
     text-align: center;
@@ -228,6 +235,14 @@ body {
     content: url('images/Home_hover.png');
 }
 
+#favorites-button:hover .toolbarButtonImage {
+    content: url('images/Favorites_hover.png');
+}
+
+#channels-button:hover .toolbarButtonImage {
+    content: url('images/Channels_hover.png');
+}
+
 #fullscreen-button:hover .toolbarButtonImage {
     content: url('images/Fullscreen_hover.png');
 }
@@ -236,9 +251,13 @@ body {
     content: url('images/Print_hover.png');
 }
 
+#open-button:hover .toolbarButtonImage {
+    content: url('images/Open_hover.png');
+}
+
 body::after { /* preload images */
     position: absolute; width: 0; height: 0; overflow: hidden; z-index: -1; 
-    content: url('images/Back_hover.png') url('images/Forward_hover.png') url('images/Refresh_hover.png') url('images/Stop_hover.png') url('images/Home_hover.png') url('images/Fullscreen_hover.png') url('images/Print_hover.png') url('images/throbber.webp') url('images/throbber26.webp');
+    content: url('images/Back_hover.png') url('images/Forward_hover.png') url('images/Refresh_hover.png') url('images/Stop_hover.png') url('images/Home_hover.png') url('images/Favorites_hover.png') url('images/Channels_hover.png') url('images/Fullscreen_hover.png') url('images/Print_hover.png') url('images/Open.png') url('images/throbber.webp') url('images/throbber26.webp');
 }
 
 #toolbar {
@@ -277,16 +296,60 @@ body::after { /* preload images */
 
 #mainArea {
     display: flex;
-    flex-direction: column;
+    height: 100%;
+    padding-bottom: 4px;
+    box-sizing: border-box;
+}
+
+#sidebar {
+    display: none;
+    width: var(--sidebar-width);
+    height: 100%;
+    margin-right: 6px;
+    position: relative;
+}
+
+#sidebarTitle {
+    width: 100%;
+    height: 20px;
+}
+
+#sidebarTitleText {
+    display: inline-block;
+    margin-top: 5px;
+    margin-left: 9px;
+    font-size: 11px;
+}
+
+#sidebarCloseBtn {
+    top: 3px;
+    right: 5px;
+}
+
+#sidebarCloseBtn p {
+    color: var(--button-text);
+}
+
+#sidebarWindow {
+    width: 100%;
+    height: calc(100% - 22px);
 }
 
 #iframe {
-    width: calc(100% - 4px);
+    width: 100%;
     height: 100%;
     border: none;
     background-color: white;
     background-color: var(--window);
     padding: 2px;
+}
+
+#mainArea.sidebarOpen #sidebar {
+    display: block;
+}
+
+#mainArea.sidebarOpen #iframe {
+    width: calc(100% - var(--sidebar-width) - 10px);
 }
 
 #statusBar {
@@ -325,6 +388,17 @@ body::after { /* preload images */
 #progressBarSpace {
     width: 148px;
     margin-left: 2px;
+}
+
+#resizeArea {
+    width: 12px;
+    height: 12px;
+    background-color: var(--button-face);
+    border-right: solid 1px var(--button-face);
+    border-bottom: solid 1px var(--button-face);
+    position: absolute;
+    right: 0;
+    bottom: 0;
 }
 
 #zone {
@@ -376,7 +450,8 @@ body:not([data-fullscreen]) #toolbar.bottomLabels .toolbarButtonLabel {
     bottom: 4px;
 }
 
-body:not([data-fullscreen]) #toolbar.rightLabels #back-button .toolbarButtonLabel {
+body:not([data-fullscreen]) #toolbar.rightLabels #back-button .toolbarButtonLabel,
+body:not([data-fullscreen]) #toolbar.rightLabels #favorites-button .toolbarButtonLabel {
     display: inline;
     position: relative;
     top: -8px;
@@ -434,7 +509,7 @@ body[data-fullscreen] #statusBar {
 
 #viewMenuBg {
     width: 120px;
-    height: 146px;
+    height: 163px;
 }
 
 #goMenuBg {
@@ -482,8 +557,20 @@ body[data-fullscreen] #statusBar {
     right: 5px;
 }
 
+#explorerBarMenuBg {
+    width: 88px;
+    height: 60px;
+    top: calc(var(--menu-height) + 38px);
+}
+
+#explorerBarMenu {
+    width: 86px;
+    right: 5px;
+}
+
 #viewMenu > .contextMenuItem:not(.hasIcon):not(.activeStyle):not(.checkedItem) > p,
-#toolbarsMenu > .contextMenuItem:not(.hasIcon):not(.activeStyle):not(.checkedItem) > p {
+#toolbarsMenu > .contextMenuItem:not(.hasIcon):not(.activeStyle):not(.checkedItem) > p,
+#explorerBarMenu > .contextMenuItem:not(.hasIcon):not(.activeStyle):not(.checkedItem) > p {
     padding-left: 20px;
 }
 

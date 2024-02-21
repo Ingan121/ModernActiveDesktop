@@ -53,6 +53,15 @@
                     <span class="toolbarButtonLabel">Home</span>
                 </div>
                 <div class="separator"></div>
+                <div id="favorites-button" class="toolbarButton">
+                    <img class="toolbarButtonImage" src="images/Favorites.png">
+                    <span class="toolbarButtonLabel">Favorites</span>
+                </div>
+                <div id="channels-button" class="toolbarButton">
+                    <img class="toolbarButtonImage" src="images/Channels.png">
+                    <span class="toolbarButtonLabel">Channels</span>
+                </div>
+                <div class="separator"></div>
                 <div id="fullscreen-button" class="toolbarButton">
                     <img class="toolbarButtonImage" src="images/FullScreen.png">
                     <span class="toolbarButtonLabel">Fullscreen</span>
@@ -60,6 +69,10 @@
                 <div id="print-button" class="toolbarButton">
                     <img class="toolbarButtonImage" src="images/Print.png">
                     <span class="toolbarButtonLabel">Print</span>
+                </div>
+                <div id="open-button" class="toolbarButton">
+                    <img class="toolbarButtonImage" src="images/Open.png">
+                    <span class="toolbarButtonLabel">Open</span>
                 </div>
                 <div id="windowBtnContainer">
                     <div style="float: left;">
@@ -78,7 +91,18 @@
                 <input id="urlbar" type="text">
             </div>
         </div>
-        <iframe id="iframe" class="clientEdge forcedClientEdge" sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-presentation allow-same-origin allow-scripts"></iframe>
+        <div id="mainArea">
+            <div id="sidebar">
+                <div id="sidebarTitle">
+                    <span id="sidebarTitleText">Channels</span>
+                    <div id="sidebarCloseBtn" class="windowBtn">
+                        <p>🗙</p>
+                    </div>
+                </div>
+                <iframe id="sidebarWindow" src="sidebars/ChannelBar.html"></iframe>
+            </div>
+            <iframe id="iframe" class="clientEdge forcedClientEdge" sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-presentation allow-same-origin allow-scripts"></iframe>
+        </div>
         <div id="statusBar">
             <div id="statusMain">
                 <span id="statusText">Done</span>
@@ -91,6 +115,7 @@
                 <div id="zone">
                     <span id="zoneText">Internet zone</span>
                 </div>
+                <img id="resizeArea" src="images/ResizeArea.svg">
             </div>
         </div>
 
@@ -117,6 +142,7 @@
             <div id="viewMenu" class="contextMenu window-body">
                 <div class="contextMenuItem" data-submenu="toolbars"><p><u>T</u>oolbars</p><p class="submenuMark">⏵</p></div>
                 <div class="contextMenuItem checkedItem"><p><u>S</u>tatus Bar</p></div>
+                <div class="contextMenuItem" data-submenu="explorerBar"><p><u>E</u>xplorer Bar</p><p class="submenuMark">⏵</p></div>
                 <hr>
                 <div class="contextMenuItem"><p>Sto<u>p</u></p></div>
                 <div class="contextMenuItem"><p><u>R</u>efresh</p></div>
@@ -156,6 +182,14 @@
                 <div class="contextMenuItem"><p>Labels on <u>r</u>ight</p></div>
                 <div class="contextMenuItem activeStyle"><p>Labels on <u>b</u>ottom</p></div>
                 <div class="contextMenuItem"><p><u>N</u>o labels</p></div>
+            </div>
+        </div>
+        <div id="explorerBarMenuBg" class="contextMenuBg window" tabindex="-1" data-submenu-of="view">
+            <div id="explorerBarMenu" class="contextMenu window-body">
+                <div class="contextMenuItem"><p><u>F</u>avorites</p></div>
+                <div class="contextMenuItem"><p><u>C</u>hannels</p></div>
+                <hr>
+                <div class="contextMenuItem activeStyle"><p><u>N</u>one</p></div>
             </div>
         </div>
         <div id="historyMenuBg" class="contextMenuBg window" tabindex="-1">

@@ -9,8 +9,6 @@ const dpiSelector = document.getElementById('dpiSelector');
 const dpiSelectorOptions = dpiSelector.options;
 const dpiSelectorCustom = dpiSelectorOptions[dpiSelectorOptions.length - 1];
 const sysplugChkBox = document.getElementById('sysplugChkBox');
-const sysplugOpenOptSelector = document.getElementById('sysplugOpenOptSelector');
-const sysplugOpenOptSelectorOptions = sysplugOpenOptSelector.options;
 const startSoundChkBox = document.getElementById('startSoundChkBox');
 const alertSoundChkBox = document.getElementById('alertSoundChkBox');
 const soundSchemeSelector = document.getElementById('soundSchemeSelector');
@@ -22,6 +20,7 @@ const bottomIconArea = document.getElementById('bottomIconArea');
 const connectTestBtn = document.getElementById('connectTestBtn');
 const connectionStatus = document.getElementById('connectionStatus');
 const showGuideBtn = document.getElementById('showGuideBtn');
+const inetcplBtn = document.getElementById('inetcplBtn');
 const resetBtn = document.getElementById('resetBtn');
 
 const isWin10 = navigator.userAgent.includes('Windows NT 10.0');
@@ -29,7 +28,6 @@ const isWin10 = navigator.userAgent.includes('Windows NT 10.0');
 let config = {
     dpi: parent.scaleFactor,
     sysplug: localStorage.sysplugIntegration,
-    sysplugOpenOpt: localStorage.madesktopPrevOWConfigRequest || 1,
     startSound: !localStorage.madesktopStartSndMuted,
     alertSound: !localStorage.madesktopAlertSndMuted,
     soundScheme: localStorage.madesktopSoundScheme || "98",
@@ -89,13 +87,9 @@ dpiSlider.value = dpiSelector.selectedIndex;
 if (isWin10) {
     if (config.sysplug) {
         sysplugChkBox.checked = true;
-        sysplugOpenOptSelector.disabled = false;
-        getSysplugOWConfig();
     }
-    sysplugOpenOptSelector.selectedIndex = config.sysplugOpenOpt;
 } else {
     sysplugChkBox.disabled = true;
-    sysplugOpenOptSelector.disabled = true;
     connectTestBtn.disabled = true;
     connectionStatus.textContent = "System plugin requires Windows 10 or higher.";
     showGuideBtn.disabled = true;
@@ -128,8 +122,6 @@ window.apply = function () {
 
     if (config.sysplug) {
         localStorage.sysplugIntegration = true;
-        localStorage.madesktopPrevOWConfigRequest = config.sysplugOpenOpt;
-        parent.updateSysplugOpenOpt(config.sysplugOpenOpt);
     } else {
         delete localStorage.sysplugIntegration;
         if (localStorage.madesktopColorScheme === "sys") {
@@ -200,14 +192,7 @@ sysplugChkBox.addEventListener('change', function () {
     config.sysplug = this.checked;
     if (this.checked) {
         checkSysplug();
-        sysplugOpenOptSelector.disabled = false;
-    } else {
-        sysplugOpenOptSelector.disabled = true;
     }
-});
-
-sysplugOpenOptSelector.addEventListener('change', function () {
-    config.sysplugOpenOpt = this.selectedIndex;
 });
 
 startSoundChkBox.addEventListener('change', function () {
@@ -248,6 +233,12 @@ showGuideBtn.addEventListener('click', function () {
     madOpenWindow("SysplugSetupGuide.md", true);
 });
 
+inetcplBtn.addEventListener('click', function () {
+    const left = parseInt(madDeskMover.config.xPos) + 25 + 'px';
+    const top = parseInt(madDeskMover.config.yPos) + 50 + 'px';
+    madOpenWindow('apps/inetcpl/general.html', true, '400px', '371px', 'wnd', false, top, left, false, true, true);
+});
+
 resetBtn.addEventListener('click', parent.reset);
 
 function checkSysplug() {
@@ -264,15 +255,6 @@ function checkSysplug() {
         })
         .catch(error => {
             connectionStatus.textContent = "System plugin is not running. Please install the system plugin with the guide.";
-        });
-}
-
-function getSysplugOWConfig() {
-    fetch("http://localhost:3031/config/openwith")
-        .then(response => response.json())
-        .then(responseJson => {
-            sysplugOpenOptSelector.selectedIndex = responseJson.openWith;
-            config.sysplugOpenOpt = responseJson.openWith;
         });
 }
 

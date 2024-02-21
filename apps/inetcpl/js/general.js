@@ -11,7 +11,10 @@ const useCurrentBtn = document.getElementById('useCurrentBtn');
 const useDefaultBtn = document.getElementById('useDefaultBtn');
 const useBlankBtn = document.getElementById('useBlankBtn');
 
+const openOptSelector = document.getElementById('openOptSelector');
+
 const faviconChkBox = document.getElementById('faviconChkBox');
+const soundChkBox = document.getElementById('soundChkBox');
 const jsChkBox = document.getElementById('jsChkBox');
 const autoFullscrnChkBox = document.getElementById('autoFullscrnChkBox');
 const injectStyleChkBox = document.getElementById('injectStyleChkBox');
@@ -40,10 +43,23 @@ useBlankBtn.addEventListener('click', function () {
 
 window.apply = function () {
     localStorage.madesktopChanViewHome = homePageInput.value;
+
+    localStorage.madesktopLinkOpenMode = openOptSelector.selectedIndex;
+    if (openOptSelector.selectedIndex === 2) {
+        parent.updateSysplugOpenOpt(0);
+    } else if (localStorage.sysplugIntegration) {
+        parent.updateSysplugOpenOpt(2);
+    }
+
     if (faviconChkBox.checked) {
         localStorage.madesktopChanViewShowFavicon = true;
     } else {
         delete localStorage.madesktopChanViewShowFavicon;
+    }
+    if (soundChkBox.checked) {
+        delete localStorage.madesktopChanViewNoSound;
+    } else {
+        localStorage.madesktopChanViewNoSound = true;
     }
     if (jsChkBox.checked) {
         delete localStorage.madesktopChanViewNoJs;
@@ -61,19 +77,29 @@ window.apply = function () {
         localStorage.madesktopChanViewNoInjectStyle = true;
     }
 
-    let sandbox = "allow-forms allow-modals allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-presentation allow-same-origin";
-    if (jsChkBox.checked) {
-        sandbox += " allow-scripts";
+    if (window.targetDeskMover) {
+        let sandbox = "allow-forms allow-modals allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-presentation allow-same-origin";
+        if (jsChkBox.checked) {
+            sandbox += " allow-scripts";
+        }
+        targetDeskMover.windowElement.contentWindow.iframe.sandbox = sandbox;
     }
-    targetDeskMover.windowElement.contentWindow.iframe.sandbox = sandbox;
 }
 
 if (localStorage.madesktopChanViewHome) {
     homePageInput.value = localStorage.madesktopChanViewHome;
 }
 
+if (localStorage.madesktopLinkOpenMode) {
+    openOptSelector.selectedIndex = localStorage.madesktopLinkOpenMode;
+}
+
 if (localStorage.madesktopChanViewShowFavicon) {
     faviconChkBox.checked = true;
+}
+
+if (localStorage.madesktopChanViewNoSound) {
+    soundChkBox.checked = false;
 }
 
 if (localStorage.madesktopChanViewNoJs) {

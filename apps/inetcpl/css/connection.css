@@ -1,18 +1,4 @@
-@import '../../madconf/css/common.css';
-
-fieldset {
-    margin: 0 4px;
-    position: relative;
-}
-
-img {
-    position: absolute;
-    top: 5px;
-}
-
-.fieldMain {
-    margin-left: 42px;
-}
+@import 'common.css';
 
 #proxyFieldMain {
     margin-top: -6px;
@@ -43,4 +29,5 @@ img {
 
 ul {
     padding-left: 15px;
+    margin-bottom: 1px;
 }

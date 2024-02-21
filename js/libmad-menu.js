@@ -28,7 +28,7 @@ class MadMenu {
                 if (elem.dataset.submenu) {
                     this.menuHierarchy[menuName].push(elem.dataset.submenu);
                 }
-                elem.addEventListener('mouseover', () => {
+                elem.addEventListener('pointerover', () => {
                     for (const item of menuItems) {
                         delete item.dataset.active;
                     }
@@ -42,7 +42,7 @@ class MadMenu {
                         this.delayedCloseMenu(this.menuHierarchy[menuName][0], true);
                     }
                 });
-                elem.addEventListener('mouseleave', () => {
+                elem.addEventListener('pointerleave', () => {
                     delete elem.dataset.active;
                     clearTimeout(this.submenuOpenTimer);
                     if (elem.dataset.submenu) {
@@ -76,14 +76,14 @@ class MadMenu {
                 this.closeMenu(menuName);
             });
 
-            menuBtn.addEventListener('mouseover', () => {
+            menuBtn.addEventListener('pointerover', () => {
                 if (this.menuBar.dataset.active && !this.handlingKeyEvent) {
                     this.mouseOverMenu = true;
                     this.openMenu(menuName);
                 }
             });
 
-            menuBtn.addEventListener('mouseleave', () => {
+            menuBtn.addEventListener('pointerleave', () => {
                 this.mouseOverMenu = false;
             });
         }
@@ -96,13 +96,13 @@ class MadMenu {
             const parentMenuItem = parentMenuBg.querySelectorAll('.contextMenuItem')[parentMenuItemIndex];
 
             for (const elem of menuItems) {
-                elem.addEventListener('mouseover', () => {
+                elem.addEventListener('pointerover', () => {
                     for (const item of menuItems) {
                         delete item.dataset.active;
                     }
                     elem.dataset.active = true;
                 });
-                elem.addEventListener('mouseleave', () => {
+                elem.addEventListener('pointerleave', () => {
                     delete elem.dataset.active;
                 });
                 elem.addEventListener('click', () => {
@@ -113,14 +113,14 @@ class MadMenu {
                 });
             }
 
-            menuBg.addEventListener('mouseover', () => {
+            menuBg.addEventListener('pointerover', () => {
                 this.mouseOverMenu = true;
                 this.shouldNotCloseSubmenu = true;
                 clearTimeout(this.submenuCloseTimer);
                 parentMenuItem.dataset.active = true;
             });
 
-            menuBg.addEventListener('mouseleave', () => {
+            menuBg.addEventListener('pointerleave', () => {
                 this.mouseOverMenu = false;
                 this.shouldNotCloseSubmenu = false;
             });

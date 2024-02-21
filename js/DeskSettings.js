@@ -586,6 +586,7 @@ function changeSoundScheme(scheme) {
             soundScheme.warning = new Audio("sounds/95/chord.wav");
             soundScheme.info = new Audio("sounds/95/ding.wav");
             soundScheme.modal = new Audio("sounds/95/ding.wav");
+            soundScheme.navStart = new Audio("sounds/start.wav");
             break;
         case '95':
             soundScheme.startup = new Audio("sounds/95/The Microsoft Sound.wav");
@@ -594,6 +595,7 @@ function changeSoundScheme(scheme) {
             soundScheme.warning = new Audio("sounds/95/chord.wav");
             soundScheme.info = new Audio("sounds/95/ding.wav");
             soundScheme.modal = new Audio("sounds/95/ding.wav");
+            soundScheme.navStart = new Audio("sounds/start.wav");
             break;
         case 'nt4':
             soundScheme.startup = new Audio("sounds/NT4/Windows NT Logon Sound.wav");
@@ -602,6 +604,7 @@ function changeSoundScheme(scheme) {
             soundScheme.warning = new Audio("sounds/95/chord.wav");
             soundScheme.info = new Audio("sounds/95/ding.wav");
             soundScheme.modal = new Audio("sounds/95/ding.wav");
+            soundScheme.navStart = new Audio("sounds/start.wav");
             break;
         case '98':
             soundScheme.startup = new Audio("sounds/The Microsoft Sound.wav");
@@ -610,6 +613,7 @@ function changeSoundScheme(scheme) {
             soundScheme.warning = new Audio("sounds/chord.wav");
             soundScheme.info = new Audio("sounds/ding.wav");
             soundScheme.modal = new Audio("sounds/ding.wav");
+            soundScheme.navStart = new Audio("sounds/start.wav");
             break;
         case '2k':
             soundScheme.startup = new Audio("sounds/2000/Windows Logon Sound.wav");
@@ -618,6 +622,7 @@ function changeSoundScheme(scheme) {
             soundScheme.warning = new Audio("sounds/chord.wav");
             soundScheme.info = new Audio("sounds/ding.wav");
             soundScheme.modal = new Audio("sounds/ding.wav");
+            soundScheme.navStart = new Audio("sounds/start.wav");
             break;
         case 'xp':
             soundScheme.startup = new Audio("sounds/XP/Windows XP Startup.wav");
@@ -626,6 +631,7 @@ function changeSoundScheme(scheme) {
             soundScheme.warning = new Audio("sounds/XP/Windows XP Exclamation.wav");
             soundScheme.info = new Audio("sounds/XP/Windows XP Error.wav");
             soundScheme.modal = new Audio("sounds/XP/Windows XP Ding.wav");
+            soundScheme.navStart = new Audio("sounds/XP/Windows XP Start.wav");
             break;
         case 'vista':
             soundScheme.startup = new Audio("sounds/Aero/Windows Logon Sound.wav"); // enable real startup sound :D
@@ -634,6 +640,7 @@ function changeSoundScheme(scheme) {
             soundScheme.warning = new Audio("sounds/Aero/Windows Exclamation.wav");
             soundScheme.info = new Audio("sounds/Aero/Windows Error.wav");
             soundScheme.modal = new Audio("sounds/Aero/Windows Ding.wav");
+            soundScheme.navStart = new Audio("sounds/Aero/Windows Navigation Start.wav");
             break;
         case '7':
             soundScheme.startup = new Audio("sounds/Aero/startup.wav");
@@ -642,6 +649,7 @@ function changeSoundScheme(scheme) {
             soundScheme.warning = new Audio("sounds/Aero/Windows Exclamation.wav");
             soundScheme.info = new Audio("sounds/Aero/Windows Error.wav");
             soundScheme.modal = new Audio("sounds/Aero/Windows Ding.wav");
+            soundScheme.navStart = new Audio("sounds/Aero/Windows Navigation Start.wav");
             break;
         case '8':
             soundScheme.startup = new Audio("sounds/Aero/startup.wav");
@@ -651,6 +659,7 @@ function changeSoundScheme(scheme) {
             soundScheme.warning = new Audio("sounds/8/Windows Background.flac");
             soundScheme.info = new Audio("sounds/8/Windows Background.flac");
             soundScheme.modal = new Audio("sounds/8/Windows Background.flac");
+            soundScheme.navStart = new Audio("sounds/Aero/Windows Navigation Start.wav");
             break;
         case '10':
             soundScheme.startup = new Audio("sounds/Aero/startup.wav");
@@ -659,6 +668,7 @@ function changeSoundScheme(scheme) {
             soundScheme.warning = new Audio("sounds/10/Windows Background.wav");
             soundScheme.info = new Audio("sounds/10/Windows Background.wav");
             soundScheme.modal = new Audio("sounds/10/Windows Background.wav");
+            soundScheme.navStart = new Audio("sounds/Aero/Windows Navigation Start.wav");
             break;
         case '11':
             soundScheme.startup = new Audio("sounds/11/startup.wav");
@@ -667,6 +677,7 @@ function changeSoundScheme(scheme) {
             soundScheme.warning = new Audio("sounds/11/Windows Background.wav");
             soundScheme.info = new Audio("sounds/11/Windows Background.wav");
             soundScheme.modal = new Audio("sounds/11/Windows Background.wav");
+            soundScheme.navStart = new Audio("sounds/Aero/Windows Navigation Start.wav");
             break;
     }
 }
@@ -924,25 +935,14 @@ function openConfig(page) {
     }
 }
 
-function openExternal(url, fullscreen, specs = "", temp = true) {
-    if (specs) {
-        specs = "&" + specs.replaceAll(" ", "").replaceAll(",", "&");
-    }
+function openExternal(url, fullscreen, specs = "", temp = true, noExternal = false) {
     let deskMover = null;
-    if (localStorage.sysplugIntegration) {
-        fetch("http://localhost:3031/open", { method: "POST", body: url })
-            .then(response => response.text())
-            .then(responseText => {
-                if (responseText != "OK") {
-                    alert("An error occured!\nSystem plugin response: " + responseText);
-                    deskMover = openWindow('apps/channelviewer/index.html?page=' + encodeURIComponent(url) + specs, temp, "1024px", "768px");
-                }
-            })
-            .catch(error => {
-                alert("System plugin is not running. Please make sure you have installed it properly.");
-                deskMover = openWindow('apps/channelviewer/index.html?page=' + encodeURIComponent(url) + specs, temp, "1024px", "768px");
-            });
+    if ((localStorage.madesktopLinkOpenMode || "1") !== "1" && temp && !specs && !url.startsWith("data:") && !noExternal) {
+        openExternalExternally(url, fullscreen && !localStorage.madesktopChanViewNoAutoFullscrn, specs);
     } else {
+        if (specs) {
+            specs = "&" + specs.replaceAll(" ", "").replaceAll(",", "&");
+        }
         deskMover = openWindow('apps/channelviewer/index.html?page=' + encodeURIComponent(url) + specs, temp, "1024px", "768px");
     }
     if (deskMover && fullscreen && !localStorage.madesktopChanViewNoAutoFullscrn) {
@@ -951,6 +951,46 @@ function openExternal(url, fullscreen, specs = "", temp = true) {
         });
     }
     return deskMover;
+}
+
+function openExternalExternally(url, fullscreen, specs = "", noInternal = false) {
+    if (runningMode === BROWSER) {
+        window.open(url, "_blank", specs);
+    } else if (localStorage.sysplugIntegration) {
+        const headers = {};
+        if (fullscreen) {
+            headers["X-Fullscreen"] = "true";
+        }
+        fetch("http://localhost:3031/open", { method: "POST", body: url, headers })
+            .then(response => response.text())
+            .then(responseText => {
+                if (responseText !== "OK") {
+                    madAlert("An error occured!\nSystem plugin response: " + responseText, function () {
+                        copyPrompt(url);
+                    }, "error");
+                }
+            })
+            .catch(error => {
+                madAlert("System plugin is not running. Please make sure you have installed it properly.", function () {
+                    copyPrompt(url);
+                }, "warning");
+            });
+    } else {
+        copyPrompt(url);
+    }
+
+    function copyPrompt(url) {
+        if (!noInternal) {
+            openExternal(url, fullscreen, specs, true, true);
+        } else if (prompt("Paste this URL in the browser's address bar. Click OK to copy.", url)) {
+            const tmp = document.createElement("textarea");
+            document.body.appendChild(tmp);
+            tmp.value = url;
+            tmp.select();
+            document.execCommand('copy');
+            document.body.removeChild(tmp);
+        }
+    }
 }
 
 // Required as mouse movements over iframes are not detectable in the parent document
@@ -1008,10 +1048,11 @@ function hookIframeSize(iframe, num) {
     });
 
     // Also hook window.open as this doesn't work in WE
-    // Try to use sysplug, and if unavailable, just prompt for URL copy
-    iframe.contentWindow.open = function (url, name, specs) {
-        const deskMover = openExternal(url, false, specs);
-        return deskMover.windowElement.contentWindow;
+    if (localStorage.madesktopLinkOpenMode !== "0" || runningMode !== BROWSER) {
+        iframe.contentWindow.open = function (url, name, specs) {
+            const deskMover = openExternal(url, false, specs);
+            return deskMover.windowElement.contentWindow;
+        }
     }
 
     iframe.contentWindow.close = function () {

@@ -79,37 +79,10 @@ body {
     background-repeat: no-repeat;
 }
 
-.ActiveChannelItem {
-    display: block;
-    margin-top: 1px;
-    margin-bottom: -3px;
-    margin-left: 1px;
-    margin-right: 1px;
-    border: none;
-    width: 80px;
-    float: left;
-}
-
-.ActiveChannelItemImage, .windowBtn {
+.windowBtn {
     margin: 1px;
     border: none;
     padding: 0;
-}
-
-.ActiveChannelItemImage:hover, .windowBtn:hover {
-    margin: 0;
-    border-top: solid 1px white;
-    border-left: solid 1px white;
-    border-bottom: solid 1px rgb(128, 128, 128);
-    border-right: solid 1px rgb(128, 128, 128);
-}
-
-.ActiveChannelItemImage:hover:active, .windowBtn:hover:active {
-    margin: 0;
-    border-bottom: solid 1px white;
-    border-right: solid 1px white;
-    border-top: solid 1px rgb(128, 128, 128);
-    border-left: solid 1px rgb(128, 128, 128);
 }
 
 .windowBtn:hover {

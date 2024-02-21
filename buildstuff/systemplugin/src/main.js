@@ -180,9 +180,10 @@ function processNewWindow(childWindow, details) {
   let pageUrl = '';
   
   childWindow.setSize(1280, 720);
-  pageUrl = new URL(url).searchParams.get('page');
+  const searchParams = new URL(url).searchParams;
+  pageUrl = searchParams.get('page');
   
-  if (config.openWith === 1) {
+  if (config.openWith === 1 || searchParams.get('fullscreen')) {
     childWindow.webContents.executeJavaScript('document.body.requestFullscreen()', true);
   }
 
@@ -229,7 +230,7 @@ function processNewWindow(childWindow, details) {
       console.log("cvbvurl: ", url);
       view.webContents.loadURL(url);
       childWindow.webContents.send("cvbvurl" + cvNumberPrivate, view.webContents.getURL());
-    })
+    });
 
     childWindow.on('close', () => {
       console.log("Removing BrowserViewCtl IPC listener for ChannelViewer", cvNumberPrivate);
@@ -426,12 +427,16 @@ function onRequest(req, res) {
     case '/open':
       if (req.method === 'POST') {
         processPost(req, res, function (body) {
-          if (!body.startsWith('http')) {
+          if (!body.startsWith('http') && !body.startsWith('file')) {
             body = url.pathToFileURL(path.normalize(`${__dirname}/../../../${body}`)).toString();
           }
 
           if (config.openWith < 2) {
-            mainWindow.webContents.executeJavaScript(`openPage("${body}");`);
+            if (req.headers['x-fullscreen']) {
+              mainWindow.webContents.executeJavaScript(`openPage("${body}", true);`);
+            } else {
+              mainWindow.webContents.executeJavaScript(`openPage("${body}");`);
+            }
           } else {
             shell.openExternal(body);
           }

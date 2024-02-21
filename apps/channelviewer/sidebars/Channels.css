@@ -1,0 +1,45 @@
+html, body {
+    height: 100%;
+    user-select: none;
+    margin: 0;
+    overflow: hidden;
+    background-color: black;
+}
+
+.ActiveChannelItem {
+    display: block;
+    margin: 0 1px 0 2px;
+    width: calc(100% - 6px);
+    height: 32px;
+    position: relative;
+    border: solid 1px transparent;
+    box-shadow: gray 0 -1px;
+    cursor: pointer;
+}
+
+.ActiveChannelItemText {
+    color: white;
+    font-family: var(--ui-font);
+    position: absolute;
+    top: 10px;
+    left: 7px;
+}
+
+.ActiveChannelItemImage {
+    opacity: 0;
+}
+
+.ActiveChannelItem:hover {
+    border-top-color: white;
+    border-left-color: white;
+    border-bottom-color: gray;
+    border-right-color: gray;
+}
+
+.ActiveChannelItem:hover .ActiveChannelItemImage {
+    opacity: 1;
+}
+
+.ActiveChannelItem:hover .ActiveChannelItemText {
+    display: none;
+}

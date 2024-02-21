@@ -91,27 +91,27 @@ class DeskMover {
         /* Event listeners */
         if (!reinit) {
             // Prevent window from resizing when dragging the dropdown scrollbar
-            this.dropdownBg.addEventListener('mousedown', preventDefault);
+            this.dropdownBg.addEventListener('pointerdown', preventDefault);
 
             // Prevent unintended menu closing when clicking the menu items
             this.contextMenuBg.addEventListener('click', preventDefault);
-            this.contextMenuBg.addEventListener('mousedown', preventDefault);
-            this.contextMenuBg.addEventListener('mouseup', preventDefault);
-            this.contextMenuBg.addEventListener('mousemove', preventDefault);
+            this.contextMenuBg.addEventListener('pointerdown', preventDefault);
+            this.contextMenuBg.addEventListener('pointerup', preventDefault);
+            this.contextMenuBg.addEventListener('pointermove', preventDefault);
             this.confMenuBg.addEventListener('click', preventDefault);
-            this.confMenuBg.addEventListener('mousedown', preventDefault);
-            this.confMenuBg.addEventListener('mouseup', preventDefault);
-            this.confMenuBg.addEventListener('mousemove', preventDefault);
+            this.confMenuBg.addEventListener('pointerdown', preventDefault);
+            this.confMenuBg.addEventListener('pointerup', preventDefault);
+            this.confMenuBg.addEventListener('pointermove', preventDefault);
 
             this.contextMenuBg.addEventListener('focusout', this.closeContextMenu.bind(this));
             this.dropdownBg.addEventListener('focusout', this.closeDropdown.bind(this));
 
-            this.windowContainer.addEventListener('mousedown', this.#wcMouseDown.bind(this));
-            document.addEventListener('mouseup', this.#docMouseUp.bind(this));
-            this.windowElement.addEventListener('mouseover', this.#weMouseOver.bind(this));
-            this.windowContainer.addEventListener('mouseleave', this.#wcMouseLeave.bind(this));
-            document.addEventListener('mousemove', this.#docMouseMove.bind(this));
-            this.windowContainer.addEventListener('mousemove', this.#wcMouseMove.bind(this));
+            this.windowContainer.addEventListener('pointerdown', this.#wcMouseDown.bind(this));
+            document.addEventListener('pointerup', this.#docMouseUp.bind(this));
+            this.windowElement.addEventListener('pointerover', this.#weMouseOver.bind(this));
+            this.windowContainer.addEventListener('pointerleave', this.#wcMouseLeave.bind(this));
+            document.addEventListener('pointermove', this.#docMouseMove.bind(this));
+            this.windowContainer.addEventListener('pointermove', this.#wcMouseMove.bind(this));
             this.windowElement.addEventListener('load', this.#weLoad.bind(this));
             
             // Window menu button click & title bar right click
@@ -147,13 +147,13 @@ class DeskMover {
             // Context menu button listeners
             this.contextMenuItems[0].addEventListener('click', this.openConfMenu.bind(this)); // Configure button
             
-            this.contextMenuItems[0].addEventListener('mouseover', () => { // Configure button mouseover
+            this.contextMenuItems[0].addEventListener('pointerover', () => { // Configure button mouseover
                 this.timeout2 = setTimeout(() => {
                     this.openConfMenu();
                 }, 300);
             });
             
-            this.contextMenuItems[0].addEventListener('mouseleave', () => { // Configure button mouseleave
+            this.contextMenuItems[0].addEventListener('pointerleave', () => { // Configure button mouseleave
                 clearTimeout(this.timeout2);
             });
             
@@ -188,20 +188,20 @@ class DeskMover {
             });
             
             // Hide the config menu when hovering other items than Configure and Debug
-            this.contextMenuItems[2].addEventListener('mouseover', this.#delayedCloseConfMenu.bind(this));
-            this.contextMenuItems[3].addEventListener('mouseover', this.#delayedCloseConfMenu.bind(this));
-            this.contextMenuItems[4].addEventListener('mouseover', this.#delayedCloseConfMenu.bind(this));
+            this.contextMenuItems[2].addEventListener('pointerover', this.#delayedCloseConfMenu.bind(this));
+            this.contextMenuItems[3].addEventListener('pointerover', this.#delayedCloseConfMenu.bind(this));
+            this.contextMenuItems[4].addEventListener('pointerover', this.#delayedCloseConfMenu.bind(this));
             
-            this.contextMenuBg.addEventListener('mouseleave', () => {
+            this.contextMenuBg.addEventListener('pointerleave', () => {
                 this.#delayedCloseConfMenu(200);
             });
 
-            this.confMenuBg.addEventListener('mouseover', () => {
+            this.confMenuBg.addEventListener('pointerover', () => {
                 this.shouldNotCloseConfMenu = true;
                 clearTimeout(this.timeout3);
                 this.contextMenuItems[0].dataset.active = true;
             });
-            this.confMenuBg.addEventListener('mouseleave', () => {
+            this.confMenuBg.addEventListener('pointerleave', () => {
                 this.shouldNotCloseConfMenu = false;
             });
             
@@ -244,35 +244,35 @@ class DeskMover {
             this.windowCloseBtn.addEventListener('click', this.closeWindow.bind(this));
             this.windowCloseBtnAlt.addEventListener('click', this.closeWindow.bind(this));
         
-            this.windowMenuBtn.addEventListener('mouseover', () => {
+            this.windowMenuBtn.addEventListener('pointerover', () => {
                 this.mouseOverWndBtns = true;
             });
         
-            this.windowIcon.addEventListener('mouseover', () => {
+            this.windowIcon.addEventListener('pointerover', () => {
                 this.mouseOverWndBtns = true;
             });
         
-            this.windowCloseBtn.addEventListener('mouseover', () => {
+            this.windowCloseBtn.addEventListener('pointerover', () => {
                 this.mouseOverWndBtns = true;
             });
             
-            this.windowCloseBtnAlt.addEventListener('mouseover', () => {
+            this.windowCloseBtnAlt.addEventListener('pointerover', () => {
                 this.mouseOverWndBtns = true;
             });
         
-            this.windowMenuBtn.addEventListener('mouseout', () => {
+            this.windowMenuBtn.addEventListener('pointerout', () => {
                 this.mouseOverWndBtns = false;
             });
         
-            this.windowIcon.addEventListener('mouseout', () => {
+            this.windowIcon.addEventListener('pointerout', () => {
                 this.mouseOverWndBtns = false;
             });
         
-            this.windowCloseBtn.addEventListener('mouseout', () => {
+            this.windowCloseBtn.addEventListener('pointerout', () => {
                 this.mouseOverWndBtns = false;
             });
             
-            this.windowCloseBtnAlt.addEventListener('mouseout', () => {
+            this.windowCloseBtnAlt.addEventListener('pointerout', () => {
                 this.mouseOverWndBtns = false;
             });
         }
@@ -658,6 +658,11 @@ class DeskMover {
                     continue;
                 }
             }
+            if (option.dataset.conditionRunmode) {
+                if (runningMode !== parseInt(option.dataset.conditionRunmode)) {
+                    continue;
+                }
+            }
             const item = dummy.cloneNode(true);
             item.textContent = option.textContent;
             item.dataset.value = option.value;
@@ -673,7 +678,7 @@ class DeskMover {
                 }
                 this.closeDropdown();
             });
-            item.addEventListener('mouseover', () => {
+            item.addEventListener('pointerover', () => {
                 for (let i = 1; i < this.dropdown.childElementCount; i++) {
                     delete this.dropdown.children[i].dataset.hover;
                 }
@@ -1204,7 +1209,7 @@ class DeskMover {
                 } else {
                     madConfirm("ModernActiveDesktop cannot load this URL due to a security policy. Do you want to open this page in ChannelViewer instead?", res => {
                         if (res) {
-                            openExternal(this.config.src);
+                            openExternal(this.config.src, false, "", false);
                         }
                         this.closeWindow();
                     });
@@ -1212,8 +1217,8 @@ class DeskMover {
                 return;
             }
         }
-        this.windowElement.contentDocument.addEventListener('mousemove', this.#weConMouseMove.bind(this));
-        this.windowElement.contentDocument.addEventListener('mousedown', this.bringToTop.bind(this));
+        this.windowElement.contentDocument.addEventListener('pointermove', this.#weConMouseMove.bind(this));
+        this.windowElement.contentDocument.addEventListener('pointerdown', this.bringToTop.bind(this));
         
         if (!this.config.title) {
             this.windowTitleText.textContent = this.windowElement.contentDocument.title || "ModernActiveDesktop";
@@ -1505,7 +1510,7 @@ class DeskMover {
 function initSimpleMover(container, titlebar, exclusions) {
     let offset = [0, 0], isDown = false, mouseOverWndBtns = false;
 
-    titlebar.addEventListener('mousedown', function (event) {
+    titlebar.addEventListener('pointerdown', function (event) {
         if (!mouseOverWndBtns) {
             isDown = true;
             iframeClickEventCtrl(false);
@@ -1524,7 +1529,7 @@ function initSimpleMover(container, titlebar, exclusions) {
         }
     });
 
-    document.addEventListener('mouseup', function () {
+    document.addEventListener('pointerup', function () {
         if (isDown && localStorage.madesktopOutlineMode && windowOutline.style.display !== "none") {
             container.style.left = windowOutline.style.left;
             container.style.top = windowOutline.style.top;
@@ -1541,7 +1546,7 @@ function initSimpleMover(container, titlebar, exclusions) {
         if (container.offsetTop + 50 > window.vHeight) container.style.top = window.vHeight - 50 + 'px';
     });
 
-    document.addEventListener('mousemove', function (event) {
+    document.addEventListener('pointermove', function (event) {
         if (isDown) {
             let target = container;
             if (localStorage.madesktopOutlineMode) {
@@ -1556,11 +1561,11 @@ function initSimpleMover(container, titlebar, exclusions) {
     });
     
     for (let i = 0; i < exclusions.length; i++) {
-        exclusions[i].addEventListener('mouseover', function () {
+        exclusions[i].addEventListener('pointerover', function () {
             mouseOverWndBtns = true;
         });
 
-        exclusions[i].addEventListener('mouseout', function () {
+        exclusions[i].addEventListener('pointerout', function () {
             mouseOverWndBtns = false;
         });
     }

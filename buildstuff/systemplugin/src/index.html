@@ -51,8 +51,8 @@
         }
     }
 
-    function openPage(url = document.getElementById('url').value) {
-        const cvUrl = 'ChannelViewer' + (config.theme == '98' ? '.98' : '') + '.html?page=' + url + '&configPath=' + configPath;
+    function openPage(url = document.getElementById('url').value, fullscreen) {
+        const cvUrl = 'ChannelViewer' + (config.theme == '98' ? '.98' : '') + '.html?page=' + url + '&configPath=' + configPath + (fullscreen ? '&fullscreen=1' : '');
         window.open(cvUrl, '_blank', 'width=1280,height=720,nodeIntegration=no,contextIsolation=yes');
     }
 

@@ -33,11 +33,25 @@
                     </div>
                 </fieldset>
                 <fieldset>
+                    <legend>Miscellaneous</legend>
+                    <div id="openOptGroup" class="field-row">
+                        Open pages in...
+                        <mad-select id="openOptSelector">
+                            <option data-condition-runmode="0">New browser tab</option>
+                            <option selected>New ChannelViewer window</option>
+                            <option data-condition="sysplugIntegration">System plugin ChannelViewer (deprecated)</option>
+                            <option data-condition="sysplugIntegration">System default browser</option>
+                        </mad-select>
+                    </div>
+                </fieldset>
+                <fieldset>
                     <legend>Advanced</legend>
                     <img src="images/advanced.png" alt="Advanced icon">
                     <div id="advancedFieldMain" class="fieldMain">
                         <input id="faviconChkBox" type="checkbox">
                         <label for="faviconChkBox">Show favicon in the address bar</label><br>
+                        <input id="soundChkBox" type="checkbox" checked>
+                        <label for="soundChkBox">Play system sounds</label><br>
                         <input id="jsChkBox" type="checkbox" checked>
                         <label for="jsChkBox">Enable JavaScript</label><br>
                         <input id="autoFullscrnChkBox" type="checkbox" checked>

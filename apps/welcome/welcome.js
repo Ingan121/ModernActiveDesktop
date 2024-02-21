@@ -18,7 +18,7 @@ if (!localStorage.madesktopStartSndMuted) {
 }
 
 for (const item of items) {
-    item.addEventListener("mouseover", function () {
+    item.addEventListener("pointerover", function () {
         for (const content of contents) {
             if (item.id[4] === content.id[7]) {
                 content.style.display = "block";
@@ -42,7 +42,7 @@ for (const item of items) {
         }
     });
 
-    item.addEventListener("mouseleave", function () {
+    item.addEventListener("pointerleave", function () {
         contents[item.id[4]].style.display = "none";
         contents[0].style.display = "block";
         bgImg.src = "resources/computer.png";

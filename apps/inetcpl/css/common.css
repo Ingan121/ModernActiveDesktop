@@ -1,0 +1,19 @@
+@import '../../madconf/css/common.css';
+
+.window-body {
+    padding-bottom: 8px;
+}
+
+fieldset {
+    margin: 0 4px;
+    position: relative;
+}
+
+img {
+    position: absolute;
+    top: 5px;
+}
+
+.fieldMain {
+    margin-left: 42px;
+}

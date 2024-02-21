@@ -6,6 +6,8 @@
 
 const log = top.log || console.log;
 
+const schemeElement = document.getElementById("scheme");
+
 const toolbars = document.getElementById("toolbars");
 const menuBar = document.getElementById("menuBar");
 const toolbar = document.getElementById("toolbar");
@@ -19,8 +21,11 @@ const forwardExpandButton = document.getElementById("forward-expand-button");
 const refreshButton = document.getElementById("refresh-button");
 const stopButton = document.getElementById("stop-button");
 const homeButton = document.getElementById("home-button");
+const favoritesButton = document.getElementById("favorites-button");
+const channelsButton = document.getElementById("channels-button");
 const fullscreenButton = document.getElementById("fullscreen-button");
 const printButton = document.getElementById("print-button");
+const openButton = document.getElementById("open-button");
 
 const urlbar = document.getElementById("urlbar");
 
@@ -31,6 +36,7 @@ const goMenuItems = document.querySelectorAll("#goMenu .contextMenuItem");
 const favoritesMenuItems = document.querySelectorAll("#favoritesMenu .contextMenuItem");
 const helpMenuItems = document.querySelectorAll("#helpMenu .contextMenuItem");
 const toolbarsMenuItems = document.querySelectorAll("#toolbarsMenu .contextMenuItem");
+const explorerBarMenuItems = document.querySelectorAll("#explorerBarMenu .contextMenuItem");
 
 const favoritesMenuBtn = document.getElementById("favoritesMenuBtn");
 const favoritesMenuBg = document.getElementById("favoritesMenuBg");
@@ -44,10 +50,18 @@ const fullscreenThrobber = document.getElementById("windowBtnContainer");
 const statusText = document.getElementById("statusText");
 const statusZone = document.getElementById("zone");
 const statusZoneText = document.getElementById("zoneText");
+const resizeArea = document.getElementById("resizeArea");
 
-const madBase = parent.location.href.split('/').slice(0, -1).join('/') + '/';
+const mainArea = document.getElementById("mainArea");
+const sidebar = document.getElementById("sidebar");
+const sidebarTitle = document.getElementById("sidebarTitleText");
+const sidebarCloseBtn = document.getElementById("sidebarCloseBtn");
+const sidebarWindow = document.getElementById("sidebarWindow");
 
 window.iframe = document.getElementById("iframe");
+
+const madBase = parent.location.href.split('/').slice(0, -1).join('/') + '/';
+const cvBase = madBase + 'apps/channelviewer/';
 
 let title = "";
 let favorites = JSON.parse(localStorage.madesktopChanViewFavorites || "[]");
@@ -61,10 +75,10 @@ let saveTimer;
 let preCrashUrl = '';
 let pageSetStatusText = '';
 
-madDeskMover.menu = new MadMenu(menuBar, ['file', 'edit', 'view', 'go', 'favorites', 'help'], ['toolbars']);
+madDeskMover.menu = new MadMenu(menuBar, ['file', 'edit', 'view', 'go', 'favorites', 'help'], ['toolbars', 'explorerBar']);
 
 fileMenuItems[0].addEventListener("click", function () { // New window button
-    madOpenExternal("about:blank", false, "", false);
+    madOpenExternal(localStorage.madesktopChanViewHome || "about:blank", false, "", false);
 });
 
 fileMenuItems[1].addEventListener("click", function () { // Open button
@@ -126,15 +140,15 @@ viewMenuItems[1].addEventListener("click", function () { // Status Bar button
     }
 });
 
-viewMenuItems[2].addEventListener("click", function () { // Stop button
+viewMenuItems[3].addEventListener("click", function () { // Stop button
     window.stop();
 });
 
-viewMenuItems[3].addEventListener("click", function () { // Refresh button
+viewMenuItems[4].addEventListener("click", function () { // Refresh button
     refreshButton.click();
 });
 
-viewMenuItems[4].addEventListener("click", function () { // Source button
+viewMenuItems[5].addEventListener("click", function () { // Source button
     if (isCrossOrigin) {
         madAlert("Sorry, but advanced features are unavailable for this webpage. Please consult the internet options.", null, "warning");
     } else {
@@ -142,11 +156,11 @@ viewMenuItems[4].addEventListener("click", function () { // Source button
     }
 });
 
-viewMenuItems[5].addEventListener("click", function () { // Full Screen button
+viewMenuItems[6].addEventListener("click", function () { // Full Screen button
     fullscreenButton.click();
 });
 
-viewMenuItems[6].addEventListener("click", function () { // Internet Options button
+viewMenuItems[7].addEventListener("click", function () { // Internet Options button
     const left = parseInt(madDeskMover.config.xPos) + 25 + 'px';
     const top = parseInt(madDeskMover.config.yPos) + 50 + 'px';
     const configWindow = madOpenWindow('apps/inetcpl/general.html?currentPage=' + encodeURIComponent(historyItems[historyIndex - 1][0]), true, '400px', '427px', 'wnd', false, top, left, true, true, true);
@@ -192,13 +206,13 @@ favoritesMenuBtn.addEventListener("click", function () {
         return;
     }
     for (const item of menuItems) {
-        item.addEventListener("mouseover", function () {
+        item.addEventListener("pointerover", function () {
             for (const item of menuItems) {
                 delete item.dataset.active;
             }
             item.dataset.active = true;
         });
-        item.addEventListener("mouseleave", function () {
+        item.addEventListener("pointerleave", function () {
             delete item.dataset.active;
         });
     }
@@ -283,6 +297,18 @@ toolbarsMenuItems[4].addEventListener("click", function () { // No labels button
     }
 });
 
+explorerBarMenuItems[0].addEventListener("click", function () { // Favorites button
+    //openSidebar("Favorites");
+});
+
+explorerBarMenuItems[1].addEventListener("click", function () { // Channels button
+    openSidebar("Channels");
+});
+
+explorerBarMenuItems[2].addEventListener("click", function () { // None button
+    closeSidebar();
+});
+
 backButton.addEventListener("click", function () {
     handleWeirdError();
     if (isCrossOrigin) {
@@ -307,12 +333,12 @@ forwardButton.addEventListener("click", function () {
 
 for (const expandButton of [backExpandButton, forwardExpandButton]) {
     const parentButton = document.getElementById(expandButton.id.replace("-expand", ""));
-    expandButton.addEventListener("mouseover", function () {
+    expandButton.addEventListener("pointerover", function () {
         if (!expandButton.dataset.disabled) {
             parentButton.dataset.hover = true;
         }
     });
-    expandButton.addEventListener("mouseleave", function () {
+    expandButton.addEventListener("pointerleave", function () {
         if (historyMenuBg.style.display !== "block" || historyMenuBg.dataset.currentParent !== parentButton.id) {
             delete parentButton.dataset.hover;
         }
@@ -341,6 +367,14 @@ homeButton.addEventListener("click", function () {
     go(localStorage.madesktopChanViewHome || "https://www.ingan121.com/");
 });
 
+channelsButton.addEventListener("click", function () {
+    if (mainArea.classList.contains("sidebarOpen") && sidebarTitle.textContent === "Channels") {
+        closeSidebar();
+    } else {
+        openSidebar("Channels");
+    }
+});
+
 fullscreenButton.addEventListener("click", function () {
     if (madDeskMover.isFullscreen) {
         madExitFullscreen();
@@ -351,6 +385,10 @@ fullscreenButton.addEventListener("click", function () {
 
 printButton.addEventListener("click", function () {
     printIframe();
+});
+
+openButton.addEventListener("click", function () {
+    parent.openExternalExternally(historyItems[historyIndex - 1][0], false, "", true);
 });
 
 urlbar.addEventListener('click', function (event) {
@@ -377,6 +415,21 @@ urlbar.addEventListener('click', function (event) {
 urlbar.addEventListener('keyup', function (e) {
     if (e.key === "Enter") {
         go(urlbar.value);
+    }
+});
+
+sidebarCloseBtn.addEventListener('click', closeSidebar);
+
+resizeArea.addEventListener('pointerdown', function (event) {
+    if (event.button === 0) {
+        parent.iframeClickEventCtrl(false);
+        madDeskMover.isDown = true;
+        madDeskMover.offset = [
+            madDeskMover.windowElement.offsetWidth - event.clientX * madScaleFactor,
+            madDeskMover.windowElement.offsetHeight - event.clientY * madScaleFactor
+        ];
+        madDeskMover.resizingMode = 'rightbottom';
+        madDeskMover.windowElement.style.cursor = 'se-resize';
     }
 });
 
@@ -456,13 +509,14 @@ function hookIframeSize(iframe) {
     });
 
     // Also hook window.open as this doesn't work in WE
-    // Try to use sysplug, and if unavailable, just prompt for URL copy
-    iframe.contentWindow.open = function (url, name, specs) {
-        if (!url.startsWith("http")) {
-            url = new URL(url, iframe.contentWindow.location.href).href;
+    if (localStorage.madesktopLinkOpenMode !== "0" || madRunningMode !== 0) {
+        iframe.contentWindow.open = function (url, name, specs) {
+            if (!url.startsWith("http")) {
+                url = new URL(url, iframe.contentWindow.location.href).href;
+            }
+            const deskMover = madOpenExternal(url, false, specs);
+            return deskMover.windowElement.contentDocument;
         }
-        const deskMover = madOpenExternal(url, false, specs);
-        return deskMover.windowElement.contentDocument;
     }
 
     // Pro tip: youareanidiot.cc works well with this
@@ -498,17 +552,20 @@ function hookIframeSize(iframe) {
         // Will fail if the page doesn't have a title element
     }
 
-    // Do this on mouseup instead of click, as click doesn't work with Google Search links
+    // Do this on pointerup instead of click, as click doesn't work with Google Search links
     // Probably because it uses something like event.stopPropagation()?
-    iframe.contentDocument.addEventListener('mouseup', (event) => {
+    iframe.contentDocument.addEventListener('pointerup', (event) => {
         if (event.button === 0 && iframe.contentDocument.activeElement && iframe.contentDocument.activeElement.href && !iframe.contentDocument.activeElement.href.startsWith("javascript:")) {
             let url = iframe.contentDocument.activeElement.href;
             if (!url.startsWith("http")) {
                 url = new URL(url, iframe.contentWindow.location.href).href;
             }
+            if (!url.startsWith("http")) { // non http/https links
+                return;
+            }
             switch (iframe.contentDocument.activeElement.target) {
                 case "_blank":
-                    madOpenExternal(url, false);
+                    madOpenExternal(url);
                     event.preventDefault();
                     break;
                 case "_top":
@@ -546,7 +603,7 @@ function hookIframeSize(iframe) {
             document.title = url + " - ChannelViewer";
         }
     });
-    iframe.contentDocument.addEventListener('mousemove', (event) => {
+    iframe.contentDocument.addEventListener('pointermove', (event) => {
         const hoverElement = iframe.contentDocument.elementFromPoint(event.clientX, event.clientY);
         if (hoverElement && hoverElement.tagName === "A" && hoverElement.href) {
             statusText.textContent = hoverElement.href;
@@ -563,7 +620,11 @@ function go(url, noHistory) {
     if (noHistory) {
         didHistoryNav = false;
     }
-    if (!url.startsWith("http") && !url.startsWith("about") && !url.startsWith("chrome") && !url.startsWith("data") && !url.startsWith("file") && !url.startsWith("ws") && !url.startsWith("wss") && !url.startsWith("blob") && !url.startsWith("javascript")) {
+    if (url.startsWith("about:") && !url.startsWith("about:blank")) {
+        url = cvBase + "aboutpages/" + url.split(":")[1] + ".html";
+    } else if (url.startsWith("channels-")) {
+        url = madBase + url;
+    } else if (!url.startsWith("http") && !url.startsWith("about") && !url.startsWith("chrome") && !url.startsWith("data") && !url.startsWith("file") && !url.startsWith("ws") && !url.startsWith("wss") && !url.startsWith("blob") && !url.startsWith("javascript")) {
         url = "https://" + url;
     }
     urlbar.value = url;
@@ -602,13 +663,13 @@ function openHistoryMenu() {
     historyMenuBg.style.width = maxLen * 8 + "px";
     historyMenuBg.style.height = menuItems.length * 17 + "px";
     for (const item of menuItems) {
-        item.addEventListener("mouseover", function () {
+        item.addEventListener("pointerover", function () {
             for (const item of menuItems) {
                 delete item.dataset.active;
             }
             item.dataset.active = true;
         });
-        item.addEventListener("mouseleave", function () {
+        item.addEventListener("pointerleave", function () {
             delete item.dataset.active;
         });
     }
@@ -724,6 +785,25 @@ function appendFavoriteItem(favorite) {
     favoritesMenu.appendChild(item);
 }
 
+function openSidebar(name) {
+    mainArea.classList.add("sidebarOpen");
+    sidebarTitle.textContent = name;
+    sidebarWindow.src = cvBase + "sidebars/" + name + ".html";
+    switch (name) {
+        case "Channels":
+            explorerBarMenuItems[0].classList.remove("activeStyle");
+            explorerBarMenuItems[1].classList.add("activeStyle");
+            explorerBarMenuItems[2].classList.remove("activeStyle");
+    }
+}
+
+function closeSidebar() {
+    mainArea.classList.remove("sidebarOpen");
+    explorerBarMenuItems[0].classList.remove("activeStyle");
+    explorerBarMenuItems[1].classList.remove("activeStyle");
+    explorerBarMenuItems[2].classList.add("activeStyle");
+}
+
 // I DON'T KNOW WHY BUT having a width of about 800px (unscaled) crashes Wallpaper Engine CEF when loading disney.com
 function handleWeirdError() {
     if (madRunningMode === 1 && window.innerWidth * madScaleFactor > 750 && window.innerWidth * madScaleFactor < 850) {
@@ -798,7 +878,6 @@ function printIframe() {
 
 async function getFavicon(asImage = false) {
     try {
-        const madBase = location.href.split('/').slice(0, -1).join('/') + '/';
         const loc = iframe.contentWindow.location.href;
         const doc = iframe.contentDocument;
         const url = new URL(loc);
@@ -850,6 +929,11 @@ function loadStart() {
     throbber.style.backgroundImage = "url(images/throbber.webp)";
     fullscreenThrobber.style.backgroundImage = "url(images/throbber26.webp)";
     statusText.textContent = "Opening page " + urlbar.value;
+    if (!localStorage.madesktopChanViewNoSound) {
+        madPlaySound("navStart");
+    }
+    statusZone.style.backgroundImage = "";
+    statusZoneText.textContent = "Internet zone";
 }
 
 function loadFinish() {
@@ -865,8 +949,8 @@ async function forceLoad(url) {
     log("Loading with X-Frame-Bypass: " + url, "log", "ChannelViewer");
     let data = await fetchProxy(url, null, 0).then(res => res.text()).catch(e => {
         iframe.removeAttribute("srcdoc");
-        didHistoryNav = false;
-        iframe.src = "ieres/NavigationCanceled.html";
+        madAlert(`ChannelViewer cannot open the Internet site "${url}".<br>A connection with the server could not be established.`, null, "error");
+        go("about:NavigationCanceled", true);
     });
 
     if (data) {
@@ -944,6 +1028,12 @@ function init() {
     return page;
 }
 
+window.addEventListener("message", (event) => {
+    if (event.data.type === "scheme-updated" && mainArea.classList.contains("sidebarOpen")) {
+        sidebarWindow.contentDocument.getElementById("scheme").href = schemeElement.href;
+    }
+});
+
 window.addEventListener('load', function () {
     handleWeirdError();
     let page = init();
@@ -952,11 +1042,15 @@ window.addEventListener('load', function () {
 
     if (localStorage.madesktopFailCount > 2) {
         preCrashUrl = page;
-        iframe.srcdoc = "ModernActiveDesktop has detected repeated crashes. To protect against further crashes, ChannelViewer has stopped loading the page for now.<br>Please consider closing some ChannelViewers if this persists. Refresh the page to load it anyway.";
+        iframe.srcdoc = "ModernActiveDesktop has detected repeated crashes. To prevent further crashes, ChannelViewer has stopped loading the page for now.<br>Please consider closing some ChannelViewers if this persists. Refresh the page to load it anyway.";
     } else {
         iframe.src = page || localStorage.madesktopChanViewHome || "about:blank";
         loadStart();
     }
+});
+
+sidebarWindow.addEventListener('load', function () {
+    sidebarWindow.contentDocument.getElementById("scheme").href = schemeElement.href;
 });
 
 iframe.addEventListener('load', function () {
@@ -966,6 +1060,9 @@ iframe.addEventListener('load', function () {
         madSetIcon('images/html.png');
         urlbar.value = iframe.src;
         didFirstLoad = true;
+        if (!localStorage.madesktopChanViewNoSound) {
+            madPlaySound("navStart");
+        }
         loadFinish();
         return;
     }
@@ -1006,15 +1103,18 @@ iframe.addEventListener('load', function () {
     }
     didHistoryNav = true;
     log("History: " + historyIndex + " / " + historyLength, "log", "ChannelViewer");
-    if (iframe.contentWindow.location.href !== "about:srcdoc") {
-        urlbar.value = iframe.contentWindow.location.href;
+
+    const url = iframe.contentWindow.location.href;
+    if (url !== "about:srcdoc") {
+        if (url.startsWith(cvBase + "aboutpages/")) {
+            urlbar.value = "about:" + url.split("/").pop().replace(".html", "");
+        } else {
+            urlbar.value = url;
+        }
     }
-    if (iframe.contentWindow.location.href.startsWith(madBase)) {
+    if (url.startsWith(madBase)) {
         statusZone.style.backgroundImage = "url(images/zone_local.png)";
         statusZoneText.textContent = "My Computer";
-    } else {
-        statusZone.style.backgroundImage = "";
-        statusZoneText.textContent = "Internet zone";
     }
     historyItems[historyIndex - 1] = [urlbar.value, title];
     historyItems = historyItems.slice(0, historyLength);

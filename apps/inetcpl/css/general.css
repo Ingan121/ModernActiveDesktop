@@ -1,18 +1,4 @@
-@import '../../madconf/css/common.css';
-
-fieldset {
-    margin: 0 4px;
-    position: relative;
-}
-
-img {
-    position: absolute;
-    top: 5px;
-}
-
-.fieldMain {
-    margin-left: 42px;
-}
+@import 'common.css';
 
 #homePageFieldMain {
     margin-top: -6px;
@@ -37,6 +23,17 @@ img {
     justify-content: flex-end;
 }
 
+#openOptGroup {
+    margin-top: -3px;
+    margin-bottom: 2px;
+}
+
+#openOptSelector {
+    width: 255px;
+    margin-left: 3px;
+}
+
 #advancedFieldMain {
     margin-left: 50px;
+    margin-bottom: 6px;
 }
