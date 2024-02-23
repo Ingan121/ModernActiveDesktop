@@ -42,30 +42,36 @@ button:not(.window-button):not(.lightweight):not(.toggle) {
 }
 
 .tool,
-button.toggle {
+button.toggle,
+.toolbarButton {
     box-sizing: border-box;
     box-shadow: none;
     border: 1px solid transparent !important;
     border-image: none !important;
     border-radius: 3px;
-    &:not(:disabled):hover {
-        background: linear-gradient(
-            180deg,
-            rgba(255, 255, 255, 1) 0%,
-            rgba(236, 235, 229, 1) 86%,
-            rgba(216, 208, 196, 1) 100%
-        ) !important;
-        border-color: #cecec3 !important;
-    }
-    &:not(:disabled):active {
-        background: linear-gradient(
-            180deg,
-            rgba(205, 202, 195, 1) 0%,
-            rgba(227, 227, 219, 1) 8%,
-            rgba(229, 229, 222, 1) 94%,
-            rgba(242, 242, 241, 1) 100%
-        ) !important;
-        border-color: #9d9d92 !important;
+    &:not(:disabled):not([data-disabled]) {
+        &:hover,
+        &[data-hover] {
+            background: linear-gradient(
+                180deg,
+                rgba(255, 255, 255, 1) 0%,
+                rgba(236, 235, 229, 1) 86%,
+                rgba(216, 208, 196, 1) 100%
+            ) !important;
+            border-color: #cecec3 !important;
+        }
+        &:active,
+        &[data-active] {
+            background: linear-gradient(
+                180deg,
+                rgba(205, 202, 195, 1) 0%,
+                rgba(227, 227, 219, 1) 8%,
+                rgba(229, 229, 222, 1) 94%,
+                rgba(242, 242, 241, 1) 100%
+            ) !important;
+            border-color: #9d9d92 !important;
+            color: white !important;
+        }
     }
     &.selected {
         background: white !important;
@@ -75,5 +81,44 @@ button.toggle {
     }
     &::before {
         display: none;
+    }
+}
+
+#madChanView {
+    #toolbar {
+        height: 38px;
+    }
+    .toolbarButton {
+        min-width: 29px;
+        height: 38px;
+    }
+    .toolbarButtonImage {
+        margin-top: 7px;
+    }
+    #back-button,
+    #forward-button {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+    #back-expand-button,
+    #forward-expand-button {
+        min-width: 12px;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        border-left: none !important;
+        span {
+            line-height: 28px;
+        }
+    }
+
+    #back-button:hover:not([data-disabled='true']) + #back-expand-button,
+    #forward-button:hover:not([data-disabled='true']) + #forward-expand-button {
+        background: linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 1) 0%,
+            rgba(236, 235, 229, 1) 86%,
+            rgba(216, 208, 196, 1) 100%
+        ) !important;
+        border-color: #cecec3 !important;
     }
 }

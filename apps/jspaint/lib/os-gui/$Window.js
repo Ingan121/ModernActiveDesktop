@@ -767,16 +767,12 @@ function $Window(options) {
 			};
 
 			$w.addClass("maximized");
-			const $taskbar = $(".taskbar");
-			//const scrollbar_width = window.innerWidth - $(window).width();
-			//const scrollbar_height = window.innerHeight - $(window).height();
-			const taskbar_height = $taskbar.length ? $taskbar.outerHeight() + 1 : 0;
 			$w.css({
 				position: "fixed",
 				top: 0,
 				left: 0,
-				width: window.innerWidth + 'px',
-				height: window.innerHeight - taskbar_height + 'px',
+				width: window.innerWidth + "px",
+				height: window.innerHeight + "px",
 			});
 		};
 		const instantly_unmaximize = () => {

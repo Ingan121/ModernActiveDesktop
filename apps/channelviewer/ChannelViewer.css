@@ -6,7 +6,8 @@ html,body {
     height: 100%;
     user-select: none;
     margin: 0;
-    overflow: hidden
+    overflow: hidden;
+    background-color: var(--button-face);
 }
 
 body {
@@ -49,6 +50,11 @@ body {
     padding: calc((var(--menu-height) - 14px) / 2 + 1px) 7px 2px 8px;
 }
 
+.menuBtn:active,
+.menuBtn[data-active] {
+    padding-top: calc((var(--menu-height) - 14px) / 2 + 2px);
+}
+
 #fileMenuBtn {
     margin-left: 2px;
 }
@@ -62,6 +68,10 @@ body {
     background-position: center;
     background-repeat: no-repeat;
     margin-left: auto;
+}
+
+#throbber[data-busy] {
+    background-image: url(images/throbber.webp);
 }
 
 #throbber:before {
@@ -106,6 +116,10 @@ body {
     background-image: url('images/throbber26.png');
     background-position: 5px 0;
     background-repeat: no-repeat;
+}
+
+#windowBtnContainer[data-busy] {
+    background-image: url('images/throbber26.webp');
 }
 
 .windowBtn {
@@ -481,6 +495,10 @@ body[data-fullscreen] #addressBar {
 
 body[data-fullscreen] #windowBtnContainer {
     display: block;
+}
+
+body[data-fullscreen] #mainArea {
+    padding-bottom: 0;
 }
 
 body[data-fullscreen] #iframe {

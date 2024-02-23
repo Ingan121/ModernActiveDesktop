@@ -47,6 +47,7 @@ let activeWindow = 0;
 let prevActiveWindow = 0;
 let startupRan = false;
 let flashInterval;
+let konamiStack = 0;
 
 const WE = 1; // Wallpaper Engine
 const LW = 2; // Lively Wallpaper
@@ -140,6 +141,7 @@ if (localStorage.madesktopDestroyedItems) {
     localStorage.madesktopOpenWindows = openWindows;
 }
 delete localStorage.madesktopLastCustomScale;
+delete localStorage.madesktopPrevOWConfigRequest;
 // Mistake that I made in previous versions
 if (localStorage.madesktopCustomColor) {
     if (localStorage.madesktopCustomColor.includes("--menu-highlight")) {
@@ -217,6 +219,10 @@ for (const elem of mainMenuItems) {
 
 mainMenuBg.addEventListener('focusout', closeMainMenu);
 
+mainMenuBg.addEventListener('animationend', function () {
+    this.style.pointerEvents = "";
+});
+
 mainMenuItems[0].addEventListener('click', () => { // New button
     closeMainMenu();
     openWindow();
@@ -229,6 +235,7 @@ mainMenuItems[1].addEventListener('click', () => { // Properties button
 
 function openMainMenu (event) {
     if (isContextMenuOpen) return;
+    mainMenuBg.style.pointerEvents = "none";
     mainMenuBg.style.left = event.clientX + "px";
     mainMenuBg.style.top = event.clientY + "px";
     mainMenuBg.style.display = "block";
@@ -548,7 +555,7 @@ function changeCmAnimation(type) {
             mainMenuBg.style.animation = "fade 0.2s";
             break;
         case "slide":
-            mainMenuBg.style.animation = "cmDropdown 0.25s linear";
+            mainMenuBg.style.animation = "cmDropdownright 0.25s linear";
     }
     for (const i in deskMovers) {
         deskMovers[i].changeCmAnimation(type);
@@ -777,10 +784,7 @@ function processTheme() {
     styleElement.textContent = generateThemeSvgs();
 }
 
-function generateThemeSvgs(targetElement) {
-    if (!targetElement) {
-        targetElement = document.documentElement;
-    }
+function generateThemeSvgs(targetElement = document.documentElement) {
     const buttonFace = getComputedStyle(targetElement).getPropertyValue('--button-face');
     const buttonDkShadow = getComputedStyle(targetElement).getPropertyValue('--button-dk-shadow');
     const buttonHilight = getComputedStyle(targetElement).getPropertyValue('--button-hilight');
@@ -844,6 +848,9 @@ function generateThemeSvgs(targetElement) {
         <rect fill="${buttonShadow}" x="0" y="13" width="11" height="1"/>
         <rect fill="${buttonDkShadow}" x="0" y="14" width="13" height="1"/>
         <rect fill="${buttonDkShadow}" x="12" y="0" width="1" height="14"/></svg>`;
+    const resizeArea = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -0.5 12 12" shape-rendering="crispEdges">
+    <path stroke="${buttonHilight}" d="M11 0h1M10 1h1M9 2h1M8 3h1M7 4h1M11 4h1M6 5h1M10 5h1M5 6h1M9 6h1M4 7h1M8 7h1M3 8h1M7 8h1M11 8h1M2 9h1M6 9h1M10 9h1M1 10h1M5 10h1M9 10h1M0 11h1M4 11h1M8 11h1" />
+    <path stroke="${buttonShadow}" d="M11 1h1M10 2h2M9 3h2M8 4h2M7 5h2M11 5h1M6 6h2M10 6h2M5 7h2M9 7h2M4 8h2M8 8h2M3 9h2M7 9h2M11 9h1M2 10h2M6 10h2M10 10h2M1 11h2M5 11h2M9 11h2" /></svg>`;
 
     const css = `
     :root {
@@ -860,6 +867,7 @@ function generateThemeSvgs(targetElement) {
         --checkmark-disabled: url("data:image/svg+xml,${encodeURIComponent(checkmarkDisabled)}");
         --indicator-thumb: url("data:image/svg+xml,${encodeURIComponent(indicatorThumb)}");
         --seek-handle: url("data:image/svg+xml,${encodeURIComponent(seekHandle)}");
+        --resize-area: url("data:image/svg+xml,${encodeURIComponent(resizeArea)}");
     }`;
     return css;
 }
@@ -938,7 +946,7 @@ function openConfig(page) {
 function openExternal(url, fullscreen, specs = "", temp = true, noExternal = false) {
     let deskMover = null;
     if ((localStorage.madesktopLinkOpenMode || "1") !== "1" && temp && !specs && !url.startsWith("data:") && !noExternal) {
-        openExternalExternally(url, fullscreen && !localStorage.madesktopChanViewNoAutoFullscrn, specs);
+        openExternalExternally(url, fullscreen && !localStorage.madesktopChanViewNoAutoFullscrn);
     } else {
         if (specs) {
             specs = "&" + specs.replaceAll(" ", "").replaceAll(",", "&");
@@ -953,9 +961,9 @@ function openExternal(url, fullscreen, specs = "", temp = true, noExternal = fal
     return deskMover;
 }
 
-function openExternalExternally(url, fullscreen, specs = "", noInternal = false) {
+function openExternalExternally(url, fullscreen, noInternal = false) {
     if (runningMode === BROWSER) {
-        window.open(url, "_blank", specs);
+        window.open(url, "_blank");
     } else if (localStorage.sysplugIntegration) {
         const headers = {};
         if (fullscreen) {
@@ -981,7 +989,7 @@ function openExternalExternally(url, fullscreen, specs = "", noInternal = false)
 
     function copyPrompt(url) {
         if (!noInternal) {
-            openExternal(url, fullscreen, specs, true, true);
+            openExternal(url, fullscreen, "", true, true);
         } else if (prompt("Paste this URL in the browser's address bar. Click OK to copy.", url)) {
             const tmp = document.createElement("textarea");
             document.body.appendChild(tmp);
@@ -1070,8 +1078,9 @@ function hookIframeSize(iframe, num) {
     );
 
     iframe.contentDocument.addEventListener('click', (event) => {
+        const hoverElement = iframe.contentDocument.elementFromPoint(event.clientX, event.clientY);
         if (iframe.contentDocument.activeElement && iframe.contentDocument.activeElement.href &&
-            iframe.contentDocument.activeElement.target === "_blank")
+            iframe.contentDocument.activeElement.target === "_blank" && hoverElement === iframe.contentDocument.activeElement)
         {
             openExternal(iframe.contentDocument.activeElement.href);
             event.preventDefault();
@@ -1633,6 +1642,91 @@ if (runningMode === WE) {
 } else {
     if (runningMode === LW) {
         runningModeLabel.textContent = "Lively Wallpaper";
+    } else {
+        // Konami code easter egg
+        // Obviously a 98.js / jspaint reference
+        document.addEventListener('keydown', function (event) {
+            switch (konamiStack) {
+                case 0:
+                    if (event.key === "ArrowUp") {
+                        konamiStack++;
+                    } else {
+                        konamiStack = 0;
+                    }
+                    break;
+                case 1:
+                    if (event.key === "ArrowUp") {
+                        konamiStack++;
+                    } else {
+                        konamiStack = 0;
+                    }
+                    break;
+                case 2:
+                    if (event.key === "ArrowDown") {
+                        konamiStack++;
+                    } else {
+                        konamiStack = 0;
+                    }
+                    break;
+                case 3:
+                    if (event.key === "ArrowDown") {
+                        konamiStack++;
+                    } else {
+                        konamiStack = 0;
+                    }
+                    break;
+                case 4:
+                    if (event.key === "ArrowLeft") {
+                        konamiStack++;
+                    } else {
+                        konamiStack = 0;
+                    }
+                    break;
+                case 5:
+                    if (event.key === "ArrowRight") {
+                        konamiStack++;
+                    } else {
+                        konamiStack = 0;
+                    }
+                    break;
+                case 6:
+                    if (event.key === "ArrowLeft") {
+                        konamiStack++;
+                    } else {
+                        konamiStack = 0;
+                    }
+                    break;
+                case 7:
+                    if (event.key === "ArrowRight") {
+                        konamiStack++;
+                    } else {
+                        konamiStack = 0;
+                    }
+                    break;
+                case 8:
+                    if (event.key === "b") {
+                        konamiStack++;
+                    } else {
+                        konamiStack = 0;
+                    }
+                    break;
+                case 9:
+                    if (event.key === "a") {
+                        konamiStack++;
+                    } else {
+                        konamiStack = 0;
+                    }
+                    break;
+                case 10:
+                    if (event.key === "Enter") {
+                        openExternal("https://youareanidiot.cc/lol.html", false, "resizable=no,width=357,height=330,forceLoad=yes", true, true);
+                    }
+                    konamiStack = 0;
+                    break;
+                default:
+                    konamiStack = 0;
+            }
+        }); 
     }
     startup();
     if (location.href.startsWith("file:///") && runningMode === BROWSER) {
@@ -1649,7 +1743,7 @@ window.addEventListener('load', function () {
         document.documentElement.style.setProperty('--hilight-inverted', 'var(--hilight-text)');
     }
 
-    document.dispatchEvent(new Event("mouseup")); // Re-calculate title bar height after loading scheme css
+    adjustAllElements();
 });
 
 // Prevent scrolling when a partly off-screen deskMover gets focus, its iframe loads, etc.

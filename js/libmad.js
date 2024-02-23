@@ -54,6 +54,7 @@
         window.madResizeTo = window.resizeTo;
         window.madMoveTo = window.moveTo;
         window.madBringToTop = window.focus;
+        window.madShowResizeArea = noop;
 
         window.madEnterFullscreen = function () {
             document.documentElement.requestFullscreen();
@@ -354,6 +355,7 @@
     window.madExtendMoveTarget = deskMover.extendMoveTarget.bind(deskMover);
     window.madEnterFullscreen = deskMover.enterFullscreen.bind(deskMover);
     window.madExitFullscreen = deskMover.exitFullscreen.bind(deskMover);
+    window.madShowResizeArea = deskMover.showResizeArea.bind(deskMover);
     window.madCloseWindow = deskMover.closeWindow.bind(deskMover);
 
     window.madAlert = parent.madAlert;

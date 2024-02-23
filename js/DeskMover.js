@@ -26,10 +26,12 @@ class DeskMover {
         this.confMenuItems = this.confMenu.querySelectorAll(".contextMenuItem");
         this.dropdownBg = windowContainer.querySelector(".dropdownBg");
         this.dropdown = windowContainer.querySelector(".dropdown");
+        this.resizeArea = windowContainer.querySelector(".resizeArea");
 
         this.mousePosition, this.posInWindow, this.posInContainer;
         this.offset = [0, 0];
         this.isDown = false;
+        this.isDownOnResizeArea = false;
         this.resizingMode = "none";
         this.mouseOverWndBtns = false;
         this.noFrames = false;
@@ -105,6 +107,10 @@ class DeskMover {
 
             this.contextMenuBg.addEventListener('focusout', this.closeContextMenu.bind(this));
             this.dropdownBg.addEventListener('focusout', this.closeDropdown.bind(this));
+
+            this.resizeArea.addEventListener('pointerdown', () => {
+                this.isDownOnResizeArea = true;
+            });
 
             this.windowContainer.addEventListener('pointerdown', this.#wcMouseDown.bind(this));
             document.addEventListener('pointerup', this.#docMouseUp.bind(this));
@@ -222,7 +228,7 @@ class DeskMover {
             
             this.confMenuItems[3].addEventListener('click', this.#toggleScale.bind(this)); // Scale contents button
             this.confMenuItems[4].addEventListener('click', this.#toggleAoT.bind(this)); // Always on top button
-            this.confMenuItems[5].addEventListener('click', this.#toggleResizable.bind(this)); // Resizable button
+            this.confMenuItems[5].addEventListener('click', this.toggleResizable.bind(this)); // Resizable button
             this.confMenuItems[6].addEventListener('click', this.#changeUrl.bind(this)); // Change URL button
             this.confMenuItems[7].addEventListener('click', this.#changeTitle.bind(this)); // Change title button
             
@@ -343,13 +349,13 @@ class DeskMover {
                     if (openDoc.startsWith("apps/madconf/")) {
                         this.windowElement.width = width || '398px';
                         this.windowElement.height = height || '423px';
-                        this.#toggleResizable();
+                        this.toggleResizable();
                         this.setIcon(false);
                     } else {
                         this.windowElement.width = width || '800px';
                         this.windowElement.height = height || '600px';
                         if (unresizable) {
-                            this.#toggleResizable();
+                            this.toggleResizable();
                         }
                         if (noIcon) {
                             this.setIcon(false);
@@ -631,7 +637,7 @@ class DeskMover {
         }
     }
 
-    openDropdown(elem) {
+    openDropdown(elem, iframe) {
         // Suppress the original dropdown
         elem.blur();
         elem.dataset.open = true;
@@ -692,15 +698,23 @@ class DeskMover {
         this.dropdownBg.style.display = "block";
         
         const clientRect = elem.getBoundingClientRect();
+        let left = clientRect.left;
+        let top = clientRect.top + elem.offsetHeight;
+        let width = elem.offsetWidth;
         if (this.config.unscaled) {
-            this.dropdownBg.style.left = clientRect.left / window.scaleFactor + "px";
-            this.dropdownBg.style.top = (clientRect.top + elem.offsetHeight) / window.scaleFactor + "px";
-            this.dropdownBg.style.width = elem.offsetWidth / window.scaleFactor + "px";
-        } else {
-            this.dropdownBg.style.left = clientRect.left + "px";
-            this.dropdownBg.style.top = clientRect.top + elem.offsetHeight + "px";
-            this.dropdownBg.style.width = elem.offsetWidth + "px";
+            left /= window.scaleFactor;
+            top /= window.scaleFactor;
+            width /= window.scaleFactor;
         }
+        if (iframe) {
+            const iframeRect = iframe.getBoundingClientRect();
+            const padding = parseInt(getComputedStyle(iframe).padding);
+            left += iframeRect.left + padding;
+            top += iframeRect.top + padding;
+        }
+        this.dropdownBg.style.left = left + "px";
+        this.dropdownBg.style.top = top + "px";
+        this.dropdownBg.style.width = width + "px";
         this.dropdown.style.width = this.dropdownBg.style.width;
 
         this.dropdown.children[0].style.display = "block";
@@ -880,6 +894,10 @@ class DeskMover {
         this.adjustElements();
     }
 
+    showResizeArea() {
+        this.resizeArea.style.display = "block";
+    }
+
     #wcMouseDown(event) {
         this.bringToTop();
         if (event.button !== 0) return;
@@ -932,6 +950,10 @@ class DeskMover {
                 if (this.posInContainer.x >= this.windowContainer.offsetWidth - 9 - extraBorderSize) {
                     right = true;
                 }
+            }
+            if (this.isDownOnResizeArea) {
+                right = true;
+                bottom = true;
             }
             const move = !left && !right && !top && !bottom && (this.posInContainer.y >= 6 || this.config.style !== "ad");
             log({ left, right, top, bottom, move });
@@ -1015,6 +1037,7 @@ class DeskMover {
             windowOutline.style.display = "none";
         }
         this.isDown = false;
+        this.isDownOnResizeArea = false;
 
         if (this.windowContainer.style.display === "none") return; // offsets are always 0 when hidden, causing unexpected behaviors
         // Minimum size
@@ -1283,7 +1306,7 @@ class DeskMover {
         }
     }
 
-    #toggleResizable() {
+    toggleResizable() {
         this.closeContextMenu();
         if (this.config.unresizable) {
             delete this.windowContainer.dataset.unresizable;

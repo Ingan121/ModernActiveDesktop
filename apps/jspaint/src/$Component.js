@@ -306,8 +306,8 @@
 			$dock_to = null;
 
 			const { width, height } = imagine_docked_dimensions().rect;
-			const dock_ghost_left = e.clientX / madScaleFactor + ox;
-			const dock_ghost_top = e.clientY / madScaleFactor + oy;
+			const dock_ghost_left = e.clientX + ox;
+			const dock_ghost_top = e.clientY + oy;
 			const dock_ghost_right = dock_ghost_left + width;
 			const dock_ghost_bottom = dock_ghost_top + height;
 			const q = 5;

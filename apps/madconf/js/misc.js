@@ -250,7 +250,6 @@ function checkSysplug() {
                 connectionStatus.textContent = "System plugin is outdated! Please update the system plugin with the guide.";
             } else {
                 connectionStatus.textContent = "System plugin connection successful!";
-                getSysplugOWConfig();
             }
         })
         .catch(error => {

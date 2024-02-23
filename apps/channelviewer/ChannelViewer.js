@@ -50,7 +50,6 @@ const fullscreenThrobber = document.getElementById("windowBtnContainer");
 const statusText = document.getElementById("statusText");
 const statusZone = document.getElementById("zone");
 const statusZoneText = document.getElementById("zoneText");
-const resizeArea = document.getElementById("resizeArea");
 
 const mainArea = document.getElementById("mainArea");
 const sidebar = document.getElementById("sidebar");
@@ -74,6 +73,9 @@ let didHistoryNav = true;
 let saveTimer;
 let preCrashUrl = '';
 let pageSetStatusText = '';
+let loadedWithProxy = false;
+let loading = false;
+let favEditMode = false;
 
 madDeskMover.menu = new MadMenu(menuBar, ['file', 'edit', 'view', 'go', 'favorites', 'help'], ['toolbars', 'explorerBar']);
 
@@ -186,6 +188,8 @@ goMenuItems[3].addEventListener("click", function () { // Search the Web button
 });
 
 favoritesMenuBtn.addEventListener("click", function () {
+    favEditMode = false;
+    favoritesMenuItems[1].innerHTML = "<p>Organize Favorites</p>";
     const prevMenuItems = Array.from(favoritesMenu.querySelectorAll(".contextMenuItem")).slice(2);
     if (prevMenuItems.length > 0) {
         for (const item of prevMenuItems) {
@@ -224,16 +228,21 @@ favoritesMenuItems[0].addEventListener("click", function () { // Add to Favorite
         const iconBlob = await getFavicon(true);
         if (iconBlob) {
             const icon = await getDataUrl(iconBlob);
-            favorites.push([iframe.contentWindow.location.href, name, icon]);
+            favorites.push([historyItems[historyIndex - 1][0], name, icon]);
         } else {
-            favorites.push([iframe.contentWindow.location.href, name]);
+            favorites.push([historyItems[historyIndex - 1][0], name]);
         }
         localStorage.madesktopChanViewFavorites = JSON.stringify(favorites);
     }, title, title);
 });
 
 favoritesMenuItems[1].addEventListener("click", function () { // Organize Favorites button
-    // some comment
+    if (favEditMode) {
+        favoritesMenuBg.blur();
+    } else {
+        this.innerHTML = "<p>Click an item to modify</p>";
+        favEditMode = true;
+    }
 });
 
 helpMenuItems[0].addEventListener("click", function () { // About ChannelViewer button
@@ -388,7 +397,7 @@ printButton.addEventListener("click", function () {
 });
 
 openButton.addEventListener("click", function () {
-    parent.openExternalExternally(historyItems[historyIndex - 1][0], false, "", true);
+    parent.openExternalExternally(historyItems[historyIndex - 1][0], false, true);
 });
 
 urlbar.addEventListener('click', function (event) {
@@ -396,7 +405,11 @@ urlbar.addEventListener('click', function (event) {
         if (isCrossOrigin) {
             madAlert("This page is from a different origin. Advanced features are not available for this page.", null, "info");
         } else if (iframe.contentDocument.head.dataset.forceLoaded) {
-            madAlert("This page does not allow embedding normally, so it was forcefully loaded. Advanced features are available, but the page may not work properly, especially if it has complex scripts.", null, "warning");
+            if (loadedWithProxy) {
+                madAlert("This page was loaded with an external proxy. Advanced features are available, but the page may not work properly. Also, DO NOT ENTER YOUR PASSWORDS HERE!", null, "warning");
+            } else {
+                madAlert("This page does not allow embedding normally, so it was forcefully loaded. Advanced features are available, but the page may not work properly, especially if it has complex scripts.", null, "warning");
+            }
         } else {
             madAlert("This page was loaded normally, and advanced features are available.", null, "info");
         }
@@ -419,19 +432,6 @@ urlbar.addEventListener('keyup', function (e) {
 });
 
 sidebarCloseBtn.addEventListener('click', closeSidebar);
-
-resizeArea.addEventListener('pointerdown', function (event) {
-    if (event.button === 0) {
-        parent.iframeClickEventCtrl(false);
-        madDeskMover.isDown = true;
-        madDeskMover.offset = [
-            madDeskMover.windowElement.offsetWidth - event.clientX * madScaleFactor,
-            madDeskMover.windowElement.offsetHeight - event.clientY * madScaleFactor
-        ];
-        madDeskMover.resizingMode = 'rightbottom';
-        madDeskMover.windowElement.style.cursor = 'se-resize';
-    }
-});
 
 if (localStorage.madesktopChanViewHideToolbar) {
     toolbar.style.display = "none";
@@ -507,12 +507,24 @@ function hookIframeSize(iframe) {
             }
         }
     });
+    Object.defineProperties(iframe.contentWindow.screen, {
+        width: {
+            get: function () {
+                return parent.vWidth;
+            }
+        },
+        height: {
+            get: function () {
+                return parent.vHeight;
+            }
+        }
+    });
 
     // Also hook window.open as this doesn't work in WE
     if (localStorage.madesktopLinkOpenMode !== "0" || madRunningMode !== 0) {
         iframe.contentWindow.open = function (url, name, specs) {
             if (!url.startsWith("http")) {
-                url = new URL(url, iframe.contentWindow.location.href).href;
+                url = new URL(url, historyItems[historyIndex - 1][0]).href;
             }
             const deskMover = madOpenExternal(url, false, specs);
             return deskMover.windowElement.contentDocument;
@@ -526,12 +538,23 @@ function hookIframeSize(iframe) {
     iframe.contentWindow.moveTo = madMoveTo;
     iframe.contentWindow.close = madCloseWindow;
 
+    iframe.contentWindow.resizeBy = function (x, y) {
+        const width = parseInt(madDeskMover.config.width) + x;
+        const height = parseInt(madDeskMover.config.height) + y;
+        madResizeTo(width, height);
+    }
+    iframe.contentWindow.moveBy = function (x, y) {
+        const left = parseInt(madDeskMover.config.xPos) + x;
+        const top = parseInt(madDeskMover.config.yPos) + y;
+        madMoveTo(left, top);
+    }
+
     iframe.contentWindow.history.pushState = function () {
         historyLength = Math.max(historyLength, historyIndex + 1);
         historyIndex++;
         let url = arguments[2];
         if (!url.startsWith("http")) {
-            url = new URL(url, iframe.contentWindow.location.href).href;
+            url = new URL(url, historyItems[historyIndex - 1][0]).href;
         }
         historyItems[historyIndex - 1] = [url];
         changeHistoryButtonStatus();
@@ -558,7 +581,7 @@ function hookIframeSize(iframe) {
         if (event.button === 0 && iframe.contentDocument.activeElement && iframe.contentDocument.activeElement.href && !iframe.contentDocument.activeElement.href.startsWith("javascript:")) {
             let url = iframe.contentDocument.activeElement.href;
             if (!url.startsWith("http")) {
-                url = new URL(url, iframe.contentWindow.location.href).href;
+                url = new URL(url, historyItems[historyIndex - 1][0]).href;
             }
             if (!url.startsWith("http")) { // non http/https links
                 return;
@@ -566,15 +589,17 @@ function hookIframeSize(iframe) {
             switch (iframe.contentDocument.activeElement.target) {
                 case "_blank":
                     madOpenExternal(url);
-                    event.preventDefault();
                     break;
                 case "_top":
                     go(url);
-                    event.preventDefault();
                     break;
                 default:
                     document.title = url + " - ChannelViewer";
                     urlbar.value = url;
+                    if (madRunningMode !== 1 && !localStorage.madesktopChanViewNoForceLoad && new URL(url).origin !== location.origin) {
+                        forceLoad(url);
+                        return;
+                    }
                     // YT fix - it doesn't work well in single page mode
                     if (url.startsWith("https://www.youtube.com/")) {
                         forceLoad(url);
@@ -582,40 +607,89 @@ function hookIframeSize(iframe) {
             }
         }
     });
-    iframe.contentDocument.addEventListener('click', () => {
-        if (iframe.contentDocument.activeElement.matches("input[type='text'], input[type='search'], input[type='url'], input[type='tel'], input[type='email'], input[type='password'], textarea")) {
+    iframe.contentDocument.addEventListener('click', (event) => {
+        const activeElement = iframe.contentDocument.activeElement;
+        const hoverElement = iframe.contentDocument.elementFromPoint(event.clientX, event.clientY);
+        if (activeElement !== hoverElement) {
+            return;
+        }
+        // We need to handle preventDefault() here tho
+        if (activeElement && activeElement.href && !activeElement.href.startsWith("javascript:")) {
+            let url = activeElement.href;
+            if (!url.startsWith("http")) {
+                url = new URL(url, historyItems[historyIndex - 1][0]).href;
+            }
+            if (!url.startsWith("http")) { // non http/https links
+                return;
+            }
+            switch (activeElement.target) {
+                case "_blank":
+                    event.preventDefault();
+                    break;
+                case "_top":
+                    event.preventDefault();
+                    break;
+                default:
+                    if (madRunningMode !== 1 && !localStorage.madesktopChanViewNoForceLoad && new URL(url).origin !== location.origin) {
+                        event.preventDefault();
+                        return;
+                    }
+                    // YT fix - it doesn't work well in single page mode
+                    if (url.startsWith("https://www.youtube.com/")) {
+                        event.preventDefault();
+                    }
+            }
+        }
+        if (activeElement.matches("input[type='text'], input[type='search'], input[type='url'], input[type='tel'], input[type='email'], input[type='password'], textarea")) {
             if (madRunningMode === 1) {
                 madPrompt("Enter value", function (res) {
                     if (res === null) return;
-                    iframe.contentDocument.activeElement.value = res;
-                    iframe.contentDocument.activeElement.dispatchEvent(new Event('input', { bubbles: true }));
-                    iframe.contentDocument.activeElement.dispatchEvent(new Event('change', { bubbles: true }));
-                }, '', iframe.contentDocument.activeElement.value);
+                    activeElement.value = res;
+                    activeElement.dispatchEvent(new Event('input', { bubbles: true }));
+                    activeElement.dispatchEvent(new Event('change', { bubbles: true }));
+                }, '', activeElement.value);
+            } else if (loadedWithProxy && activeElement.matches("input[type='password']")) {
+                madAlert("This page was loaded with an external proxy. Entering passwords here is NOT SECURE!", function () {
+                    activeElement.focus();
+                }, "warning");
             }
+        } else if (activeElement.tagName === "SELECT") {
+            madOpenDropdown(activeElement, iframe);
         }
     });
-    iframe.contentDocument.addEventListener('submit', e => {
+    iframe.contentWindow.addEventListener('submit', (event) => {
         if (iframe.contentDocument.activeElement && iframe.contentDocument.activeElement.form && iframe.contentDocument.activeElement.form.action) {
-            let url = iframe.contentDocument.activeElement.form.action;
+            let url = iframe.contentDocument.activeElement.form.getAttribute("action") || "";
             if (iframe.contentDocument.activeElement.form.method !== 'post') {
-                url = iframe.contentDocument.activeElement.form.action + '?' + new URLSearchParams(new FormData(iframe.contentDocument.activeElement.form))
+                url += '?' + new URLSearchParams(new FormData(iframe.contentDocument.activeElement.form))
+            }
+            if (!url.startsWith("http")) {
+                url = new URL(url, historyItems[historyIndex - 1][0]).href;
             }
             document.title = url + " - ChannelViewer";
+            if (madRunningMode !== 1 && !localStorage.madesktopChanViewNoForceLoad && new URL(url).origin !== location.origin) {
+                event.preventDefault();
+                event.stopPropagation();
+                forceLoad(url);
+                return;
+            }
         }
     });
     iframe.contentDocument.addEventListener('pointermove', (event) => {
         const hoverElement = iframe.contentDocument.elementFromPoint(event.clientX, event.clientY);
-        if (hoverElement && hoverElement.tagName === "A" && hoverElement.href) {
-            statusText.textContent = hoverElement.href;
-        } else if (statusText.textContent !== "Done" && statusText.textContent !== pageSetStatusText) {
-            statusText.textContent = pageSetStatusText;
+        if (!loading) {
+            if (hoverElement && hoverElement.tagName === "A" && hoverElement.href) {
+                statusText.textContent = hoverElement.href;
+            } else if (statusText.textContent !== "Done" && statusText.textContent !== pageSetStatusText) {
+                statusText.textContent = pageSetStatusText;
+            }
         }
     });
 
     iframe.contentWindow.addEventListener('beforeunload', loadStart);
 }
 
-function go(url, noHistory) {
+function go(url, noHistory, forceForceLoad = false) {
     handleWeirdError();
     if (noHistory) {
         didHistoryNav = false;
@@ -628,9 +702,14 @@ function go(url, noHistory) {
         url = "https://" + url;
     }
     urlbar.value = url;
-    iframe.removeAttribute("srcdoc");
-    iframe.src = url;
+    if ((madRunningMode !== 1 && !localStorage.madesktopChanViewNoForceLoad && new URL(url).origin !== location.origin) || forceForceLoad) {
+        forceLoad(url);
+    } else {
+        iframe.removeAttribute("srcdoc");
+        iframe.src = url;
+    }
     preCrashUrl = '';
+    loadStart();
 }
 
 function openHistoryMenu() {
@@ -775,12 +854,26 @@ function appendFavoriteItem(favorite) {
     const p = document.createElement("p");
     p.textContent = favorite[1];
     item.addEventListener("click", function () {
-        go(favorite[0], true);
+        if (favEditMode) {
+            madPrompt("Enter a new name (leave empty to delete)", function (name) {
+                if (name === null) return;
+                if (name === "") {
+                    favorites.splice(favorites.indexOf(favorite), 1);
+                } else {
+                    favorite[1] = name;
+                }
+                localStorage.madesktopChanViewFavorites = JSON.stringify(favorites);
+            }, favorite[1], favorite[1]);
+        } else {
+            go(favorite[0], true);
+        }
         favoritesMenuBg.blur();
     });
     item.appendChild(p);
-    if (favorite[2]) {
+    if (favorite[2] && favorite[2].startsWith("data:image/")) {
         item.style.backgroundImage = "url(" + favorite[2] + ")";
+    } else {
+        item.style.backgroundImage = "url(images/icon.png)";
     }
     favoritesMenu.appendChild(item);
 }
@@ -806,13 +899,17 @@ function closeSidebar() {
 
 // I DON'T KNOW WHY BUT having a width of about 800px (unscaled) crashes Wallpaper Engine CEF when loading disney.com
 function handleWeirdError() {
-    if (madRunningMode === 1 && iframe.offsetWidth * madScaleFactor > 750 && iframe.offsetWidth * madScaleFactor < 850) {
-        log("Setting width to 1024", "log", "ChannelViewer");
-        let sidebarWidth = 0;
-        if (mainArea.classList.contains("sidebarOpen")) {
-            sidebarWidth = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--sidebar-width'));
+    if (madRunningMode === 1) {
+        if (urlbar.value.includes("disney.com/") || iframe.contentWindow.location.href.includes("disney.com/")) {
+            if (iframe.offsetWidth * madScaleFactor > 750 && iframe.offsetWidth * madScaleFactor < 850) {
+                log("Setting width to 1024", "log", "ChannelViewer");
+                let sidebarWidth = 0;
+                if (mainArea.classList.contains("sidebarOpen")) {
+                    sidebarWidth = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--sidebar-width'));
+                }
+                madResizeTo(1024 + sidebarWidth, 768);
+            }
         }
-        madResizeTo(1024 + sidebarWidth, 768);
     }
 }
 
@@ -882,7 +979,7 @@ function printIframe() {
 
 async function getFavicon(asImage = false) {
     try {
-        const loc = iframe.contentWindow.location.href;
+        const loc = historyItems[historyIndex - 1][0];
         const doc = iframe.contentDocument;
         const url = new URL(loc);
 
@@ -901,7 +998,7 @@ async function getFavicon(asImage = false) {
         }
 
         // Check if the favicon exists
-        const result = await fetchProxy(path, null, 0).then(response => {
+        const result = await fetchProxy(path).then(response => {
             if (!response.ok) {
                 log('Favicon not found, using a generic icon', 'log', 'ChannelViewer - getFavicon');
                 path = null;
@@ -930,8 +1027,12 @@ async function getDataUrl(blob) {
 }
 
 function loadStart() {
-    throbber.style.backgroundImage = "url(images/throbber.webp)";
-    fullscreenThrobber.style.backgroundImage = "url(images/throbber26.webp)";
+    if (loading) {
+        return;
+    }
+    loading = true;
+    throbber.dataset.busy = true;
+    fullscreenThrobber.dataset.busy = true;
     statusText.textContent = "Opening page " + urlbar.value;
     if (!localStorage.madesktopChanViewNoSound) {
         madPlaySound("navStart");
@@ -941,8 +1042,9 @@ function loadStart() {
 }
 
 function loadFinish() {
-    throbber.style.backgroundImage = "";
-    fullscreenThrobber.style.backgroundImage = "";
+    loading = false;
+    delete throbber.dataset.busy;
+    delete fullscreenThrobber.dataset.busy;
     statusText.textContent = "Done";
     pageSetStatusText = "";
 }
@@ -951,35 +1053,54 @@ function loadFinish() {
 // https://github.com/niutech/x-frame-bypass
 async function forceLoad(url) {
     log("Loading with X-Frame-Bypass: " + url, "log", "ChannelViewer");
-    let data = await fetchProxy(url, null, 0).then(res => res.text()).catch(e => {
+    loadStart();
+    if (url.match("https://www\.google\.co.*/url\\?q=.*")) {
+        url = new URL(url).searchParams.get("q");
+    }
+    let data = await fetchProxy(url).then(res => res.text()).catch(e => {
         iframe.removeAttribute("srcdoc");
         madAlert(`ChannelViewer cannot open the Internet site "${url}".<br>A connection with the server could not be established.`, null, "error");
         go("about:NavigationCanceled", true);
     });
 
     if (data) {
-        iframe.srcdoc = data.replace(/<head([^>]*)>/i, `<head$1 data-force-loaded="true">
-        <base href="${url}">
-        <script>
+        let replacedString = `<head$1 data-force-loaded="true">
+        <base href="${url}">`;
+        if (madRunningMode === 1) {
+            replacedString += `<script>
             history.replaceState(null, "", "${url}");
-        </script>`);
+            </script>`;
+        }
+        let html = data.replace(/<head([^>]*)>/i, replacedString);
+        // Disable scripts for Google Search (if ForceLoaded)
+        if (url.startsWith("https://www.google.co")) {
+            html = html.replace(/<script/g, "<!--script").replace(/<\/script>/g, "</script-->");
+        }
+        iframe.srcdoc = html;
+        urlbar.value = url;
     }
 }
 
-async function fetchProxy(url, options, i) {
-    const proxies = (options || {}).proxies || [
-        '', // no proxy - will work fine in Wallpaper Engine or any environments with same-origin policy disabled
-        localStorage.madesktopCorsProxy || 'https://api.codetabs.com/v1/proxy/?quest='
-    ]
+async function fetchProxy(url, options) {
+    loadedWithProxy = false;
+    const proxy = localStorage.madesktopCorsProxy || 'https://api.codetabs.com/v1/proxy/?quest=';
     try {
-        const res = await fetch(proxies[i] + url, options);
-        if (!res.ok)
+        const res = await fetch(url, options);
+        if (!res.ok) {
             throw new Error(`${res.status} ${res.statusText}`);
+        }
         return res;
     } catch (error) {
-        if (i === proxies.length - 1)
+        if (madRunningMode !== 1) {
+            loadedWithProxy = true;
+            if (proxy.includes('?')) {
+                return fetch(proxy + encodeURIComponent(url), options);
+            } else {
+                return fetch(proxy + url, options);
+            }
+        } else {
             throw error;
-        return this.fetchProxy(url, options, i + 1);
+        }
     }
 }
 
@@ -991,23 +1112,21 @@ function delayedSave() {
     }
     clearTimeout(saveTimer);
     saveTimer = setTimeout(() => {
-        const cvUrl = "apps/channelviewer/index.html?page=" + encodeURIComponent(preCrashUrl || iframe.contentWindow.location.href);
-        history.replaceState(null, "", cvUrl);
+        const url = isCrossOrigin ? iframe.src : historyItems[historyIndex - 1][0];
+        const cvUrl = "apps/channelviewer/index.html?page=" + encodeURIComponent(preCrashUrl || url);
+        //history.replaceState(null, "", cvUrl);
         madDeskMover.config.src = cvUrl;
     }, 10000);
 }
 
 function init() {
     const url = new URL(location.href);
-    if (url.searchParams.get("sb") !== null) {
-        iframe.sandbox = "allow-modals allow-scripts";
-    }
     let page = url.searchParams.get("page");
     if (!page) {
         return null;
     }
     if (!page.startsWith('http') && !page.startsWith('about') && !page.startsWith('chrome') && !page.startsWith('data') && !page.startsWith('file') && !page.startsWith('ws') && !page.startsWith('wss') && !page.startsWith('blob') && !page.startsWith('javascript')) {
-        page = "../../" + page;
+        page = madBase + page;
     }
     // Parse window.open third argument converted to query string (in DeskSettings.js:openExternal)
     const width = url.searchParams.get("width") || url.searchParams.get("innerWidth");
@@ -1024,12 +1143,17 @@ function init() {
         const padding = parseInt(getComputedStyle(iframe).padding) * 2;
         madMoveTo(left + padding, top + padding);
     }
-    const popup = !!width || !!height || !!left || !!top || url.searchParams.get("popup") !== null;
+    const resizable = url.searchParams.get("resizable");
+    if (resizable === "no" || resizable === "0") {
+        madDeskMover.toggleResizable();
+    }
+    const popup = !!width || !!height || !!left || !!top || !!resizable || url.searchParams.get("popup") !== null;
     if (popup) {
         toolbars.style.display = "none";
         statusBar.style.display = "none";
     }
-    return page;
+    const doForceLoad = url.searchParams.get("forceLoad");
+    return { page, doForceLoad };
 }
 
 window.addEventListener("message", (event) => {
@@ -1039,8 +1163,7 @@ window.addEventListener("message", (event) => {
 });
 
 window.addEventListener('load', function () {
-    handleWeirdError();
-    let page = init();
+    let { page, doForceLoad } = init();
     document.title = page ? page + " - ChannelViewer" : "ChannelViewer";
     urlbar.value = page;
 
@@ -1048,13 +1171,15 @@ window.addEventListener('load', function () {
         preCrashUrl = page;
         iframe.srcdoc = "ModernActiveDesktop has detected repeated crashes. To prevent further crashes, ChannelViewer has stopped loading the page for now.<br>Please consider closing some ChannelViewers if this persists. Refresh the page to load it anyway.";
     } else {
-        iframe.src = page || localStorage.madesktopChanViewHome || "about:blank";
-        loadStart();
+        go(page || localStorage.madesktopChanViewHome || "about:blank", false, doForceLoad);
     }
 });
 
 sidebarWindow.addEventListener('load', function () {
-    sidebarWindow.contentDocument.getElementById("scheme").href = schemeElement.href;
+    const sidebarSchemeElement = sidebarWindow.contentDocument.getElementById("scheme");
+    if (sidebarSchemeElement) {
+        sidebarSchemeElement.href = schemeElement.href;
+    }
 });
 
 iframe.addEventListener('load', function () {
@@ -1064,9 +1189,6 @@ iframe.addEventListener('load', function () {
         madSetIcon('images/html.png');
         urlbar.value = iframe.src;
         didFirstLoad = true;
-        if (!localStorage.madesktopChanViewNoSound) {
-            madPlaySound("navStart");
-        }
         loadFinish();
         return;
     }
@@ -1129,3 +1251,5 @@ iframe.addEventListener('load', function () {
     loadFinish();
     delayedSave();
 });
+
+madShowResizeArea();

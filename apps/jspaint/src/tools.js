@@ -182,7 +182,7 @@
 						cropped_canvas.ctx.drawImage(main_canvas, -rect_x, -rect_y);
 						main_ctx.copy(cropped_canvas);
 						canvas_handles.show();
-						$canvas_area.trigger("resize");
+						$canvas_area.trigger("resize"); // does this not also call canvas_handles.show()?
 					});
 				} else if (free_form_selection) {
 					// for silly multitools feature,
@@ -842,13 +842,13 @@
 					ctx.fillRect(x, y, w, h);
 					ctx.restore();
 				} else {
- 					ctx.save();
- 					ctx.fillStyle = ctx.strokeStyle;
- 					ctx.fillRect(x, y, stroke_size, h);
- 					ctx.fillRect(x+w-stroke_size, y, stroke_size, h);
- 					ctx.fillRect(x, y, w, stroke_size);
- 					ctx.fillRect(x, y+h-stroke_size, w, stroke_size);
- 					ctx.restore();
+					ctx.save();
+					ctx.fillStyle = ctx.strokeStyle;
+					ctx.fillRect(x, y, stroke_size, h);
+					ctx.fillRect(x + w - stroke_size, y, stroke_size, h);
+					ctx.fillRect(x, y, w, stroke_size);
+					ctx.fillRect(x, y + h - stroke_size, w, stroke_size);
+					ctx.restore();
 				}
 			}
 		},

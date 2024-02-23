@@ -65,6 +65,13 @@
     }
 }
 
+@keyframes cmDropdownright {
+    0% {
+        width: 0;
+        height: 0;
+    }
+}
+
 html, body {
     height: 100%;
     user-select: none;
@@ -189,6 +196,17 @@ body {
     border: solid 1px transparent;
 }
 
+.resizeArea {
+    position: absolute;
+    right: 1px;
+    bottom: -1px;
+    width: 12px;
+    height: 12px;
+    background-image: var(--resize-area);
+    display: none;
+    cursor: se-resize;
+}
+
 .windowBtn {
     width: 12px;
     height: 10px;
@@ -275,6 +293,7 @@ body {
     animation: cmDropright 0.25s linear;
     background-color: var(--menu) !important;
     color: var(--menu-text) !important;
+    pointer-events: auto;
 }
 
 .contextMenuBg u {
@@ -310,7 +329,6 @@ body[data-cm-shadow] .contextMenuBg {
     height: 17px;
     font-size: 11px;
     padding-left: 2px;
-    pointer-events: auto;
 }
 
 .contextMenuItem p {
@@ -395,6 +413,7 @@ body[data-cm-shadow] .contextMenuBg {
     width: 100px;
     height: 34px;
     z-index: 99997;
+    animation: cmDropdownright 0.25s linear;
 }
 
 .windowMenu {
@@ -408,6 +427,7 @@ body[data-cm-shadow] .contextMenuBg {
 
 #mainMenu {
     width: 98px;
+    right: 5px;
 }
 
 .dropdownBg {

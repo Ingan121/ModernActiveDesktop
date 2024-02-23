@@ -1,20 +1,6 @@
 ((exports) => {
 	// Note that this API must be kept in sync with the version in 98.js.org.
 
-	// try {
-	// 	const chord = new Audio("sounds/chord.wav");
-	// 	var play_chord = async function () {
-	// 		if (localStorage.madesktopAlertSndMuted) {
-	// 			return;
-	// 		}
-			
-	// 		chord.currentTime = 0;
-	// 		chord.play();
-	// 	};
-	// } catch (error) {
-	// 	console.log("AudioContext not supported", error);
-	// }
-
 	function showMessageBox({
 		title = window.defaultMessageBoxTitle ?? "Alert",
 		message,

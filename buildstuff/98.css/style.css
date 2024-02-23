@@ -126,6 +126,7 @@
   --checkmark-disabled: svg-load("./icon/checkmark-disabled.svg");
   --indicator-thumb: svg-load("./icon/indicator-horizontal.svg");
   --seek-handle: svg-load("./icon/seek-handle.svg");
+  --resize-area: svg-load("./icon/resize-area.svg");
 
   --hilight-inverted: #FFFF7F;
 }

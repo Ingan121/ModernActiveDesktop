@@ -36,7 +36,7 @@ class MadMenu {
                     clearTimeout(this.submenuOpenTimer);
                     if (elem.dataset.submenu) {
                         this.submenuOpenTimer = setTimeout(() => {
-                            this.openMenu(elem.dataset.submenu, true);
+                            this.openMenu(elem.dataset.submenu);
                         }, 300);
                     } else if (this.menuHierarchy[menuName].length > 0) {
                         this.delayedCloseMenu(this.menuHierarchy[menuName][0], true);
@@ -51,8 +51,8 @@ class MadMenu {
                 });
                 elem.addEventListener('click', () => {
                     if (elem.dataset.submenu) {
-                        this.openMenu(elem.dataset.submenu, true);
-                    } else {
+                        this.openMenu(elem.dataset.submenu);
+                    } else if (!elem.dataset.noClose) {
                         this.closeMenu(menuName);
                     }
                 });
@@ -139,9 +139,10 @@ class MadMenu {
         }
     }
 
-    openMenu(menuName, isSubmenu = false) {
+    openMenu(menuName) {
         const menuBg = document.getElementById(menuName + 'MenuBg');
         const menuItems = menuBg.querySelectorAll('.contextMenuItem');
+        const isSubmenu = !!menuBg.dataset.submenuOf;
         let menuBtn;
         let parentMenuBg;
         let parentMenuItem;
@@ -198,11 +199,12 @@ class MadMenu {
         document.addEventListener('keydown', this.boundMenuNavigationHandler);
     }
     
-    closeMenu(menuName, isSubmenu = false) {
+    closeMenu(menuName) {
+        const menuBg = document.getElementById(menuName + 'MenuBg');
+        const isSubmenu = !!menuBg.dataset.submenuOf;
         if ((isSubmenu && this.shouldNotCloseSubmenu)) {
             return;
         }
-        const menuBg = document.getElementById(menuName + 'MenuBg');
         let menuBtn;
         let parentMenuBg;
         let parentMenuItem;
@@ -307,7 +309,7 @@ class MadMenu {
                 break;
             case "ArrowRight":
                 if (activeItem && activeItem.dataset.submenu) {
-                    this.openMenu(activeItem.dataset.submenu, true);
+                    this.openMenu(activeItem.dataset.submenu);
                     this.openedMenu.querySelector('.contextMenuItem').dataset.active = true;
                     this.menuBar.dataset.active = true;
                     break;

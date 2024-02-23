@@ -124,7 +124,7 @@ let enable_palette_loading_from_indexed_images = false;
 // There are cases where 0-byte files are created, which is either a serious problem,
 // it's just from canceling saving when the file name has a problem, and it needs to be cleaned up.
 // Also, while I've implemented most of the UI, it'd be nice to release this with recent files support.
-// MAD Notes: This doesn't work in WE Either
+// MAD Notes: This doesn't work in Wallpaper Engine Either
 // showSaveFilePicker works but createWritable returns NotAllowedError
 let enable_fs_access_api = false;
 
@@ -745,15 +745,18 @@ const news_seen_key = "jspaint latest news seen";
 const latest_news_datetime = $this_version_news.find("time").attr("datetime");
 const $news_indicator = $(`
 	<a class='news-indicator' href='#project-news'>
-		<img src='images/winter/present.png' width='24' height='22' alt=''/>
-		<!--<span class='marquee' dir='ltr' style='--text-width: 50ch; --animation-duration: 3s;'>
+		<!--<img src='images/winter/present.png' width='24' height='22' alt=''/>-->
+		<img src='images/about/news.gif' width='40' height='16' alt=''/>
+		<!--<img src='images/new.gif' width='40' height='16' alt=''/>-->
+		<span class='marquee' dir='ltr' style='--text-width: 44ch; --animation-duration: 3s;'>
 			<span>
-				<b>Open Source</b> — MIT Licensed! Free Software! Finally!
+				<!--<b>Cool new things</b> — One thing! Another thing! Something else!-->
+				Themes, New Homepage, File Formats, and More!
 			</span>
-		</span>-->
-		<span>
-			<b>Open Source!</b>
 		</span>
+		<!--<span>
+			<b>Themes</b> and <b>File Formats</b>
+		</span>-->
 	</a>
 `);
 $news_indicator.on("click auxclick", (event) => {
@@ -772,10 +775,11 @@ try {
 } catch (error) {
 	local_storage_unavailable = true;
 }
-const news_period_if_can_dismiss = 15;
-const news_period_if_cannot_dismiss = 5;
+const day = 24 * 60 * 60 * 1000;
+const news_period_if_can_dismiss = 15 * day;
+const news_period_if_cannot_dismiss = 5 * day;
 const news_period = local_storage_unavailable ? news_period_if_cannot_dismiss : news_period_if_can_dismiss;
-if (Date.now() < Date.parse(latest_news_datetime) + news_period * 24 * 60 * 60 * 1000 && news_seen !== latest_news_datetime) {
+if (Date.now() < Date.parse(latest_news_datetime) + news_period && news_seen !== latest_news_datetime) {
 	$status_area.append($news_indicator);
 }
 
@@ -808,6 +812,19 @@ $(menu_bar.element).on("info", (event) => {
 $(menu_bar.element).on("default-info", () => {
 	$status_text.default();
 });
+
+// Hidden in a menu, these GIFs are not as obtrusive even though they can't be dismissed
+const theme_updated_period = 20 * day;
+const theme_new_period = 40 * day;
+if (Date.now() < Date.parse("2024-02-22") + theme_new_period) {
+	$("[role=menuitem][aria-label*='Modern Dark'] .menu-item-shortcut").append("<img src='images/new2.gif' alt='New!'/>");
+}
+if (Date.now() < Date.parse("2024-02-22") + theme_updated_period) {
+	$("[role=menuitem][aria-label*='Modern Light'] .menu-item-shortcut").append("<img src='images/updated.gif' alt='Updated!'/>");
+	$("[role=menuitem][aria-label*='Classic Dark'] .menu-item-shortcut").append("<img src='images/updated.gif' alt='Updated!'/>");
+	$("[role=menuitem][aria-label*='Occult'] .menu-item-shortcut").append("<img src='images/updated.gif' alt='Updated!'/>");
+}
+
 // </menu bar>
 
 let $toolbox = $ToolBox(tools);
@@ -886,17 +903,24 @@ $("body").on("dragover dragenter", (event) => {
 				if (item.kind === 'file') {
 					let handle;
 					try {
-						handle = await item.getAsFileSystemHandle();
+						// Experimental API, not supported on Firefox as of 2024-02-17
+						if (item.getAsFileSystemHandle) {
+							handle = await item.getAsFileSystemHandle();
+						}
 					} catch (error) {
 						// I'm not sure when this happens.
 						// should this use "An invalid file handle was associated with %1." message?
 						show_error_message(localize("File not found."), error);
 						return;
 					}
-					if (handle.kind === 'file') {
+					if (!handle || handle.kind === 'file') {
 						let file;
 						try {
-							file = await handle.getFile();
+							if (handle) {
+								file = await handle.getFile();
+							} else {
+								file = item.getAsFile();
+							}
 						} catch (error) {
 							// NotFoundError can happen when the file was moved or deleted,
 							// then dragged and dropped via the browser's downloads bar, or some other outdated file listing.
@@ -1112,14 +1136,12 @@ $G.on("keydown", e => {
 			case "[":
 			case "{":
 				rotate(-TAU / 4);
-				$canvas_area.trigger("resize");
 				break;
 			case ".": // '>' without Shift
 			case ">":
 			case "]":
 			case "}":
 				rotate(+TAU / 4);
-				$canvas_area.trigger("resize");
 				break;
 			case "Z":
 				e.shiftKey ? redo() : undo();
@@ -2267,7 +2289,7 @@ $G.on("pointermove", (event) => {
 		}
 		new_magnification = Math.max(0.5, Math.min(new_magnification, 40));
 		if (new_magnification != magnification) {
-			set_magnification(new_magnification, to_canvas_coords({ clientX: current_pos.x * madScaleFactor, clientY: current_pos.y * madScaleFactor }));
+			set_magnification(new_magnification, to_canvas_coords({ clientX: current_pos.x / madScaleFactor, clientY: current_pos.y / madScaleFactor }));
 		}
 		const difference_in_x = current_pos.x - pan_last_pos.x;
 		const difference_in_y = current_pos.y - pan_last_pos.y;

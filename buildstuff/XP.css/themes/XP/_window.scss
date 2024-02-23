@@ -455,9 +455,22 @@
         background-image: linear-gradient(to right, #edede5, #ede8cd);
     }
 
+    #throbber {
+        background-color: white;
+        background-image: url(../apps/channelviewer/images/xpthrobber.png);
+        &[data-busy] {
+            background-image: url(../apps/channelviewer/images/xpthrobber.webp);
+        }
+    }
+
     #windowBtnContainer {
+        height: 38px;
         color: gray;
         background-color: white;
+        background-image: url(../apps/channelviewer/images/xpthrobber26.png);
+        &[data-busy] {
+            background-image: url(../apps/channelviewer/images/xpthrobber26.webp);
+        }
     }
 }
 

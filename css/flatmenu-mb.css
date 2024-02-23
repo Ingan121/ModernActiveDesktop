@@ -26,6 +26,12 @@
     padding-top: calc((var(--menu-height) - 14px) / 2) !important;
 }
 
+#madChanView .menuBtn:hover,
+#madChanView .menuBtn:active,
+#madChanView .menuBtn[data-active] {
+    padding: calc((var(--menu-height) - 14px) / 2 + 1px) 7px 2px 8px !important;
+}
+
 .menuBtn:hover span,
 .menuBtn:active span,
 .menuBtn[data-active] span {
