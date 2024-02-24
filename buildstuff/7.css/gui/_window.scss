@@ -198,7 +198,7 @@
     opacity: 0.6;
   }
 
-  &::after {
+  body:not([data-no-glass]) &::after {
     content: "";
     position: absolute;
     z-index: -10;
@@ -244,7 +244,18 @@
     opacity: 0.4 !important;
   }
   body[data-no-glass] &::before {
-    filter: brightness(1.25);
+    z-index: -2;
+  }
+  body[data-no-glass] &::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: var(--window-border-radius);
+    background-color: #fff3;
   }
 }
 
@@ -679,7 +690,7 @@
   .window-minimize-button:not(#JustHereToGiveItPriority) {
     &::before {
       content: "";
-      box-shadow: 0 0 7px 3px #5dc4f0, var(--control-inset-shadow);
+      box-shadow: 0 0 7px 3px #5dc4f0, var(--control-inset-shadow) !important;
       background: url("./icon/minimize.png") no-repeat center 10px,
         var(--control-background-hovered);
       border-bottom-left-radius: var(--control-border-radius);
@@ -695,14 +706,14 @@
 
     &:active::before {
       background: url("./icon/minimize.png") no-repeat center 10px,
-        var(--control-background-active);
+        var(--control-background-active) !important;
     }
   }
 
   .window-action-maximize:not(#JustHereToGiveItPriority) {
     &::before {
       content: "";
-      box-shadow: 0 0 7px 3px #5dc4f0, var(--control-inset-shadow);
+      box-shadow: 0 0 7px 3px #5dc4f0, var(--control-inset-shadow) !important;
       background: url("./icon/maximize.png") no-repeat center,
         var(--control-background-hovered);
       opacity: 0;
@@ -717,14 +728,14 @@
 
     &:active::before {
       background: url("./icon/maximize.png") no-repeat center,
-        var(--control-background-active);
+        var(--control-background-active) !important;
     }
   }
 
   .window-action-restore:not(#JustHereToGiveItPriority) {
     &::before {
       content: "";
-      box-shadow: 0 0 7px 3px #5dc4f0, var(--control-inset-shadow);
+      box-shadow: 0 0 7px 3px #5dc4f0, var(--control-inset-shadow) !important;
       background: url("./icon/restore.png") no-repeat center,
         var(--control-background-hovered);
       opacity: 0;
@@ -739,7 +750,7 @@
 
     &:active::before {
       background: url("./icon/restore.png") no-repeat center,
-        var(--control-background-active);
+        var(--control-background-active) !important;
     }
   }
 
@@ -886,6 +897,9 @@
   #inactiveWindow {
     height: 118px;
     background-color: white !important;
+    .window-button::before {
+      display: none;
+    }
   }
 
   #activeWindow {
@@ -955,6 +969,10 @@
 
   .menu {
     outline: none;
+  }
+
+  #windowBtnContainer {
+    height: 38px;
   }
 }
 

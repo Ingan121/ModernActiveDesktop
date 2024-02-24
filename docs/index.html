@@ -9,13 +9,19 @@
   <style id="style"></style>
   <style>
     html {
+      width: calc(100% - 4px);
       height: calc(100% - 4px);
+      overflow: hidden;
     }
 
     body {
+      height: 100%;
+      margin-top: 0;
+      margin-right: 0;
       background-color: var(--window, white);
       color: var(--window-text, black);
       font-size: revert;
+      overflow: auto;
     }
 
     a {
@@ -24,7 +30,7 @@
   </style>
 </head>
 
-<body>
+<body class="">
   <div id="content"></div><a id="backbtn" href="javascript:history.back();" style="display: none;">Go back to the previous page</a>
   <script src="../js/marked.min.js"></script>
   <script src="../js/libmad.js"></script>

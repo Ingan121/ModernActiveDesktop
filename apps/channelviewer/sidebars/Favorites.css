@@ -1,0 +1,43 @@
+html, body {
+    height: 100%;
+    user-select: none;
+    margin: 0;
+    overflow: hidden;
+}
+
+#dummyFavoriteItem {
+    display: none;
+}
+
+.FavoriteItem {
+    display: block;
+    margin: 0 1px 0 2px;
+    width: calc(100% - 6px);
+    height: 21px;
+    position: relative;
+    border: solid 1px transparent;
+    cursor: pointer;
+    background-image: url('../images/icon_status.png');
+    background-position: 5px 2px;
+    background-size: 16px 16px;
+    background-repeat: no-repeat;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.FavoriteItemText {
+    color: var(--window-text);
+    font-family: var(--ui-font);
+    font-size: 11px;
+    position: absolute;
+    top: 3px;
+    left: 24px;
+}
+
+.FavoriteItem:hover {
+    border-top-color: var(--button-hilight);
+    border-left-color: var(--button-hilight);
+    border-bottom-color: var(--button-shadow);
+    border-right-color: var(--button-shadow);
+}

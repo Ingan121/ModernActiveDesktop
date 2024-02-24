@@ -236,7 +236,7 @@ ul {
   }
 }
 
-.menu {
+.menu, .menus {
   display: flex;
   background: linear-gradient(
     #fff 20%,
@@ -246,4 +246,55 @@ ul {
     #e6eaf6
   );
   outline: solid 1px #b6bccc;
+}
+
+.menu-button {
+  background-color: transparent;
+}
+
+.menuBtn, .menu-button {
+  border-radius: 3px !important;
+  border-image: none !important;
+  clip-path: none !important;
+  &:hover {
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.6) 0%,
+      transparent 33%,
+      rgba(0, 0, 0, 0.09) 34%,
+      transparent 75%
+    ) !important;
+    border: solid 1px #9398a5 !important;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5) !important;
+  }
+
+  &:active,
+  &[data-active],
+  &.active {
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.4) 0%,
+      rgba(0, 0, 0, 0.15) 10%,
+      rgba(0, 0, 0, 0.04) 24%,
+      rgba(0, 0, 0, 0.04) 33%,
+      rgba(0, 0, 0, 0.07) 34%,
+      rgba(0, 0, 0, 0.04) 75%
+    ) !important;
+    border: solid 1px #4a4c53 !important;
+    box-shadow: inset 1px 0 rgba(128, 128, 128, 0.5), inset 2px 0 rgba(128, 128, 128, 0.2) !important;
+  }
+
+  &::after {
+    display: none !important;
+  }
+
+  span {
+    margin: 0;
+  }
+}
+
+.menu-button {
+  &:hover, &.active {
+    margin: 0 -1px;
+  }
 }

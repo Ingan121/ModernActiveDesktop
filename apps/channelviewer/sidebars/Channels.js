@@ -10,3 +10,7 @@ for (const activeChannelItem of activeChannelItems) {
         parent.go(this.dataset.url);
     });
 }
+
+document.addEventListener('pointerdown', function () {
+    parent.madBringToTop();
+});

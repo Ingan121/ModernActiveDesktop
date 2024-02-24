@@ -134,10 +134,12 @@ viewMenuItems[1].addEventListener("click", function () { // Status Bar button
     if (localStorage.madesktopChanViewHideStatusBar) {
         statusBar.style.display = "";
         viewMenuItems[1].classList.add("checkedItem");
+        madSetResizeArea(true);
         delete localStorage.madesktopChanViewHideStatusBar;
     } else {
         statusBar.style.display = "none";
         viewMenuItems[1].classList.remove("checkedItem");
+        madSetResizeArea(false);
         localStorage.madesktopChanViewHideStatusBar = true;
     }
 });
@@ -165,7 +167,8 @@ viewMenuItems[6].addEventListener("click", function () { // Full Screen button
 viewMenuItems[7].addEventListener("click", function () { // Internet Options button
     const left = parseInt(madDeskMover.config.xPos) + 25 + 'px';
     const top = parseInt(madDeskMover.config.yPos) + 50 + 'px';
-    const configWindow = madOpenWindow('apps/inetcpl/general.html?currentPage=' + encodeURIComponent(historyItems[historyIndex - 1][0]), true, '400px', '427px', 'wnd', false, top, left, true, true, true);
+    const url = isCrossOrigin ? iframe.src : historyItems[historyIndex - 1][0];
+    const configWindow = madOpenWindow('apps/inetcpl/general.html?currentPage=' + encodeURIComponent(url), true, '400px', '371px', 'wnd', false, top, left, true, true, true);
     configWindow.windowElement.addEventListener('load', () => {
         configWindow.windowElement.contentWindow.targetDeskMover = madDeskMover;
     });
@@ -228,11 +231,18 @@ favoritesMenuItems[0].addEventListener("click", function () { // Add to Favorite
         const iconBlob = await getFavicon(true);
         if (iconBlob) {
             const icon = await getDataUrl(iconBlob);
-            favorites.push([historyItems[historyIndex - 1][0], name, icon]);
+            if (icon.startsWith("data:image/")) {
+                favorites.push([historyItems[historyIndex - 1][0], name, icon]);
+            } else {
+                favorites.push([historyItems[historyIndex - 1][0], name]);
+            }
         } else {
             favorites.push([historyItems[historyIndex - 1][0], name]);
         }
         localStorage.madesktopChanViewFavorites = JSON.stringify(favorites);
+        if (mainArea.classList.contains("sidebarOpen") && sidebarTitle.textContent === "Favorites") {
+            openSidebar("Favorites");
+        }
     }, title, title);
 });
 
@@ -307,7 +317,7 @@ toolbarsMenuItems[4].addEventListener("click", function () { // No labels button
 });
 
 explorerBarMenuItems[0].addEventListener("click", function () { // Favorites button
-    //openSidebar("Favorites");
+    openSidebar("Favorites");
 });
 
 explorerBarMenuItems[1].addEventListener("click", function () { // Channels button
@@ -319,7 +329,6 @@ explorerBarMenuItems[2].addEventListener("click", function () { // None button
 });
 
 backButton.addEventListener("click", function () {
-    handleWeirdError();
     if (isCrossOrigin) {
         history.back();
     } else if (!backButton.dataset.disabled && historyIndex > 1) {
@@ -330,7 +339,6 @@ backButton.addEventListener("click", function () {
 });
 
 forwardButton.addEventListener("click", function () {
-    handleWeirdError();
     if (isCrossOrigin) {
         history.forward();
     } else if (!forwardButton.dataset.disabled && historyLength >= historyIndex) {
@@ -372,8 +380,15 @@ stopButton.addEventListener("click", function () {
 });
 
 homeButton.addEventListener("click", function () {
-    handleWeirdError();
     go(localStorage.madesktopChanViewHome || "https://www.ingan121.com/");
+});
+
+favoritesButton.addEventListener("click", function () {
+    if (mainArea.classList.contains("sidebarOpen") && sidebarTitle.textContent === "Favorites") {
+        closeSidebar();
+    } else {
+        openSidebar("Favorites");
+    }
 });
 
 channelsButton.addEventListener("click", function () {
@@ -397,7 +412,11 @@ printButton.addEventListener("click", function () {
 });
 
 openButton.addEventListener("click", function () {
-    parent.openExternalExternally(historyItems[historyIndex - 1][0], false, true);
+    if (isCrossOrigin) {
+        parent.openExternalExternally(iframe.src, false, true);
+    } else {
+        parent.openExternalExternally(historyItems[historyIndex - 1][0], false, true);
+    }
 });
 
 urlbar.addEventListener('click', function (event) {
@@ -407,6 +426,8 @@ urlbar.addEventListener('click', function (event) {
         } else if (iframe.contentDocument.head.dataset.forceLoaded) {
             if (loadedWithProxy) {
                 madAlert("This page was loaded with an external proxy. Advanced features are available, but the page may not work properly. Also, DO NOT ENTER YOUR PASSWORDS HERE!", null, "warning");
+            } else if (madRunningMode !== 1) {
+                madAlert("This page was forcefully loaded with advanced features. The page may not work properly, especially if it has complex scripts.", null, "warning");
             } else {
                 madAlert("This page does not allow embedding normally, so it was forcefully loaded. Advanced features are available, but the page may not work properly, especially if it has complex scripts.", null, "warning");
             }
@@ -459,6 +480,8 @@ switch (localStorage.madesktopChanViewLabels) {
 if (localStorage.madesktopChanViewHideStatusBar) {
     statusBar.style.display = "none";
     viewMenuItems[1].classList.remove("checkedItem");
+} else {
+    madSetResizeArea(true);
 }
 
 if (localStorage.madesktopChanViewNoJs) {
@@ -476,7 +499,6 @@ window.addEventListener('blur', function () {
 });
 
 new MutationObserver(function (mutations) {
-    handleWeirdError();
     iframe.contentDocument.body.style.zoom = madScaleFactor;
 }).observe(
     document.body,
@@ -596,7 +618,9 @@ function hookIframeSize(iframe) {
                 default:
                     document.title = url + " - ChannelViewer";
                     urlbar.value = url;
-                    if (madRunningMode !== 1 && !localStorage.madesktopChanViewNoForceLoad && new URL(url).origin !== location.origin) {
+                    if (madRunningMode !== 1 && !localStorage.madesktopChanViewNoForceLoad &&
+                        !url.startsWith("about:blank") && !url.startsWith("data:") && new URL(url).origin !== location.origin)
+                    {
                         forceLoad(url);
                         return;
                     }
@@ -630,11 +654,14 @@ function hookIframeSize(iframe) {
                     event.preventDefault();
                     break;
                 default:
-                    if (madRunningMode !== 1 && !localStorage.madesktopChanViewNoForceLoad && new URL(url).origin !== location.origin) {
+                    if (madRunningMode !== 1 && !localStorage.madesktopChanViewNoForceLoad &&
+                        !url.startsWith("about:blank") && !url.startsWith("data:") && new URL(url).origin !== location.origin)
+                    {
                         event.preventDefault();
                         return;
                     }
                     // YT fix - it doesn't work well in single page mode
+                    // due to it checking the origin header in ajax requests
                     if (url.startsWith("https://www.youtube.com/")) {
                         event.preventDefault();
                     }
@@ -667,7 +694,9 @@ function hookIframeSize(iframe) {
                 url = new URL(url, historyItems[historyIndex - 1][0]).href;
             }
             document.title = url + " - ChannelViewer";
-            if (madRunningMode !== 1 && !localStorage.madesktopChanViewNoForceLoad && new URL(url).origin !== location.origin) {
+            if (madRunningMode !== 1 && !localStorage.madesktopChanViewNoForceLoad &&
+                !url.startsWith("about:blank") && !url.startsWith("data:") && new URL(url).origin !== location.origin)
+            {
                 event.preventDefault();
                 event.stopPropagation();
                 forceLoad(url);
@@ -685,12 +714,16 @@ function hookIframeSize(iframe) {
             }
         }
     });
+    iframe.addEventListener('pointerleave', () => {
+        if (statusText.textContent !== "Done" && statusText.textContent !== pageSetStatusText) {
+            statusText.textContent = pageSetStatusText;
+        }
+    });
 
     iframe.contentWindow.addEventListener('beforeunload', loadStart);
 }
 
 function go(url, noHistory, forceForceLoad = false) {
-    handleWeirdError();
     if (noHistory) {
         didHistoryNav = false;
     }
@@ -702,7 +735,9 @@ function go(url, noHistory, forceForceLoad = false) {
         url = "https://" + url;
     }
     urlbar.value = url;
-    if ((madRunningMode !== 1 && !localStorage.madesktopChanViewNoForceLoad && new URL(url).origin !== location.origin) || forceForceLoad) {
+    handleWeirdError();
+    if (forceForceLoad || (madRunningMode !== 1 && !localStorage.madesktopChanViewNoForceLoad &&
+        !url.startsWith("about:blank") && !url.startsWith("data:") && new URL(url).origin !== location.origin)) {
         forceLoad(url);
     } else {
         iframe.removeAttribute("srcdoc");
@@ -863,6 +898,9 @@ function appendFavoriteItem(favorite) {
                     favorite[1] = name;
                 }
                 localStorage.madesktopChanViewFavorites = JSON.stringify(favorites);
+                if (mainArea.classList.contains("sidebarOpen") && sidebarTitle.textContent === "Favorites") {
+                    openSidebar("Favorites");
+                }
             }, favorite[1], favorite[1]);
         } else {
             go(favorite[0], true);
@@ -870,7 +908,7 @@ function appendFavoriteItem(favorite) {
         favoritesMenuBg.blur();
     });
     item.appendChild(p);
-    if (favorite[2] && favorite[2].startsWith("data:image/")) {
+    if (favorite[2]) {
         item.style.backgroundImage = "url(" + favorite[2] + ")";
     } else {
         item.style.backgroundImage = "url(images/icon.png)";
@@ -886,6 +924,11 @@ function openSidebar(name) {
         case "Channels":
             explorerBarMenuItems[0].classList.remove("activeStyle");
             explorerBarMenuItems[1].classList.add("activeStyle");
+            explorerBarMenuItems[2].classList.remove("activeStyle");
+            break;
+        case "Favorites":
+            explorerBarMenuItems[0].classList.add("activeStyle");
+            explorerBarMenuItems[1].classList.remove("activeStyle");
             explorerBarMenuItems[2].classList.remove("activeStyle");
     }
 }
@@ -967,10 +1010,14 @@ function printIframe() {
     if (isCrossOrigin) {
         toolbars.style.display = "none";
         statusBar.style.display = "none";
+        sidebar.style.display = "none";
+        iframe.style.width = "100%";
         iframe.style.boxShadow = "none";
         window.print();
         toolbars.style.display = "";
         statusBar.style.display = "";
+        sidebar.style.display = "";
+        iframe.style.width = "";
         iframe.style.boxShadow = "";
     } else {
         iframe.contentWindow.print();
@@ -1034,9 +1081,7 @@ function loadStart() {
     throbber.dataset.busy = true;
     fullscreenThrobber.dataset.busy = true;
     statusText.textContent = "Opening page " + urlbar.value;
-    if (!localStorage.madesktopChanViewNoSound) {
-        madPlaySound("navStart");
-    }
+    madPlaySound("navStart");
     statusZone.style.backgroundImage = "";
     statusZoneText.textContent = "Internet zone";
 }
@@ -1185,6 +1230,7 @@ sidebarWindow.addEventListener('load', function () {
 iframe.addEventListener('load', function () {
     if (!iframe.contentDocument) {
         isCrossOrigin = true;
+        changeHistoryButtonStatus();
         updateTitle();
         madSetIcon('images/html.png');
         urlbar.value = iframe.src;
@@ -1251,5 +1297,3 @@ iframe.addEventListener('load', function () {
     loadFinish();
     delayedSave();
 });
-
-madShowResizeArea();

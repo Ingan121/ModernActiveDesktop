@@ -455,11 +455,90 @@
         background-image: linear-gradient(to right, #edede5, #ede8cd);
     }
 
+    #back-button .toolbarButtonImage {
+        content: url('../apps/channelviewer/images/xp/Back.png');
+    }
+
+    #back-button:hover:not([data-disabled='true']) .toolbarButtonImage,
+    #back-button[data-hover]:not([data-disabled='true']) .toolbarButtonImage {
+        content: url('../apps/channelviewer/images/xp/Back_hover.png');
+    }
+
+    #forward-button .toolbarButtonImage {
+        content: url('../apps/channelviewer/images/xp/Forward.png');
+    }
+
+    #forward-button:hover:not([data-disabled='true']) .toolbarButtonImage,
+    #forward-button[data-hover]:not([data-disabled='true']) .toolbarButtonImage {
+        content: url('../apps/channelviewer/images/xp/Forward_hover.png');
+    }
+
+    #back-button[data-disabled] .toolbarButtonImage,
+    #forward-button[data-disabled] .toolbarButtonImage {
+        filter: grayscale(100%);
+    }
+
+    #refresh-button .toolbarButtonImage {
+        content: url('../apps/channelviewer/images/xp/Refresh.png');
+    }
+
+    #refresh-button:hover .toolbarButtonImage {
+        content: url('../apps/channelviewer/images/xp/Refresh_hover.png');
+    }
+
+    #stop-button .toolbarButtonImage {
+        content: url('../apps/channelviewer/images/xp/Stop.png');
+    }
+
+    #stop-button:hover .toolbarButtonImage {
+        content: url('../apps/channelviewer/images/xp/Stop_hover.png');
+    }
+
+    #home-button .toolbarButtonImage {
+        content: url('../apps/channelviewer/images/xp/Home.png');
+    }
+
+    #home-button:hover .toolbarButtonImage {
+        content: url('../apps/channelviewer/images/xp/Home_hover.png');
+    }
+
+    #favorites-button .toolbarButtonImage {
+        content: url('../apps/channelviewer/images/xp/Favorites.png');
+    }
+
+    #favorites-button:hover .toolbarButtonImage {
+        content: url('../apps/channelviewer/images/xp/Favorites_hover.png');
+    }
+
+    #fullscreen-button .toolbarButtonImage {
+        content: url('../apps/channelviewer/images/xp/Fullscreen.png');
+    }
+
+    #fullscreen-button:hover .toolbarButtonImage {
+        content: url('../apps/channelviewer/images/xp/Fullscreen_hover.png');
+    }
+
+    #print-button .toolbarButtonImage {
+        content: url('../apps/channelviewer/images/xp/Print.png');
+    }
+
+    #print-button:hover .toolbarButtonImage {
+        content: url('../apps/channelviewer/images/xp/Print_hover.png');
+    }
+
+    #open-button .toolbarButtonImage {
+        content: url('../apps/channelviewer/images/xp/Open.png');
+    }
+
+    #open-button:hover .toolbarButtonImage {
+        content: url('../apps/channelviewer/images/xp/Open_hover.png');
+    }
+
     #throbber {
         background-color: white;
-        background-image: url(../apps/channelviewer/images/xpthrobber.png);
+        background-image: url(../apps/channelviewer/images/xp/throbber.png);
         &[data-busy] {
-            background-image: url(../apps/channelviewer/images/xpthrobber.webp);
+            background-image: url(../apps/channelviewer/images/xp/throbber.webp);
         }
     }
 
@@ -467,11 +546,44 @@
         height: 38px;
         color: gray;
         background-color: white;
-        background-image: url(../apps/channelviewer/images/xpthrobber26.png);
+        background-image: url(../apps/channelviewer/images/xp/throbber26.png);
         &[data-busy] {
-            background-image: url(../apps/channelviewer/images/xpthrobber26.webp);
+            background-image: url(../apps/channelviewer/images/xp/throbber26.webp);
         }
     }
+
+    #statusBar {
+        border-top: solid 1px #959385;
+        box-shadow: inset 0 3px 2px -2px rgba(0, 0, 0, 0.25);
+    }
+    #statusMain {
+        box-shadow: none;
+    }
+    #statusRight {
+        margin: 2px 0;
+        border-left: solid 1px #c7c5b2;
+    }
+    .emptySpace {
+        margin: 0 !important;
+        box-shadow: none;
+        border-left: solid 1px #ffffff;
+        border-right: solid 1px #c7c5b2;
+    }
+    #zone {
+        box-shadow: none;
+        border-left: solid 1px #ffffff;
+    }
+
+    .grabber {
+        box-shadow: none;
+        margin: 4px 2px 0 4px;
+        height: calc(100% - 7px);
+        background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAAECAYAAABLLYUHAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnMAABJzAYwiuQcAAAAySURBVBhXY7x2/tj/uw+fMthY2zAw3X14l+HWjfMMAiISDAzPnz//Dwa///9nQAAGBgDcJxfE1szABQAAAABJRU5ErkJggg==");
+    }
+}
+
+.windowContainer .resizeArea {
+    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnMAABJzAYwiuQcAAABPSURBVChTpY/BDcAgDANd9l+i6gp5sF2oJb8ihEHcB53C4wxHjy97vClF07vmAfJH5uFnIr2kNu9tqM1uA49EernBNc83uObqFCK1fgAwAC7BbGGRv58cAAAAAElFTkSuQmCC");
 }
 
 /* Change dialog icons to XP ones */

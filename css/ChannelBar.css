@@ -8,13 +8,14 @@ html, body {
 
 .AactiveChannelItem {
     display: block;
-    margin: 1px 1px -3px 1px;
+    margin: 1px 1px 0 1px;
     width: 80px;
     float: left;
 }
 
 .ActiveChannelItemImage {
     border: solid 1px transparent;
+    margin-bottom: -2px;
 }
 
 .ActiveChannelItemImage:hover {

@@ -2,33 +2,37 @@
 .menu-button:hover,
 .menu-button.active {
     border: none !important;
+    border-radius: 0 !important;
     color: var(--hilight-text) !important;
-    background-color: var(--menu-hilight) !important;
+    background: var(--menu-hilight) !important;
     box-shadow: var(--hilight) -1px -1px inset, var(--hilight) 1px 1px inset !important;
-    margin-right: 0 !important;
+    margin-right: 0;
 }
 
 .menu-button:after {
     display: none !important;
 }
 
-.menu, .menus,
-.menu-button {
+.menu, .menus {
     background-color: var(--menu-bar);
+}
+
+.menu-button {
+    background-color: transparent;
 }
 
 .menuBtn:hover,
 .menuBtn:active,
 .menuBtn[data-active] {
     border-color: var(--hilight) !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
     color: var(--hilight-text) !important;
-    background-color: var(--menu-hilight) !important;
+    background: var(--menu-hilight) !important;
     padding-top: calc((var(--menu-height) - 14px) / 2) !important;
 }
 
-#madChanView .menuBtn:hover,
-#madChanView .menuBtn:active,
-#madChanView .menuBtn[data-active] {
+#madChanView .menuBtn {
     padding: calc((var(--menu-height) - 14px) / 2 + 1px) 7px 2px 8px !important;
 }
 

@@ -4,6 +4,7 @@
 
 'use strict';
 
+const dpiLabel = document.getElementById('dpiLabel');
 const dpiSlider = document.getElementById('dpiSlider');
 const dpiSelector = document.getElementById('dpiSelector');
 const dpiSelectorOptions = dpiSelector.options;
@@ -83,6 +84,12 @@ switch (config.dpi * 100) {
         dpiSelectorCustom.textContent = config.dpi * 100 + "%";
 }
 dpiSlider.value = dpiSelector.selectedIndex;
+
+if (navigator.userAgent.includes("Firefox")) {
+    dpiSelector.disabled = true;
+    dpiSlider.disabled = true;
+    dpiLabel.textContent = "Display Scaling (not supported in Firefox)";
+}
 
 if (isWin10) {
     if (config.sysplug) {

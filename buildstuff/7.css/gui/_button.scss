@@ -121,6 +121,157 @@ button:not(.window-button):not(.lightweight),
   }
 }
 
+/* JSPaint stuff (Vista paint style) */
 .toggle {
   min-width: 0 !important;
+}
+
+.tool {
+  box-sizing: border-box;
+  box-shadow: none;
+  border: 1px solid transparent !important;
+  border-image: none !important;
+  border-radius: 3px;
+  &:not(:disabled):not([data-disabled]) {
+    &:hover,
+    &[data-hover] {
+      background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.6) 0%,
+        transparent 33%,
+        rgba(0, 0, 0, 0.09) 34%,
+        transparent 75%
+      ) !important;
+      border: solid 1px #9398a5 !important;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5) !important;
+    }
+    &:active,
+    &[data-active],
+    &.selected {
+      background: linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0.4) 0%,
+        rgba(0, 0, 0, 0.15) 10%,
+        rgba(0, 0, 0, 0.04) 24%,
+        rgba(0, 0, 0, 0.04) 33%,
+        rgba(0, 0, 0, 0.07) 34%,
+        rgba(0, 0, 0, 0.04) 75%
+      ) !important;
+      border-color: #4a4c53 !important;
+      box-shadow: inset 1px 0 rgba(128, 128, 128, 0.5), inset 2px 0 rgba(128, 128, 128, 0.2) !important;
+    }
+  }
+  &::before {
+    display: none;
+  }
+}
+
+.tool-icon,
+.tool-icon.use-svg {
+	background-image: url("../../../apps/jspaint/images/modern/vista-tools.png");
+}
+.eye-gaze-mode .tool-icon.use-svg {
+	background-image: url("../../../apps/jspaint/images/classic/tools.svg");
+}
+
+/* ChannelViewer stuff */
+.toolbarButton {
+  box-sizing: border-box;
+  box-shadow: none;
+  border: 1px solid transparent !important;
+  border-image: none !important;
+  border-radius: 3px;
+  margin: 1px 0;
+  position: relative;
+  z-index: 0;
+
+  &::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    top: -1px;
+    left: -1px;
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.6) 0%,
+      transparent 33%,
+      rgba(0, 0, 0, 0.09) 34%,
+      transparent 75%
+    ) !important;
+    border: solid 1px #9398a5 !important;
+    border-radius: 3px;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5) !important;
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 1;
+  }
+
+  &:not(:disabled):not([data-disabled]) {
+    &:hover,
+    &[data-hover] {
+      &::before {
+        opacity: 1;
+        transition: opacity 0.3s;
+      }
+    }
+    &:active,
+    &[data-active] {
+      &::before {
+        background: linear-gradient(
+            180deg,
+            rgba(0, 0, 0, 0.4) 0%,
+            rgba(0, 0, 0, 0.15) 10%,
+            rgba(0, 0, 0, 0.04) 24%,
+            rgba(0, 0, 0, 0.04) 33%,
+            rgba(0, 0, 0, 0.07) 34%,
+            rgba(0, 0, 0, 0.04) 75%
+        ) !important;
+        border-color: #4a4c53 !important;
+        box-shadow: inset 1px 0 rgba(128, 128, 128, 0.5), inset 2px 0 rgba(128, 128, 128, 0.2) !important;
+      }
+    }
+  }
+}
+
+#madChanView {
+  #toolbar {
+    height: 38px;
+  }
+  .toolbarButton {
+    min-width: 29px;
+    height: 36px;
+  }
+  .toolbarButtonImage {
+    margin-top: 6px;
+  }
+  #back-button,
+  #forward-button {
+    &::before {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+  }
+  #back-expand-button,
+  #forward-expand-button {
+    min-width: 12px;
+    &::before {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+    border-left: none !important;
+    span {
+        line-height: 28px;
+    }
+  }
+
+  #back-button:hover:not([data-disabled='true']) + #back-expand-button,
+  #forward-button:hover:not([data-disabled='true']) + #forward-expand-button {
+    &::before {
+      opacity: 1;
+      transition: opacity 0.3s;
+    }
+  }
 }

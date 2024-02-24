@@ -42,8 +42,7 @@ button:not(.window-button):not(.lightweight):not(.toggle) {
 }
 
 .tool,
-button.toggle,
-.toolbarButton {
+button.toggle {
     box-sizing: border-box;
     box-shadow: none;
     border: 1px solid transparent !important;
@@ -84,6 +83,45 @@ button.toggle,
     }
 }
 
+.toolbarButton {
+    box-sizing: border-box;
+    box-shadow: none;
+    border: 1px solid transparent !important;
+    border-image: none !important;
+    border-radius: 3px;
+    &:not(:disabled):not([data-disabled]) {
+        &:hover,
+        &[data-hover] {
+            background: linear-gradient(
+                180deg,
+                rgba(254, 254, 253, 1) 0%,
+                rgba(246, 246, 241, 1) 19%,
+                rgba(244, 244, 238, 1) 50%,
+                rgba(241, 241, 234, 1) 86%,
+                rgba(238, 237, 229, 1) 89%,
+                rgba(228, 225, 214, 1) 94%,
+                rgba(215, 210, 198, 1) 100%
+            ) !important;
+            border-color: #cecec3 !important;
+        }
+        &:active,
+        &[data-active] {
+            background: linear-gradient(
+                180deg,
+                rgba(205, 202, 195, 1) 0%,
+                rgba(227, 227, 219, 1) 8%,
+                rgba(229, 229, 222, 1) 94%,
+                rgba(242, 242, 241, 1) 100%
+            ) !important;
+            border-color: #9d9d92 !important;
+            color: white !important;
+        }
+    }
+    &::before {
+        display: none;
+    }
+}
+
 #madChanView {
     #toolbar {
         height: 38px;
@@ -93,7 +131,13 @@ button.toggle,
         height: 38px;
     }
     .toolbarButtonImage {
+        margin-top: 6px;
+    }
+    #channels-button .toolbarButtonImage {
         margin-top: 7px;
+    }
+    #toolbar.rightLabels .toolbarButtonLabel {
+        top: -10px !important;
     }
     #back-button,
     #forward-button {
@@ -107,7 +151,7 @@ button.toggle,
         border-bottom-left-radius: 0;
         border-left: none !important;
         span {
-            line-height: 28px;
+            line-height: 30px;
         }
     }
 
@@ -115,9 +159,13 @@ button.toggle,
     #forward-button:hover:not([data-disabled='true']) + #forward-expand-button {
         background: linear-gradient(
             180deg,
-            rgba(255, 255, 255, 1) 0%,
-            rgba(236, 235, 229, 1) 86%,
-            rgba(216, 208, 196, 1) 100%
+            rgba(254, 254, 253, 1) 0%,
+            rgba(246, 246, 241, 1) 19%,
+            rgba(244, 244, 238, 1) 50%,
+            rgba(241, 241, 234, 1) 86%,
+            rgba(238, 237, 229, 1) 89%,
+            rgba(228, 225, 214, 1) 94%,
+            rgba(215, 210, 198, 1) 100%
         ) !important;
         border-color: #cecec3 !important;
     }

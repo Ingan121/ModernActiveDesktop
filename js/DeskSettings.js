@@ -47,7 +47,6 @@ let activeWindow = 0;
 let prevActiveWindow = 0;
 let startupRan = false;
 let flashInterval;
-let konamiStack = 0;
 
 const WE = 1; // Wallpaper Engine
 const LW = 2; // Lively Wallpaper
@@ -1519,7 +1518,9 @@ function menuNavigationHandler(event) {
 }
 
 function playSound(sound) {
-    if (!localStorage.madesktopAlertSndMuted) {
+    if ((sound !== "navStart" && !localStorage.madesktopAlertSndMuted) ||
+        (sound === "navStart" && !localStorage.madesktopChanViewNoSound))
+    {
         soundScheme[sound].currentTime = 0;
         soundScheme[sound].play();
     }
@@ -1645,86 +1646,15 @@ if (runningMode === WE) {
     } else {
         // Konami code easter egg
         // Obviously a 98.js / jspaint reference
+        const konamiCode = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a", "Enter"];
+        let konamiStack = 0;
         document.addEventListener('keydown', function (event) {
-            switch (konamiStack) {
-                case 0:
-                    if (event.key === "ArrowUp") {
-                        konamiStack++;
-                    } else {
-                        konamiStack = 0;
-                    }
-                    break;
-                case 1:
-                    if (event.key === "ArrowUp") {
-                        konamiStack++;
-                    } else {
-                        konamiStack = 0;
-                    }
-                    break;
-                case 2:
-                    if (event.key === "ArrowDown") {
-                        konamiStack++;
-                    } else {
-                        konamiStack = 0;
-                    }
-                    break;
-                case 3:
-                    if (event.key === "ArrowDown") {
-                        konamiStack++;
-                    } else {
-                        konamiStack = 0;
-                    }
-                    break;
-                case 4:
-                    if (event.key === "ArrowLeft") {
-                        konamiStack++;
-                    } else {
-                        konamiStack = 0;
-                    }
-                    break;
-                case 5:
-                    if (event.key === "ArrowRight") {
-                        konamiStack++;
-                    } else {
-                        konamiStack = 0;
-                    }
-                    break;
-                case 6:
-                    if (event.key === "ArrowLeft") {
-                        konamiStack++;
-                    } else {
-                        konamiStack = 0;
-                    }
-                    break;
-                case 7:
-                    if (event.key === "ArrowRight") {
-                        konamiStack++;
-                    } else {
-                        konamiStack = 0;
-                    }
-                    break;
-                case 8:
-                    if (event.key === "b") {
-                        konamiStack++;
-                    } else {
-                        konamiStack = 0;
-                    }
-                    break;
-                case 9:
-                    if (event.key === "a") {
-                        konamiStack++;
-                    } else {
-                        konamiStack = 0;
-                    }
-                    break;
-                case 10:
-                    if (event.key === "Enter") {
-                        openExternal("https://youareanidiot.cc/lol.html", false, "resizable=no,width=357,height=330,forceLoad=yes", true, true);
-                    }
-                    konamiStack = 0;
-                    break;
-                default:
-                    konamiStack = 0;
+            if (event.key === konamiCode[konamiStack++]) {
+                if (event.key === "Enter") {
+                    openExternal("https://youareanidiot.cc/lol.html", false, "resizable=no,width=357,height=330,forceLoad=yes", true, true);
+                }
+            } else {
+                konamiStack = 0;
             }
         }); 
     }
@@ -1742,7 +1672,6 @@ window.addEventListener('load', function () {
     } catch {
         document.documentElement.style.setProperty('--hilight-inverted', 'var(--hilight-text)');
     }
-
     adjustAllElements();
 });
 

@@ -75,21 +75,9 @@ function set_all_url_params(params, { replace_history_state = false } = {}) {
 			}
 		}
 	}
-	// Note: gets rid of query string (?) portion of the URL
-	// This is desired for upgrading backwards compatibility URLs;
-	// may not be desired for future cases.
-	const new_url = `${location.origin}${location.pathname}#${new_hash}`;
-	try {
-		// can fail when running from file: protocol
-		// if (replace_history_state) {
-		// 	history.replaceState(null, document.title, new_url);
-		// } else {
-		// 	history.pushState(null, document.title, new_url);
-		// }
-		window.madDeskMover.config.jspaintHash = new_hash;
-	} catch (error) {
-		location.hash = new_hash;
-	}
+	// idk why but setting iframe.src with a hash prevents the page from loading
+	// so just save the hash separately
+	window.madDeskMover.config.jspaintHash = new_hash;
 
 	$G.triggerHandler("change-url-params");
 }
@@ -737,8 +725,7 @@ async function load_image_from_uri(uri) {
 	const uris_to_try = (is_download && !is_localhost) ? [
 		uri,
 		// work around CORS headers not sent by whatever server
-		`https://cors.bridged.cc/${uri}`,
-		`https://jspaint-cors-proxy.herokuapp.com/${uri}`,
+		(localStorage.madesktopCorsProxy || 'https://api.codetabs.com/v1/proxy/?quest=') + uri,
 		// if the image isn't available on the live web, see if it's archived
 		`https://web.archive.org/${uri}`,
 	] : [uri];

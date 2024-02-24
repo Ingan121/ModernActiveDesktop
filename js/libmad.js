@@ -8,7 +8,15 @@
     if (!frameElement) {
         // minimal MAD APIs fallback for non-MAD environments (or in cross-origin restricted mode)
         const noop = () => {};
-        window.madDeskMover = {};
+        window.madDeskMover = {
+            config: {
+                xPos: screen.screenX,
+                yPos: screen.screenY,
+                width: window.outerWidth,
+                height: window.outerHeight,
+                src: location.href
+            }
+        };
         window.madScaleFactor = 1;
         window.madRunningMode = 0;
         window.madOpenWindow = function (url, temp, width, height, style) {
@@ -54,7 +62,7 @@
         window.madResizeTo = window.resizeTo;
         window.madMoveTo = window.moveTo;
         window.madBringToTop = window.focus;
-        window.madShowResizeArea = noop;
+        window.madSetResizeArea = noop;
 
         window.madEnterFullscreen = function () {
             document.documentElement.requestFullscreen();
@@ -355,7 +363,7 @@
     window.madExtendMoveTarget = deskMover.extendMoveTarget.bind(deskMover);
     window.madEnterFullscreen = deskMover.enterFullscreen.bind(deskMover);
     window.madExitFullscreen = deskMover.exitFullscreen.bind(deskMover);
-    window.madShowResizeArea = deskMover.showResizeArea.bind(deskMover);
+    window.madSetResizeArea = deskMover.setResizeArea.bind(deskMover);
     window.madCloseWindow = deskMover.closeWindow.bind(deskMover);
 
     window.madAlert = parent.madAlert;

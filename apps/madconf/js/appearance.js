@@ -169,17 +169,25 @@ async function main() {
             preview.style.pointerEvents = "auto";
         }
 
-        if (scheme["flat-menus"] === "mbcm") {
-            flatMenuChkBox.checked = true;
-            flatMenuSelector.disabled = false;
-            flatMenuSelector.selectedIndex = 2;
-        } else if (scheme["flat-menus"] === "mb") {
-            flatMenuChkBox.checked = true;
-            flatMenuSelector.disabled = false;
-            flatMenuSelector.selectedIndex = 0;
-        } else {
-            flatMenuChkBox.checked = false;
-            flatMenuSelector.disabled = true;
+        switch (scheme["flat-menus"]) {
+            case "mbcm":
+                flatMenuChkBox.checked = true;
+                flatMenuSelector.disabled = false;
+                flatMenuSelector.selectedIndex = 2;
+                break;
+            case "cm":
+                flatMenuChkBox.checked = true;
+                flatMenuSelector.disabled = false;
+                flatMenuSelector.selectedIndex = 1;
+                break;
+            case "mb":
+                flatMenuChkBox.checked = true;
+                flatMenuSelector.disabled = false;
+                flatMenuSelector.selectedIndex = 0;
+                break;
+            default:
+                flatMenuChkBox.checked = false;
+                flatMenuSelector.disabled = true;
         }
 
         if (scheme["menu-animation"] === "fade") {
