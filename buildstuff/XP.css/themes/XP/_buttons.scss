@@ -89,7 +89,7 @@ button.toggle {
     border: 1px solid transparent !important;
     border-image: none !important;
     border-radius: 3px;
-    &:not(:disabled):not([data-disabled]) {
+    &:not([data-disabled]) {
         &:hover,
         &[data-hover] {
             background: linear-gradient(
@@ -104,7 +104,7 @@ button.toggle {
             ) !important;
             border-color: #cecec3 !important;
         }
-        &:active,
+        &:active:not(#JustHereToGiveItPriority),
         &[data-active] {
             background: linear-gradient(
                 180deg,
@@ -116,19 +116,32 @@ button.toggle {
             border-color: #9d9d92 !important;
             color: white !important;
         }
+        &[data-enabled] {
+            background: white;
+            border-color: #7a98af !important;
+            &:hover {
+                background: linear-gradient(
+                    180deg,
+                    white 0%,
+                    rgba(251, 250, 249, 1) 89%,
+                    rgba(240, 237, 233, 1) 94%,
+                    rgba(228, 222, 216, 1) 100%
+                ) !important;
+            }
+        }
     }
     &::before {
-        display: none;
+        display: none !important;
     }
 }
 
 #madChanView {
     #toolbar {
-        height: 38px;
+        min-height: 38px;
     }
     .toolbarButton {
         min-width: 29px;
-        height: 38px;
+        min-height: 38px;
     }
     .toolbarButtonImage {
         margin-top: 6px;
@@ -136,8 +149,32 @@ button.toggle {
     #channels-button .toolbarButtonImage {
         margin-top: 7px;
     }
-    #toolbar.rightLabels .toolbarButtonLabel {
-        top: -10px !important;
+    #toolbar.rightLabels {
+        .toolbarButtonLabel {
+            top: -10px !important;
+        }
+    }
+    &:not([data-fullscreen]) #toolbar.bottomLabels {
+        min-height: 52px;
+        .toolbarButton {
+            min-height: 52px;
+            &:not(#back-expand-button):not(#forward-expand-button) {
+                min-width: 77px;
+            }
+        }
+        .toolbarButtonImage {
+            margin-left: 26px !important;
+        }
+        #channels-button .toolbarButtonImage {
+            margin-left: 28px !important;
+            margin-bottom: 4px;
+        }
+        #back-expand-button,
+        #forward-expand-button {
+            span {
+                line-height: 40px !important;
+            }
+        }
     }
     #back-button,
     #forward-button {
@@ -146,7 +183,7 @@ button.toggle {
     }
     #back-expand-button,
     #forward-expand-button {
-        min-width: 12px;
+        min-width: 12px !important;
         border-top-left-radius: 0;
         border-bottom-left-radius: 0;
         border-left: none !important;

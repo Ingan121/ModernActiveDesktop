@@ -13,6 +13,7 @@ const menuBar = document.getElementById("menuBar");
 const toolbar = document.getElementById("toolbar");
 const addressBar = document.getElementById("addressBar");
 const statusBar = document.getElementById("statusBar");
+const grabbers = document.querySelectorAll(".grabber");
 
 const backButton = document.getElementById("back-button");
 const backExpandButton = document.getElementById("back-expand-button");
@@ -56,6 +57,7 @@ const sidebar = document.getElementById("sidebar");
 const sidebarTitle = document.getElementById("sidebarTitleText");
 const sidebarCloseBtn = document.getElementById("sidebarCloseBtn");
 const sidebarWindow = document.getElementById("sidebarWindow");
+const border = document.getElementById("border");
 
 window.iframe = document.getElementById("iframe");
 
@@ -316,6 +318,18 @@ toolbarsMenuItems[4].addEventListener("click", function () { // No labels button
     }
 });
 
+toolbarsMenuItems[5].addEventListener("click", function () { // Lock the Toolbars button
+    if (localStorage.madesktopChanViewLockToolbars) {
+        toolbars.classList.remove("locked");
+        toolbarsMenuItems[5].classList.remove("checkedItem");
+        delete localStorage.madesktopChanViewLockToolbars;
+    } else {
+        toolbars.classList.add("locked");
+        toolbarsMenuItems[5].classList.add("checkedItem");
+        localStorage.madesktopChanViewLockToolbars = true;
+    }
+});
+
 explorerBarMenuItems[0].addEventListener("click", function () { // Favorites button
     openSidebar("Favorites");
 });
@@ -488,6 +502,22 @@ if (localStorage.madesktopChanViewNoJs) {
     iframe.sandbox = "allow-forms allow-modals allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-presentation allow-same-origin";
 }
 
+if (localStorage.madesktopChanViewSidebarWidth) {
+    document.documentElement.style.setProperty("--sidebar-width", localStorage.madesktopChanViewSidebarWidth);
+}
+
+if (localStorage.madesktopChanViewToolbarOrder) {
+    const order = localStorage.madesktopChanViewToolbarOrder.split(",");
+    for (const toolbarId of order) {
+        toolbars.appendChild(document.getElementById(toolbarId));
+    }
+}
+
+if (localStorage.madesktopChanViewLockToolbars) {
+    toolbars.classList.add("locked");
+    toolbarsMenuItems[5].classList.add("checkedItem");
+}
+
 window.addEventListener('focus', function () {
     iframe.style.pointerEvents = "auto";
 });
@@ -500,6 +530,7 @@ window.addEventListener('blur', function () {
 
 new MutationObserver(function (mutations) {
     iframe.contentDocument.body.style.zoom = madScaleFactor;
+    sidebarWindow.contentDocument.body.style.zoom = madScaleFactor;
 }).observe(
     document.body,
     { attributes: true, attributeFilter: ["style"] }
@@ -925,11 +956,15 @@ function openSidebar(name) {
             explorerBarMenuItems[0].classList.remove("activeStyle");
             explorerBarMenuItems[1].classList.add("activeStyle");
             explorerBarMenuItems[2].classList.remove("activeStyle");
+            channelsButton.dataset.enabled = true;
+            delete favoritesButton.dataset.enabled;
             break;
         case "Favorites":
             explorerBarMenuItems[0].classList.add("activeStyle");
             explorerBarMenuItems[1].classList.remove("activeStyle");
             explorerBarMenuItems[2].classList.remove("activeStyle");
+            delete channelsButton.dataset.enabled;
+            favoritesButton.dataset.enabled = true;
     }
 }
 
@@ -938,6 +973,8 @@ function closeSidebar() {
     explorerBarMenuItems[0].classList.remove("activeStyle");
     explorerBarMenuItems[1].classList.remove("activeStyle");
     explorerBarMenuItems[2].classList.add("activeStyle");
+    delete channelsButton.dataset.enabled;
+    delete favoritesButton.dataset.enabled;
 }
 
 // I DON'T KNOW WHY BUT having a width of about 800px (unscaled) crashes Wallpaper Engine CEF when loading disney.com
@@ -1149,6 +1186,16 @@ async function fetchProxy(url, options) {
     }
 }
 
+function iframeClickEventCtrl(clickable) {
+    if (clickable) {
+        iframe.style.pointerEvents = "auto";
+        sidebarWindow.style.pointerEvents = "auto";
+    } else {
+        iframe.style.pointerEvents = "none";
+        sidebarWindow.style.pointerEvents = "none";
+    }
+}
+
 // Save it later, as some sites may crash Wallpaper Engine CEF upon loading
 // Prevents the user from being stuck in a crash loop
 function delayedSave() {
@@ -1221,11 +1268,90 @@ window.addEventListener('load', function () {
 });
 
 sidebarWindow.addEventListener('load', function () {
+    sidebarWindow.contentDocument.body.style.zoom = madScaleFactor;
     const sidebarSchemeElement = sidebarWindow.contentDocument.getElementById("scheme");
     if (sidebarSchemeElement) {
         sidebarSchemeElement.href = schemeElement.href;
     }
 });
+
+{
+    let offset = 0, isDown = false;
+
+    border.addEventListener('pointerdown', function (event) {
+        iframeClickEventCtrl(false);
+        isDown = true;
+        offset = border.offsetLeft - Math.ceil(event.clientX / madScaleFactor);
+        if (localStorage.madesktopOutlineMode) {
+            border.style.opacity = 1;
+        }
+    }, true);
+
+    document.addEventListener('pointerup', function () {
+        iframeClickEventCtrl(true);
+        isDown = false;
+        if (localStorage.madesktopOutlineMode && border.style.opacity !== '') {
+            document.documentElement.style.setProperty('--sidebar-width', border.offsetLeft + 'px');
+        }
+        localStorage.madesktopChanViewSidebarWidth = getComputedStyle(document.documentElement).getPropertyValue('--sidebar-width');
+        border.style.opacity = '';
+    }, true);
+
+    document.addEventListener('pointermove', function (event) {
+        if (isDown) {
+            if (localStorage.madesktopOutlineMode) {
+                border.style.left = (Math.ceil(event.clientX / madScaleFactor) + offset) + 'px'
+            } else {
+                document.documentElement.style.setProperty('--sidebar-width', (Math.ceil(event.clientX / madScaleFactor) + offset) + 'px');
+                border.style.left = '';
+            }
+        }
+    }, true);
+}
+
+{
+    let downGrabber = -1;
+    for (const grabber of grabbers) {
+        grabber.addEventListener('pointerdown', function (event) {
+            iframeClickEventCtrl(false);
+            downGrabber = Array.from(grabbers).indexOf(this);
+        }, true);
+
+        document.addEventListener('pointerup', function () {
+            iframeClickEventCtrl(true);
+            downGrabber = -1;
+            localStorage.madesktopChanViewToolbarOrder = Array.from(toolbars.children).map(el => el.id).join(',');
+        }, true);
+    }
+
+    const toolbarOrder = [menuBar, toolbar, addressBar];
+    for (const toolbar of toolbarOrder) {
+        toolbar.addEventListener('pointerenter', function () {
+            if (downGrabber !== -1) {
+                const toolbarIndex = Array.from(toolbars.children).indexOf(toolbar);
+                switch (toolbarIndex) {
+                    case 0:
+                        toolbars.insertBefore(toolbarOrder[downGrabber], toolbar);
+                        break;
+                    case 1:
+                        if (toolbars.children[2] === toolbarOrder[downGrabber]) {
+                            toolbars.insertBefore(toolbarOrder[downGrabber], toolbar);
+                        } else {
+                            toolbars.insertBefore(toolbarOrder[downGrabber], toolbars.children[2]);
+                        }
+                        break;
+                    case 2:
+                        toolbars.appendChild(toolbarOrder[downGrabber]);
+                }
+                toolbars.children[0].appendChild(throbber);
+            }
+        });
+    }
+
+    document.addEventListener('pointerleave', function () {
+        downGrabber = -1;
+    });
+}
 
 iframe.addEventListener('load', function () {
     if (!iframe.contentDocument) {

@@ -389,6 +389,7 @@
 				checkbox: {
 					toggle: () => {
 						$status_area.toggle();
+						madSetResizeArea(getComputedStyle($status_area[0]).display !== "none");
 					},
 					check: () => $status_area.is(":visible"),
 				},

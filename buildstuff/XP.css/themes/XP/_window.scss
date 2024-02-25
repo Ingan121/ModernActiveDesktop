@@ -318,6 +318,29 @@
     border-top-right-radius: 0;
 }
 
+.status-area {
+    border-top: solid 1px #959385;
+    box-shadow: inset 0 3px 2px -2px rgba(0, 0, 0, 0.25);
+    padding: 2px 0;
+    box-sizing: border-box;
+}
+.status-field {
+    border: none;
+    border-right: solid 1px #c7c5b2;
+}
+.status-text {
+    padding-left: 2px;
+    box-sizing: border-box;
+}
+.status-field:not(:first-child) {
+    margin-left: -2px;
+    border-left: solid 1px #ffffff;
+}
+.status-resize-area {
+    margin-left: -2px;
+    border-left: solid 1px #ffffff;
+}
+
 .menus {
     background-color: #ECE9D8 !important; /* enforced in XP by visual styles & flat menus */
 }
@@ -506,7 +529,8 @@
         content: url('../apps/channelviewer/images/xp/Favorites.png');
     }
 
-    #favorites-button:hover .toolbarButtonImage {
+    #favorites-button:hover .toolbarButtonImage,
+    #favorites-button[data-enabled] .toolbarButtonImage {
         content: url('../apps/channelviewer/images/xp/Favorites_hover.png');
     }
 
@@ -532,6 +556,10 @@
 
     #open-button:hover .toolbarButtonImage {
         content: url('../apps/channelviewer/images/xp/Open_hover.png');
+    }
+
+    &::after {
+        content: url('../apps/channelviewer/images/xp/Back_hover.png') url('../apps/channelviewer/images/xp/Forward_hover.png') url('../apps/channelviewer/images/xp/Refresh_hover.png') url('../apps/channelviewer/images/xp/Stop_hover.png') url('../apps/channelviewer/images/xp/Home_hover.png') url('../apps/channelviewer/images/xp/Favorites_hover.png') url('../apps/channelviewer/images/Channels_hover.png') url('../apps/channelviewer/images/xp/Fullscreen_hover.png') url('../apps/channelviewer/images/xp/Print_hover.png') url('../apps/channelviewer/images/xp/Open_hover.png');
     }
 
     #throbber {

@@ -194,6 +194,9 @@ html, body, .jspaint {
 	min-width: 0px;
 	padding-left: 3px;
 }
+.status-resize-area {
+	width: 19px;
+}
 
 .hover-halo {
 	pointer-events: none;

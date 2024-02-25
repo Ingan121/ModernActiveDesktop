@@ -740,48 +740,49 @@ const $status_area = $(E("div")).addClass("status-area").appendTo($V);
 const $status_text = $(E("div")).addClass("status-text status-field inset-shallow").appendTo($status_area);
 const $status_position = $(E("div")).addClass("status-coordinates status-field inset-shallow").appendTo($status_area);
 const $status_size = $(E("div")).addClass("status-coordinates status-field inset-shallow").appendTo($status_area);
+const $status_resize_area = $(E("div")).addClass("status-resize-area").appendTo($status_area);
 
-const news_seen_key = "jspaint latest news seen";
-const latest_news_datetime = $this_version_news.find("time").attr("datetime");
-const $news_indicator = $(`
-	<a class='news-indicator' href='#project-news'>
-		<!--<img src='images/winter/present.png' width='24' height='22' alt=''/>-->
-		<img src='images/about/news.gif' width='40' height='16' alt=''/>
-		<!--<img src='images/new.gif' width='40' height='16' alt=''/>-->
-		<span class='marquee' dir='ltr' style='--text-width: 44ch; --animation-duration: 3s;'>
-			<span>
-				<!--<b>Cool new things</b> — One thing! Another thing! Something else!-->
-				Themes, New Homepage, File Formats, and More!
-			</span>
-		</span>
-		<!--<span>
-			<b>Themes</b> and <b>File Formats</b>
-		</span>-->
-	</a>
-`);
-$news_indicator.on("click auxclick", (event) => {
-	event.preventDefault();
-	show_news();
-	$news_indicator.remove();
-	try {
-		localStorage[news_seen_key] = latest_news_datetime;
-		// eslint-disable-next-line no-empty
-	} catch (error) { }
-});
-let news_seen;
-let local_storage_unavailable;
-try {
-	news_seen = localStorage[news_seen_key];
-} catch (error) {
-	local_storage_unavailable = true;
-}
+// const news_seen_key = "jspaint latest news seen";
+// const latest_news_datetime = $this_version_news.find("time").attr("datetime");
+// const $news_indicator = $(`
+// 	<a class='news-indicator' href='#project-news'>
+// 		<!--<img src='images/winter/present.png' width='24' height='22' alt=''/>-->
+// 		<img src='images/about/news.gif' width='40' height='16' alt=''/>
+// 		<!--<img src='images/new.gif' width='40' height='16' alt=''/>-->
+// 		<span class='marquee' dir='ltr' style='--text-width: 44ch; --animation-duration: 3s;'>
+// 			<span>
+// 				<!--<b>Cool new things</b> — One thing! Another thing! Something else!-->
+// 				Themes, New Homepage, File Formats, and More!
+// 			</span>
+// 		</span>
+// 		<!--<span>
+// 			<b>Themes</b> and <b>File Formats</b>
+// 		</span>-->
+// 	</a>
+// `);
+// $news_indicator.on("click auxclick", (event) => {
+// 	event.preventDefault();
+// 	show_news();
+// 	$news_indicator.remove();
+// 	try {
+// 		localStorage[news_seen_key] = latest_news_datetime;
+// 		// eslint-disable-next-line no-empty
+// 	} catch (error) { }
+// });
+// let news_seen;
+// let local_storage_unavailable;
+// try {
+// 	news_seen = localStorage[news_seen_key];
+// } catch (error) {
+// 	local_storage_unavailable = true;
+// }
 const day = 24 * 60 * 60 * 1000;
-const news_period_if_can_dismiss = 15 * day;
-const news_period_if_cannot_dismiss = 5 * day;
-const news_period = local_storage_unavailable ? news_period_if_cannot_dismiss : news_period_if_can_dismiss;
-if (Date.now() < Date.parse(latest_news_datetime) + news_period && news_seen !== latest_news_datetime) {
-	$status_area.append($news_indicator);
-}
+// const news_period_if_can_dismiss = 15 * day;
+// const news_period_if_cannot_dismiss = 5 * day;
+// const news_period = local_storage_unavailable ? news_period_if_cannot_dismiss : news_period_if_can_dismiss;
+// if (Date.now() < Date.parse(latest_news_datetime) + news_period && news_seen !== latest_news_datetime) {
+// 	$status_area.append($news_indicator);
+// }
 
 $status_text.default = () => {
 	$status_text.text(localize("For Help, click Help Topics on the Help Menu."));
@@ -858,6 +859,7 @@ $G.on("eye-gaze-mode-toggled", () => {
 $G.on("resize", () => { // for browser zoom, and in-app zoom of the canvas
 	update_canvas_rect();
 	update_disable_aa();
+	madSetResizeArea(getComputedStyle($status_area[0]).display !== "none");
 });
 $canvas_area.on("scroll", () => {
 	update_canvas_rect();

@@ -33,33 +33,28 @@
     }
 }
 ::-webkit-scrollbar-button {
+    border: none;
+    box-shadow: none !important;
+    /* jspaint fix */
+    background-position: unset !important;
     &:vertical {
         &:start {
             height: 17px !important;
             background-image: svg-load("./icon/scroll-arrow-up.svg") !important;
-            box-shadow: none !important;
-            /* jspaint fix */
-            background-position: unset !important;
         }
         &:end {
             height: 17px !important;
             background-image: svg-load("./icon/scroll-arrow-down.svg") !important;
-            box-shadow: none !important;
-            background-position: unset !important;
         }
     }
     &:horizontal {
         &:start {
             width: 17px;
             background-image: svg-load("./icon/scroll-arrow-left.svg") !important;
-            box-shadow: none !important;
-            background-position: unset !important;
         }
         &:end {
             width: 17px;
             background-image: svg-load("./icon/scroll-arrow-right.svg") !important;
-            box-shadow: none !important;
-            background-position: unset !important;
         }
     }
 }
@@ -82,25 +77,24 @@
 
 .borderedScrollBar::-webkit-scrollbar-button:vertical:start {
     height: 19px !important;
-    border-top: solid 2px transparent;
-    border-right: solid 2px transparent;
-    background-clip: content-box;
+    border-top: solid 2px transparent !important;
+    border-right: solid 2px transparent !important;
 }
 .borderedScrollBar::-webkit-scrollbar-button:vertical:end {
     height: 19px !important;
-    border-right: solid 2px transparent;
-    border-bottom: solid 2px transparent;
+    border-right: solid 2px transparent !important;
+    border-bottom: solid 2px transparent !important;
     background-clip: content-box;
 }
 .borderedScrollBar::-webkit-scrollbar-button:horizontal:start {
     width: 19px !important;
-    border-left: solid 2px transparent;
-    border-bottom: solid 2px transparent;
+    border-left: solid 2px transparent !important;
+    border-bottom: solid 2px transparent !important;
     background-clip: content-box;
 }
 .borderedScrollBar::-webkit-scrollbar-button:horizontal:end {
     width: 19px !important;
-    border-right: solid 2px transparent;
-    border-bottom: solid 2px transparent;
+    border-right: solid 2px transparent !important;
+    border-bottom: solid 2px transparent !important;
     background-clip: content-box;
 }

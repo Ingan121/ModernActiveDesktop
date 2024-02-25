@@ -22,6 +22,8 @@ const connectTestBtn = document.getElementById('connectTestBtn');
 const connectionStatus = document.getElementById('connectionStatus');
 const showGuideBtn = document.getElementById('showGuideBtn');
 const inetcplBtn = document.getElementById('inetcplBtn');
+const exportBtn = document.getElementById('exportBtn');
+const importBtn = document.getElementById('importBtn');
 const resetBtn = document.getElementById('resetBtn');
 
 const isWin10 = navigator.userAgent.includes('Windows NT 10.0');
@@ -244,6 +246,29 @@ inetcplBtn.addEventListener('click', function () {
     const left = parseInt(madDeskMover.config.xPos) + 25 + 'px';
     const top = parseInt(madDeskMover.config.yPos) + 50 + 'px';
     madOpenWindow('apps/inetcpl/general.html', true, '400px', '371px', 'wnd', false, top, left, false, true, true);
+});
+
+exportBtn.addEventListener('click', function () {
+    const json = JSON.stringify(localStorage);
+    copyText(json);
+    madAlert("Configuration copied to clipboard! Paste it to a text file and save it to import it later.");
+});
+
+importBtn.addEventListener('click', async function () {
+    const [fileHandle] = await window.showOpenFilePicker();
+    const file = await fileHandle.getFile();
+    const text = await file.text();
+
+    try {
+        JSON.parse(text);
+        const res = await madConfirm("Importing this configuration will overwrite your current configuration. Are you sure you want to continue?");
+        if (res) {
+            localStorage.madesktopConfigToImport = text;
+            parent.location.replace("../../confmgr.html?action=import");
+        }
+    } catch {
+        madAlert("Invalid configuration file!", null, "error");
+    }
 });
 
 resetBtn.addEventListener('click', parent.reset);

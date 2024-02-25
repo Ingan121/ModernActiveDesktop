@@ -531,7 +531,7 @@ function changeScale(scale) {
     vHeight = window.innerHeight / scaleFactor;
     document.body.style.zoom = scaleFactor;
     updateIframeScale();
-    document.dispatchEvent(new Event("mouseup")); // Move all deskitems inside the visible area
+    document.dispatchEvent(new Event("pointerup")); // Move all deskitems inside the visible area
     log({scaleFactor, vWidth, vHeight, dpi: 96 * scaleFactor});
 }
 
@@ -848,8 +848,13 @@ function generateThemeSvgs(targetElement = document.documentElement) {
         <rect fill="${buttonDkShadow}" x="0" y="14" width="13" height="1"/>
         <rect fill="${buttonDkShadow}" x="12" y="0" width="1" height="14"/></svg>`;
     const resizeArea = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -0.5 12 12" shape-rendering="crispEdges">
-    <path stroke="${buttonHilight}" d="M11 0h1M10 1h1M9 2h1M8 3h1M7 4h1M11 4h1M6 5h1M10 5h1M5 6h1M9 6h1M4 7h1M8 7h1M3 8h1M7 8h1M11 8h1M2 9h1M6 9h1M10 9h1M1 10h1M5 10h1M9 10h1M0 11h1M4 11h1M8 11h1" />
-    <path stroke="${buttonShadow}" d="M11 1h1M10 2h2M9 3h2M8 4h2M7 5h2M11 5h1M6 6h2M10 6h2M5 7h2M9 7h2M4 8h2M8 8h2M3 9h2M7 9h2M11 9h1M2 10h2M6 10h2M10 10h2M1 11h2M5 11h2M9 11h2" /></svg>`;
+        <path stroke="${buttonHilight}" d="M11 0h1M10 1h1M9 2h1M8 3h1M7 4h1M11 4h1M6 5h1M10 5h1M5 6h1M9 6h1M4 7h1M8 7h1M3 8h1M7 8h1M11 8h1M2 9h1M6 9h1M10 9h1M1 10h1M5 10h1M9 10h1M0 11h1M4 11h1M8 11h1" />
+        <path stroke="${buttonShadow}" d="M11 1h1M10 2h2M9 3h2M8 4h2M7 5h2M11 5h1M6 6h2M10 6h2M5 7h2M9 7h2M4 8h2M8 8h2M3 9h2M7 9h2M11 9h1M2 10h2M6 10h2M10 10h2M1 11h2M5 11h2M9 11h2" /></svg>`;
+    const checkers = `<svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 2 2" width="2" height="2">
+        <rect fill="${buttonHilight}" x="0" y="0" width="1" height="1"/>
+        <rect fill="transparent" x="1" y="0" width="1" height="1"/>
+        <rect fill="${buttonHilight}" x="1" y="1" width="1" height="1"/>
+        <rect fill="transparent" x="0" y="1" width="1" height="1"/></svg>`;
 
     const css = `
     :root {
@@ -867,6 +872,7 @@ function generateThemeSvgs(targetElement = document.documentElement) {
         --indicator-thumb: url("data:image/svg+xml,${encodeURIComponent(indicatorThumb)}");
         --seek-handle: url("data:image/svg+xml,${encodeURIComponent(seekHandle)}");
         --resize-area: url("data:image/svg+xml,${encodeURIComponent(resizeArea)}");
+        --checkers: url("data:image/svg+xml,${encodeURIComponent(checkers)}");
     }`;
     return css;
 }
@@ -1245,142 +1251,155 @@ async function asyncTimeout(ms) {
 }
 
 // Lively Wallpaper doesn't work well with alert/confirm/prompt, so replace these with custom ones
-function madAlert(msg, callback, icon = "info") {
-    playSound(icon);
+async function madAlert(msg, callback, icon = "info") {
+    return new Promise(resolve => {
+        playSound(icon);
 
-    msgboxMessage.innerHTML = msg;
-    msgboxIcon.style.display = "block";
-    msgboxIcon.src = `images/${icon}.png`;
-    msgboxBtn2.style.display = "none";
-    msgboxInput.style.display = "none";
+        msgboxMessage.innerHTML = msg;
+        msgboxIcon.style.display = "block";
+        msgboxIcon.src = `images/${icon}.png`;
+        msgboxBtn2.style.display = "none";
+        msgboxInput.style.display = "none";
 
-    document.addEventListener('keypress', keypress);
-    document.addEventListener('keyup', keyup);
-    msgboxBtn1.addEventListener('click', close);
-    msgboxCloseBtn.addEventListener('click', close);
+        document.addEventListener('keypress', keypress);
+        document.addEventListener('keyup', keyup);
+        msgboxBtn1.addEventListener('click', close);
+        msgboxCloseBtn.addEventListener('click', close);
 
-    showDialog();
+        showDialog();
 
-    function keypress(event) {
-        if (event.key === "Enter") {
-            close();
+        function keypress(event) {
+            if (event.key === "Enter") {
+                close();
+            }
         }
-    }
-    function keyup(event) {
-        if (event.key === "Escape") {
-            close();
+        function keyup(event) {
+            if (event.key === "Escape") {
+                close();
+            }
         }
-    }
-    function close() {
-        msgboxBg.style.display = "none";
-        document.removeEventListener('keypress', keypress);
-        document.removeEventListener('keyup', keyup);
-        msgboxBtn1.removeEventListener('click', close);
-        msgboxCloseBtn.removeEventListener('click', close);
-        deskMovers[activeWindow].windowTitlebar.classList.remove("inactive");
-        if (callback) callback();
-    }
+        function close() {
+            msgboxBg.style.display = "none";
+            document.removeEventListener('keypress', keypress);
+            document.removeEventListener('keyup', keyup);
+            msgboxBtn1.removeEventListener('click', close);
+            msgboxCloseBtn.removeEventListener('click', close);
+            deskMovers[activeWindow].windowTitlebar.classList.remove("inactive");
+            if (callback) callback();
+            resolve();
+        }
+    });
 }
 
-function madConfirm(msg, callback) {
-    playSound("question");
+async function madConfirm(msg, callback) {
+    return new Promise(resolve => {
+        playSound("question");
 
-    msgboxMessage.innerHTML = msg;
-    msgboxIcon.style.display = "block";
-    msgboxIcon.src = "images/question.png";
-    msgboxBtn2.style.display = "block";
-    msgboxInput.style.display = "none";
+        msgboxMessage.innerHTML = msg;
+        msgboxIcon.style.display = "block";
+        msgboxIcon.src = "images/question.png";
+        msgboxBtn2.style.display = "block";
+        msgboxInput.style.display = "none";
 
-    document.addEventListener('keypress', keypress);
-    document.addEventListener('keyup', keyup);
-    msgboxBtn1.addEventListener('click', ok);
-    msgboxBtn2.addEventListener('click', close);
-    msgboxCloseBtn.addEventListener('click', close);
+        document.addEventListener('keypress', keypress);
+        document.addEventListener('keyup', keyup);
+        msgboxBtn1.addEventListener('click', ok);
+        msgboxBtn2.addEventListener('click', close);
+        msgboxCloseBtn.addEventListener('click', close);
 
-    showDialog();
+        showDialog();
 
-    function keypress(event) {
-        // Handle enter in keypress to prevent this from being triggered along with the context menu enter key
-        if (event.key === "Enter") {
-            ok();
+        function keypress(event) {
+            // Handle enter in keypress to prevent this from being triggered along with the context menu enter key
+            if (event.key === "Enter") {
+                ok();
+            }
         }
-    }
-    function keyup(event) {
-        // Aaand escape cannot be handled in keypress so it's here
-        if (event.key === "Escape") {
-            close();
+        function keyup(event) {
+            // Aaand escape cannot be handled in keypress so it's here
+            if (event.key === "Escape") {
+                close();
+            }
         }
-    }
-    function ok() {
-        msgboxBg.style.display = "none";
-        removeEvents();
-        if (callback) callback(true);
-    }
-    function close() {
-        msgboxBg.style.display = "none";
-        removeEvents();
-        if (callback) callback(false);
-    }
-    function removeEvents() {
-        document.removeEventListener('keypress', keypress);
-        document.removeEventListener('keyup', keyup);
-        msgboxBtn1.removeEventListener('click', ok);
-        msgboxBtn2.removeEventListener('click', close);
-        msgboxCloseBtn.removeEventListener('click', close);
-        deskMovers[activeWindow].windowTitlebar.classList.remove("inactive");
-    }
+        function ok() {
+            msgboxBg.style.display = "none";
+            removeEvents();
+            if (callback) callback(true);
+            resolve(true);
+        }
+        function close() {
+            msgboxBg.style.display = "none";
+            removeEvents();
+            if (callback) callback(false);
+            resolve(false);
+        }
+        function removeEvents() {
+            document.removeEventListener('keypress', keypress);
+            document.removeEventListener('keyup', keyup);
+            msgboxBtn1.removeEventListener('click', ok);
+            msgboxBtn2.removeEventListener('click', close);
+            msgboxCloseBtn.removeEventListener('click', close);
+            deskMovers[activeWindow].windowTitlebar.classList.remove("inactive");
+        }
+    });
 }
 
-function madPrompt(msg, callback, hint, text) {
-    if (runningMode === WE) { // Wallpaper Engine normally does not support keyboard input
-        callback(prompt(msg, text));
-        return;
-    }
-
-    msgboxMessage.innerHTML = msg;
-    msgboxIcon.style.display = "none";
-    msgboxBtn2.style.display = "block";
-    msgboxInput.style.display = "block";
-    msgboxInput.placeholder = hint || "";
-    msgboxInput.value = text || "";
-
-    document.addEventListener('keypress', keypress);
-    document.addEventListener('keyup', keyup);
-    msgboxBtn1.addEventListener('click', ok);
-    msgboxBtn2.addEventListener('click', close);
-    msgboxCloseBtn.addEventListener('click', close);
-
-    showDialog();
-    msgboxInput.focus();
-
-    function keypress(event) {
-        if (event.key === "Enter") {
-            ok();
+async function madPrompt(msg, callback, hint, text) {
+    return new Promise(resolve => {
+        if (runningMode === WE) { // Wallpaper Engine normally does not support keyboard input
+            const res = prompt(msg, text);
+            callback(res);
+            resolve(res);
+            return;
         }
-    }
-    function keyup(event) {
-        if (event.key === "Escape") {
-            close();
+
+        msgboxMessage.innerHTML = msg;
+        msgboxIcon.style.display = "none";
+        msgboxBtn2.style.display = "block";
+        msgboxInput.style.display = "block";
+        msgboxInput.placeholder = hint || "";
+        msgboxInput.value = text || "";
+
+        document.addEventListener('keypress', keypress);
+        document.addEventListener('keyup', keyup);
+        msgboxBtn1.addEventListener('click', ok);
+        msgboxBtn2.addEventListener('click', close);
+        msgboxCloseBtn.addEventListener('click', close);
+
+        showDialog();
+        msgboxInput.focus();
+
+        function keypress(event) {
+            if (event.key === "Enter") {
+                ok();
+            }
         }
-    }
-    function ok() {
-        msgboxBg.style.display = "none";
-        removeEvents();
-        if (callback) callback(msgboxInput.value);
-    }
-    function close() {
-        msgboxBg.style.display = "none";
-        removeEvents();
-        if (callback) callback(null);
-    }
-    function removeEvents() {
-        document.removeEventListener('keypress', keypress);
-        document.removeEventListener('keyup', keyup);
-        msgboxBtn1.removeEventListener('click', ok);
-        msgboxBtn2.removeEventListener('click', close);
-        msgboxCloseBtn.removeEventListener('click', close);
-        deskMovers[activeWindow].windowTitlebar.classList.remove("inactive");
-    }
+        function keyup(event) {
+            if (event.key === "Escape") {
+                close();
+            }
+        }
+        function ok() {
+            msgboxBg.style.display = "none";
+            removeEvents();
+            if (callback) callback(msgboxInput.value);
+            resolve(msgboxInput.value);
+        }
+        function close() {
+            msgboxBg.style.display = "none";
+            removeEvents();
+            if (callback) callback(null);
+            resolve(null);
+        }
+        function removeEvents() {
+            document.removeEventListener('keypress', keypress);
+            document.removeEventListener('keyup', keyup);
+            msgboxBtn1.removeEventListener('click', ok);
+            msgboxBtn2.removeEventListener('click', close);
+            msgboxCloseBtn.removeEventListener('click', close);
+            deskMovers[activeWindow].windowTitlebar.classList.remove("inactive");
+        }
+    });
 }
 
 function preventDefault(event) {
@@ -1534,9 +1553,7 @@ function reset(res) {
         }
         madConfirm(msg, function (res) {
             if (res) {
-                localStorage.clear();
-                location.reload(true);
-                throw new Error("Refreshing...");
+                location.replace("confmgr.html?action=reset");
             }
         });
     }

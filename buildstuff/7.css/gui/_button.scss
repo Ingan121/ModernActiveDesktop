@@ -186,6 +186,10 @@ button:not(.window-button):not(.lightweight),
   z-index: 0;
 
   &::before {
+    display: none !important;
+  }
+
+  &::after {
     content: "";
     position: absolute;
     width: 100%;
@@ -211,15 +215,17 @@ button:not(.window-button):not(.lightweight),
 
   &:not(:disabled):not([data-disabled]) {
     &:hover,
-    &[data-hover] {
-      &::before {
+    &[data-hover],
+    &[data-enabled] {
+      &::after {
         opacity: 1;
         transition: opacity 0.3s;
       }
     }
     &:active,
-    &[data-active] {
-      &::before {
+    &[data-active],
+    &[data-enabled] {
+      &::after {
         background: linear-gradient(
             180deg,
             rgba(0, 0, 0, 0.4) 0%,
@@ -238,32 +244,57 @@ button:not(.window-button):not(.lightweight),
 
 #madChanView {
   #toolbar {
-    height: 38px;
+    min-height: 38px;
   }
   .toolbarButton {
     min-width: 29px;
-    height: 36px;
+    min-height: 36px;
   }
   .toolbarButtonImage {
     margin-top: 6px;
   }
+  #channels-button .toolbarButtonImage {
+    margin-top: 7px;
+  }
+  #toolbar.rightLabels {
+    .toolbarButtonLabel {
+      top: -7px !important;
+    }
+  }
+  &:not([data-fullscreen]) #toolbar.bottomLabels {
+    min-height: 52px;
+    .toolbarButton {
+      min-height: 50px;
+      &:not(#back-expand-button):not(#forward-expand-button) {
+        min-width: 77px;
+      }
+    }
+    .toolbarButtonImage {
+      margin-left: 28px !important;
+    }
+    #channels-button .toolbarButtonImage {
+      margin-bottom: 4px;
+    }
+    #back-expand-button,
+    #forward-expand-button {
+      span {
+        line-height: 40px !important;
+      }
+    }
+  }
   #back-button,
   #forward-button {
-    &::before {
-      border-top-right-radius: 0;
-      border-bottom-right-radius: 0;
-    }
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
   }
   #back-expand-button,
   #forward-expand-button {
-    min-width: 12px;
-    &::before {
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
-    }
+    min-width: 12px !important;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
     border-left: none !important;
     span {
-        line-height: 28px;
+      line-height: 30px;
     }
   }
 

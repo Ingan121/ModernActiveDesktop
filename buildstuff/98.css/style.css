@@ -127,6 +127,7 @@
   --indicator-thumb: svg-load("./icon/indicator-horizontal.svg");
   --seek-handle: svg-load("./icon/seek-handle.svg");
   --resize-area: svg-load("./icon/resize-area.svg");
+  --checkers: svg-load("./icon/checkers.svg");
 
   --hilight-inverted: #FFFF7F;
 }
