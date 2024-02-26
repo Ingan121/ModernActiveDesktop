@@ -494,6 +494,10 @@ urlbar.addEventListener('keyup', function (e) {
     }
 });
 
+urlbar.addEventListener('contextmenu', function (event) {
+    event.stopPropagation();
+});
+
 goButton.addEventListener('click', function () {
     go(urlbar.value);
 });

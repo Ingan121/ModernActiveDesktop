@@ -130,7 +130,6 @@ body[data-fullscreen] .contextMenuBg {
     min-height: 17px;
     font-size: 11px;
     padding-left: 2px;
-    pointer-events: auto !important;
     position: relative;
 }
 

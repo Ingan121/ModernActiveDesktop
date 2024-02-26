@@ -130,11 +130,14 @@ class MadMenu {
                     return;
                 }
                 this.shouldNotCloseSubmenu = false;
+                const standalone = !!menuBg.dataset.openStandalone;
                 this.closeMenu(submenu, true);
                 if (event.relatedTarget && event.relatedTarget.id && event.relatedTarget.id === parentMenuBg.id) {
                     return;
                 }
-                this.closeMenu(menuBg.dataset.submenuOf);
+                if (!standalone) {
+                    this.closeMenu(menuBg.dataset.submenuOf);
+                }
             });
         }
     }
@@ -174,6 +177,10 @@ class MadMenu {
             default:
                 if (standalone) {
                     menuBg.style.animation = 'cmDropdownright 0.25s linear';
+                    menuBg.style.pointerEvents = 'none';
+                    menuBg.addEventListener('animationend', () => {
+                        menuBg.style.pointerEvents = '';
+                    }, {once: true});
                 } else if (isSubmenu) {
                     menuBg.style.animation = 'cmDropright 0.25s linear';
                 } else {
@@ -201,8 +208,8 @@ class MadMenu {
             menuBg.style.left = left + 'px';
         }
         menuBg.style.display = 'block';
-        this.menuBar.dataset.active = true;
         if (!standalone) {
+            this.menuBar.dataset.active = true;
             if (isSubmenu) {
                 parentMenuItem.dataset.active = true;
             } else {
