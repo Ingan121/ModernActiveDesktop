@@ -78,14 +78,14 @@
         return;
     }
 
-    const parentStyleElement = parent.document.getElementById("style");
-    const parentSchemeElement = parent.document.getElementById("scheme");
-    const parentMenuStyleElement = parent.document.getElementById("menuStyle");
+    const parentStyleElement = top.document.getElementById("style");
+    const parentSchemeElement = top.document.getElementById("scheme");
+    const parentMenuStyleElement = top.document.getElementById("menuStyle");
     const schemeElement = document.getElementById("scheme");
     const menuStyleElement = document.getElementById("menuStyle");
     const styleElement = document.getElementById("style");
     const deskMoverNum = frameElement.dataset.num || 0;
-    const deskMover = parent.deskMovers[deskMoverNum];
+    const deskMover = top.deskMovers[deskMoverNum];
     const config = deskMover.config;
 
     applyScheme(true);
@@ -136,10 +136,12 @@
         }
 
         try {
-            document.documentElement.style.setProperty('--hilight-inverted', parent.invertColor(getComputedStyle(document.documentElement).getPropertyValue('--hilight')));
+            document.documentElement.style.setProperty('--hilight-inverted', top.invertColor(getComputedStyle(document.documentElement).getPropertyValue('--hilight')));
         } catch {
             document.documentElement.style.setProperty('--hilight-inverted', 'var(--hilight-text)');
         }
+
+        changeUnderline(!localStorage.madesktopHideUnderline);
 
         if (window.osguiCompatRequired && localStorage.madesktopColorScheme === "7css4mad") {
             if (localStorage.madesktopAeroColor) {
@@ -163,7 +165,7 @@
     function processTheme() {
         styleElement.textContent = parentStyleElement.textContent;
 
-        if (parent.isDarkColor(getComputedStyle(parent.document.documentElement).getPropertyValue('--button-face'))) {
+        if (top.isDarkColor(getComputedStyle(top.document.documentElement).getPropertyValue('--button-face'))) {
             if (window.osguiCompatRequired) {
                 styleElement.textContent += `
                     .tool-icon {
@@ -184,7 +186,7 @@
         }
 
         try {
-            document.documentElement.style.setProperty('--hilight-inverted', parent.invertColor(getComputedStyle(document.documentElement).getPropertyValue('--hilight')));
+            document.documentElement.style.setProperty('--hilight-inverted', top.invertColor(getComputedStyle(document.documentElement).getPropertyValue('--hilight')));
         } catch {
             document.documentElement.style.setProperty('--hilight-inverted', 'var(--hilight-text)');
         }
@@ -202,19 +204,31 @@
         }
     }
 
+    function changeUnderline(show) {
+        if (show) {
+            document.documentElement.style.removeProperty('--underline');
+            document.documentElement.style.removeProperty('--underline-hilight');
+            document.documentElement.style.removeProperty('--underline-disabled');
+        } else {
+            document.documentElement.style.setProperty('--underline', 'transparent');
+            document.documentElement.style.setProperty('--underline-hilight', 'transparent');
+            document.documentElement.style.setProperty('--underline-disabled', 'transparent');
+        }
+    }
+
     Object.defineProperties(window, {
         madScaleFactor: {
             get: function () {
                 if (config.unscaled) {
                     return 1;
                 } else {
-                    return parseFloat(parent.scaleFactor);
+                    return parseFloat(top.scaleFactor);
                 }
             }
         },
         madRunningMode: {
             get: function () {
-                return parent.runningMode;
+                return top.runningMode;
             }
         }
     });
@@ -225,12 +239,12 @@
             canvas.toBlob((blob) => {
                 const reader = new FileReader();
                 reader.onload = function () {
-                    parent.changeBgType("image");
-                    parent.changeBgImgMode("grid");
+                    top.changeBgType("image");
+                    top.changeBgImgMode("grid");
                     localStorage.madesktopBgType = "image";
                     localStorage.madesktopBgImgMode = "grid";
                     const b64str = reader.result.split(";base64,")[1];
-                    parent.document.body.style.backgroundImage = "url('data:image/png;base64," + b64str + "')";
+                    top.document.body.style.backgroundImage = "url('data:image/png;base64," + b64str + "')";
                     localStorage.madesktopBgImg = b64str;
                 };
                 reader.readAsDataURL(blob);
@@ -240,12 +254,12 @@
             canvas.toBlob((blob) => {
                 const reader = new FileReader();
                 reader.onload = function () {
-                    parent.changeBgType("image");
-                    parent.changeBgImgMode("center");
+                    top.changeBgType("image");
+                    top.changeBgImgMode("center");
                     localStorage.madesktopBgType = "image";
                     localStorage.madesktopBgImgMode = "center";
                     const b64str = reader.result.split(";base64,")[1];
-                    parent.document.body.style.backgroundImage = "url('data:image/png;base64," + b64str + "')";
+                    top.document.body.style.backgroundImage = "url('data:image/png;base64," + b64str + "')";
                     localStorage.madesktopBgImg = b64str;
                 };
                 reader.readAsDataURL(blob);
@@ -347,9 +361,9 @@
 
     // expose MAD APIs
     window.madDeskMover = deskMover;
-    window.madOpenWindow = parent.openWindow;
-    window.madOpenConfig = parent.openConfig;
-    window.madOpenExternal = parent.openExternal;
+    window.madOpenWindow = top.openWindow;
+    window.madOpenConfig = top.openConfig;
+    window.madOpenExternal = top.openExternal;
 
     window.madBringToTop = deskMover.bringToTop.bind(deskMover);
     window.madOpenDropdown = deskMover.openDropdown.bind(deskMover);
@@ -366,8 +380,8 @@
     window.madSetResizeArea = deskMover.setResizeArea.bind(deskMover);
     window.madCloseWindow = deskMover.closeWindow.bind(deskMover);
 
-    window.madAlert = parent.madAlert;
-    window.madConfirm = parent.madConfirm;
-    window.madPrompt = parent.madPrompt;
-    window.madPlaySound = parent.playSound;
+    window.madAlert = top.madAlert;
+    window.madConfirm = top.madConfirm;
+    window.madPrompt = top.madPrompt;
+    window.madPlaySound = top.playSound;
 })();

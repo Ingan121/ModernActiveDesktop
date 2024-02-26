@@ -854,10 +854,10 @@ class DeskMover {
         this.changeWndStyle("noframes", true);
         let marginTop = 0, marginLeft = 0, marginRight = 0, marginBottom = 0;
         if (withMargins) {
-            marginTop = parseInt(localStorage.madesktopChanViewTopMargin) || 0;
-            marginLeft = parseInt(localStorage.madesktopChanViewLeftMargin) || 75;
-            marginRight = parseInt(localStorage.madesktopChanViewRightMargin) || 0;
-            marginBottom = parseInt(localStorage.madesktopChanViewBottomMargin) || 48;
+            marginTop = parseInt(localStorage.madesktopChanViewTopMargin || "0");
+            marginLeft = parseInt(localStorage.madesktopChanViewLeftMargin || "75px");
+            marginRight = parseInt(localStorage.madesktopChanViewRightMargin || "0");
+            marginBottom = parseInt(localStorage.madesktopChanViewBottomMargin || "48px");
         }
         // This doesn't require user gesture
         // There's no visual difference between this and the real fullscreen in Wallpaper Engine
@@ -1509,7 +1509,7 @@ class DeskMover {
                     this.windowFrame.style.borderColor = "var(--button-face)";
                     this.windowFrame.style.backgroundColor = "var(--button-face)"; // required to fix some weird artifacts in hidpi/css-zoomed mode
                 }
-                if (this.config.style === "wnd") {
+                if (this.config.style === "wnd" && !this.noFrames) {
                     this.windowTitlebar.style.display = "flex";
                 } else if ((this.posInWindow.y <= 50 && !this.noFrames) || this.config.style === "nonad") {
                     this.windowTitlebar.style.display = "block";
@@ -1519,11 +1519,11 @@ class DeskMover {
             } else {
                 this.windowFrame.style.borderColor = "transparent";
                 this.windowFrame.style.backgroundColor = "transparent";
-                if (this.config.style === "ad") {
+                if (this.config.style === "ad" && !this.noFrames) {
                     this.windowTitlebar.style.display = "none";
                 }
             }
-        } else if (this.config.style === "ad") {
+        } else if (this.config.style === "ad" && !this.noFrames) {
             // Won't happen in WE; but required in normal browsers
             // I use Chrome/Edge for some debugging as mouse hovering doesn't work well in WE with a debugger attached
             // Edit: Well it now works well at the time of writing (MAD 3.0)

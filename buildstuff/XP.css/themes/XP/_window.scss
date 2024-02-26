@@ -401,10 +401,6 @@
         background-repeat: no-repeat;
     }
 
-    #iconAreaLabel {
-        margin-right: 35px;
-    }
-
     .window-body {
         padding-bottom: 0;
     }
@@ -469,6 +465,7 @@
     }
 }
 
+/* XP IE6 styles for ChannelViewer */
 #madChanView {
     #toolbars {
         border: none;
@@ -482,8 +479,8 @@
         content: url('../apps/channelviewer/images/xp/Back.png');
     }
 
-    #back-button:hover:not([data-disabled='true']) .toolbarButtonImage,
-    #back-button[data-hover]:not([data-disabled='true']) .toolbarButtonImage {
+    #back-button:hover:not([data-disabled]) .toolbarButtonImage,
+    #back-button[data-hover]:not([data-disabled]) .toolbarButtonImage {
         content: url('../apps/channelviewer/images/xp/Back_hover.png');
     }
 
@@ -491,8 +488,8 @@
         content: url('../apps/channelviewer/images/xp/Forward.png');
     }
 
-    #forward-button:hover:not([data-disabled='true']) .toolbarButtonImage,
-    #forward-button[data-hover]:not([data-disabled='true']) .toolbarButtonImage {
+    #forward-button:hover:not([data-disabled]) .toolbarButtonImage,
+    #forward-button[data-hover]:not([data-disabled]) .toolbarButtonImage {
         content: url('../apps/channelviewer/images/xp/Forward_hover.png');
     }
 
@@ -538,7 +535,8 @@
         content: url('../apps/channelviewer/images/xp/Fullscreen.png');
     }
 
-    #fullscreen-button:hover .toolbarButtonImage {
+    #fullscreen-button:hover .toolbarButtonImage,
+    #fullscreen-button[data-enabled] .toolbarButtonImage {
         content: url('../apps/channelviewer/images/xp/Fullscreen_hover.png');
     }
 
@@ -558,8 +556,23 @@
         content: url('../apps/channelviewer/images/xp/Open_hover.png');
     }
 
+    #go-button {
+        height: 24px !important;
+        border-radius: 0;
+        margin-top: -1px;
+        img {
+            top: 1px;
+            left: 2px;
+            content: url('../apps/channelviewer/images/xp/Go.png');
+        }
+    }
+
+    #go-button:hover img {
+        content: url('../apps/channelviewer/images/xp/Go_hover.png');
+    }
+
     &::after {
-        content: url('../apps/channelviewer/images/xp/Back_hover.png') url('../apps/channelviewer/images/xp/Forward_hover.png') url('../apps/channelviewer/images/xp/Refresh_hover.png') url('../apps/channelviewer/images/xp/Stop_hover.png') url('../apps/channelviewer/images/xp/Home_hover.png') url('../apps/channelviewer/images/xp/Favorites_hover.png') url('../apps/channelviewer/images/Channels_hover.png') url('../apps/channelviewer/images/xp/Fullscreen_hover.png') url('../apps/channelviewer/images/xp/Print_hover.png') url('../apps/channelviewer/images/xp/Open_hover.png');
+        content: url('../apps/channelviewer/images/xp/Back_hover.png') url('../apps/channelviewer/images/xp/Forward_hover.png') url('../apps/channelviewer/images/xp/Refresh_hover.png') url('../apps/channelviewer/images/xp/Stop_hover.png') url('../apps/channelviewer/images/xp/Home_hover.png') url('../apps/channelviewer/images/xp/Favorites_hover.png') url('../apps/channelviewer/images/Channels_hover.png') url('../apps/channelviewer/images/xp/Fullscreen_hover.png') url('../apps/channelviewer/images/xp/Print_hover.png') url('../apps/channelviewer/images/xp/Open_hover.png') url('../apps/channelviewer/images/xp/Go_hover.png') url('../apps/channelviewer/images/xp/throbber.webp') url('../apps/channelviewer/images/xp/throbber26.webp');
     }
 
     #throbber {
@@ -567,6 +580,13 @@
         background-image: url(../apps/channelviewer/images/xp/throbber.png);
         &[data-busy] {
             background-image: url(../apps/channelviewer/images/xp/throbber.webp);
+        }
+    }
+
+    #toolbar #throbber {
+        background-image: url(../apps/channelviewer/images/xp/throbber26.png);
+        &[data-busy] {
+            background-image: url(../apps/channelviewer/images/xp/throbber26.webp);
         }
     }
 

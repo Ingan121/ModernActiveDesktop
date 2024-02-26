@@ -35,6 +35,13 @@
     }
 }
 
+@keyframes cmDropdownright {
+    0% {
+        width: 0;
+        height: 0;
+    }
+}
+
 :root {
     --mad-margin-top: 0px;
     --mad-margin-left: 75px;
@@ -56,7 +63,7 @@
 }
 
 .menu u {
-    border-bottom-color: var(--menu-text);
+    border-bottom-color: var(--underline);
 }
 
 .menuBtn {
@@ -94,7 +101,7 @@
 }
 
 .contextMenuBg u {
-    border-bottom-color: var(--menu-text);
+    border-bottom-color: var(--underline);
 }
 
 body[data-cm-shadow] .contextMenuBg {
@@ -112,6 +119,7 @@ body[data-fullscreen] .contextMenuBg {
 .contextMenu {
     width: calc(100% - 8px);
     position: absolute;
+    right: 5px;
     bottom: 3px;
     margin: 0 !important;
     margin-right: 3px;
@@ -164,7 +172,7 @@ body[data-fullscreen] .contextMenuBg {
 }
 
 .contextMenuItem[data-active] u {
-    border-bottom-color: var(--hilight-text);
+    border-bottom-color: var(--underline-hilight);
 }
 
 .contextMenu hr {
@@ -190,5 +198,5 @@ body[data-fullscreen] .contextMenuBg {
 .disabled u,
 button[disabled] u,
 [data-disabled] u {
-    border-bottom-color: var(--button-shadow);
+    border-bottom-color: var(--underline-disabled);
 }

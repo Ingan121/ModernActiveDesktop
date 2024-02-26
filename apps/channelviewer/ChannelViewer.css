@@ -85,6 +85,14 @@ body {
     background-color: white;
 }
 
+#toolbar #throbber {
+    background-image: url('images/throbber26.png');
+}
+
+#toolbar #throbber[data-busy] {
+    background-image: url('images/throbber26.webp');
+}
+
 .grabber {
     width: 3px;
     height: calc(100% - 4px);
@@ -131,6 +139,7 @@ body {
     height: 13px;
     position: absolute;
     top: 2px;
+    right: 0;
     border: solid 1px transparent;
 }
 
@@ -153,6 +162,10 @@ body {
     border-right: solid 1px white;
     border-top: solid 1px rgb(128, 128, 128);
     border-left: solid 1px rgb(128, 128, 128);
+}
+
+#windowRestoreBtn {
+    right: 17px;
 }
 
 .toolbarButton {
@@ -280,7 +293,8 @@ body {
     content: url('images/Channels_hover.png');
 }
 
-#fullscreen-button:hover .toolbarButtonImage {
+#fullscreen-button:hover .toolbarButtonImage,
+#fullscreen-button[data-enabled] .toolbarButtonImage {
     content: url('images/Fullscreen_hover.png');
 }
 
@@ -292,9 +306,34 @@ body {
     content: url('images/Open_hover.png');
 }
 
+#go-button {
+    min-width: 44px !important;
+    height: 20px !important;
+    margin-left: -2px;
+    margin-right: 4px;
+    position: relative;
+    display: none;
+}
+
+#go-button img {
+    position: absolute;
+    top: 2px;
+    left: 4px;
+}
+
+#go-button:hover img {
+    content: url('images/Go_hover.png');
+}
+
+#go-button span {
+    font-size: 11px;
+    line-height: 20px;
+    margin-left: 23px;
+}
+
 body::after { /* preload images */
     position: absolute; width: 0; height: 0; overflow: hidden; z-index: -1; 
-    content: url('images/Back_hover.png') url('images/Forward_hover.png') url('images/Refresh_hover.png') url('images/Stop_hover.png') url('images/Home_hover.png') url('images/Favorites_hover.png') url('images/Channels_hover.png') url('images/Fullscreen_hover.png') url('images/Print_hover.png') url('images/Open.png') url('images/throbber.webp') url('images/throbber26.webp');
+    content: url('images/Back_hover.png') url('images/Forward_hover.png') url('images/Refresh_hover.png') url('images/Stop_hover.png') url('images/Home_hover.png') url('images/Favorites_hover.png') url('images/Channels_hover.png') url('images/Fullscreen_hover.png') url('images/Print_hover.png') url('images/Open_hover.png') url('images/Go_hover.png') url('images/throbber.webp') url('images/throbber26.webp');
 }
 
 #toolbar {
@@ -306,6 +345,7 @@ body::after { /* preload images */
     width: 100%;
     height: 22px;
     display: flex;
+    overflow: hidden;
 }
 
 #addressText {
@@ -383,6 +423,7 @@ body::after { /* preload images */
     left: calc(var(--sidebar-width) + 2px);
     opacity: 0;
     cursor: ew-resize;
+    touch-action: none;
 }
 
 #iframe {
@@ -593,12 +634,11 @@ body[data-fullscreen] #statusBar {
 
 #toolbarsMenuBg {
     width: 140px;
-    height: 120px;
+    height: 137px;
 }
 
 #toolbarsMenu {
     width: 138px;
-    right: 5px;
 }
 
 #explorerBarMenuBg {
@@ -609,7 +649,6 @@ body[data-fullscreen] #statusBar {
 
 #explorerBarMenu {
     width: 86px;
-    right: 5px;
 }
 
 #viewMenu > .contextMenuItem:not(.hasIcon):not(.activeStyle):not(.checkedItem) > p,

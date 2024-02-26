@@ -29,6 +29,7 @@ const printButton = document.getElementById("print-button");
 const openButton = document.getElementById("open-button");
 
 const urlbar = document.getElementById("urlbar");
+const goButton = document.getElementById("go-button");
 
 const fileMenuItems = document.querySelectorAll("#fileMenu .contextMenuItem");
 const editMenuItems = document.querySelectorAll("#editMenu .contextMenuItem");
@@ -52,6 +53,9 @@ const statusText = document.getElementById("statusText");
 const statusZone = document.getElementById("zone");
 const statusZoneText = document.getElementById("zoneText");
 
+const windowRestoreButton = document.getElementById("windowRestoreBtn");
+const windowCloseButton = document.getElementById("windowCloseBtn");
+
 const mainArea = document.getElementById("mainArea");
 const sidebar = document.getElementById("sidebar");
 const sidebarTitle = document.getElementById("sidebarTitleText");
@@ -60,6 +64,8 @@ const sidebarWindow = document.getElementById("sidebarWindow");
 const border = document.getElementById("border");
 
 window.iframe = document.getElementById("iframe");
+
+const NO_ADV_MSG = "Sorry, but advanced features are unavailable for this webpage. Please consult the internet options for more details.";
 
 const madBase = parent.location.href.split('/').slice(0, -1).join('/') + '/';
 const cvBase = madBase + 'apps/channelviewer/';
@@ -102,7 +108,7 @@ fileMenuItems[3].addEventListener("click", function () { // Close button
 
 editMenuItems[0].addEventListener("click", function () { // Cut button
     if (isCrossOrigin) {
-        madAlert("Sorry, but advanced features are unavailable for this webpage. Please consult the internet options.", null, "warning");
+        madAlert(NO_ADV_MSG, null, "warning");
     } else {
         iframe.contentWindow.document.execCommand("cut");
     }
@@ -110,7 +116,7 @@ editMenuItems[0].addEventListener("click", function () { // Cut button
 
 editMenuItems[1].addEventListener("click", function () { // Copy button
     if (isCrossOrigin) {
-        madAlert("Sorry, but advanced features are unavailable for this webpage. Please consult the internet options.", null, "warning");
+        madAlert(NO_ADV_MSG, null, "warning");
     } else {
         iframe.contentWindow.document.execCommand("copy");
     }
@@ -118,7 +124,7 @@ editMenuItems[1].addEventListener("click", function () { // Copy button
 
 editMenuItems[2].addEventListener("click", function () { // Paste button
     if (isCrossOrigin) {
-        madAlert("Sorry, but advanced features are unavailable for this webpage. Please consult the internet options.", null, "warning");
+        madAlert(NO_ADV_MSG, null, "warning");
     } else {
         iframe.contentWindow.document.execCommand("paste");
     }
@@ -126,7 +132,7 @@ editMenuItems[2].addEventListener("click", function () { // Paste button
 
 editMenuItems[3].addEventListener("click", function () { // Select all button
     if (isCrossOrigin) {
-        madAlert("Sorry, but advanced features are unavailable for this webpage. Please consult the internet options.", null, "warning");
+        madAlert(NO_ADV_MSG, null, "warning");
     } else {
         iframe.contentWindow.document.execCommand("selectAll");
     }
@@ -156,7 +162,7 @@ viewMenuItems[4].addEventListener("click", function () { // Refresh button
 
 viewMenuItems[5].addEventListener("click", function () { // Source button
     if (isCrossOrigin) {
-        madAlert("Sorry, but advanced features are unavailable for this webpage. Please consult the internet options.", null, "warning");
+        madAlert(NO_ADV_MSG, null, "warning");
     } else {
         madOpenExternal("data:text/plain," + encodeURIComponent(iframe.contentDocument.documentElement.outerHTML), false, "popup");
     }
@@ -330,6 +336,18 @@ toolbarsMenuItems[5].addEventListener("click", function () { // Lock the Toolbar
     }
 });
 
+toolbarsMenuItems[6].addEventListener("click", function () { // Go Button button
+    if (localStorage.madesktopChanViewShowGoButton) {
+        goButton.style.display = "none";
+        toolbarsMenuItems[6].classList.remove("checkedItem");
+        delete localStorage.madesktopChanViewShowGoButton;
+    } else {
+        goButton.style.display = "block";
+        toolbarsMenuItems[6].classList.add("checkedItem");
+        localStorage.madesktopChanViewShowGoButton = true;
+    }
+});
+
 explorerBarMenuItems[0].addEventListener("click", function () { // Favorites button
     openSidebar("Favorites");
 });
@@ -416,8 +434,10 @@ channelsButton.addEventListener("click", function () {
 fullscreenButton.addEventListener("click", function () {
     if (madDeskMover.isFullscreen) {
         madExitFullscreen();
+        delete fullscreenButton.dataset.enabled;
     } else {
         madEnterFullscreen(true);
+        fullscreenButton.dataset.enabled = true;
     }
 });
 
@@ -453,9 +473,17 @@ urlbar.addEventListener('click', function (event) {
     if (madRunningMode === 1) {
         madPrompt("Enter URL", function (url) {
             if (url === null) return;
-            go(url);
+            if (goButton.style.display !== "block") {
+                go(url);
+            } else {
+                urlbar.value = url;
+            }
         }, "", urlbar.value);
-    } else {
+    }
+});
+
+urlbar.addEventListener('focus', function () {
+    if (madRunningMode !== 1) {
         urlbar.select();
     }
 });
@@ -466,7 +494,25 @@ urlbar.addEventListener('keyup', function (e) {
     }
 });
 
+goButton.addEventListener('click', function () {
+    go(urlbar.value);
+});
+
 sidebarCloseBtn.addEventListener('click', closeSidebar);
+
+windowRestoreButton.addEventListener('click', function () {
+    madExitFullscreen();
+    delete fullscreenButton.dataset.enabled;
+});
+
+windowCloseButton.addEventListener('click', function () {
+    madCloseWindow();
+});
+
+toolbars.addEventListener('contextmenu', function (event) {
+    event.preventDefault();
+    madDeskMover.menu.openMenu('toolbars', { x: event.clientX, y: event.clientY });
+});
 
 if (localStorage.madesktopChanViewHideToolbar) {
     toolbar.style.display = "none";
@@ -516,6 +562,11 @@ if (localStorage.madesktopChanViewToolbarOrder) {
 if (localStorage.madesktopChanViewLockToolbars) {
     toolbars.classList.add("locked");
     toolbarsMenuItems[5].classList.add("checkedItem");
+}
+
+if (localStorage.madesktopChanViewShowGoButton) {
+    goButton.style.display = "block";
+    toolbarsMenuItems[6].classList.add("checkedItem");
 }
 
 window.addEventListener('focus', function () {
@@ -631,15 +682,16 @@ function hookIframeSize(iframe) {
     // Do this on pointerup instead of click, as click doesn't work with Google Search links
     // Probably because it uses something like event.stopPropagation()?
     iframe.contentDocument.addEventListener('pointerup', (event) => {
-        if (event.button === 0 && iframe.contentDocument.activeElement && iframe.contentDocument.activeElement.href && !iframe.contentDocument.activeElement.href.startsWith("javascript:")) {
-            let url = iframe.contentDocument.activeElement.href;
+        const activeElement = iframe.contentDocument.activeElement;
+        if (event.button === 0 && activeElement && activeElement.href && !activeElement.href.startsWith("javascript:")) {
+            let url = activeElement.href;
             if (!url.startsWith("http")) {
                 url = new URL(url, historyItems[historyIndex - 1][0]).href;
             }
             if (!url.startsWith("http")) { // non http/https links
                 return;
             }
-            switch (iframe.contentDocument.activeElement.target) {
+            switch (activeElement.target) {
                 case "_blank":
                     madOpenExternal(url);
                     break;
@@ -664,10 +716,6 @@ function hookIframeSize(iframe) {
     });
     iframe.contentDocument.addEventListener('click', (event) => {
         const activeElement = iframe.contentDocument.activeElement;
-        const hoverElement = iframe.contentDocument.elementFromPoint(event.clientX, event.clientY);
-        if (activeElement !== hoverElement) {
-            return;
-        }
         // We need to handle preventDefault() here tho
         if (activeElement && activeElement.href && !activeElement.href.startsWith("javascript:")) {
             let url = activeElement.href;
@@ -678,12 +726,10 @@ function hookIframeSize(iframe) {
                 return;
             }
             switch (activeElement.target) {
+                // Blank and top are already prevented by the sandbox
                 case "_blank":
-                    event.preventDefault();
-                    break;
                 case "_top":
-                    event.preventDefault();
-                    break;
+                    return;
                 default:
                     if (madRunningMode !== 1 && !localStorage.madesktopChanViewNoForceLoad &&
                         !url.startsWith("about:blank") && !url.startsWith("data:") && new URL(url).origin !== location.origin)
@@ -768,7 +814,8 @@ function go(url, noHistory, forceForceLoad = false) {
     urlbar.value = url;
     handleWeirdError();
     if (forceForceLoad || (madRunningMode !== 1 && !localStorage.madesktopChanViewNoForceLoad &&
-        !url.startsWith("about:blank") && !url.startsWith("data:") && new URL(url).origin !== location.origin)) {
+        !url.startsWith("about:blank") && !url.startsWith("data:") && new URL(url).origin !== location.origin))
+    {
         forceLoad(url);
     } else {
         iframe.removeAttribute("srcdoc");
@@ -1206,7 +1253,6 @@ function delayedSave() {
     saveTimer = setTimeout(() => {
         const url = isCrossOrigin ? iframe.src : historyItems[historyIndex - 1][0];
         const cvUrl = "apps/channelviewer/index.html?page=" + encodeURIComponent(preCrashUrl || url);
-        //history.replaceState(null, "", cvUrl);
         madDeskMover.config.src = cvUrl;
     }, 10000);
 }
@@ -1215,7 +1261,7 @@ function init() {
     const url = new URL(location.href);
     let page = url.searchParams.get("page");
     if (!page) {
-        return null;
+        return { page: null, doForceLoad: false };
     }
     if (!page.startsWith('http') && !page.startsWith('about') && !page.startsWith('chrome') && !page.startsWith('data') && !page.startsWith('file') && !page.startsWith('ws') && !page.startsWith('wss') && !page.startsWith('blob') && !page.startsWith('javascript')) {
         page = madBase + page;
@@ -1243,6 +1289,7 @@ function init() {
     if (popup) {
         toolbars.style.display = "none";
         statusBar.style.display = "none";
+        madSetResizeArea(false);
     }
     const doForceLoad = url.searchParams.get("forceLoad");
     return { page, doForceLoad };

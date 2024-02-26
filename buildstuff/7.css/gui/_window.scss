@@ -520,6 +520,7 @@
 
 .tool-window {
   padding: 5px !important;
+  border-radius: 0 !important;
   .window-titlebar:not(#JustHereToGiveItPriority) {
     margin: -5px !important;
     height: 15px !important;
@@ -567,7 +568,7 @@
   }
   &::before,
   &::after {
-    border-radius: 0;
+    border-radius: 0 !important;
   }
 }
 
@@ -884,10 +885,6 @@
     width: 120px;
   }
 
-  #iconAreaLabel {
-    margin-right: 30px;
-  }
-
   #creditsMain {
     height: 120px;
   }
@@ -971,6 +968,9 @@
   }
 }
 
+/* Kinda IE6 styles for ChannelViewer */
+/* Referenced from how the portable (Thinstall) IE6 looks on Windows 7 */
+/* Didn't really care about changing the icons */
 #madChanView {
   #toolbars {
       border: none;
@@ -987,6 +987,11 @@
 
   #windowBtnContainer {
     height: 38px;
+  }
+
+  #go-button {
+    height: 22px !important;
+    margin-top: 0;
   }
 
   #statusBar {

@@ -90,7 +90,7 @@
     --window-frame: #000000;
     --window-text: #000000;
 
-    --cjk-fontlink: Gulim, "MS UI Gothic", SimSun, PMingLiU;
+    --cjk-fontlink: "MS UI Gothic", Gulim, SimSun, PMingLiU;
     --ui-font: "Pixelated MS Sans Serif", Arial, var(--cjk-fontlink);
     --caption-font: bold 11px/1.4 var(--ui-font);
     --menu-font: 8pt var(--ui-font);

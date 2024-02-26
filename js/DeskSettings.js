@@ -67,6 +67,11 @@ let msgboxLoopCount = 0;
 
 let debugLog = false;
 
+if (parent !== window) {
+    // Running MAD inside MAD will cause unexpected behavior
+    throw new Error("Refusing to load inside an iframe");
+}
+
 // Load configs
 if (!localStorage.madesktopItemCount) {
     localStorage.madesktopItemCount = 1;
@@ -101,6 +106,12 @@ if (localStorage.madesktopChanViewTopMargin || localStorage.madesktopChanViewRig
     debugMenu.style.right = localStorage.madesktopChanViewRightMargin || "0";
 }
 initSimpleMover(debugMenu, debugMenu, debugMenu.querySelectorAll("a"));
+
+if (typeof wallpaperOnVideoEnded === "function") { // Check if running in Wallpaper Engine
+    runningMode = WE;
+} else if (location.href.startsWith("localfolder://")) { // Check if running in Lively Wallpaper
+    runningMode = LW;
+}
 
 // Migrate old configs
 if (localStorage.madesktopNonADStyle) {
@@ -181,6 +192,11 @@ if (localStorage.madesktopLastVer) {
 } else { // First run
     openWindow("placeholder.html");
     startup();
+
+    if (runningMode === BROWSER) {
+        localStorage.madesktopChanViewLeftMargin = "0";
+        localStorage.madesktopChanViewBottomMargin = "0";
+    }
 }
 localStorage.madesktopLastVer = "3.2.0";
 
@@ -194,12 +210,6 @@ bgHtmlView.addEventListener('load', function () {
     hookIframeSize(bgHtmlView);
     bgHtmlView.contentDocument.addEventListener("contextmenu", openMainMenu, false);
 });
-
-if (typeof wallpaperOnVideoEnded === "function") { // Check if running in Wallpaper Engine
-    runningMode = WE;
-} else if (location.href.startsWith("localfolder://")) { // Check if running in Lively Wallpaper
-    runningMode = LW;
-}
 
 // Main context menu things (only for browser uses)
 window.addEventListener('contextmenu', openMainMenu, false);
@@ -268,7 +278,6 @@ window.wallpaperPropertyListener = {
 
         if (properties.bgcolor && properties.bgvideo) {
             // Proper startup detection for Wallpaper Engine
-            // Otherwise entering and leaving ChannelViewer etc will trigger this
             startup();
 
             // Do not apply WE configs if this is a startup event
@@ -439,6 +448,23 @@ function changeBgImgMode(value) {
     }
 }
 
+function announce(type) {
+    try {
+        bgHtmlView.contentWindow.postMessage({ type }, "*");
+    } catch {
+        // page did not load yet
+    }
+    for (let i = 0; i < windowContainers.length; i++) {
+        try {
+            const iframe = windowContainers[i].getElementsByClassName("windowElement")[0];
+            iframe.contentWindow.postMessage({ type }, "*");
+        } catch {
+            // attempting to do this on destroyed deskitems
+            // or page did not load yet
+        }
+    }
+}
+
 function changeColorScheme(scheme) {
     if (scheme === "98") {
         schemeElement.href = "data:text/css,";
@@ -485,8 +511,6 @@ function changeColorScheme(scheme) {
     } catch {
         document.documentElement.style.setProperty('--hilight-inverted', 'var(--hilight-text)');
     }
-
-    announce("scheme-updated");
 }
 
 function changeAeroColor(color) {
@@ -504,23 +528,6 @@ function changeAeroGlass(noGlass) {
         }
     } else {
         delete document.body.dataset.noGlass;
-    }
-}
-
-function announce(type) {
-    try {
-        bgHtmlView.contentWindow.postMessage({ type }, "*");
-    } catch {
-        // page did not load yet
-    }
-    for (let i = 0; i < windowContainers.length; i++) {
-        try {
-            const iframe = windowContainers[i].getElementsByClassName("windowElement")[0];
-            iframe.contentWindow.postMessage({ type }, "*");
-        } catch {
-            // attempting to do this on destroyed deskitems
-            // or page did not load yet
-        }
     }
 }
 
@@ -559,7 +566,6 @@ function changeCmAnimation(type) {
     for (const i in deskMovers) {
         deskMovers[i].changeCmAnimation(type);
     }
-    announce("scheme-updated");
 }
 
 // Change context menu shadow
@@ -569,7 +575,6 @@ function changeCmShadow(isShadow) {
     } else {
         delete document.body.dataset.cmShadow;
     }
-    announce("scheme-updated");
 }
 
 // Change menu style
@@ -579,7 +584,19 @@ function changeMenuStyle(style) {
     } else {
         menuStyleElement.href = `css/flatmenu-${style}.css`;
     }
-    announce("scheme-updated");
+}
+
+// Change underline style
+function changeUnderline(show) {
+    if (show) {
+        document.documentElement.style.removeProperty('--underline');
+        document.documentElement.style.removeProperty('--underline-hilight');
+        document.documentElement.style.removeProperty('--underline-disabled');
+    } else {
+        document.documentElement.style.setProperty('--underline', 'transparent');
+        document.documentElement.style.setProperty('--underline-hilight', 'transparent');
+        document.documentElement.style.setProperty('--underline-disabled', 'transparent');
+    }
 }
 
 // Change sound scheme
@@ -1008,7 +1025,8 @@ function openExternalExternally(url, fullscreen, noInternal = false) {
 
 // Required as mouse movements over iframes are not detectable in the parent document
 function iframeClickEventCtrl(clickable) {
-    log(clickable ? "clickable" : "unclickable", "debug", new Error().stack.split('\n')[2].trim().slice(3).split(' ')[0] + " -> iframeClickEventCtrl");
+    const caller = getCallerFromStack(new Error().stack);
+    log(clickable ? "clickable" : "unclickable", "debug", caller + " -> iframeClickEventCtrl");
     const value = clickable ? "auto" : "none";
     bgHtmlView.style.pointerEvents = value;
     for (let i = 0; i < windowContainers.length; i++) {
@@ -1085,7 +1103,8 @@ function hookIframeSize(iframe, num) {
     iframe.contentDocument.addEventListener('click', (event) => {
         const hoverElement = iframe.contentDocument.elementFromPoint(event.clientX, event.clientY);
         if (iframe.contentDocument.activeElement && iframe.contentDocument.activeElement.href &&
-            iframe.contentDocument.activeElement.target === "_blank" && hoverElement === iframe.contentDocument.activeElement)
+            (iframe.contentDocument.activeElement.target === "_blank" && hoverElement === iframe.contentDocument.activeElement) ||
+            iframe.contentDocument.activeElement.target === "_cv")
         {
             openExternal(iframe.contentDocument.activeElement.href);
             event.preventDefault();
@@ -1559,8 +1578,20 @@ function reset(res) {
     }
 }
 
-function log(str, level, caller = new Error().stack.split('\n')[2].trim().slice(3).split(' ')[0]) {
+function getCallerFromStack(stack) {
+    // Safari is weird
+    if (stack.includes("at ")) {
+        return stack.split('\n')[2].trim().slice(3).split(' ')[0];
+    } else {
+        return stack.split('\n')[1].split('@')[0];
+    }
+}
+
+function log(str, level, caller) {
     if (debugLog) {
+        if (!caller) {
+            caller = getCallerFromStack(new Error().stack);
+        }
         if (typeof str === "object") {
             str = JSON.stringify(str);
         }
@@ -1578,8 +1609,8 @@ function debug(event) {
 
 function activateDebugMode() {
     document.body.dataset.debugMode = true;
-    debugMenu.style.top = 0;
-    debugMenu.style.right = 0;
+    debugMenu.style.top = localStorage.madesktopChanViewTopMargin || "0";
+    debugMenu.style.right = localStorage.madesktopChanViewRightMargin || "0";
     debugMenu.style.left = "auto";
     for (const i in deskMovers) {
         deskMovers[i].windowTitlebar.classList.remove("noIcon");

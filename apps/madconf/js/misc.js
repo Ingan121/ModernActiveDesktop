@@ -249,7 +249,13 @@ inetcplBtn.addEventListener('click', function () {
 });
 
 exportBtn.addEventListener('click', function () {
-    const json = JSON.stringify(localStorage);
+    const madConfig = {};
+    for (const key in localStorage) {
+        if (key.startsWith("madesktop") || key === "sysplugIntegration") {
+            madConfig[key] = localStorage[key];
+        }
+    }
+    const json = JSON.stringify(madConfig);
     copyText(json);
     madAlert("Configuration copied to clipboard! Paste it to a text file and save it to import it later.");
 });

@@ -91,6 +91,7 @@ input[type="number"] {
     width: 57px;
     height: 21px;
     margin-left: -1px;
+    -moz-appearance: textfield;
 }
 
 input[type=number]::-webkit-inner-spin-button, 

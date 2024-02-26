@@ -22,8 +22,10 @@
     width: 130px;
 }
 
-#iconAreaLabel {
-    margin-right: 55px;
+label[for="noDisableChkBox"] {
+    position: absolute !important;
+    margin-top: 2px;
+    right: 28px;
 }
 
 .buttons {

@@ -4,14 +4,14 @@
 
 'use strict';
 
-main();
-
 let scheme = {};
 let fonts = [
     "Pixelated MS Sans Serif",
     "Fixedsys Excelsior"
 ];
 let savedSchemes = JSON.parse(localStorage.madesktopSavedSchemes || "{}");
+
+main();
 
 async function main() {
     scheme = parseCssScheme(await getSchemeText());
@@ -48,6 +48,7 @@ async function main() {
     const animationSelector = document.getElementById("animationSelector");
     const shadowChkBox = document.getElementById("shadowChkBox");
     const outlineModeChkBox = document.getElementById("outlineModeChkBox");
+    const underlineChkBox = document.getElementById("underlineChkBox");
     const transparencyChkBox = document.getElementById("transparencyChkBox");
     const effectsBtn = document.getElementById("effectsBtn");
 
@@ -438,7 +439,14 @@ async function main() {
     }
 
     fontSelector.addEventListener("change", function () {
-        setFont();
+        if (fontSelector.value === "custom") {
+            madPrompt("Enter a valid CSS font-family name", function (res) {
+                if (res === null) return;
+                setFont(res);
+            });
+        } else {
+            setFont();
+        }
     });
 
     fontSize.addEventListener("click", function () {
@@ -583,6 +591,13 @@ async function main() {
             localStorage.madesktopOutlineMode = true;
         }
 
+        if (underlineChkBox.checked) {
+            localStorage.madesktopHideUnderline = true;
+        } else {
+            delete localStorage.madesktopHideUnderline;
+        }
+        parent.changeUnderline(!localStorage.madesktopHideUnderline);
+
         if (schemeSelector.value === "7css4mad") {
             if (transparencyChkBox.checked) {
                 delete localStorage.madesktopAeroNoGlass;
@@ -602,6 +617,8 @@ async function main() {
 
         // legacy config
         delete localStorage.madesktopNoPixelFonts;
+
+        parent.announce("scheme-updated");
     }
 
     if (localStorage.madesktopColorScheme !== "custom" && localStorage.madesktopColorScheme !== "98" && localStorage.madesktopColorScheme) {
@@ -652,6 +669,10 @@ async function main() {
         outlineModeChkBox.checked = false;
     }
 
+    if (localStorage.madesktopHideUnderline) {
+        underlineChkBox.checked = true;
+    }
+
     if (localStorage.madesktopLastSchemeName) {
         schemeName = localStorage.madesktopLastSchemeName;
         schemeSelector.options[0].textContent = schemeName;
@@ -688,7 +709,7 @@ async function main() {
         applyPreview();
     }
 
-    function setFont() {
+    function setFont(customFamily) {
         appendModified();
         const option = selector.value;
         if (itemMappings[option].font) {
@@ -700,16 +721,22 @@ async function main() {
                 fontShorthand += 'italic ';
             }
             fontShorthand += fontSize.dataset.fullValue + ' ';
-            if (fontSelector.value.includes(" ")) {
+            if (customFamily) {
+                fontShorthand += customFamily;
+            } else if (fontSelector.value.includes(" ")) {
                 fontShorthand += `"${fontSelector.value}", var(--ui-font)`;
             } else {
                 fontShorthand += fontSelector.value + ', var(--ui-font)';
             }
             scheme[itemMappings[option].font] = fontShorthand;
         } else if (itemMappings[option].fontFamily) {
-            scheme[itemMappings[option].fontFamily] = `"${fontSelector.value}", Arial`;
-            if (fontSelector.selectedIndex <= 2 || fontSelector.value === "Tahoma") {
-                scheme[itemMappings[option].fontFamily] += ', var(--cjk-fontlink)';
+            if (customFamily) {
+                scheme[itemMappings[option].fontFamily] = customFamily;
+            } else {
+                scheme[itemMappings[option].fontFamily] = `"${fontSelector.value}", Arial`;
+                if (fontSelector.selectedIndex <= 2 || fontSelector.value === "Tahoma") {
+                    scheme[itemMappings[option].fontFamily] += ', var(--cjk-fontlink)';
+                }
             }
         }
         applyPreview();

@@ -92,7 +92,7 @@ button:focus {
 }
 
 .menu u {
-    border-bottom-color: var(--menu-text);
+    border-bottom-color: var(--underline);
 }
 
 .menuBtn:first-child {

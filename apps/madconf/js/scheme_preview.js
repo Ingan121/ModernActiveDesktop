@@ -157,7 +157,11 @@ captionButtons.forEach(function (button) {
 });
 
 menu.addEventListener("click", function (event) {
-    parent.changeItemSelection("menu");
+    if (menuStyleElement.getAttribute("href").includes("mb")) {
+        parent.changeItemSelection("menu-bar");
+    } else {
+        parent.changeItemSelection("menu");
+    }
     event.stopPropagation();
 });
 

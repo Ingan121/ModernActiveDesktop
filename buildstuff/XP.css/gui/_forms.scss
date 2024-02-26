@@ -42,7 +42,7 @@ mad-select {
     position: relative;
     padding-right: 32px;
     background-image: svg-load("./icon/button-down.svg");
-    background-position: top 2px right 2px;
+    background-position: top 2px right 2px !important;
     background-repeat: no-repeat;
     border-radius: 0;
     &:focus,

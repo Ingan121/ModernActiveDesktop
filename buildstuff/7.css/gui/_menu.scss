@@ -236,8 +236,7 @@ ul {
   }
 }
 
-.menu, .menus {
-  display: flex;
+body:not(#madChanView) .menu, .menus {
   background: linear-gradient(
     #fff 20%,
     #f1f4fa 25%,
@@ -246,6 +245,16 @@ ul {
     #e6eaf6
   );
   outline: solid 1px #b6bccc;
+}
+
+#madChanView #toolbars > div:first-child {
+  background: linear-gradient(
+    #fff 20%,
+    #f1f4fa 25%,
+    #f1f4fa 43%,
+    #d4dbee 48%,
+    #e6eaf6
+  );
 }
 
 .menu-button {

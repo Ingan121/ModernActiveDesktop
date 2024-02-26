@@ -400,6 +400,7 @@ function toggleTitle() {
         madExtendMoveTarget(true, toggleTitle);
         isTitleHidden = true;
     }
+    updateSize();
 }
 
 // Listen for scale change

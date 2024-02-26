@@ -78,6 +78,7 @@ function set_all_url_params(params, { replace_history_state = false } = {}) {
 	// idk why but setting iframe.src with a hash prevents the page from loading
 	// so just save the hash separately
 	window.madDeskMover.config.jspaintHash = new_hash;
+	location.hash = new_hash;
 
 	$G.triggerHandler("change-url-params");
 }

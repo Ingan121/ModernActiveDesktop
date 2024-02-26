@@ -76,10 +76,10 @@
                 </div>
                 <div id="windowBtnContainer">
                     <div style="float: left;">
-                        <div class="windowBtn" style="right: 17px;" onclick="madExitFullscreen();">
+                        <div id="windowRestoreBtn" class="windowBtn">
                             <p>🗗</p>
                         </div>
-                        <div class="windowBtn" style="right: 0;" onclick="madCloseWindow();">
+                        <div id="windowCloseBtn" class="windowBtn">
                             <p>🗙</p>
                         </div>
                     </div>
@@ -89,6 +89,10 @@
                 <div class="grabber"></div>
                 <span id="addressText">Address</span>
                 <input id="urlbar" type="text">
+                <div id="go-button" class="toolbarButton">
+                    <img src="images/Go.png">
+                    <span>Go</span>
+                </div>
             </div>
         </div>
         <div id="mainArea">
@@ -102,7 +106,7 @@
                 <div id="border"></div>
                 <iframe id="sidebarWindow"></iframe>
             </div>
-            <iframe id="iframe" class="clientEdge forcedClientEdge" sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-presentation allow-same-origin allow-scripts"></iframe>
+            <iframe id="iframe" class="clientEdge forcedClientEdge" sandbox="allow-forms allow-modals allow-pointer-lock allow-popups-to-escape-sandbox allow-presentation allow-same-origin allow-scripts"></iframe>
         </div>
         <div id="statusBar">
             <div id="statusMain">
@@ -184,6 +188,7 @@
                 <div class="contextMenuItem"><p><u>N</u>o labels</p></div>
                 <hr>
                 <div class="contextMenuItem"><p><u>L</u>ock the Toolbars</p></div>
+                <div class="contextMenuItem"><p><u>G</u>o Button</p></div>
             </div>
         </div>
         <div id="explorerBarMenuBg" class="contextMenuBg window" tabindex="-1" data-submenu-of="view">

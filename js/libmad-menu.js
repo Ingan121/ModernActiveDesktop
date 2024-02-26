@@ -139,25 +139,30 @@ class MadMenu {
         }
     }
 
-    openMenu(menuName) {
+    openMenu(menuName, standalone) {
         const menuBg = document.getElementById(menuName + 'MenuBg');
         const menuItems = menuBg.querySelectorAll('.contextMenuItem');
         const isSubmenu = !!menuBg.dataset.submenuOf;
         let menuBtn;
         let parentMenuBg;
         let parentMenuItem;
-        
-        if (isSubmenu) {
-            parentMenuBg = document.getElementById(menuBg.dataset.submenuOf + 'MenuBg');
-            if (parentMenuBg.style.display === 'none') {
-                return;
-            }
-            let parentMenuItemIndex = Array.from(parentMenuBg.querySelectorAll('.contextMenuItem')).findIndex((elem) => elem.dataset.submenu === menuName);
-            parentMenuItem = parentMenuBg.querySelectorAll('.contextMenuItem')[parentMenuItemIndex];
+
+        if (standalone) {
+            menuBg.dataset.openStandalone = true;
         } else {
-            menuBtn = document.getElementById(menuName + 'MenuBtn');
+            if (isSubmenu) {
+                parentMenuBg = document.getElementById(menuBg.dataset.submenuOf + 'MenuBg');
+                if (parentMenuBg.style.display === 'none') {
+                    return;
+                }
+                let parentMenuItemIndex = Array.from(parentMenuBg.querySelectorAll('.contextMenuItem')).findIndex((elem) => elem.dataset.submenu === menuName);
+                parentMenuItem = parentMenuBg.querySelectorAll('.contextMenuItem')[parentMenuItemIndex];
+            } else {
+                menuBtn = document.getElementById(menuName + 'MenuBtn');
+            }
+            delete menuBg.dataset.openStandalone;
         }
-    
+
         switch (localStorage.madesktopCmAnimation) {
             case 'none':
                 menuBg.style.animation = 'none';
@@ -167,7 +172,9 @@ class MadMenu {
                 break;
             case 'slide':
             default:
-                if (isSubmenu) {
+                if (standalone) {
+                    menuBg.style.animation = 'cmDropdownright 0.25s linear';
+                } else if (isSubmenu) {
                     menuBg.style.animation = 'cmDropright 0.25s linear';
                 } else {
                     menuBg.style.animation = 'cmDropdown 0.25s linear';
@@ -177,22 +184,30 @@ class MadMenu {
         for (const item of menuItems) {
             delete item.dataset.active;
         }
-        let left = 0;
-        if (isSubmenu) {
-            left = parentMenuBg.offsetLeft + parentMenuBg.offsetWidth - 6;
+        if (standalone) {
+            menuBg.style.top = standalone.y + 'px';
+            menuBg.style.left = standalone.x + 'px';
         } else {
-            left = menuBtn.offsetLeft;
+            let left = 0;
+            if (isSubmenu) {
+                left = parentMenuBg.offsetLeft + parentMenuBg.offsetWidth - 6;
+            } else {
+                left = menuBtn.offsetLeft;
+            }
+            if (madDeskMover.isFullscreen) {
+                left += parseInt(localStorage.madesktopChanViewLeftMargin || '75px');
+            }
+            menuBg.style.top = '';
+            menuBg.style.left = left + 'px';
         }
-        if (madDeskMover.isFullscreen) {
-            left += parseInt(localStorage.madesktopChanViewLeftMargin || '75px');
-        }
-        menuBg.style.left = left + 'px';
         menuBg.style.display = 'block';
         this.menuBar.dataset.active = true;
-        if (isSubmenu) {
-            parentMenuItem.dataset.active = true;
-        } else {
-            menuBtn.dataset.active = true;
+        if (!standalone) {
+            if (isSubmenu) {
+                parentMenuItem.dataset.active = true;
+            } else {
+                menuBtn.dataset.active = true;
+            }
         }
         menuBg.focus();
         this.openedMenu = menuBg;
@@ -201,7 +216,8 @@ class MadMenu {
     
     closeMenu(menuName) {
         const menuBg = document.getElementById(menuName + 'MenuBg');
-        const isSubmenu = !!menuBg.dataset.submenuOf;
+        const standalone = !!menuBg.dataset.openStandalone;
+        const isSubmenu = !!menuBg.dataset.submenuOf && !standalone;
         if ((isSubmenu && this.shouldNotCloseSubmenu)) {
             return;
         }
@@ -209,12 +225,14 @@ class MadMenu {
         let parentMenuBg;
         let parentMenuItem;
 
-        if (isSubmenu) {
-            parentMenuBg = document.getElementById(menuBg.dataset.submenuOf + 'MenuBg');
-            let parentMenuItemIndex = Array.from(parentMenuBg.querySelectorAll('.contextMenuItem')).findIndex((elem) => elem.dataset.submenu === menuName);
-            parentMenuItem = parentMenuBg.querySelectorAll('.contextMenuItem')[parentMenuItemIndex];
-        } else {
-            menuBtn = document.getElementById(menuName + 'MenuBtn');
+        if (!standalone) {
+            if (isSubmenu) {
+                parentMenuBg = document.getElementById(menuBg.dataset.submenuOf + 'MenuBg');
+                let parentMenuItemIndex = Array.from(parentMenuBg.querySelectorAll('.contextMenuItem')).findIndex((elem) => elem.dataset.submenu === menuName);
+                parentMenuItem = parentMenuBg.querySelectorAll('.contextMenuItem')[parentMenuItemIndex];
+            } else {
+                menuBtn = document.getElementById(menuName + 'MenuBtn');
+            }
         }
 
         if (this.submenuCloseTimer) {
@@ -222,12 +240,14 @@ class MadMenu {
         }
 
         menuBg.style.display = 'none';
-        if (isSubmenu) {
+        if (standalone) {
+            delete menuBg.dataset.openStandalone;
+        } else if (isSubmenu) {
             delete parentMenuItem.dataset.active;
         } else {
             delete menuBtn.dataset.active;
         }
-        if (!this.mouseOverMenu && !isSubmenu) {
+        if (!this.mouseOverMenu && !isSubmenu && !standalone) {
             delete this.menuBar.dataset.active;
         }
         this.openedMenu = null;

@@ -21,8 +21,8 @@
     background-color: transparent;
 }
 
-.menuBtn:hover,
-.menuBtn:active,
+body:not(#madconf-preview) .menuBtn:hover,
+body:not(#madconf-preview) .menuBtn:active,
 .menuBtn[data-active] {
     border-color: var(--hilight) !important;
     border-radius: 0 !important;
@@ -45,5 +45,5 @@
 .menuBtn:hover u,
 .menuBtn:active u,
 .menuBtn[data-active] u {
-    border-bottom-color: var(--hilight-text);
+    border-bottom-color: var(--underline-hilight);
 }

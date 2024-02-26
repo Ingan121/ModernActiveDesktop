@@ -29,7 +29,6 @@
     </div>
     <script>
         var errorLog = document.getElementById("errorLog");
-        var errorCnt = document.getElementById("errorCnt");
 
         if (document.documentMode) {
             errorLog.textContent = "Internet Explorer is NOT supported! Please use a modern browser like Chrome or Edge.\n";
@@ -37,7 +36,6 @@
 
         window.onerror = function (msg, url, linenum) {
             errorLog.textContent += msg + ' (' + url + ':' + linenum + ')\n';
-            errorCnt.textContent = '(' + (parseInt(errorCnt.textContent.slice(1, -1) || 0) + 1) + ')';
         }
 
         function copyLog() {

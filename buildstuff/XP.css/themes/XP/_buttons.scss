@@ -139,7 +139,7 @@ button.toggle {
     #toolbar {
         min-height: 38px;
     }
-    .toolbarButton {
+    .toolbarButton:not(#go-button) {
         min-width: 29px;
         min-height: 38px;
     }

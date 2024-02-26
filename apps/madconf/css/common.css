@@ -69,5 +69,5 @@ p {
 
 .disabled u,
 button[disabled] u {
-    border-bottom-color: var(--button-shadow);
+    border-bottom-color: var(--underline-disabled);
 }
