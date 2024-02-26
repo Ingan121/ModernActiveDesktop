@@ -1,4 +1,4 @@
-The below license does NOT apply to the files excluded by .gitignore.
+The below license does NOT apply to the files listed in .licignore (specified in the .gitignore format.)
 
 ------------------------------------------------
 

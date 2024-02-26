@@ -1,24 +1,3 @@
-# nonfree
-bghtml
-channels-en
-channels-ko
-images/*
-!docs/images
-!apps/jspaint/images
-!images/mad*
-apps/madconf/images
-sounds
-apps/welcome/resources/*
-!apps/welcome/resources/contents.png
-wallpapers
-apps/solitaire/cards
-apps/solitaire/icon.png
-apps/visualizer/speaker.png
-apps/clock/icon.png
-apps/channelviewer/images
-apps/channelviewer/aboutpages/NavigationCanceled.html
-apps/inetcpl/images
-
 # system plugin installation
 /systemplugin
 

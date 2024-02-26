@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+
+<head>
+    <title>Navigation Canceled</title>
+    <meta http-equiv="PICS-Label"   content='(PICS-1.1 "http://www.rsac.org/ratingsv01.html" l gen true comment "RSACi North America Server" by "inet@microsoft.com" for "res://ie4tour.dll/welcome.htm" on "1997.06.30T14:21-0500" r (n 0 s 0 v 0 l 0))'></meta>
+    <meta http-equiv="content-type" content="text/html; charset=iso-8859-1"></meta>
+</head>
+
+<style>
+    body    { background : white; color : black; margin: 0 }
+    body    { font-family: Verdana, Arial, sans-serif; font-size: 8pt; line-height: 12pt }
+    table   { font-family: Verdana, Arial, sans-serif; font-size: 8pt; line-height: 12pt }
+    
+    div.Offscreen     { display:none }
+    span.Offscreen    { display:none }
+    span.BulletNumber { font-size: x-large; font-weight: bold; color: #66ccff }
+    span.BulletText   { font-size: x-small; font-weight: bold; letter-spacing: -1pt; text-align:center}
+
+</style>
+
+<body LINK=#FF0000 VLINK=#4E4E4E>
+
+<div style="position:relative; left:10; top:10; width:90%; height:30px;" id=DivRule>
+	<span style="font-size: 14pt; font-family: Verdana, Arial, sans-serif; color: #4E4E4E;  line-height: 14pt" >
+	Navigation Canceled
+    </span>
+</div>
+
+<div id=Out0 style="position:relative; left:20; top:+15px; width:90%;" >
+  <span id=Out1 class=Outline style="cursor: hand; ">+ </span><u id=Out1 class=Outline style="cursor: hand; ">More information</u>
+  <div id=Out1details style="display:None; position:relative; left:12;">
+		<BR>
+		ChannelViewer was unable to connect to the Web page you requested because navigation was canceled. There are several reasons why this might happen:
+		<br><br>
+		<ul>
+		<li> You clicked the <b>Stop</b> button before the page finished loading.
+		<BR>
+		<BR>
+		<li> The page might not be available at this time.
+		</ul>
+  </div>
+<BR>
+  <span id=Out2 class=Outline style="cursor: hand;">+ </span><u id=Out2 class=Outline style="cursor: hand;">Helpful Hints</u>
+  <div id=Out2details style="display:None; position:relative; left:12;">
+		<BR>
+		<ul>
+		<li>To try again to open the Web page, click the <b>Back</b> button, and then click the link again.
+		<BR><BR>
+		<li>If the Web page you requested is still taking too long to display, try clicking the <b>Stop</b> button, and then clicking <b>Refresh</b>.
+		</ul>
+		<BR><BR>
+  </div>
+</div>
+<BR><BR><BR>
+
+<script language=JavaScript>
+function clickHandler() {
+  var targetId, srcElement, targetElement;
+  srcElement = window.event.srcElement;
+  if (srcElement.className == "Outline") {
+     targetId = srcElement.id + "details";
+     targetElement = document.all(targetId);
+     if (targetElement.style.display == "none") {
+        targetElement.style.display = "";
+     } else {
+        targetElement.style.display = "none";
+     }
+  }
+}
+
+document.onclick = clickHandler;
+
+</script>
+
+</body>
+</HTML>
