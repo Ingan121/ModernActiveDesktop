@@ -67,7 +67,10 @@ window.iframe = document.getElementById("iframe");
 
 const NO_ADV_MSG = "Sorry, but advanced features are unavailable for this webpage. Please consult the internet options for more details.";
 
-const madBase = parent.location.href.split('/').slice(0, -1).join('/') + '/';
+let madBase = parent.location.href.split('/').slice(0, -1).join('/') + '/';
+if (parent === window) {
+    madBase += '../../';
+}
 const cvBase = madBase + 'apps/channelviewer/';
 
 let title = "";
@@ -631,6 +634,8 @@ function hookIframeSize(iframe) {
             const deskMover = madOpenExternal(url, false, specs);
             return deskMover.windowElement.contentDocument;
         }
+    } else {
+        iframe.sandbox += " allow-popups";
     }
 
     // Pro tip: youareanidiot.cc works well with this
@@ -1153,6 +1158,11 @@ async function getDataUrl(blob) {
         reader.onerror = reject;
         reader.readAsDataURL(blob);
     });
+}
+
+// Only for non-MAD usage
+function openExternalExternally(url) {
+    window.open(url, "_blank");
 }
 
 function loadStart() {
