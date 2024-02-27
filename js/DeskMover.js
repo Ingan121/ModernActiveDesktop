@@ -100,11 +100,25 @@ class DeskMover {
             this.contextMenuBg.addEventListener('click', preventDefault);
             this.contextMenuBg.addEventListener('pointerdown', preventDefault);
             this.contextMenuBg.addEventListener('pointerup', preventDefault);
-            this.contextMenuBg.addEventListener('pointermove', preventDefault);
             this.confMenuBg.addEventListener('click', preventDefault);
             this.confMenuBg.addEventListener('pointerdown', preventDefault);
             this.confMenuBg.addEventListener('pointerup', preventDefault);
-            this.confMenuBg.addEventListener('pointermove', preventDefault);
+
+            // Cancel animation when moving the cursor over the menu (Windows did this)
+            this.contextMenuBg.addEventListener('pointermove', (event) => {
+                if (event.clientX > 0 || event.clientY > 0) {
+                    this.contextMenuBg.style.animation = 'none';
+                }
+                event.preventDefault();
+                event.stopPropagation();
+            });
+            this.confMenuBg.addEventListener('pointermove', (event) => {
+                if (event.clientX > 0 || event.clientY > 0) {
+                    this.confMenuBg.style.animation = 'none';
+                }
+                event.preventDefault();
+                event.stopPropagation();
+            });
 
             this.contextMenuBg.addEventListener('focusout', this.closeContextMenu.bind(this));
             this.dropdownBg.addEventListener('focusout', this.closeDropdown.bind(this));
@@ -427,6 +441,7 @@ class DeskMover {
         this.contextMenuBg.style.removeProperty('--context-menu-top');
         this.confMenuBg.style.removeProperty('--context-menu-left');
         this.confMenuBg.style.removeProperty('--context-menu-top');
+
         // Windows without icons aren't designed to look good in different sizes yet
         // So just hide the menus for now
         if (this.windowTitlebar.classList.contains("noIcon")) {
@@ -438,6 +453,19 @@ class DeskMover {
             this.contextMenuItems[3].style.pointerEvents = "";
             this.contextMenuItems[3].style.opacity = "";
         }
+
+        switch (localStorage.madesktopCmAnimation) {
+            case 'none':
+                this.contextMenuBg.style.animation = 'none';
+                break;
+            case 'fade':
+                this.contextMenuBg.style.animation = 'fade 0.2s';
+                break;
+            case 'slide':
+            default:
+                this.contextMenuBg.style.animation = 'cmDropdown 0.25s linear';
+        }
+
         for (const item of this.contextMenuItems) {
             delete item.dataset.active;
         }
@@ -463,6 +491,7 @@ class DeskMover {
         this.contextMenuBg.style.setProperty('--context-menu-top', this.posInContainer.y + 'px');
         this.confMenuBg.style.setProperty('--context-menu-left', this.posInContainer.x + 'px');
         this.confMenuBg.style.setProperty('--context-menu-top', this.posInContainer.y + 'px');
+
         // Windows without icons aren't designed to look good in different sizes yet
         // So just hide the menus for now
         if (this.windowTitlebar.classList.contains("noIcon")) {
@@ -474,6 +503,23 @@ class DeskMover {
             this.contextMenuItems[3].style.pointerEvents = "";
             this.contextMenuItems[3].style.opacity = "";
         }
+
+        switch (localStorage.madesktopCmAnimation) {
+            case 'none':
+                this.contextMenuBg.style.animation = 'none';
+                break;
+            case 'fade':
+                this.contextMenuBg.style.animation = 'fade 0.2s';
+                break;
+            case 'slide':
+            default:
+                this.contextMenuBg.style.animation = 'cmDropdownright 0.25s linear';
+                this.contextMenuBg.style.pointerEvents = 'none';
+                this.contextMenuBg.addEventListener('animationend', () => {
+                    this.contextMenuBg.style.pointerEvents = '';
+                }, {once: true});
+        }
+
         for (const item of this.contextMenuItems) {
             delete item.dataset.active;
         }
@@ -505,6 +551,21 @@ class DeskMover {
     }
 
     openConfMenu() {
+        if (this.confMenuBg.style.display === "block") {
+            return;
+        }
+        switch (localStorage.madesktopCmAnimation) {
+            case 'none':
+                this.confMenuBg.style.animation = 'none';
+                break;
+            case 'fade':
+                this.confMenuBg.style.animation = 'fade 0.2s';
+                break;
+            case 'slide':
+            default:
+                this.confMenuBg.style.animation = 'cmDropright 0.25s linear';
+        }
+
         for (const item of this.confMenuItems) {
             delete item.dataset.active;
         }
@@ -613,22 +674,10 @@ class DeskMover {
     }
 
     changeCmAnimation(type) {
-        switch(type) {
-            case "none":
-                this.contextMenuBg.style.animation = "none";
-                this.confMenuBg.style.animation = "none";
-                this.dropdownBg.style.animation = "none";
-                break;
-            case "fade":
-                this.contextMenuBg.style.animation = "fade 0.2s";
-                this.confMenuBg.style.animation = "fade 0.2s";
-                this.dropdownBg.style.animation = "cmDropdown 0.25s linear";
-                break;
-            case "slide":
-                this.contextMenuBg.style.animation = "cmDropdown 0.25s linear";
-                this.confMenuBg.style.animation = "cmDropright 0.25s linear";
-                this.dropdownBg.style.animation = "cmDropdown 0.25s linear";
-                break;
+        if (type === "none") {
+            this.dropdownBg.style.animation = "none";
+        } else {
+            this.dropdownBg.style.animation = "cmDropdown 0.25s linear";
         }
     }
 
@@ -1311,9 +1360,9 @@ class DeskMover {
         }
     }
 
-    toggleResizable() {
+    toggleResizable(resizable) {
         this.closeContextMenu();
-        if (this.config.unresizable) {
+        if ((this.config.unresizable || resizable === true) && resizable !== false) {
             delete this.windowContainer.dataset.unresizable;
             this.confMenuItems[5].classList.add("checkedItem");
             this.config.unresizable = false;

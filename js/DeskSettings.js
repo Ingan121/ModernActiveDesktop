@@ -276,25 +276,28 @@ window.wallpaperPropertyListener = {
     applyUserProperties: function(properties) {
         log(properties);
 
-        if (properties.bgcolor && properties.bgvideo) {
+        let isStartup = false;
+        if (properties.schemecolor) {
             // Proper startup detection for Wallpaper Engine
             startup();
 
-            // Do not apply WE configs if this is a startup event
-            return;
+            // Only apply limited values on startup
+            isStartup = true;
         }
 
-        if (properties.bgcolor) {
+        if (properties.bgcolor && !isStartup) {
             changeBgColor(parseWallEngColorProp(properties.bgcolor.value));
         }
         if (properties.bgimg) {
             if (properties.bgimg.value) {
-                changeBgType("image");
                 const path = "file:///" + properties.bgimg.value;
                 document.body.style.backgroundImage = "url('" + path + "')";
-                localStorage.madesktopBgImg = path;
                 localStorage.madesktopBgWeImg = path;
-                localStorage.madesktopBgType = "image";
+                if (!isStartup) {
+                    changeBgType("image");
+                    localStorage.madesktopBgImg = path;
+                    localStorage.madesktopBgType = "image";
+                }
             } else {
                 if (localStorage.madesktopBgWeImg === localStorage.madesktopBgImg) {
                     document.body.style.backgroundImage = 'none';
@@ -305,30 +308,34 @@ window.wallpaperPropertyListener = {
         }
         if (properties.bgvideo) {
             if (properties.bgvideo.value) {
-                changeBgType("video");
                 const path = "file:///" + properties.bgvideo.value;
                 bgVideoView.src = path;
-                document.body.style.backgroundImage = "none";
-                delete localStorage.madesktopBgImg;
                 localStorage.madesktopBgVideo = path;
-                localStorage.madesktopBgType = "video";
+                if (!isStartup) {
+                    changeBgType("video");
+                    document.body.style.backgroundImage = "none";
+                    delete localStorage.madesktopBgImg;
+                    localStorage.madesktopBgType = "video";
+                }
             } else {
-                changeBgType("image");
+                if (localStorage.madesktopBgType === "video") {
+                    changeBgType("image");
+                    localStorage.madesktopBgType = "image";
+                }
                 bgVideoView.src = "";
                 delete localStorage.madesktopBgVideo;
-                localStorage.madesktopBgType = "image";
             }
         }
-        if (properties.additem) {
+        if (properties.additem && !isStartup) {
             openWindow();
         }
-        if (properties.openproperties) {
+        if (properties.openproperties && !isStartup) {
             openConfig();
         }
         if (properties.audioprocessing) {
             if (properties.audioprocessing.value) {
                 delete localStorage.madesktopVisUnavailable;
-                if (!visDeskMover) {
+                if (!visDeskMover && !isStartup) {
                     openWindow("apps/visualizer/index.html", false, "480px", "380px", "wnd", false, "200px", "500px");
                 }
             } else {
@@ -1025,7 +1032,7 @@ function openExternalExternally(url, fullscreen, noInternal = false) {
 
 // Required as mouse movements over iframes are not detectable in the parent document
 function iframeClickEventCtrl(clickable) {
-    const caller = getCallerFromStack(new Error().stack);
+    const caller = getCaller();
     log(clickable ? "clickable" : "unclickable", "debug", caller + " -> iframeClickEventCtrl");
     const value = clickable ? "auto" : "none";
     bgHtmlView.style.pointerEvents = value;
@@ -1578,19 +1585,20 @@ function reset(res) {
     }
 }
 
-function getCallerFromStack(stack) {
-    // Safari is weird
+function getCaller() {
+    const stack = new Error().stack;
     if (stack.includes("at ")) {
-        return stack.split('\n')[2].trim().slice(3).split(' ')[0];
+        return stack.split('\n')[3].trim().slice(3).split(' ')[0];
     } else {
-        return stack.split('\n')[1].split('@')[0];
+        // Safari is weird
+        return stack.split('\n')[2].split('@')[0];
     }
 }
 
 function log(str, level, caller) {
     if (debugLog) {
         if (!caller) {
-            caller = getCallerFromStack(new Error().stack);
+            caller = getCaller();
         }
         if (typeof str === "object") {
             str = JSON.stringify(str);
@@ -1721,6 +1729,10 @@ window.addEventListener('load', function () {
         document.documentElement.style.setProperty('--hilight-inverted', 'var(--hilight-text)');
     }
     adjustAllElements();
+
+    if (visDeskMover) {
+        visDeskMover.windowElement.contentWindow.setupListeners();
+    }
 });
 
 // Prevent scrolling when a partly off-screen deskMover gets focus, its iframe loads, etc.

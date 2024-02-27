@@ -166,9 +166,11 @@ button:not(.window-button):not(.lightweight),
   }
 }
 
-.tool-icon,
-.tool-icon.use-svg {
+.tool-icon {
 	background-image: url("../../../apps/jspaint/images/modern/vista-tools.png");
+}
+.tool-icon.use-svg {
+  background-image: url("../../../apps/jspaint/images/modern/modern-light-tools.svg");
 }
 .eye-gaze-mode .tool-icon.use-svg {
 	background-image: url("../../../apps/jspaint/images/classic/tools.svg");

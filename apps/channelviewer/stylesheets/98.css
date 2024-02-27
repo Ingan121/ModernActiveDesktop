@@ -1,0 +1,222 @@
+/* Minimal Windows Classic stylesheet for websites */
+/* Does not alter the layout of the website */
+/* Don't use box-shadow in controls as many webpages don't expect it */
+/* Also omit 'input' as 'input[type="*"]' has more specificity than '.class' */
+
+:root {
+    /* Borders */
+    --border-width: 1px;
+    --border-raised-outer: inset -1px -1px var(--button-dk-shadow),
+        inset 1px 1px var(--button-hilight);
+    --border-raised-inner: inset -2px -2px var(--button-shadow),
+        inset 2px 2px var(--button-light);
+    --border-sunken-outer: inset -1px -1px var(--button-hilight),
+        inset 1px 1px var(--button-dk-shadow);
+    --border-sunken-inner: inset -2px -2px var(--button-light),
+        inset 2px 2px var(--button-shadow);
+
+    /* Window borders flip button-light and button-hilight */
+    --border-window-outer: inset -1px -1px var(--button-dk-shadow),
+        inset 1px 1px var(--button-light);
+    --border-window-inner: inset -2px -2px var(--button-shadow),
+        inset 2px 2px var(--button-hilight);
+
+    /* Field borders (checkbox, input, etc) flip button-dk-shadow and button-shadow */
+    --border-field: inset -1px -1px var(--button-hilight),
+        inset 1px 1px var(--button-shadow), inset -2px -2px var(--button-light),
+        inset 2px 2px var(--button-dk-shadow);
+
+    /* Fonts */
+    --cjk-fontlink: "MS UI Gothic", Gulim, SimSun, PMingLiU;
+}
+
+body {
+    background-color: var(--window);
+    color: var(--window-text);
+}
+
+a {
+    color: var(--hot-tracking-color);
+}
+
+::selection {
+    background-color: var(--hilight);
+    color: var(--hilight-text);
+}
+
+button,
+[type="submit"],
+[type="reset"],
+.ds .lsbb .lsb { /* Override for NoJS Google Search */
+    color: var(--button-text);
+    background: var(--button-face);
+    border-radius: 0;
+    border: solid 1px;
+    border-top-color: var(--button-light);
+    border-left-color: var(--button-light);
+    border-bottom-color: var(--button-shadow);
+    border-right-color: var(--button-shadow);
+}
+
+button:focus,
+[type="submit"]:focus,
+[type="reset"]:focus,
+.ds .lsbb .lsb:focus {
+    outline: 1px dotted var(--button-text);
+    outline-offset: -4px;
+}
+
+button:active,
+[type="submit"]:active,
+[type="reset"]:active,
+.ds .lsbb .lsb:active {
+    border-top-color: var(--button-shadow);
+    border-left-color: var(--button-shadow);
+    border-bottom-color: var(--button-light);
+    border-right-color: var(--button-light);
+}
+
+button::-moz-focus-inner,
+[type="submit"]::-moz-focus-inner,
+[type="reset"]::-moz-focus-inner {
+    border: 0;
+}
+
+:disabled,
+:disabled + label,
+[readonly],
+[readonly] + label {
+    color: var(--button-shadow);
+}
+
+button:disabled,
+[type="submit"]:disabled,
+[type="reset"]:disabled,
+:disabled + label {
+    text-shadow: 1px 1px 0 var(--button-hilight);
+}
+
+button, input, label, li[role=tab], select, table, textarea {
+    -webkit-font-smoothing: none;
+    font-family: var(--ui-font);
+}
+
+[type="text"],
+[type="password"],
+[type="email"],
+[type="tel"],
+[type="number"],
+[type="search"],
+select,
+textarea {
+  padding: 3px 4px;
+  color: var(--window-text);
+  background-color: var(--window);
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border-radius: 0;
+  border: solid 1px;
+  border-top-color: var(--button-shadow);
+  border-left-color: var(--button-shadow);
+  border-bottom-color: var(--button-light);
+  border-right-color: var(--button-light);
+}
+
+/* clears the ‘X’ from Chrome */
+[type="search"]::-webkit-search-decoration,
+[type="search"]::-webkit-search-cancel-button,
+[type="search"]::-webkit-search-results-button,
+[type="search"]::-webkit-search-results-decoration { display: none; }
+
+[type="email"]:disabled,
+[type="tel"]:disabled,
+[type="password"]:disabled,
+[type="text"]:disabled,
+[type="number"]:disabled,
+[type="search"]:disabled,
+[type="email"]:read-only,
+[type="tel"]:read-only,
+[type="password"]:read-only,
+[type="text"]:read-only,
+[type="number"]:read-only,
+[type="search"]:read-only,
+textarea:disabled {
+    background-color: var(--button-face);
+}
+
+select:focus,
+[type="text"]:focus,
+[type="password"]:focus,
+[type="email"]:focus,
+[type="tel"]:focus,
+[type="number"]:focus,
+[type="search"]:focus,
+textarea:focus {
+    outline: none;
+}
+
+::-webkit-scrollbar {
+    width: var(--scrollbar-size);
+}
+::-webkit-scrollbar:horizontal {
+    height: var(--scrollbar-size);
+}
+
+::-webkit-scrollbar-corner {
+    background: var(--button-light);
+}
+
+::-webkit-scrollbar-track {
+    background-image: var(--scroll-track);
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--button-face);
+    box-shadow: var(--border-window-outer), var(--border-window-inner);
+}
+
+::-webkit-scrollbar-button:horizontal:start:decrement,
+::-webkit-scrollbar-button:horizontal:end:increment,
+::-webkit-scrollbar-button:vertical:start:decrement,
+::-webkit-scrollbar-button:vertical:end:increment {
+    display: block;
+}
+
+::-webkit-scrollbar-button:vertical:start {
+    height: var(--scrollbar-size);
+    background-color: var(--button-face);
+    background-image: var(--scroll-up);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+    box-shadow: var(--border-window-outer), var(--border-window-inner);
+}
+::-webkit-scrollbar-button:vertical:end {
+    height: var(--scrollbar-size);
+    background-color: var(--button-face);
+    background-image: var(--scroll-down);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+    box-shadow: var(--border-window-outer), var(--border-window-inner);
+}
+::-webkit-scrollbar-button:horizontal:start {
+    width: var(--scrollbar-size);
+    background-color: var(--button-face);
+    background-image: var(--scroll-left);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+    box-shadow: var(--border-window-outer), var(--border-window-inner);
+}
+::-webkit-scrollbar-button:horizontal:end {
+    width: var(--scrollbar-size);
+    background-color: var(--button-face);
+    background-image: var(--scroll-right);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+    box-shadow: var(--border-window-outer), var(--border-window-inner);
+}

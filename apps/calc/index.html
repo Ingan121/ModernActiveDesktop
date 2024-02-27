@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Calculator</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../../css/98.css">
+    <link rel="stylesheet" href="calc.css">
+    <link rel="shortcut icon" href="icon.png">
+    <link id="scheme" rel="stylesheet" href="data:text/css,">
+    <link id="menuStyle" rel="stylesheet" href="">
+    <style id="style"></style>
+</head>
+<body id="madCalc">
+    <div id="menuBar" class="menu">
+        <div id="editMenuBtn" class="menuBtn"><span><u>E</u>dit</span></div>
+        <div id="viewMenuBtn" class="menuBtn"><span><u>V</u>iew</span></div>
+        <div id="helpMenuBtn" class="menuBtn"><span><u>H</u>elp</span></div>
+    </div>
+    <input id="calcDisplay" class="calcDisplay" type="text" value="0.">
+    <div id="firstRow" class="field-row">
+        <div id="memDisplay">
+            <span id="memStatus">M</span>
+        </div>
+        <button id="bksp" class="topButton">Backspace</button>
+        <button id="ce" class="topButton">CE</button>
+        <button id="c" class="topButton">C</button>
+    </div>
+    <div id="secondRow" class="field-row">
+        <button id="mc" class="memButton">MC</button>
+        <button class="numButton">7</button>
+        <button class="numButton">8</button>
+        <button class="numButton">9</button>
+        <button id="divide" class="operButton">/</button>
+        <button id="sqrt" class="operButton2">sqrt</button>
+    </div>
+    <div id="thirdRow" class="field-row">
+        <button id="mr" class="memButton">MR</button>
+        <button class="numButton">4</button>
+        <button class="numButton">5</button>
+        <button class="numButton">6</button>
+        <button id="multiply" class="operButton">x</button>
+        <button id="percent" class="operButton2">%</button>
+    </div>
+    <div id="fourthRow" class="field-row">
+        <button id="ms" class="memButton">MS</button>
+        <button class="numButton">1</button>
+        <button class="numButton">2</button>
+        <button class="numButton">3</button>
+        <button id="subtract" class="operButton">-</button>
+        <button id="reciprocal" class="operButton2">1/x</button>
+    </div>
+    <div id="fifthRow" class="field-row">
+        <button id="mplus" class="memButton">M+</button>
+        <button class="numButton">0</button>
+        <button id="plusMinus" class="operButton2">+/-</button>
+        <button id="decimal" class="operButton2">.</button>
+        <button id="add" class="operButton">+</button>
+        <button id="equals" class="operButton">=</button>
+    </div>
+
+    <div id="editMenuBg" class="contextMenuBg window" tabindex="-1">
+        <div id="editMenu" class="contextMenu window-body">
+            <div class="contextMenuItem"><p><u>C</u>opy</p></div>
+            <div class="contextMenuItem disabled"><p><u>P</u>aste</p></div>
+        </div>
+    </div>
+    <div id="viewMenuBg" class="contextMenuBg window" tabindex="-1">
+        <div id="viewMenu" class="contextMenu window-body">
+            <div class="contextMenuItem activeStyle"><p>S<u>t</u>andard</p></div>
+            <div class="contextMenuItem disabled"><p><u>S</u>cientific</p></div>
+        </div>
+    </div>
+    <div id="helpMenuBg" class="contextMenuBg window" tabindex="-1">
+        <div id="helpMenu" class="contextMenu window-body">
+            <div class="contextMenuItem"><p>A<u>b</u>out Calculator</p></div>
+        </div>
+    </div>
+    <script src="../../js/libmad.js"></script>
+    <script src="../../js/libmad-menu.js"></script>
+    <script src="calc.js"></script>
+</body>
+</html>

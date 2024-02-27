@@ -50,7 +50,6 @@ body {
     padding: calc((var(--menu-height) - 14px) / 2 + 1px) 7px 2px 8px;
 }
 
-.menuBtn:active,
 .menuBtn[data-active] {
     padding-top: calc((var(--menu-height) - 14px) / 2 + 2px);
 }
@@ -589,7 +588,7 @@ body[data-fullscreen] #statusBar {
 
 #editMenuBg {
     width: 100px;
-    height: 77px;
+    height: 60px;
 }
 
 #viewMenuBg {

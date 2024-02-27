@@ -168,6 +168,11 @@ function updateVisConfig() {
     idle = false;
 }
 
+function setupListeners() {
+    window.wallpaperRegisterAudioListener(wallpaperAudioListener);
+    setupMediaListeners();
+}
+
 window.addEventListener('resize', updateSize);
 window.addEventListener('load', updateSize);
 
@@ -181,16 +186,14 @@ new MutationObserver(function (mutations) {
 
 if (madRunningMode === 1) {
     pausedAlert.addEventListener('click', () => {
-        window.wallpaperRegisterAudioListener(wallpaperAudioListener);
-        setupMediaListeners();
+        setupListeners();
         setTimeout(() => {
             extraAlert.style.display = 'block';
         }, 1000);
     });
 
     // Register the audio listener provided by Wallpaper Engine.
-    window.wallpaperRegisterAudioListener(wallpaperAudioListener);
-    setupMediaListeners();
+    setupListeners();
 
     // Any iframe load in MAD invalidates this somehow
     setInterval(() => {
@@ -198,8 +201,7 @@ if (madRunningMode === 1) {
         // And that will cause the wallpaper32/64.exe to freeze eventually
         // Only re-register if we've not had an update in the last 200ms
         if (updateCnt === 0 && !triedRegistering) {
-            window.wallpaperRegisterAudioListener(wallpaperAudioListener);
-            setupMediaListeners();
+            setupListeners();
             // Only try once, as having a maximized window, etc also causes the update to stop
             // It will begin updating again when such conditions are no longer met
             triedRegistering = true;

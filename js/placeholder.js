@@ -53,6 +53,13 @@ function openApp(app) {
             madChangeWndStyle("wnd");
             madLocReplace("apps/clock/index.html");
             break;
+        case "calc":
+            madResizeTo(254, 227);
+            madMoveTo(500, 200);
+            madChangeWndStyle("wnd");
+            madSetResizable(false);
+            madLocReplace("apps/calc/index.html");
+            break;
     }
 }
 

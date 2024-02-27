@@ -63,6 +63,7 @@
         window.madMoveTo = window.moveTo;
         window.madBringToTop = window.focus;
         window.madSetResizeArea = noop;
+        window.madSetResizable = noop;
 
         window.madEnterFullscreen = function () {
             document.documentElement.requestFullscreen();
@@ -182,7 +183,9 @@
         }
 
         if (window.osguiCompatRequired) {
-            applyCSSProperties(renderThemeGraphics(getComputedStyle(document.body)), { element: document.body });
+            setTimeout(() => {
+                applyCSSProperties(renderThemeGraphics(getComputedStyle(document.body)), { element: document.body });
+            }, 100);
         }
 
         try {
@@ -378,6 +381,7 @@
     window.madEnterFullscreen = deskMover.enterFullscreen.bind(deskMover);
     window.madExitFullscreen = deskMover.exitFullscreen.bind(deskMover);
     window.madSetResizeArea = deskMover.setResizeArea.bind(deskMover);
+    window.madSetResizable = deskMover.toggleResizable.bind(deskMover);
     window.madCloseWindow = deskMover.closeWindow.bind(deskMover);
 
     window.madAlert = top.madAlert;

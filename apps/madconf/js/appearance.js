@@ -135,7 +135,7 @@ async function main() {
 
     let openColorPicker = null;
 
-    colorPickerColor.style.backgroundColor = scheme[options[selector.selectedIndex].value];
+    colorPickerColor.style.backgroundColor = localStorage.madesktopBgColor || scheme[options[selector.selectedIndex].value];
 
     schemeSelector.addEventListener("change", async function () {
         if (schemeSelector.selectedIndex === 0) {
@@ -296,7 +296,7 @@ async function main() {
 
     selector.addEventListener("change", function () {
         const option = selector.value;
-        colorPickerColor.style.backgroundColor  = scheme[option];
+        colorPickerColor.style.backgroundColor = scheme[option];
         if (itemMappings[option]) {
             if (itemMappings[option].noFirst) {
                 colorPickerWrap.classList.add("disabled");
@@ -777,6 +777,11 @@ async function main() {
                     "application/x-windows-theme": [".theme", ".themepack"]
                 }
             }, {
+                description: "Registry Files",
+                accept: {
+                    "application/x-windows-registry": [".reg"]
+                }
+            }, {
                 description: "JSON Files",
                 accept: {
                     "application/json": [".json"]
@@ -785,7 +790,7 @@ async function main() {
                 description: "CSS Files",
                 accept: {
                     "text/css": [".css"]
-                },
+                }
             }],
             excludeAcceptAllOption: false,
             multiple: false,
@@ -797,49 +802,11 @@ async function main() {
         schemeName = getFilename(file.name);
         schemeSelector.options[0].textContent = schemeName;
 
-        if (file.name.endsWith(".theme") || file.name.endsWith(".themepack")) {
-            try {
-                scheme = {
-                    'active-border': getColorValue(text, 'ActiveBorder'),
-                    'active-title': getColorValue(text, 'ActiveTitle'),
-                    'app-workspace': getColorValue(text, 'AppWorkspace'),
-                    'background': getColorValue(text, 'Background'),
-                    'button-alternate-face': getColorValue(text, 'ButtonAlternateFace'),
-                    'button-dk-shadow': getColorValue(text, 'ButtonDkShadow'),
-                    'button-face': getColorValue(text, 'ButtonFace'),
-                    'button-hilight': getColorValue(text, 'ButtonHilight'),
-                    'button-light': getColorValue(text, 'ButtonLight'),
-                    'button-shadow': getColorValue(text, 'ButtonShadow'),
-                    'button-text': getColorValue(text, 'ButtonText'),
-                    'gradient-active-title': getColorValue(text, 'GradientActiveTitle'),
-                    'gradient-inactive-title': getColorValue(text, 'GradientInactiveTitle'),
-                    'gray-text': getColorValue(text, 'GrayText'),
-                    'hilight': getColorValue(text, 'Hilight'),
-                    'hilight-text': getColorValue(text, 'HilightText'),
-                    'hot-tracking-color': getColorValue(text, 'HotTrackingColor'),
-                    'inactive-border': getColorValue(text, 'InactiveBorder'),
-                    'inactive-title': getColorValue(text, 'InactiveTitle'),
-                    'inactive-title-text': getColorValue(text, 'InactiveTitleText'),
-                    'info-text': getColorValue(text, 'InfoText'),
-                    'info-window': getColorValue(text, 'InfoWindow'),
-                    'menu': getColorValue(text, 'Menu'),
-                    'menu-bar': getColorValue(text, 'MenuBar'),
-                    'menu-hilight': getColorValue(text, 'MenuHilight'),
-                    'menu-text': getColorValue(text, 'MenuText'),
-                    'scrollbar': getColorValue(text, 'Scrollbar'),
-                    'title-text': getColorValue(text, 'TitleText'),
-                    'window': getColorValue(text, 'Window'),
-                    'window-frame': getColorValue(text, 'WindowFrame'),
-                    'window-text': getColorValue(text, 'WindowText')
-                };
-                schemeSelector.selectedIndex = 0;
-                selector.disabled = false;
-                applyPreview();
-                selector.dispatchEvent(new Event("change"));
-            } catch {
-                madAlert("The imported theme file does not contain valid colors.", null, "error");
-            }
-        } else if (file.name.endsWith(".json")) {
+        if (text.match("--.*:.*;") || file.name.endsWith(".css")) {
+            parent.changeColorScheme(text);
+            localStorage.madesktopColorScheme = "custom";
+            location.reload();
+        } else {
             try {
                 scheme = JSON.parse(text);
                 schemeSelector.selectedIndex = 0;
@@ -847,12 +814,50 @@ async function main() {
                 applyPreview();
                 selector.dispatchEvent(new Event("change"));
             } catch {
-                madAlert("The imported JSON file is not valid.", null, "error");
+                // Match both REGEDIT4 and Windows Registry Editor Version 5.00
+                let reg = !!text.split("\n")[0].match(/(?=.*REG)(?=.*EDIT)/i);
+                try {
+                    scheme = {
+                        'active-border': getColorValue(text, 'ActiveBorder', reg),
+                        'active-title': getColorValue(text, 'ActiveTitle', reg),
+                        'app-workspace': getColorValue(text, 'AppWorkspace', reg),
+                        'background': getColorValue(text, 'Background', reg),
+                        'button-alternate-face': getColorValue(text, 'ButtonAlternateFace', reg),
+                        'button-dk-shadow': getColorValue(text, 'ButtonDkShadow', reg),
+                        'button-face': getColorValue(text, 'ButtonFace', reg),
+                        'button-hilight': getColorValue(text, 'ButtonHilight', reg),
+                        'button-light': getColorValue(text, 'ButtonLight', reg),
+                        'button-shadow': getColorValue(text, 'ButtonShadow', reg),
+                        'button-text': getColorValue(text, 'ButtonText', reg),
+                        'gradient-active-title': getColorValue(text, 'GradientActiveTitle', reg),
+                        'gradient-inactive-title': getColorValue(text, 'GradientInactiveTitle', reg),
+                        'gray-text': getColorValue(text, 'GrayText', reg),
+                        'hilight': getColorValue(text, 'Hilight', reg),
+                        'hilight-text': getColorValue(text, 'HilightText', reg),
+                        'hot-tracking-color': getColorValue(text, 'HotTrackingColor', reg),
+                        'inactive-border': getColorValue(text, 'InactiveBorder', reg),
+                        'inactive-title': getColorValue(text, 'InactiveTitle', reg),
+                        'inactive-title-text': getColorValue(text, 'InactiveTitleText', reg),
+                        'info-text': getColorValue(text, 'InfoText', reg),
+                        'info-window': getColorValue(text, 'InfoWindow', reg),
+                        'menu': getColorValue(text, 'Menu', reg),
+                        'menu-bar': getColorValue(text, 'MenuBar', reg),
+                        'menu-hilight': getColorValue(text, 'MenuHilight', reg),
+                        'menu-text': getColorValue(text, 'MenuText', reg),
+                        'scrollbar': getColorValue(text, 'Scrollbar', reg),
+                        'title-text': getColorValue(text, 'TitleText', reg),
+                        'window': getColorValue(text, 'Window', reg),
+                        'window-frame': getColorValue(text, 'WindowFrame', reg),
+                        'window-text': getColorValue(text, 'WindowText', reg)
+                    };
+                    schemeSelector.selectedIndex = 0;
+                    selector.disabled = false;
+                    applyPreview();
+                    selector.dispatchEvent(new Event("change"));
+                } catch {
+                    madAlert("The imported theme file does not contain valid colors.", null, "error");
+                }
             }
-        } else {
-            parent.changeColorScheme(text);
-            localStorage.madesktopColorScheme = "custom";
-            location.reload();
         }
     }
 }
@@ -1006,8 +1011,10 @@ function generateCssScheme(scheme, keepEffects = false) {
 }
 
 // Parse *.theme files
-function getColorValue(themeText, name) {
-    let rgb = themeText.match(`\n${name}=(.*)\r\n`);
+// Or exported "HKCU\Control Panel\Colors" *.reg files (reg = true)
+function getColorValue(themeText, name, reg) {
+    const regex = reg ? `\n\"${name}\"=\"(.*)\"\r\n` : `\n${name}=(.*)\r\n`
+    let rgb = themeText.match(regex);
     if (!rgb) {
         switch (name) {
             case 'ButtonAlternateFace':

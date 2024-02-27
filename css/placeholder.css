@@ -18,6 +18,7 @@ body {
     width: 58px;
     text-align: center;
     cursor: default;
+    line-height: 1;
 }
 
 .icon div {

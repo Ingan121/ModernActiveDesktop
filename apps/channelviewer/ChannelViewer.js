@@ -84,6 +84,8 @@ let pageSetStatusText = '';
 let loadedWithProxy = false;
 let loading = false;
 let favEditMode = false;
+let baseStylesheet = '';
+let themeStylesheet = '';
 
 madDeskMover.menu = new MadMenu(menuBar, ['file', 'edit', 'view', 'go', 'favorites', 'help'], ['toolbars', 'explorerBar']);
 
@@ -122,15 +124,7 @@ editMenuItems[1].addEventListener("click", function () { // Copy button
     }
 });
 
-editMenuItems[2].addEventListener("click", function () { // Paste button
-    if (isCrossOrigin) {
-        madAlert(NO_ADV_MSG, null, "warning");
-    } else {
-        iframe.contentWindow.document.execCommand("paste");
-    }
-});
-
-editMenuItems[3].addEventListener("click", function () { // Select all button
+editMenuItems[2].addEventListener("click", function () { // Select all button
     if (isCrossOrigin) {
         madAlert(NO_ADV_MSG, null, "warning");
     } else {
@@ -515,7 +509,7 @@ windowCloseButton.addEventListener('click', function () {
 
 toolbars.addEventListener('contextmenu', function (event) {
     event.preventDefault();
-    madDeskMover.menu.openMenu('toolbars', { x: event.clientX, y: event.clientY });
+    madDeskMover.menu.openMenu('toolbars', { x: event.clientX / madScaleFactor, y: event.clientY / madScaleFactor });
 });
 
 if (localStorage.madesktopChanViewHideToolbar) {
@@ -1261,6 +1255,53 @@ function delayedSave() {
     }, 10000);
 }
 
+async function fetchStyle() {
+    baseStylesheet = await fetch(`stylesheets/98.css`).then(res => res.text());
+    switch (localStorage.madesktopColorScheme) {
+        case "xpcss4mad":
+        case "7css4mad":
+            themeStylesheet = await fetch(`stylesheets/${localStorage.madesktopColorScheme}.css`).then(res => res.text());
+            break;
+        default:
+            themeStylesheet = "";
+    }
+}
+
+function injectStyle() {
+    if (!isCrossOrigin && !localStorage.madesktopChanViewNoInjectStyle) {
+        const colors = ['active-border', 'active-title', 'app-workspace', 'background', 'button-alternate-face', 'button-dk-shadow', 'button-face', 'button-hilight', 'button-light', 'button-shadow', 'button-text', 'gradient-active-title', 'gradient-inactive-title', 'gray-text', 'hilight', 'hilight-text', 'hot-tracking-color', 'inactive-border', 'inactive-title', 'inactive-title-text', 'info-text', 'info-window', 'menu', 'menu-bar', 'menu-hilight', 'menu-text', 'scrollbar', 'title-text', 'window', 'window-frame', 'window-text', 'ui-font'];
+
+        let schemeElement = iframe.contentDocument.getElementById("madChanView-scheme");
+        if (!schemeElement) {
+            schemeElement = document.createElement("style");
+            schemeElement.id = "madChanView-scheme";
+            iframe.contentDocument.head.insertBefore(schemeElement, iframe.contentDocument.head.firstChild);
+        }
+        schemeElement.textContent = ":root {";
+        for (const color of colors) {
+            schemeElement.textContent += `--${color}: ` + getComputedStyle(document.documentElement).getPropertyValue(`--${color}`) + ";";
+        }
+        schemeElement.textContent += "}";
+
+        let styleElement = iframe.contentDocument.getElementById("madChanView-style");
+        if (!styleElement) {
+            styleElement = document.createElement("style");
+            styleElement.id = "madChanView-style";
+            iframe.contentDocument.head.insertBefore(styleElement, iframe.contentDocument.head.firstChild);
+        }
+        styleElement.textContent = baseStylesheet + themeStylesheet;
+
+        let svgStyleElement = iframe.contentDocument.getElementById("madChanView-svgStyle");
+        if (!svgStyleElement) {
+            svgStyleElement = document.createElement("style");
+            svgStyleElement.id = "madChanView-svgStyle";
+            iframe.contentDocument.head.insertBefore(svgStyleElement, iframe.contentDocument.head.firstChild);
+        }
+        const parentStyleElement = parent.document.getElementById("style");
+        svgStyleElement.textContent = parentStyleElement.textContent;
+    }
+}
+
 function init() {
     const url = new URL(location.href);
     let page = url.searchParams.get("page");
@@ -1287,7 +1328,7 @@ function init() {
     }
     const resizable = url.searchParams.get("resizable");
     if (resizable === "no" || resizable === "0") {
-        madDeskMover.toggleResizable();
+        madSetResizable(false);
     }
     const popup = !!width || !!height || !!left || !!top || !!resizable || url.searchParams.get("popup") !== null;
     if (popup) {
@@ -1299,16 +1340,21 @@ function init() {
     return { page, doForceLoad };
 }
 
-window.addEventListener("message", (event) => {
-    if (event.data.type === "scheme-updated" && mainArea.classList.contains("sidebarOpen")) {
-        sidebarWindow.contentDocument.getElementById("scheme").href = schemeElement.href;
+window.addEventListener("message", async (event) => {
+    if (event.data.type === "scheme-updated") {
+        await fetchStyle();
+        injectStyle();
+        if (mainArea.classList.contains("sidebarOpen")) {
+            sidebarWindow.contentDocument.getElementById("scheme").href = schemeElement.href;
+        }
     }
 });
 
-window.addEventListener('load', function () {
+window.addEventListener('load', async function () {
     let { page, doForceLoad } = init();
     document.title = page ? page + " - ChannelViewer" : "ChannelViewer";
     urlbar.value = page;
+    await fetchStyle();
 
     if (localStorage.madesktopFailCount > 2) {
         preCrashUrl = page;
@@ -1469,6 +1515,7 @@ iframe.addEventListener('load', function () {
     historyItems = historyItems.slice(0, historyLength);
     hookIframeSize(this);
     changeHistoryButtonStatus();
+    injectStyle();
     iframe.contentDocument.addEventListener('pointerdown', madBringToTop);
     didFirstLoad = true;
     loadFinish();

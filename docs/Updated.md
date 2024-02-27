@@ -1,5 +1,40 @@
 # Changelog
 
+## 3.2
+* Added Clock and Calculator
+* Revamped the ChannelViewer
+    * Made it look more like IE4 / IE6
+    * It can now open pages that don't allow embedding
+    * Improved external link handling
+    * Note: the system plugin ChannelViewer has been deprecated. Please use the in-wallpaper ChannelViewer or any external browser on your system
+* Improved the customization settings
+    * You can now adjust the window metrics and various fonts. Updated the built-in themes as well
+    * Made the configuration window pretty pixel-perfect to the 98 apperance control panel
+    * Added an option to hide the keyboard navigation underlines
+    * Added an option to show only window outlines when dragging
+    * Support saving color schemes to the storage
+    * Support importing Windows theme files and exported color registry files
+    * Support exporting scheme as CSS or JSON, by typing !copycss or !copyjson to the scheme save dialog
+    * Support adjusting top and bottom margins. Adjust these based on your desktop, for example the bottom margin would be the size of the taskbar.
+* Added a Windows Aero theme, and improved the XP theme
+    * JSPaint will use Windows Vista or Windows XP looks if you use one of these themes
+* Added more Classic schemes
+    * Catppuccin Mocha
+    * Some Plus! themes that were missing previously
+    * Reverted the 98 Classic scheme to 3.0 one, as this was indeed the correct one.
+    * 3.1 98 scheme has been renamed to Windows Classic (98SE) - in fact this slightly variant of the Classic scheme is used in later versions of Windows.
+* More controls, including radio buttons and dropdowns, now follow the color scheme
+* Visualizer updates
+    * Added more configurable options to the visualizer
+    * Added fullscreen mode
+    * Automatically pause drawing when idle to reduce the CPU usage
+* ChannelBar is now a openable app, like visualizer and such
+    * It no longer re-opens when opening a new window
+* Made various UI elements look more accurate
+    * Added ClientEdge in various places
+* Added support for Firefox and iOS Safari, as well as touch screens
+* Support menu navigation with keyboard (when keyboard input is available)
+
 ## 3.1
 * Added a music visualizer
     * Currently supports WMP Bar-like visualizer and a simple album art visualizer

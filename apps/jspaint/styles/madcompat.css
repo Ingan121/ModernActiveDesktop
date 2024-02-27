@@ -143,6 +143,37 @@
     border-top: none !important;
 }
 
+.window-button-icon {
+    width: 100%;
+    height: 100%;
+}
+
+.window-action-close .window-button-icon::before  {
+    content: "\e904";
+}
+.window-action-maximize .window-button-icon::before  {
+	content: "\e909";
+}
+.window-action-restore .window-button-icon::before  {
+	content: "\e90b";
+}
+.window-action-minimize .window-button-icon::before  {
+	content: "\e90a";
+}
+
+.window-button .window-button-icon::before {
+    background-color: transparent;
+    -webkit-mask: none;
+    mask: none;
+    font-family: "marlett-icons";
+    position: relative;
+    font-size: calc(12px + var(--extra-title-height) / 2);
+}
+
+.window-button .window-button-icon::after {
+    display: none;
+}
+
 .tool-window .window-titlebar {
     height: var(--palette-title-height) !important;
 }

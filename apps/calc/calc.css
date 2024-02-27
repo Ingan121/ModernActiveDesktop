@@ -1,0 +1,101 @@
+@charset "utf-8";
+
+@import '../../css/libmad.css';
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    user-select: none;
+    --grouped-element-spacing: 3px;
+}
+
+#calcDisplay {
+    margin: 0 0 11px 8px;
+    width: calc(100% - 15px);
+    height: 26px;
+    text-align: right;
+}
+
+#memDisplay {
+    width: 27px;
+    height: 26px;
+    margin: -4px 12px 0 12px;
+    box-shadow: inset -1px -1px var(--button-hilight), inset 1px 1px var(--button-shadow),
+        inset -2px -2px var(--button-light), inset 2px 2px var(--button-dk-shadow);
+}
+
+#memStatus {
+    font-family: var(--ui-font);
+    font-size: 11px;
+    margin-left: 11px;
+    line-height: 26px;
+    display: none;
+}
+
+button {
+    min-width: 0 !important;
+    min-height: 0 !important;
+    color: blue !important;
+    margin-bottom: 1px;
+    box-shadow: inset -1px -1px var(--button-dk-shadow), inset 1px 1px var(--button-light),
+        inset -2px -2px var(--button-shadow), inset 2px 2px var(--button-hilight);
+}
+
+#thirdRow button {
+    margin-bottom: 0;
+}
+
+.topButton {
+    width: 63px;
+    height: 29px;
+    padding: 0 !important;
+    margin-bottom: 4px;
+}
+
+.memButton {
+    margin-left: 8px;
+    margin-right: 7px;
+}
+
+.memButton,
+.numButton,
+.operButton,
+.operButton2 {
+    width: 36px;
+    height: 29px;
+}
+
+.topButton,
+.memButton,
+.operButton {
+    color: red !important;
+}
+
+.memButton {
+    padding: 0 11px !important;
+}
+
+.operButton2 {
+    padding: 0 10px !important;
+}
+
+#editMenuBg {
+    width: 90px;
+    height: 34px;
+}
+
+#viewMenuBg {
+    width: 90px;
+    height: 34px;
+}
+
+#helpMenuBg {
+    width: 130px;
+    height: 17px;
+}
+
+#viewMenu > .contextMenuItem:not(.hasIcon):not(.activeStyle):not(.checkedItem) > p {
+    padding-left: 20px;
+}

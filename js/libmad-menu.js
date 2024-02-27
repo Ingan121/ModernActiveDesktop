@@ -76,6 +76,12 @@ class MadMenu {
                 this.closeMenu(menuName);
             });
 
+            menuBg.addEventListener('pointermove', (event) => {
+                if (event.clientX > 0 || event.clientY > 0) {
+                    menuBg.style.animation = 'none';
+                }
+            });
+
             menuBtn.addEventListener('pointerover', () => {
                 if (this.menuBar.dataset.active && !this.handlingKeyEvent) {
                     this.mouseOverMenu = true;

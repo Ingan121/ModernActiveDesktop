@@ -22,7 +22,6 @@
 }
 
 body:not(#madconf-preview) .menuBtn:hover,
-body:not(#madconf-preview) .menuBtn:active,
 .menuBtn[data-active] {
     border-color: var(--hilight) !important;
     border-radius: 0 !important;
@@ -32,7 +31,7 @@ body:not(#madconf-preview) .menuBtn:active,
     padding-top: calc((var(--menu-height) - 14px) / 2) !important;
 }
 
-#madChanView .menuBtn {
+#madChanView .menuBtn:hover {
     padding: calc((var(--menu-height) - 14px) / 2 + 1px) 7px 2px 8px !important;
 }
 
