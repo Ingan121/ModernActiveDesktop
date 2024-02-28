@@ -22,6 +22,8 @@
         window.madOpenWindow = function (url, temp, width, height, style) {
             if (url.startsWith("apps/")) {
                 url = "../../" + url;
+            } else if (!url.endsWith(".html")) {
+                url = "../../docs/index.html?src=" + url;
             }
             window.open(url, "_blank", `width=${width},height=${height}`);
         }
@@ -40,37 +42,52 @@
             }
             location.replace(url);
         }
-        window.madAlert = function (msg, callback, icon) {
-            alert(msg);
-            if (callback) {
-                callback();
-            }
+        window.madAlert = async function (msg, callback, icon) {
+            return new Promise((resolve) => {
+                alert(msg);
+                if (callback) {
+                    callback();
+                }
+                resolve();
+            });
         }
-        window.madConfirm = function (msg, callback) {
-            const result = confirm(msg);
-            if (callback) {
-                callback(result);
-            }
+        window.madConfirm = async function (msg, callback) {
+            return new Promise((resolve) => {
+                const result = confirm(msg);
+                if (callback) {
+                    callback(result);
+                }
+                resolve(result);
+            });
         }
-        window.madPrompt = function (msg, callback, hint, text) {
-            const result = prompt(msg, text);
-            if (callback) {
-                callback(result);
-            }
+        window.madPrompt = async function (msg, callback, hint, text) {
+            return new Promise((resolve) => {
+                const result = prompt(msg, text);
+                if (callback) {
+                    callback(result);
+                }
+                resolve(result);
+            });
         }
         window.madCloseWindow = window.close;
         window.madResizeTo = window.resizeTo;
         window.madMoveTo = window.moveTo;
         window.madBringToTop = window.focus;
-        window.madSetResizeArea = noop;
-        window.madSetResizable = noop;
 
         window.madEnterFullscreen = function () {
+            window.madDeskMover.isFullscreen = true;
+            document.body.dataset.fullscreen = true;
             document.documentElement.requestFullscreen();
         }
-        window.madExitFullscreen = document.exitFullscreen;
+        window.madExitFullscreen = function () {
+            window.madDeskMover.isFullscreen = false;
+            delete document.body.dataset.fullscreen;
+            document.exitFullscreen();
+        }
 
         window.madSetIcon = noop;
+        window.madSetResizeArea = noop;
+        window.madSetResizable = noop;
         window.madChangeWndStyle = noop;
         window.madOpenMiniColorPicker = noop;
         window.madOpenColorPicker = noop;
@@ -388,4 +405,5 @@
     window.madConfirm = top.madConfirm;
     window.madPrompt = top.madPrompt;
     window.madPlaySound = top.playSound;
+    window.madAnnounce = top.announce;
 })();

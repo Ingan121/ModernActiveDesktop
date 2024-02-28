@@ -5,9 +5,38 @@
 'use strict';
 
 class DeskMover {
-    constructor(windowContainer, numStr, openDoc, temp, width, height, style, reinit, centered, top, left, aot, unresizable, noIcon) {
+    // DeskMover creation options:
+    // width: The width of the window
+    // height: The height of the window
+    // style: The style of the window, can be "ad" (Active Desktop), "nonad" (Non-Active Desktop), "wnd" (Window), default is "wnd"
+    // centered: Whether the window should be centered
+    // top: The top position of the window
+    // left: The left position of the window
+    // aot: Whether the window should be always on top
+    // unresizable: Whether the window should be unresizable
+    // noIcon: Whether the window should have an icon
+    // If one of the options is not provided, the default value will be used
+
+    // Other arguments:
+    // windowContainer: The container of the window; should be a cloned div of the .windowContainer element in index.html
+    // numStr: The number of the window, used for saving and loading configs
+    // temp: Whether the window is temporary, will not save configs and will be destroyed on next load
+    // src: The URL of the window, will be opened with docs viewer if the string does not end with .html
+    // reinit: Whether the window is being reinitialized, will not add event listeners. Used for the reset feature; should not be used with temp windows
+
+    constructor(windowContainer, numStr, src, temp, options = {}, reinit) {
         this.numStr = numStr;
         this.temp = temp;
+
+        const width = options.width;
+        const height = options.height;
+        const style = options.style;
+        const centered = options.centered;
+        const top = options.top;
+        const left = options.left;
+        const aot = options.aot;
+        const unresizable = options.unresizable;
+        const noIcon = options.noIcon;
 
         this.windowContainer = windowContainer;
         this.windowTitlebar = windowContainer.querySelector(".windowTitlebar") || windowContainer.querySelector(".title-bar");
@@ -348,14 +377,12 @@ class DeskMover {
         } else {
             if (this.numStr !== "" || reinit) {
                 // Assign default values
-                if (reinit) {
-                    this.changeWndStyle("wnd");
-                }
+                this.changeWndStyle("wnd");
                 let url = "placeholder.html";
                 let defaultLeft = window.vWidth - (parseInt(localStorage.madesktopChanViewRightMargin) || 0) - 600 + 'px';
                 let defaultTop = '200px';
-                if ((typeof openDoc === "string" || openDoc instanceof String) && openDoc != "placeholder.html" && !reinit) {
-                    if (openDoc.startsWith("apps/madconf/")) {
+                if ((typeof src === "string" || src instanceof String) && src != "placeholder.html" && !reinit) {
+                    if (src.startsWith("apps/madconf/")) {
                         this.windowElement.width = width || '398px';
                         this.windowElement.height = height || '423px';
                         this.toggleResizable();
@@ -372,7 +399,7 @@ class DeskMover {
                     }
                     defaultLeft = left || (parseInt(localStorage.madesktopChanViewLeftMargin) || 75) + 250 + 'px';
                     defaultTop = top || '150px';
-                    url = openDoc.includes(".html") ? openDoc : `docs/index.html?src=${openDoc}`;
+                    url = src.includes(".html") ? src : `docs/index.html?src=${src}`;
                     if (aot) {
                         this.#toggleAoT();
                     }
@@ -843,7 +870,11 @@ class DeskMover {
     openColorPicker(initialColor, expand, callback) {
         const left = parseInt(this.config.xPos) + 4 + 'px';
         const top = parseInt(this.config.yPos) + 26 + 'px';
-        const colorPicker = openWindow("apps/colorpicker/index.html", true, expand ? "447px" : "219px", "298px", "wnd", false, top, left, true, true, true);
+        const options = {
+            left, top, width: expand ? "447px" : "219px", height: "298px",
+            aot: true, unresizable: true, noIcon: true
+        }
+        const colorPicker = openWindow("apps/colorpicker/index.html", true, options);
         const colorPickerWindow = colorPicker.windowElement.contentWindow;
         colorPickerWindow.addEventListener("load", () => {
             colorPickerWindow.choose_color(initialColor, expand, callback);
@@ -1328,7 +1359,7 @@ class DeskMover {
                 if (this.isVisualizer) {
                     window.visDeskMover = null;
                 }
-                deskMovers[this.numStr || 0] = new DeskMover(this.windowContainer, this.numStr, false, undefined, undefined, undefined, undefined, true);
+                deskMovers[this.numStr || 0] = new DeskMover(this.windowContainer, this.numStr, false, {}, true);
             }
         });
     }

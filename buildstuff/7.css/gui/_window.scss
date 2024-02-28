@@ -981,6 +981,14 @@
       outline: solid 1px #b6bccc;
   }
 
+  #toolbars > div:not(:first-child) {
+      border-top-color: #f4f7fc;
+  }
+
+  #toolbars > div:not(:last-child) {
+      border-bottom-color: #b4b4b4;
+  }
+
   .menu {
     outline: none;
   }
@@ -1016,6 +1024,11 @@
     margin: 0 3px 0 2px;
     height: 100%;
     background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAADCAYAAABWKLW/AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnMAABJzAYwiuQcAAAAnSURBVBhXY/j05dd/EGYAAkYQ48WLZwzHT19lYOLjYWMEMRgYGBgA1QoTRs6jRL4AAAAASUVORK5CYII=");
+  }
+
+  .separator {
+      border-left-color: #747882;
+      border-right-color: #e0e5f2;
   }
 }
 

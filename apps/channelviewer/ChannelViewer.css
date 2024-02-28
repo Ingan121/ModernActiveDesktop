@@ -99,6 +99,7 @@ body {
     box-shadow: inset -1px -1px var(--button-shadow), inset 1px 1px var(--button-hilight);
     cursor: e-resize;
     padding: 0 !important;
+    touch-action: none;
 }
 
 #toolbars.locked .grabber {

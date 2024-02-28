@@ -18,7 +18,7 @@ button:not(.window-button):not(.lightweight):not(.toggle) {
     &:not(:disabled) {
         &:active,
         &.active {
-            box-shadow: none;
+            box-shadow: none !important;
             background: linear-gradient(
                 180deg,
                 rgba(205, 202, 195, 1) 0%,
@@ -192,8 +192,8 @@ button.toggle {
         }
     }
 
-    #back-button:hover:not([data-disabled='true']) + #back-expand-button,
-    #forward-button:hover:not([data-disabled='true']) + #forward-expand-button {
+    #back-button:hover:not([data-disabled]) + #back-expand-button,
+    #forward-button:hover:not([data-disabled]) + #forward-expand-button {
         background: linear-gradient(
             180deg,
             rgba(254, 254, 253, 1) 0%,

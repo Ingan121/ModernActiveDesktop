@@ -31,7 +31,9 @@ location.replace('index.html');
 
 function reset() {
     for (const key of keys) {
-        if (key.startsWith('madesktop') || key === 'sysplugIntegration') {
+        if (key.startsWith('madesktop') || key === 'sysplugIntegration' ||
+            key.startsWith('image#') || key.startsWith('jspaint '))
+        {
             console.log("Deleting " + key);
             localStorage.removeItem(key);
         } else {

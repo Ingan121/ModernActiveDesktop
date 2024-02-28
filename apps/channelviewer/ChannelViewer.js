@@ -74,7 +74,7 @@ if (parent === window) {
 const cvBase = madBase + 'apps/channelviewer/';
 
 let title = "";
-let favorites = JSON.parse(localStorage.madesktopChanViewFavorites || "[]");
+let favorites = JSON.parse(localStorage.madesktopChanViewFavorites || "[[\"https://www.ingan121.com/\",\"Ingan121's Webpage!\"],[\"https://github.com/Ingan121/ModernActiveDesktop\",\"ModernActiveDesktop GitHub\"]]");
 let didFirstLoad = false;
 let isCrossOrigin = madRunningMode !== 1; // Wallpaper Engine disables all cross-origin iframe restrictions
 let historyLength = 0;
@@ -173,10 +173,11 @@ viewMenuItems[7].addEventListener("click", function () { // Internet Options but
     const left = parseInt(madDeskMover.config.xPos) + 25 + 'px';
     const top = parseInt(madDeskMover.config.yPos) + 50 + 'px';
     const url = isCrossOrigin ? iframe.src : historyItems[historyIndex - 1][0];
-    const configWindow = madOpenWindow('apps/inetcpl/general.html?currentPage=' + encodeURIComponent(url), true, '400px', '371px', 'wnd', false, top, left, true, true, true);
-    configWindow.windowElement.addEventListener('load', () => {
-        configWindow.windowElement.contentWindow.targetDeskMover = madDeskMover;
-    });
+    const options = {
+        left, top, width: '400px', height: '371px',
+        aot: true, unresizable: true, noIcon: true
+    };
+    madOpenWindow('apps/inetcpl/general.html?currentPage=' + encodeURIComponent(url), true, options);
 });
 
 goMenuItems[0].addEventListener("click", function () { // Back button
@@ -204,15 +205,15 @@ favoritesMenuBtn.addEventListener("click", function () {
             item.remove();
         }
     }
-    let maxLen = 0;
+    let maxStr = '';
     for (const favorite of favorites) {
         appendFavoriteItem(favorite);
-        if ((favorite[1] || favorite[0]).length > maxLen) {
-            maxLen = favorite[1].length;
+        if ((favorite[1] || favorite[0]).length > maxStr.length) {
+            maxStr = favorite[1] || favorite[0];
         }
     }
     const menuItems = Array.from(favoritesMenu.querySelectorAll(".contextMenuItem")).slice(2);
-    favoritesMenuBg.style.width = maxLen * 7 + "px";
+    favoritesMenuBg.style.width = getTextWidth(maxStr) + 40 + "px";
     favoritesMenuBg.style.height = (menuItems.length + 2) * 20 + 9 + "px";
     if (menuItems.length === 0) {
         return;
@@ -545,9 +546,7 @@ if (localStorage.madesktopChanViewHideStatusBar) {
     madSetResizeArea(true);
 }
 
-if (localStorage.madesktopChanViewNoJs) {
-    iframe.sandbox = "allow-forms allow-modals allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-presentation allow-same-origin";
-}
+updateSandboxFlags();
 
 if (localStorage.madesktopChanViewSidebarWidth) {
     document.documentElement.style.setProperty("--sidebar-width", localStorage.madesktopChanViewSidebarWidth);
@@ -634,8 +633,6 @@ function hookIframeSize(iframe) {
             const deskMover = madOpenExternal(url, false, specs);
             return deskMover.windowElement.contentDocument;
         }
-    } else {
-        iframe.sandbox += " allow-popups";
     }
 
     // Pro tip: youareanidiot.cc works well with this
@@ -834,19 +831,19 @@ function openHistoryMenu() {
     }
     const parentButton = document.getElementById(this.id.replace("-expand", ""));
     historyMenuBg.dataset.currentParent = parentButton.id;
-    let maxLen = 0;
+    let maxStr = "";
     if (parentButton === backButton) {
         for (let i = historyIndex - 2; i >= 0; i--) {
             appendHistoryItem(historyItems[i]);
-            if ((historyItems[i][1] || historyItems[i][0]).length > maxLen) {
-                maxLen = historyItems[i][1].length;
+            if ((historyItems[i][1] || historyItems[i][0]).length > maxStr.length) {
+                maxStr = historyItems[i][1] || historyItems[i][0];
             }
         }
     } else {
         for (let i = historyIndex; i < historyLength; i++) {
             appendHistoryItem(historyItems[i]);
-            if ((historyItems[i][1].length || historyItems[i][0]) > maxLen) {
-                maxLen = historyItems[i][1].length;
+            if ((historyItems[i][1].length || historyItems[i][0]) > maxStr.length) {
+                maxStr = historyItems[i][1] || historyItems[i][0];
             }
         }
     }
@@ -854,8 +851,7 @@ function openHistoryMenu() {
     if (menuItems.length === 0) {
         return;
     }
-    // Yeah I know its not that accurate
-    historyMenuBg.style.width = maxLen * 8 + "px";
+    historyMenuBg.style.width = getTextWidth(maxStr) + 40 + "px";
     historyMenuBg.style.height = menuItems.length * 17 + "px";
     for (const item of menuItems) {
         item.addEventListener("pointerover", function () {
@@ -1112,6 +1108,9 @@ function printIframe() {
 }
 
 async function getFavicon(asImage = false) {
+    if (isCrossOrigin) {
+        return null;
+    }
     try {
         const loc = historyItems[historyIndex - 1][0];
         const doc = iframe.contentDocument;
@@ -1158,6 +1157,17 @@ async function getDataUrl(blob) {
         reader.onerror = reject;
         reader.readAsDataURL(blob);
     });
+}
+
+function updateSandboxFlags() {
+    let flags = "allow-forms allow-modals allow-pointer-lock allow-popups-to-escape-sandbox allow-presentation allow-same-origin";
+    if (!localStorage.madesktopChanViewNoJs) {
+        flags += " allow-scripts";
+    }
+    if (localStorage.madesktopLinkOpenMode === "0" && madRunningMode === 0) {
+        flags += " allow-popups";
+    }
+    iframe.sandbox = flags;
 }
 
 // Only for non-MAD usage
@@ -1241,6 +1251,24 @@ async function fetchProxy(url, options) {
     }
 }
 
+/**
+  * Uses canvas.measureText to compute and return the width of the given text of given font in pixels.
+  * 
+  * @param {String} text The text to be rendered.
+  * @param {String} font The css font descriptor that text is to be rendered with (e.g. "bold 14px verdana").
+  * 
+  * @see https://stackoverflow.com/questions/118241/calculate-text-width-with-javascript/21015393#21015393
+  */
+function getTextWidth(text, font = "11px " + getComputedStyle(document.documentElement).getPropertyValue("--ui-font")) {
+    console.log(text, font);
+    // re-use canvas object for better performance
+    const canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
+    const context = canvas.getContext("2d");
+    context.font = font;
+    const metrics = context.measureText(text);
+    return metrics.width;
+}
+
 function iframeClickEventCtrl(clickable) {
     if (clickable) {
         iframe.style.pointerEvents = "auto";
@@ -1266,7 +1294,9 @@ function delayedSave() {
 }
 
 async function fetchStyle() {
-    baseStylesheet = await fetch(`stylesheets/98.css`).then(res => res.text());
+    if (!baseStylesheet || localStorage.madesktopDebugMode) {
+        baseStylesheet = await fetch(`stylesheets/98.css`).then(res => res.text());
+    }
     switch (localStorage.madesktopColorScheme) {
         case "xpcss4mad":
         case "7css4mad":
@@ -1351,12 +1381,16 @@ function init() {
 }
 
 window.addEventListener("message", async (event) => {
-    if (event.data.type === "scheme-updated") {
-        await fetchStyle();
-        injectStyle();
-        if (mainArea.classList.contains("sidebarOpen")) {
-            sidebarWindow.contentDocument.getElementById("scheme").href = schemeElement.href;
-        }
+    switch (event.data.type) {
+        case "scheme-updated":
+            await fetchStyle();
+            injectStyle();
+            if (mainArea.classList.contains("sidebarOpen")) {
+                sidebarWindow.contentDocument.getElementById("scheme").href = schemeElement.href;
+            }
+            break;
+        case "inet-option-changed":
+            updateSandboxFlags();
     }
 });
 

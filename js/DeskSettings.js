@@ -336,7 +336,12 @@ window.wallpaperPropertyListener = {
             if (properties.audioprocessing.value) {
                 delete localStorage.madesktopVisUnavailable;
                 if (!visDeskMover && !isStartup) {
-                    openWindow("apps/visualizer/index.html", false, "480px", "380px", "wnd", false, "200px", "500px");
+                    openWindow("apps/visualizer/index.html", false, {
+                        width: "480px",
+                        height: "380px",
+                        top: "200px",
+                        left: "500px"
+                    });
                 }
             } else {
                 localStorage.madesktopVisUnavailable = true;
@@ -941,21 +946,36 @@ function padZero(str, len) {
 }
 
 // Create a new ActiveDesktop item and initialize it
-function createNewDeskItem(numStr, openDoc, temp, width, height, style, centered, top, left, aot, unresizable, noIcon) {
+function createNewDeskItem(numStr, openDoc, temp, options) {
     const newContainer = windowContainers[0].cloneNode(true);
     document.body.appendChild(newContainer);
     windowContainers = document.getElementsByClassName("windowContainer");
-    const deskMover = new DeskMover(newContainer, numStr, openDoc, temp, width, height, style, false, centered, top, left, aot, unresizable, noIcon);
+    const deskMover = new DeskMover(newContainer, numStr, openDoc, temp, options);
     deskMovers[numStr] = deskMover;
     return deskMover;
 }
 
 // Create a new AD item, initialize, and increase the saved window count
-function openWindow(openDoc, temp, width, height, style, centered, top, left, aot, unresizable, noIcon) {
+function openWindow(openDoc, temp, optionsOrWidth, height, style, centered, top, left, aot, unresizable, noIcon) {
     if (!temp) {
         localStorage.madesktopOpenWindows += `,${localStorage.madesktopItemCount}`;
     }
-    let deskMover = createNewDeskItem(localStorage.madesktopItemCount, openDoc, temp, width, height, style || "wnd", centered, top, left, aot, unresizable, noIcon);
+    let options = optionsOrWidth;
+    if (typeof optionsOrWidth === "string") {
+        // Old way of calling openWindow
+        options = {
+            width: optionsOrWidth,
+            height,
+            style,
+            centered,
+            top,
+            left,
+            aot,
+            unresizable,
+            noIcon
+        };
+    }
+    let deskMover = createNewDeskItem(localStorage.madesktopItemCount, openDoc, temp, options);
     activateWindow(localStorage.madesktopItemCount);
     localStorage.madesktopItemCount++;
     return deskMover;
@@ -1679,16 +1699,24 @@ function startup() {
         playSound("startup");
 
         if (!localStorage.madesktopHideWelcome) {
-            setTimeout(function () {
-                openWindow("apps/welcome/index.html", true, "476px", "322px", "wnd", true, undefined, undefined, false, true);
-            }, 5000);
+            setTimeout(showWelcome, 5000);
         }
     } else {
         if (!localStorage.madesktopHideWelcome) {
-            openWindow("apps/welcome/index.html", true, "476px", "322px", "wnd", true, undefined, undefined, false, true);
+            showWelcome();
         }
     }
     startupRan = true;
+}
+
+function showWelcome() {
+    const options = {
+        width: "476px",
+        height: "322px",
+        centered: true,
+        unresizable: true
+    };
+    openWindow("apps/welcome/index.html", true, options);
 }
 
 document.getElementById("location").textContent = location.href;
@@ -1744,6 +1772,7 @@ document.addEventListener('scroll', function () {
 jsRunBtn.addEventListener('click', debug);
 document.body.dataset.initComplete = true;
 
+// Crash detection
 localStorage.madesktopFailCount = ++localStorage.madesktopFailCount || 1;
 setTimeout(function () {
     delete localStorage.madesktopFailCount;

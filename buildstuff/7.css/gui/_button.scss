@@ -218,6 +218,7 @@ button:not(.window-button):not(.lightweight),
   &:not(:disabled):not([data-disabled]) {
     &:hover,
     &[data-hover],
+    &[data-active],
     &[data-enabled] {
       &::after {
         opacity: 1;
@@ -229,13 +230,13 @@ button:not(.window-button):not(.lightweight),
     &[data-enabled] {
       &::after {
         background: linear-gradient(
-            180deg,
-            rgba(0, 0, 0, 0.4) 0%,
-            rgba(0, 0, 0, 0.15) 10%,
-            rgba(0, 0, 0, 0.04) 24%,
-            rgba(0, 0, 0, 0.04) 33%,
-            rgba(0, 0, 0, 0.07) 34%,
-            rgba(0, 0, 0, 0.04) 75%
+          180deg,
+          rgba(0, 0, 0, 0.4) 0%,
+          rgba(0, 0, 0, 0.15) 10%,
+          rgba(0, 0, 0, 0.04) 24%,
+          rgba(0, 0, 0, 0.04) 33%,
+          rgba(0, 0, 0, 0.07) 34%,
+          rgba(0, 0, 0, 0.04) 75%
         ) !important;
         border-color: #4a4c53 !important;
         box-shadow: inset 1px 0 rgba(128, 128, 128, 0.5), inset 2px 0 rgba(128, 128, 128, 0.2) !important;
@@ -286,23 +287,27 @@ button:not(.window-button):not(.lightweight),
   }
   #back-button,
   #forward-button {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
+    &::after {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
   }
   #back-expand-button,
   #forward-expand-button {
     min-width: 12px !important;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-    border-left: none !important;
+    &::after {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      border-left: none !important;
+    }
     span {
       line-height: 30px;
     }
   }
 
-  #back-button:hover:not([data-disabled='true']) + #back-expand-button,
-  #forward-button:hover:not([data-disabled='true']) + #forward-expand-button {
-    &::before {
+  #back-button:hover:not([data-disabled]) + #back-expand-button,
+  #forward-button:hover:not([data-disabled]) + #forward-expand-button {
+    &::after {
       opacity: 1;
       transition: opacity 0.3s;
     }

@@ -166,7 +166,7 @@ window.apply = function () {
     localStorage.madesktopChanViewTopMargin = config.topIcon;
     localStorage.madesktopChanViewBottomMargin = config.bottomIcon;
 
-    parent.announce("sysplug-option-changed");
+    madAnnounce("sysplug-option-changed");
 }
 
 dpiSlider.addEventListener('input', function () {
@@ -245,13 +245,18 @@ showGuideBtn.addEventListener('click', function () {
 inetcplBtn.addEventListener('click', function () {
     const left = parseInt(madDeskMover.config.xPos) + 25 + 'px';
     const top = parseInt(madDeskMover.config.yPos) + 50 + 'px';
-    madOpenWindow('apps/inetcpl/general.html', true, '400px', '371px', 'wnd', false, top, left, false, true, true);
+    const options = {
+        left, top, width: '400px', height: '371px', unresizable: true, noIcon: true
+    }
+    madOpenWindow('apps/inetcpl/general.html', true, options);
 });
 
 exportBtn.addEventListener('click', function () {
     const madConfig = {};
     for (const key in localStorage) {
-        if (key.startsWith("madesktop") || key === "sysplugIntegration") {
+        if (key.startsWith("madesktop") || key === "sysplugIntegration" ||
+            key.startsWith('image#') || key.startsWith('jspaint '))
+        {
             madConfig[key] = localStorage[key];
         }
     }

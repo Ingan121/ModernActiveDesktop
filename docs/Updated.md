@@ -16,6 +16,8 @@
     * Support importing Windows theme files and exported color registry files
     * Support exporting scheme as CSS or JSON, by typing !copycss or !copyjson to the scheme save dialog
     * Support adjusting top and bottom margins. Adjust these based on your desktop, for example the bottom margin would be the size of the taskbar.
+    * Support exporting and importing the full configuration of ModernActiveDesktop
+    * Resetting configs will only remove its own configs and not touch other wallpaper's ones
 * Added a Windows Aero theme, and improved the XP theme
     * JSPaint will use Windows Vista or Windows XP looks if you use one of these themes
 * Added more Classic schemes
@@ -28,12 +30,13 @@
     * Added more configurable options to the visualizer
     * Added fullscreen mode
     * Automatically pause drawing when idle to reduce the CPU usage
-* ChannelBar is now a openable app, like visualizer and such
+* ChannelBar is now a openable app, like the visualizer and others
     * It no longer re-opens when opening a new window
 * Made various UI elements look more accurate
     * Added ClientEdge in various places
 * Added support for Firefox and iOS Safari, as well as touch screens
 * Support menu navigation with keyboard (when keyboard input is available)
+* Moving mouse over the menu while playing the animation effect will cancel the animation
 
 ## 3.1
 * Added a music visualizer

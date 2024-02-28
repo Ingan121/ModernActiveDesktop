@@ -51,7 +51,11 @@ settingsMenuItems[1].addEventListener('click', () => { // Digital button
 settingsMenuItems[2].addEventListener('click', () => { // Set Font / Colors button
     const left = parseInt(madDeskMover.config.xPos) + 20 + 'px';
     const top = parseInt(madDeskMover.config.yPos) + 50 + 'px';
-    const configWindow = madOpenWindow('apps/clock/config.html', true, '380px', '180px', 'wnd', false, top, left, true, true);
+    const options = {
+        left, top, width: '380px', height: '180px',
+        aot: true, unresizable: true, noIcon: true
+    };
+    const configWindow = madOpenWindow('apps/clock/config.html', true, options);
     configWindow.windowElement.addEventListener('load', () => {
         configWindow.windowElement.contentWindow.targetDeskMover = madDeskMover;
     });

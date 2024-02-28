@@ -38,9 +38,16 @@ button {
     min-width: 0 !important;
     min-height: 0 !important;
     color: blue !important;
+    text-shadow: none !important;
     margin-bottom: 1px;
     box-shadow: inset -1px -1px var(--button-dk-shadow), inset 1px 1px var(--button-light),
         inset -2px -2px var(--button-shadow), inset 2px 2px var(--button-hilight);
+}
+
+button:active,
+button[data-active] {
+    box-shadow: inset -1px -1px var(--button-hilight), inset 1px 1px var(--button-shadow),
+        inset -2px -2px var(--button-light), inset 2px 2px var(--button-dk-shadow) !important;
 }
 
 #thirdRow button {

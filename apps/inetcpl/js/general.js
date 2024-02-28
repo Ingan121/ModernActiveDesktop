@@ -76,14 +76,8 @@ window.apply = function () {
     } else {
         localStorage.madesktopChanViewNoInjectStyle = true;
     }
-
-    if (window.targetDeskMover) {
-        let sandbox = "allow-forms allow-modals allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-presentation allow-same-origin";
-        if (jsChkBox.checked) {
-            sandbox += " allow-scripts";
-        }
-        targetDeskMover.windowElement.contentWindow.iframe.sandbox = sandbox;
-    }
+    
+    madAnnounce("inet-option-changed");
 }
 
 if (localStorage.madesktopChanViewHome) {

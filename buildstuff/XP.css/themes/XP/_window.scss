@@ -345,6 +345,10 @@
     background-color: #ECE9D8 !important; /* enforced in XP by visual styles & flat menus */
 }
 
+body:not(#madChanView) .menu, .menus {
+    outline: solid 1px white;
+}
+
 .menu-button {
     background-color: #ECE9D8 !important;
 }
@@ -473,6 +477,14 @@
         box-shadow: none;
         margin: 0;
         background-image: linear-gradient(to right, #edede5, #ede8cd);
+    }
+
+    #toolbars > div:not(:first-child) {
+        border-top-color: #ffffff;
+    }
+
+    #toolbars > div:not(:last-child) {
+        border-bottom-color: #d8d2bd;
     }
 
     #back-button .toolbarButtonImage {
@@ -627,6 +639,11 @@
         margin: 4px 2px 0 4px;
         height: calc(100% - 7px);
         background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAAECAYAAABLLYUHAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnMAABJzAYwiuQcAAAAySURBVBhXY7x2/tj/uw+fMthY2zAw3X14l+HWjfMMAiISDAzPnz//Dwa///9nQAAGBgDcJxfE1szABQAAAABJRU5ErkJggg==");
+    }
+
+    .separator {
+        border-left-color: #cac6af;
+        border-right: none;
     }
 }
 

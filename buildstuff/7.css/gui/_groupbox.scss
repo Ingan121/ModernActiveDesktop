@@ -11,31 +11,3 @@ fieldset {
     background: transparent;
   }
 }
-
-.field-row {
-  display: flex;
-  align-items: center;
-
-  > * {
-    + * {
-      margin-left: var(--grouped-element-spacing);
-    }
-  }
-
-  &-stacked {
-    display: flex;
-    flex-direction: column;
-
-    * {
-      + * {
-        margin-top: var(--grouped-element-spacing);
-      }
-    }
-  }
-}
-
-[class^="field-row"] {
-  + [class^="field-row"] {
-    margin-top: var(--grouped-element-spacing);
-  }
-}

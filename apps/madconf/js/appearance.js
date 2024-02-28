@@ -529,7 +529,8 @@ async function main() {
     effectsBtn.addEventListener("click", function () {
         const left = parseInt(madDeskMover.config.xPos) + 25 + 'px';
         const top = parseInt(madDeskMover.config.yPos) + 80 + 'px';
-        const configWindow = madOpenWindow('apps/madconf/effects.html', true, '476px', '263px', 'wnd', false, top, left, true, true);
+        const options = { left, top, width: '476px', height: '263px', aot: true };
+        const configWindow = madOpenWindow('apps/madconf/effects.html', true, options);
         configWindow.windowElement.addEventListener('load', () => {
             configWindow.windowElement.contentWindow.init(document);
         });
@@ -618,7 +619,7 @@ async function main() {
         // legacy config
         delete localStorage.madesktopNoPixelFonts;
 
-        parent.announce("scheme-updated");
+        madAnnounce("scheme-updated");
     }
 
     if (localStorage.madesktopColorScheme !== "custom" && localStorage.madesktopColorScheme !== "98" && localStorage.madesktopColorScheme) {

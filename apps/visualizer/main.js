@@ -360,7 +360,11 @@ viewMenuItems[4].addEventListener('click', () => { // Enable Media Controls butt
 optMenuItems[0].addEventListener('click', () => { // Configure Visualization button
     const left = parseInt(madDeskMover.config.xPos) + 25 + 'px';
     const top = parseInt(madDeskMover.config.yPos) + 50 + 'px';
-    const configWindow = madOpenWindow('apps/visualizer/config.html', true, '400px', '451px', 'wnd', false, top, left, true, true, true);
+    const options = {
+        left, top, width: '400px', height: '451px',
+        aot: true, unresizable: true, noIcon: true
+    }
+    const configWindow = madOpenWindow('apps/visualizer/config.html', true, options);
     configWindow.windowElement.addEventListener('load', () => {
         configWindow.windowElement.contentWindow.targetDeskMover = madDeskMover;
     });

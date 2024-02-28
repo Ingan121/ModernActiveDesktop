@@ -4,7 +4,7 @@
 
 'use strict';
 
-const favorites = JSON.parse(localStorage.madesktopChanViewFavorites || "[]");
+const favorites = JSON.parse(localStorage.madesktopChanViewFavorites || "[[\"https://www.ingan121.com/\",\"Ingan121's Webpage!\"],[\"https://github.com/Ingan121/ModernActiveDesktop\",\"ModernActiveDesktop GitHub\"]]");
 const dummyItem = document.getElementById('dummyFavoriteItem');
 
 for (const favorite of favorites) {
