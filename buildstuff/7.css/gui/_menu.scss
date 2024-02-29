@@ -343,7 +343,7 @@ body:not(#madChanView) .menu, .menus {
   border-radius: 3px;
   white-space: nowrap;
 
-  &:hover {
+  &[data-active] {
     background-color: unset !important;
     background: var(--item-hover-background);
     border-color: #b8d6fb;

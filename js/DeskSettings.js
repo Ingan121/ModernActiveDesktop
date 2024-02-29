@@ -254,6 +254,11 @@ function openMainMenu (event) {
     mainMenuBg.style.left = event.clientX + "px";
     mainMenuBg.style.top = event.clientY + "px";
     mainMenuBg.style.display = "block";
+    const width = getTextWidth(mainMenuItems[1].textContent);
+    mainMenuBg.style.width = `calc(${width}px + 4.5em)`;
+    mainMenu.style.width = `calc(${width}px + 4.5em - 2px)`;
+    mainMenuBg.style.height = mainMenuItems[0].offsetHeight * 2 + "px";
+
     iframeClickEventCtrl(false);
     isContextMenuOpen = true;
     event.preventDefault();
@@ -1502,9 +1507,9 @@ function menuNavigationHandler(event) {
     }
     let menuItems;
     if (localStorage.madesktopDebugMode) {
-        menuItems = openedMenu.querySelectorAll('.contextMenuItem');
+        menuItems = openedMenu.querySelectorAll('.contextMenuItem:not([data-hidden])');
     } else {
-        menuItems = openedMenu.querySelectorAll('.contextMenuItem:not(.debug)');
+        menuItems = openedMenu.querySelectorAll('.contextMenuItem:not([data-hidden]):not(.debug)');
     }
     const activeItem = openedMenu.querySelector('.contextMenuItem[data-active]');
     const activeItemIndex = Array.from(menuItems).indexOf(activeItem);

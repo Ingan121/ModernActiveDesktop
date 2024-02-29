@@ -526,11 +526,15 @@ class DeskMover {
         // Windows without icons aren't designed to look good in different sizes yet
         // So just hide the menus for now
         if (this.windowTitlebar.classList.contains("noIcon")) {
-            this.contextMenuBg.style.height = "17px";
+            this.contextMenuItems[0].dataset.hidden = true;
+            this.contextMenuItems[2].dataset.hidden = true;
+            this.contextMenuItems[3].dataset.hidden = true;
             this.contextMenuItems[3].style.pointerEvents = "none";
             this.contextMenuItems[3].style.opacity = "0";
         } else {
-            this.contextMenuBg.style.height = "";
+            delete this.contextMenuItems[0].dataset.hidden;
+            delete this.contextMenuItems[2].dataset.hidden;
+            delete this.contextMenuItems[3].dataset.hidden;
             this.contextMenuItems[3].style.pointerEvents = "";
             this.contextMenuItems[3].style.opacity = "";
         }
@@ -636,10 +640,14 @@ class DeskMover {
 
     calcMenuHeight(menuName) {
         const menuBg = this.windowContainer.getElementsByClassName(menuName + 'MenuBg')[0];
-        const menuItems = menuBg.querySelectorAll('.contextMenuItem');
+        let menuItems;
+        if (localStorage.madesktopDebugMode) {
+            menuItems = menuBg.querySelectorAll('.contextMenuItem:not([data-hidden])');
+        } else {
+            menuItems = menuBg.querySelectorAll('.contextMenuItem:not([data-hidden]):not(.debug)');
+        }
         const separators = menuBg.querySelectorAll('hr');
         const menuItemHeight = menuItems[0].offsetHeight;
-        console.log(menuItems[0])
         let separatorHeight = 0;
         if (separators.length > 0) {
             const styles = getComputedStyle(separators[0]);

@@ -345,7 +345,11 @@ body[data-cm-shadow] .contextMenuBg {
     padding-top: 2px;
 }
 
-.contextMenuItem:not(.hasIcon)  p {
+.contextMenuItem:not(.hasIcon) p {
+    padding-left: 15px;
+}
+
+.confMenu .contextMenuItem p {
     padding-left: 20px;
 }
 
