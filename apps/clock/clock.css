@@ -77,12 +77,3 @@ svg {
 .contextMenuBg {
     z-index: 5;
 }
-
-#settingsMenuBg {
-    width: 120px;
-    height: 172px;
-}
-
-#settingsMenu > .contextMenuItem:not(.hasIcon):not(.activeStyle):not(.checkedItem) > p {
-    padding-left: 20px;
-}

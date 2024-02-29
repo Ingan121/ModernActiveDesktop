@@ -115,7 +115,6 @@ body[data-fullscreen] .contextMenuBg {
 }
 
 .contextMenu {
-    width: calc(100% - 8px);
     position: absolute;
     right: 5px;
     bottom: 3px;
@@ -125,10 +124,12 @@ body[data-fullscreen] .contextMenuBg {
 
 .contextMenuItem {
     width: 100%;
-    min-height: 17px;
+    height: calc(var(--menu-height) - 1px);
     font-size: 11px;
     padding-left: 2px;
     position: relative;
+    font: var(--menu-font);
+    line-height: unset;
 }
 
 .contextMenuItem p {
@@ -136,31 +137,26 @@ body[data-fullscreen] .contextMenuBg {
     padding-top: 2px;
 }
 
-.contextMenuItem:not(.hasIcon):not(.activeStyle):not(.checkedItem) > p {
-    padding-left: 15px;
-}
-
-.contextMenuItem.activeStyle p,
-.contextMenuItem.checkedItem p {
-    line-height: 10px;
+.contextMenuItem > p {
+    padding-left: 20px;
 }
 
 .contextMenuItem.activeStyle p::before {
     content: "●";
     font-family: Arial !important;
-    font-size: 15px !important;
-    margin-left: 4px;
-    margin-right: 7px;
+    font-size: 1.5em !important;
+    position: absolute;
+    top: 0;
+    left: 6px;
 }
 
 .contextMenuItem.checkedItem p::before {
     font-family: "marlett-icons";
     content: "\e903";
-    font-size: 15px;
-    position: relative;
+    font-size: 1.5em;
+    position: absolute;
     top: 2px;
-    left: 1px;
-    margin-right: 5px;
+    left: 3px;
 }
 
 .contextMenuItem[data-active] {
@@ -174,7 +170,10 @@ body[data-fullscreen] .contextMenuBg {
 
 .contextMenu hr {
     width: 100%;
-    margin: 3px 0 4px 1px;
+    margin-top: calc(var(--menu-height) / 4 - 1.5px);
+    margin-left: 1px;
+    margin-right: 0;
+    margin-bottom: calc(var(--menu-height) / 4 - 0.5px);
     border: none;
     border-top: solid 1px var(--button-shadow);
     border-bottom: solid 1px var(--button-hilight);

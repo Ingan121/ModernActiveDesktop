@@ -87,22 +87,3 @@ button[data-active] {
 .operButton2 {
     padding: 0 10px !important;
 }
-
-#editMenuBg {
-    width: 90px;
-    height: 34px;
-}
-
-#viewMenuBg {
-    width: 90px;
-    height: 34px;
-}
-
-#helpMenuBg {
-    width: 130px;
-    height: 17px;
-}
-
-#viewMenu > .contextMenuItem:not(.hasIcon):not(.activeStyle):not(.checkedItem) > p {
-    padding-left: 20px;
-}

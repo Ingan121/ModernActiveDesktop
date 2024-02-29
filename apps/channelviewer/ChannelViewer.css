@@ -582,34 +582,13 @@ body[data-fullscreen] #statusBar {
     z-index: 100;
 }
 
-#fileMenuBg {
-    width: 110px;
-    height: 86px;
-}
-
-#editMenuBg {
-    width: 100px;
-    height: 60px;
-}
-
-#viewMenuBg {
-    width: 120px;
-    height: 163px;
-}
-
-#goMenuBg {
-    width: 120px;
-    height: 77px;
-}
-
 #favoritesMenuBg {
     min-width: 150px;
     max-width: 500px;
-    height: 49px;
 }
 
 #favoritesMenu .contextMenuItem {
-    height: 20px;
+    height: calc(var(--menu-height) + 2px);
 }
 
 #favoritesMenu .contextMenuItem p {
@@ -623,44 +602,13 @@ body[data-fullscreen] #statusBar {
     background-repeat: no-repeat;
 }
 
-#favoritesMenu > .contextMenuItem:not(.hasIcon):not(.activeStyle):not(.checkedItem) > p {
+#favoritesMenu > .contextMenuItem > p {
     padding-left: 21px;
-}
-
-#helpMenuBg {
-    width: 150px;
-    height: 17px;
-}
-
-#toolbarsMenuBg {
-    width: 140px;
-    height: 137px;
-}
-
-#toolbarsMenu {
-    width: 138px;
-}
-
-#explorerBarMenuBg {
-    width: 88px;
-    height: 60px;
-    top: calc(var(--menu-height) + 38px);
-}
-
-#explorerBarMenu {
-    width: 86px;
-}
-
-#viewMenu > .contextMenuItem:not(.hasIcon):not(.activeStyle):not(.checkedItem) > p,
-#toolbarsMenu > .contextMenuItem:not(.hasIcon):not(.activeStyle):not(.checkedItem) > p,
-#explorerBarMenu > .contextMenuItem:not(.hasIcon):not(.activeStyle):not(.checkedItem) > p {
-    padding-left: 20px;
 }
 
 #historyMenuBg {
     min-width: 60px;
     max-width: 500px;
-    height: 17px;
 }
 
 #historyMenu .contextMenuItem p {

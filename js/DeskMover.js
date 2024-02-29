@@ -497,6 +497,10 @@ class DeskMover {
             delete item.dataset.active;
         }
         this.contextMenuBg.style.display = "block";
+        const width = getTextWidth(this.contextMenuItems[0].textContent);
+        this.contextMenuBg.style.width = `calc(${width}px + 4.5em)`;
+        this.contextMenu.style.width = `calc(${width}px + 4.5em - 2px)`;
+        this.contextMenuBg.style.height = this.calcMenuHeight("window") + "px";
 
         // For handling window icon double click
         // Note: dblclick doesn't fire in WE
@@ -551,6 +555,11 @@ class DeskMover {
             delete item.dataset.active;
         }
         this.contextMenuBg.style.display = "block";
+        const width = getTextWidth(this.contextMenuItems[0].textContent);
+        this.contextMenuBg.style.width = `calc(${width}px + 4.5em)`;
+        this.contextMenu.style.width = `calc(${width}px + 4.5em - 2px)`;
+        this.contextMenuBg.style.height = this.calcMenuHeight("window") + "px";
+
         iframeClickEventCtrl(false);
         isContextMenuOpen = true;
         this.contextMenuBg.focus();
@@ -597,7 +606,12 @@ class DeskMover {
             delete item.dataset.active;
         }
         this.contextMenuItems[0].dataset.active = true;
+        this.confMenuBg.style.left = this.contextMenuBg.offsetLeft + this.contextMenuBg.offsetWidth - 6 + 'px';
         this.confMenuBg.style.display = "block";
+        const width = getTextWidth(this.confMenuItems[1].textContent);
+        this.confMenuBg.style.width = `calc(${width}px + 4.5em)`;
+        this.confMenu.style.width = `calc(${width}px + 4.5em - 2px)`;
+        this.confMenuBg.style.height = this.calcMenuHeight("conf") + "px";
         iframeClickEventCtrl(false);
         openedMenu = this.confMenuBg;
         openedMenuCloseFunc = this.closeConfMenu.bind(this);
@@ -618,6 +632,21 @@ class DeskMover {
             delay = 300;
         }
         this.timeout3 = setTimeout(this.closeConfMenu.bind(this), delay);
+    }
+
+    calcMenuHeight(menuName) {
+        const menuBg = this.windowContainer.getElementsByClassName(menuName + 'MenuBg')[0];
+        const menuItems = menuBg.querySelectorAll('.contextMenuItem');
+        const separators = menuBg.querySelectorAll('hr');
+        const menuItemHeight = menuItems[0].offsetHeight;
+        console.log(menuItems[0])
+        let separatorHeight = 0;
+        if (separators.length > 0) {
+            const styles = getComputedStyle(separators[0]);
+            separatorHeight = separators[0].offsetHeight + parseInt(styles.marginTop) + parseInt(styles.marginBottom);
+        }
+        const height = menuItems.length * menuItemHeight + separators.length * separatorHeight;
+        return height;
     }
 
     setIcon(icon) {

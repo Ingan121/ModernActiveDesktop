@@ -5,7 +5,7 @@
 'use strict';
 
 class MadMenu {
-    constructor(menuBar, menuOrder, submenus = []) {
+    constructor(menuBar, menuOrder, submenus = [], minimenus = []) {
         this.menuBar = menuBar;
         this.menuOrder = menuOrder;
         this.submenus = submenus;
@@ -17,6 +17,8 @@ class MadMenu {
         this.submenuCloseTimer = null;
         this.shouldNotCloseSubmenu = false;
         this.menuHierarchy = {};
+        this.beforeMenuOpenEvent = new Event('beforemenuopen');
+        this.beforeMenuCloseEvent = new Event('beforemenuclose');
 
         for (const menuName of menuOrder) {
             this.menuHierarchy[menuName] = [];
@@ -146,15 +148,25 @@ class MadMenu {
                 }
             });
         }
+
+        for (const minimenu of minimenus) {
+            const minimenuBg = document.getElementById(minimenu + 'MenuBg');
+            minimenuBg.addEventListener('focusout', () => {
+                this.closeMenu(minimenu);
+            });
+        }
     }
 
     openMenu(menuName, standalone) {
         const menuBg = document.getElementById(menuName + 'MenuBg');
+        const menu = document.getElementById(menuName + 'Menu');
         const menuItems = menuBg.querySelectorAll('.contextMenuItem');
         const isSubmenu = !!menuBg.dataset.submenuOf;
         let menuBtn;
         let parentMenuBg;
         let parentMenuItem;
+
+        menuBg.dispatchEvent(this.beforeMenuOpenEvent);
 
         if (standalone) {
             menuBg.dataset.openStandalone = true;
@@ -181,7 +193,7 @@ class MadMenu {
                 break;
             case 'slide':
             default:
-                if (standalone) {
+                if (standalone && !standalone.dropdown) {
                     menuBg.style.animation = 'cmDropdownright 0.25s linear';
                     menuBg.style.pointerEvents = 'none';
                     menuBg.addEventListener('animationend', () => {
@@ -201,8 +213,10 @@ class MadMenu {
             menuBg.style.top = standalone.y + 'px';
             menuBg.style.left = standalone.x + 'px';
         } else {
+            let top = '';
             let left = 0;
             if (isSubmenu) {
+                top = parentMenuBg.offsetTop + parentMenuItem.offsetTop + 'px';
                 left = parentMenuBg.offsetLeft + parentMenuBg.offsetWidth - 6;
             } else {
                 left = menuBtn.offsetLeft;
@@ -210,10 +224,14 @@ class MadMenu {
             if (madDeskMover.isFullscreen) {
                 left += parseInt(localStorage.madesktopChanViewLeftMargin || '75px');
             }
-            menuBg.style.top = '';
+            menuBg.style.top = top;
             menuBg.style.left = left + 'px';
         }
         menuBg.style.display = 'block';
+        const calculatedMenuWidth = this.calcMenuWidth(menuName);
+        menuBg.style.width = calculatedMenuWidth + ')';
+        menu.style.width = calculatedMenuWidth + ' - 2px)';
+        menuBg.style.height = this.calcMenuHeight(menuName) + 'px';
         if (!standalone) {
             this.menuBar.dataset.active = true;
             if (isSubmenu) {
@@ -237,6 +255,8 @@ class MadMenu {
         let menuBtn;
         let parentMenuBg;
         let parentMenuItem;
+
+        menuBg.dispatchEvent(this.beforeMenuCloseEvent);
 
         if (!standalone) {
             if (isSubmenu) {
@@ -383,4 +403,46 @@ class MadMenu {
         event.preventDefault();
         event.stopPropagation();
     }
+
+    calcMenuWidth(menuName) {
+        const menuBg = document.getElementById(menuName + 'MenuBg');
+        const menuItems = menuBg.querySelectorAll('.contextMenuItem');
+        const width = Array.from(menuItems).reduce((maxWidth, elem) => {
+            const text = elem.textContent;
+            const width = getTextWidth(text);
+            return Math.max(maxWidth, width);
+        }, 0);
+        return `calc(${width}px + 4.5em`;
+    }
+
+    calcMenuHeight(menuName) {
+        const menuBg = document.getElementById(menuName + 'MenuBg');
+        const menuItems = menuBg.querySelectorAll('.contextMenuItem');
+        const separators = menuBg.querySelectorAll('hr');
+        const menuItemHeight = menuItems[0].offsetHeight;
+        let separatorHeight = 0;
+        if (separators.length > 0) {
+            const styles = getComputedStyle(separators[0]);
+            separatorHeight = separators[0].offsetHeight + parseInt(styles.marginTop) + parseInt(styles.marginBottom);
+        }
+        const height = menuItems.length * menuItemHeight + separators.length * separatorHeight;
+        return height;
+    }
+}
+
+/**
+  * Uses canvas.measureText to compute and return the width of the given text of given font in pixels.
+  * 
+  * @param {String} text The text to be rendered.
+  * @param {String} font The css font descriptor that text is to be rendered with (e.g. "bold 14px verdana").
+  * 
+  * @see https://stackoverflow.com/questions/118241/calculate-text-width-with-javascript/21015393#21015393
+  */
+function getTextWidth(text, font = getComputedStyle(document.documentElement).getPropertyValue("--menu-font")) {
+    // re-use canvas object for better performance
+    const canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
+    const context = canvas.getContext("2d");
+    context.font = font;
+    const metrics = context.measureText(text);
+    return metrics.width;
 }

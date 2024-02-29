@@ -90,7 +90,7 @@ let favEditMode = false;
 let baseStylesheet = '';
 let themeStylesheet = '';
 
-madDeskMover.menu = new MadMenu(menuBar, ['file', 'edit', 'view', 'go', 'favorites', 'help'], ['toolbars', 'explorerBar']);
+madDeskMover.menu = new MadMenu(menuBar, ['file', 'edit', 'view', 'go', 'favorites', 'help'], ['toolbars', 'explorerBar'], ['history']);
 
 fileMenuItems[0].addEventListener("click", function () { // New window button
     madOpenExternal(localStorage.madesktopChanViewHome || "about:blank", false, "", false);
@@ -196,7 +196,7 @@ goMenuItems[3].addEventListener("click", function () { // Search the Web button
     go("https://www.google.com/?igu=1");
 });
 
-favoritesMenuBtn.addEventListener("click", function () {
+favoritesMenuBg.addEventListener("beforemenuopen", function () {
     favEditMode = false;
     favoritesMenuItems[1].innerHTML = "<p>Organize Favorites</p>";
     const prevMenuItems = Array.from(favoritesMenu.querySelectorAll(".contextMenuItem")).slice(2);
@@ -205,16 +205,10 @@ favoritesMenuBtn.addEventListener("click", function () {
             item.remove();
         }
     }
-    let maxStr = '';
     for (const favorite of favorites) {
         appendFavoriteItem(favorite);
-        if ((favorite[1] || favorite[0]).length > maxStr.length) {
-            maxStr = favorite[1] || favorite[0];
-        }
     }
     const menuItems = Array.from(favoritesMenu.querySelectorAll(".contextMenuItem")).slice(2);
-    favoritesMenuBg.style.width = getTextWidth(maxStr) + 40 + "px";
-    favoritesMenuBg.style.height = (menuItems.length + 2) * 20 + 9 + "px";
     if (menuItems.length === 0) {
         return;
     }
@@ -346,6 +340,14 @@ toolbarsMenuItems[6].addEventListener("click", function () { // Go Button button
     }
 });
 
+historyMenuBg.addEventListener("beforemenuclose", function () {
+    historyMenu.innerHTML = "";
+    delete backButton.dataset.hover;
+    delete backExpandButton.dataset.active;
+    delete forwardButton.dataset.hover;
+    delete forwardExpandButton.dataset.active;
+});
+
 explorerBarMenuItems[0].addEventListener("click", function () { // Favorites button
     openSidebar("Favorites");
 });
@@ -390,7 +392,43 @@ for (const expandButton of [backExpandButton, forwardExpandButton]) {
             delete parentButton.dataset.hover;
         }
     });
-    expandButton.addEventListener("click", openHistoryMenu);
+    expandButton.addEventListener("click", function () {
+        if (this.dataset.disabled) {
+            return;
+        }
+        const parentButton = document.getElementById(this.id.replace("-expand", ""));
+        historyMenuBg.dataset.currentParent = parentButton.id;
+        if (parentButton === backButton) {
+            for (let i = historyIndex - 2; i >= 0; i--) {
+                appendHistoryItem(historyItems[i]);
+            }
+        } else {
+            for (let i = historyIndex; i < historyLength; i++) {
+                appendHistoryItem(historyItems[i]);
+            }
+        }
+        const menuItems = historyMenu.querySelectorAll(".contextMenuItem");
+        if (menuItems.length === 0) {
+            return;
+        }
+        console.log(menuItems)
+        for (const item of menuItems) {
+            item.addEventListener("pointerover", function () {
+                for (const item of menuItems) {
+                    delete item.dataset.active;
+                }
+                item.dataset.active = true;
+            });
+            item.addEventListener("pointerleave", function () {
+                delete item.dataset.active;
+            });
+        }
+
+        this.dataset.active = true;
+        parentButton.dataset.hover = true;
+        const rect = this.getBoundingClientRect();
+        madDeskMover.menu.openMenu('history', { x: rect.left - parentButton.offsetWidth, y: rect.bottom, dropdown: true });
+    });
 }
 
 refreshButton.addEventListener("click", function () {
@@ -825,70 +863,6 @@ function go(url, noHistory, forceForceLoad = false) {
     loadStart();
 }
 
-function openHistoryMenu() {
-    if (this.dataset.disabled) {
-        return;
-    }
-    const parentButton = document.getElementById(this.id.replace("-expand", ""));
-    historyMenuBg.dataset.currentParent = parentButton.id;
-    let maxStr = "";
-    if (parentButton === backButton) {
-        for (let i = historyIndex - 2; i >= 0; i--) {
-            appendHistoryItem(historyItems[i]);
-            if ((historyItems[i][1] || historyItems[i][0]).length > maxStr.length) {
-                maxStr = historyItems[i][1] || historyItems[i][0];
-            }
-        }
-    } else {
-        for (let i = historyIndex; i < historyLength; i++) {
-            appendHistoryItem(historyItems[i]);
-            if ((historyItems[i][1].length || historyItems[i][0]) > maxStr.length) {
-                maxStr = historyItems[i][1] || historyItems[i][0];
-            }
-        }
-    }
-    const menuItems = historyMenu.querySelectorAll(".contextMenuItem");
-    if (menuItems.length === 0) {
-        return;
-    }
-    historyMenuBg.style.width = getTextWidth(maxStr) + 40 + "px";
-    historyMenuBg.style.height = menuItems.length * 17 + "px";
-    for (const item of menuItems) {
-        item.addEventListener("pointerover", function () {
-            for (const item of menuItems) {
-                delete item.dataset.active;
-            }
-            item.dataset.active = true;
-        });
-        item.addEventListener("pointerleave", function () {
-            delete item.dataset.active;
-        });
-    }
-
-    switch (localStorage.madesktopCmAnimation) {
-        case 'none':
-            historyMenuBg.style.animation = 'none';
-            break;
-        case 'slide':
-            historyMenuBg.style.animation = 'cmDropdown 0.25s linear';
-            break;
-        case 'fade':
-            historyMenuBg.style.animation = 'fade 0.2s';
-    }
-
-    for (const item of menuItems) {
-        delete item.dataset.active;
-    }
-    const rect = this.getBoundingClientRect();
-    historyMenuBg.style.top = rect.bottom + "px";
-    historyMenuBg.style.left = rect.left - parentButton.offsetWidth + "px";
-    historyMenuBg.style.display = "block";
-    this.dataset.active = true;
-    parentButton.dataset.hover = true;
-    historyMenuBg.focus();
-    document.addEventListener('keydown', historyMenuNavigationHandler);
-}
-
 function appendHistoryItem(historyItem) {
     const item = document.createElement("div");
     item.classList.add("contextMenuItem");
@@ -897,66 +871,10 @@ function appendHistoryItem(historyItem) {
     item.addEventListener("click", function () {
         historyIndex = historyItems.indexOf(historyItem) + 1;
         go(historyItem[0], true);
-        closeHistoryMenu();
+        historyMenuBg.blur();
     });
     item.appendChild(p);
     historyMenu.appendChild(item);
-}
-
-function closeHistoryMenu() {
-    historyMenuBg.style.display = "none";
-    historyMenu.innerHTML = "";
-    delete backButton.dataset.hover;
-    delete backExpandButton.dataset.active;
-    delete forwardButton.dataset.hover;
-    delete forwardExpandButton.dataset.active;
-    document.removeEventListener('keydown', historyMenuNavigationHandler);
-}
-
-historyMenuBg.addEventListener("focusout", closeHistoryMenu);
-
-function historyMenuNavigationHandler(event) {
-    if (historyMenuBg.style.display === "none") {
-        return;
-    }
-    let menuItems = historyMenu.querySelectorAll(".contextMenuItem");
-    let activeItem = historyMenu.querySelector(".contextMenuItem[data-active]");
-    let activeItemIndex = Array.from(menuItems).indexOf(activeItem);
-    switch (event.key) {
-        case "Escape":
-            closeHistoryMenu();
-            break;
-        case "ArrowUp":
-            if (activeItem) {
-                delete activeItem.dataset.active;
-                if (activeItemIndex > 0) {
-                    menuItems[activeItemIndex - 1].dataset.active = true;
-                } else {
-                    menuItems[menuItems.length - 1].dataset.active = true;
-                }
-            } else {
-                menuItems[menuItems.length - 1].dataset.active = true;
-            }
-            break;
-        case "ArrowDown":
-            if (activeItem) {
-                delete activeItem.dataset.active;
-                if (activeItemIndex < menuItems.length - 1) {
-                    menuItems[activeItemIndex + 1].dataset.active = true;
-                } else {
-                    menuItems[0].dataset.active = true;
-                }
-            } else {
-                menuItems[0].dataset.active = true;
-            }
-            break;
-        case "Enter":
-            if (activeItem) {
-                activeItem.click();
-            } else {
-                closeHistoryMenu();
-            }
-    }
 }
 
 function appendFavoriteItem(favorite) {
@@ -1249,24 +1167,6 @@ async function fetchProxy(url, options) {
             throw error;
         }
     }
-}
-
-/**
-  * Uses canvas.measureText to compute and return the width of the given text of given font in pixels.
-  * 
-  * @param {String} text The text to be rendered.
-  * @param {String} font The css font descriptor that text is to be rendered with (e.g. "bold 14px verdana").
-  * 
-  * @see https://stackoverflow.com/questions/118241/calculate-text-width-with-javascript/21015393#21015393
-  */
-function getTextWidth(text, font = "11px " + getComputedStyle(document.documentElement).getPropertyValue("--ui-font")) {
-    console.log(text, font);
-    // re-use canvas object for better performance
-    const canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
-    const context = canvas.getContext("2d");
-    context.font = font;
-    const metrics = context.measureText(text);
-    return metrics.width;
 }
 
 function iframeClickEventCtrl(clickable) {

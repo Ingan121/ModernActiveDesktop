@@ -36,7 +36,7 @@ for (const imgItem of imgItems) {
                 preview.contentWindow.changeBgImgMode('grid');
             }
             preview.contentWindow.changeBgType('image');
-            preview.contentDocument.body.style.backgroundImage = `url('../../wallpapers/${this.textContent}.bmp')`;
+            preview.contentDocument.body.style.backgroundImage = `url('../../wallpapers/${this.textContent}.png')`;
             imgModeSelector.disabled = false;
             switchDisplayOptionElement(false);
         } else if (i === 17) {
@@ -174,7 +174,7 @@ if (localStorage.madesktopBgVideo) {
 
 if (localStorage.madesktopBgImg) {
     if (localStorage.madesktopBgImg.startsWith('wallpapers/')) {
-        const wallName = localStorage.madesktopBgImg.match(/wallpapers\/(.*)\.bmp/)[1];
+        const wallName = localStorage.madesktopBgImg.match(/wallpapers\/(.*)\.png/)[1];
         const wallItem = wallMap[wallName];
         if (wallItem) {
             const activeItem = document.querySelector('li[data-active]');
@@ -241,7 +241,7 @@ window.apply = function () {
     if (i == 0) {
         delete localStorage.madesktopBgImg;
     } else if (i >= 1 && i <= 16) {
-        localStorage.madesktopBgImg = `wallpapers/${activeItem.textContent}.bmp`;
+        localStorage.madesktopBgImg = `wallpapers/${activeItem.textContent}.png`;
     } else if (activeItem.id === 'customImgItem') {
         if (activeItem.dataset.base64) {
             try {

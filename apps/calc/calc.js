@@ -157,7 +157,6 @@ sqrt.addEventListener('click', function () {
         return;
     }
     displayNum = Math.sqrt(parseFloat(calcDisplay.value)).toString();
-    lastOperNum = parseFloat(displayNum);
     updateDisplay();
 });
 
@@ -251,7 +250,6 @@ equals.addEventListener('click', function () {
 
 function calc(repeat) {
     if ((lastOperNum !== 0 || preCeNum) && repeat) {
-        console.log('1', preCeNum)
         if (isNaN(preCeNum)) {
             calcDisplay.value = preCeNum;
             return;
@@ -273,11 +271,8 @@ function calc(repeat) {
             default:
                 return;
         }
-        console.log('asdf', displayNum)
     } else {
         lastOperNum = parseFloat(displayNum || firstNum);
-        console.log(lastOperNum)
-        console.log(firstNum)
         switch (lastOper) {
             case 'add':
                 displayNum = (firstNum + lastOperNum).toString();

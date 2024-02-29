@@ -1,7 +1,7 @@
 # ModernActiveDesktop
 <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=2278898637"><img src="https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-steam-workshop.jross.me%2F2278898637%2Fsubscriptions-text" alt="Steam Workshop subscribers count"></a>
 
-* ModernActiveDesktop, also known as Windows 98 Desktop Experience, is a highly customizable re-creation of the classic Windows experience.
+* ModernActiveDesktop, also known as Windows 98 Desktop Experience, is a highly customizable re-creation of the classic Windows desktop.
 * Started as a crappy Active Desktop clone, ModernActiveDesktop now features various useful apps that resembles the classic Windows components that will improve your desktop experience.
 * Primarily designed for Wallpaper Engine, but now it will work well on other modern browsers as well. Lively Wallpaper is also supported.
 <br><br>
@@ -13,49 +13,48 @@
 ## Included Apps
 |Icon|Name|Description|Links|
 |---|---|---|---|
-|![Channel Bar Icon](images/mad16.png)|Channel Bar|The Channel Bar from Windows 98 First Edition or Internet Explorer 4|[Link](https://github.com/Ingan121/ModernActiveDesktop/blob/master/ChannelBar.html)|
+|![Channel Bar Icon](images/mad16.png)|Channel Bar|The Channel Bar from Windows 98 First Edition or IE4|[Link](https://github.com/Ingan121/ModernActiveDesktop/blob/master/ChannelBar.html)|
 |<img src="apps/jspaint/favicon.ico" width="16" alt="JSPaint Icon">|JSPaint|A web-based remake of MS Paint|[Original Repo](https://github.com/1j01/jspaint), [MAD Version](https://github.com/Ingan121/ModernActiveDesktop/tree/master/apps/jspaint)|
 |![Solitaire Icon](apps/solitaire/icon.png)|Solitaire|A web-based remake of MS Solitaire|[Original Repo](https://github.com/rjanjic/js-solitaire), [MAD Version](https://github.com/Ingan121/ModernActiveDesktop/tree/master/apps/solitaire)|
-|<img src="apps/clock/icon.png" width="16" alt="Clock Icon">|Clock|NT4 clock.exe remake|[Link](https://github.com/Ingan121/ModernActiveDesktop/tree/master/apps/clock)|
-|![Visualizer Icon](apps/visualizer/icon.png)|Visualizer|Music visualizer for Wallpaper Engine; WMP6 skin with WMP7+ bar visualization; Lively Wallpaper is partially supported|[Link](https://github.com/Ingan121/ModernActiveDesktop/tree/master/apps/visualizer)|
-|![ChannelViewer Icon](apps/channelviewer/images/icon.png)|ChannelViewer|A IE4 remake with some elements of IE6; supports loading many webpages with classic look and features|[Link](https://github.com/Ingan121/ModernActiveDesktop/tree/master/apps/channelviewer)|
-|![Calculator Icon](apps/calc/icon.png)|Calculator|A web-based remake of Windows 98 calculator|[Link](https://github.com/Ingan121/ModernActiveDesktop/tree/master/apps/calc)|
-||Configurator|Remake of the 'Display Properties' and 'Internet Options' control panel applets; some of them are pretty pixel-perfect to the original|[Main](https://github.com/Ingan121/ModernActiveDesktop/tree/master/apps/madconf), [Internet](https://github.com/Ingan121/ModernActiveDesktop/tree/master/apps/inetcpl)|
+|<img src="apps/clock/icon.png" width="16" alt="Clock Icon">|Clock|A web-based remake of NT4 clock.exe|[Link](https://github.com/Ingan121/ModernActiveDesktop/tree/master/apps/clock)|
+|![Visualizer Icon](apps/visualizer/icon.png)|Visualizer|A music visualizer for Wallpaper Engine<br>WMP6 style controls with WMP7+ bar visualization<br>Lively Wallpaper is partially supported|[Link](https://github.com/Ingan121/ModernActiveDesktop/tree/master/apps/visualizer)|
+|![ChannelViewer Icon](apps/channelviewer/images/icon.png)|ChannelViewer|A IE4 remake with some elements of IE6<br>Supports loading webpages with classic look and features|[Link](https://github.com/Ingan121/ModernActiveDesktop/tree/master/apps/channelviewer)|
+|![Calculator Icon](apps/calc/icon.png)|Calculator|A web-based remake of Windows calculator|[Link](https://github.com/Ingan121/ModernActiveDesktop/tree/master/apps/calc)|
+||Configurator|Remake of the 'Display Properties' and 'Internet Options' control panel applets<br>Some of them are pretty pixel-perfect to the original|[Main](https://github.com/Ingan121/ModernActiveDesktop/tree/master/apps/madconf), [Internet](https://github.com/Ingan121/ModernActiveDesktop/tree/master/apps/inetcpl)|
 
 ## Included Themes
 * XP
-    * CSS theme based on XP.css
+    * A CSS theme based on XP.css
     * Fallback schemes: Blue, Olive Green, Silver, and Royale
 * Aero
-    * CSS theme based on 7.css
-    * Fallback scheme
+    * A CSS theme based on 7.css
+* Windows 9x / 2000 Classic schemes
+* Plus! 95 and 98 schemes
 * Windose
     * Simple CSS theme based on the looks of Needy Girl Overdose
-    * Only title bars are themed; other controls use the generic Classic styling
+    * Only the title bars are themed; other controls will use the generic Classic styles
 * Catppuccin Mocha
-* Windows 9x schemes
-* Plus! 95 and 98 schemes
 * Windows 1-3 schemes
 * Windows 11 high contrast schemes
-* All Classic schemes support window metrics and font metrics
+* All Classic schemes feature unique window metrics and font settings
+* Can fetch system color schemes if the system plugin is being used
+* Also supports loading Windows *.theme files and an exported file of the "HKCU\Control Panel\Colors" registry key
 
 ## Todo
 * Localization
     * Would be pretty hard as many strings are currently hardcoded in HTML files
-    * Maybe just release various localized versions with embedded localized strings, like the pre-MUI Windows? Just kidding :P
-* Proper context menu theming
-    * It currently uses hardcoded width and height values due to the slide animation effect
-    * Windows uses MenuFont for context menus as well, but MAD currently doesn't respect this as it looks awful with big fonts because of the hardcoded sizes
-    * Maybe I should use JavaScript for determining the menu size. Width calculation has already been done in the ChannelViewer history and favorites menus
-    * Plus the Aero menu styles for the Aero theme
+    * Or just release various localized versions with embedded localized strings, like the pre-MUI Windows? Just kidding :D
+* Aero menus for the Aero theme
 * More themes to add
     * Windows 3.x
-        * I think it would be pretty easy, just with flat title bars and buttons with border-radius
+        * I think it would be pretty easy, just give it flat title bars and buttons with border-radius
+    * Windows Vista/7 Basic
     * Windows 8
-        * Maybe just modify the Aero theme a bit
-    * Windows 10 / 11?
+        * Maybe just modifying the Aero theme a bit would work
+    * Aero Lite
+    * Windows 10/11?
     * Mac OS 7?
-    * Also if I implement the Win3 theme, i should make a separate visual style selector in the appearance control panel, like the XP one
+    * Also if I implement the Win3 theme, i should make a separate visual style selector in the appearance control panel, like the one in XP
 
 ## Notes
 * ModernActiveDesktop is primarily optimized for Chromium 98 and higher. Some features may not work or look well on other browsers.

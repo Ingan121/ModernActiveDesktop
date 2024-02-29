@@ -312,20 +312,3 @@ body {
 .finish-dest {
   box-shadow: 0 0 0 1px #03ffff;
 }
-
-/* MAD Additions */
-
-#gameMenuBg {
-    width: 100px;
-    height: 51px;
-}
-
-#helpMenuBtn {
-    margin-left: 3px;
-}
-
-#helpMenuBg {
-    width: 120px;
-    height: 17px;
-    left: 42px;
-}

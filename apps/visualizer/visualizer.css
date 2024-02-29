@@ -79,26 +79,6 @@ a {
     z-index: 6;
 }
 
-#visMenuBg {
-    width: 120px;
-    height: 60px;
-}
-
-#viewMenuBg {
-    width: 160px;
-    height: 85px;
-}
-
-#optMenuBg {
-    width: 160px;
-    height: 17px;
-}
-
-#helpMenuBg {
-    width: 130px;
-    height: 17px;
-}
-
 #statusArea {
     background-color: var(--button-face);
     color: var(--button-text);
