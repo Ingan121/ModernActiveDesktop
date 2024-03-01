@@ -3,7 +3,7 @@
 
 * ModernActiveDesktop, also known as Windows 98 Desktop Experience, is a highly customizable re-creation of the classic Windows desktop.
 * Started as a crappy Active Desktop clone, ModernActiveDesktop now features various useful apps that resembles the classic Windows components that will improve your desktop experience.
-* Primarily designed for Wallpaper Engine, but now it will work well on other modern browsers as well. Lively Wallpaper is also supported.
+* Primarily designed for Wallpaper Engine, but now it should work well on other modern browsers as well. Lively Wallpaper is also supported.
 <br><br>
 [Old Screenshot (circa 2.3)](docs/images/screenshot.png)
 <br><br>
@@ -36,6 +36,7 @@
 * Catppuccin Mocha
 * Windows 1-3 schemes
 * Windows 11 high contrast schemes
+* Three schemes found in the JSPaint source files
 * All Classic schemes feature unique window metrics and font settings
 * Can fetch system color schemes if the system plugin is being used
 * Also supports loading Windows *.theme files and an exported file of the "HKCU\Control Panel\Colors" registry key
@@ -44,7 +45,8 @@
 * Localization
     * Would be pretty hard as many strings are currently hardcoded in HTML files
     * Or just release various localized versions with embedded localized strings, like the pre-MUI Windows? Just kidding :D
-* Aero menus for the Aero theme
+* ChannelViewer
+    * Hook fetch / XHR with fetchProxy to get AJAX sites working when force loaded
 * More themes to add
     * Windows 3.x
         * I think it would be pretty easy, just give it flat title bars and buttons with border-radius
@@ -55,6 +57,9 @@
     * Windows 10/11?
     * Mac OS 7?
     * Also if I implement the Win3 theme, i should make a separate visual style selector in the appearance control panel, like the one in XP
+* Split the main scripts into multiple JS files
+    * Current main JS structure (DeskMover + DeskSettings) hasn't really changed since 1.0 lol
+* Support multi-display background wallpaper configuration?
 
 ## Notes
 * ModernActiveDesktop is primarily optimized for Chromium 98 and higher. Some features may not work or look well on other browsers.
@@ -88,7 +93,7 @@
 * Updated dependencies
 
 ### Previous changelog
-See [here](docs/Updated.md) for previous changelogs
+Please see [here](docs/Updated.md) for the previous changes
 
 Copyright (c) 2024 Ingan121  
 [Licensed under the MIT license](license.txt)

@@ -30,12 +30,15 @@
     --cjk-fontlink: "MS UI Gothic", Gulim, SimSun, PMingLiU;
 }
 
-body {
+body/*not-if-bgcolor*/ {
     background-color: var(--window);
+}
+
+body/*not-if-text*/ {
     color: var(--window-text);
 }
 
-a {
+a/*not-if-link*/ {
     color: var(--hot-tracking-color);
 }
 

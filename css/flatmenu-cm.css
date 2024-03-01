@@ -1,10 +1,10 @@
 /* Flat menus for context menus */
 .contextMenuBg {
-    box-shadow: var(--button-shadow) -1px -1px inset, var(--button-shadow) 1px 1px inset, var(--menu) -3px -3px inset, var(--menu) 3px 3px inset;
+    box-shadow: var(--button-shadow) -1px -1px inset, var(--button-shadow) 1px 1px inset;
 }
 
 body[data-cm-shadow] .contextMenuBg {
-    box-shadow: var(--button-shadow) -1px -1px inset, var(--button-shadow) 1px 1px inset, var(--menu) -3px -3px inset, var(--menu) 3px 3px inset, 5px 5px 4px -4px rgba(0, 0, 0, 0.75) !important;
+    box-shadow: var(--button-shadow) -1px -1px inset, var(--button-shadow) 1px 1px inset, 5px 5px 4px -4px rgba(0, 0, 0, 0.75) !important;
 }
 
 .contextMenuItem:hover,
@@ -14,11 +14,11 @@ body[data-cm-shadow] .contextMenuBg {
 }
 
 .menu-popup {
-    box-shadow: none !important;
-    border: 1px solid var(--button-shadow) !important;
+    border: none !important;
+    box-shadow: var(--button-shadow) -1px -1px inset, var(--button-shadow) 1px 1px inset;
     background-color: var(--menu) !important;
 }
 
 body[data-cm-shadow] .menu-popup {
-    box-shadow: 5px 5px 4px -4px rgba(0, 0, 0, 0.75) !important;
+    box-shadow: var(--button-shadow) -1px -1px inset, var(--button-shadow) 1px 1px inset, 5px 5px 4px -4px rgba(0, 0, 0, 0.75) !important;
 }

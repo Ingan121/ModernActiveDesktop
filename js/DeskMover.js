@@ -472,13 +472,13 @@ class DeskMover {
         // Windows without icons aren't designed to look good in different sizes yet
         // So just hide the menus for now
         if (this.windowTitlebar.classList.contains("noIcon")) {
-            this.contextMenuBg.style.height = "17px";
-            this.contextMenuItems[3].style.pointerEvents = "none";
-            this.contextMenuItems[3].style.opacity = "0";
+            this.contextMenuItems[0].dataset.hidden = true;
+            this.contextMenuItems[2].dataset.hidden = true;
+            this.contextMenuItems[3].dataset.hidden = true;
         } else {
-            this.contextMenuBg.style.height = "";
-            this.contextMenuItems[3].style.pointerEvents = "";
-            this.contextMenuItems[3].style.opacity = "";
+            delete this.contextMenuItems[0].dataset.hidden;
+            delete this.contextMenuItems[2].dataset.hidden;
+            delete this.contextMenuItems[3].dataset.hidden;
         }
 
         switch (localStorage.madesktopCmAnimation) {
@@ -529,14 +529,10 @@ class DeskMover {
             this.contextMenuItems[0].dataset.hidden = true;
             this.contextMenuItems[2].dataset.hidden = true;
             this.contextMenuItems[3].dataset.hidden = true;
-            this.contextMenuItems[3].style.pointerEvents = "none";
-            this.contextMenuItems[3].style.opacity = "0";
         } else {
             delete this.contextMenuItems[0].dataset.hidden;
             delete this.contextMenuItems[2].dataset.hidden;
             delete this.contextMenuItems[3].dataset.hidden;
-            this.contextMenuItems[3].style.pointerEvents = "";
-            this.contextMenuItems[3].style.opacity = "";
         }
 
         switch (localStorage.madesktopCmAnimation) {
@@ -651,9 +647,9 @@ class DeskMover {
         let separatorHeight = 0;
         if (separators.length > 0) {
             const styles = getComputedStyle(separators[0]);
-            separatorHeight = separators[0].offsetHeight + parseInt(styles.marginTop) + parseInt(styles.marginBottom);
+            separatorHeight = separators[0].offsetHeight + parseFloat(styles.marginTop) + parseFloat(styles.marginBottom);
         }
-        const height = menuItems.length * menuItemHeight + separators.length * separatorHeight;
+        const height = parseInt(menuItems.length * menuItemHeight + separators.length * separatorHeight);
         return height;
     }
 
@@ -806,9 +802,9 @@ class DeskMover {
         this.dropdownBg.style.display = "block";
         
         const clientRect = elem.getBoundingClientRect();
-        let left = clientRect.left;
+        let left = clientRect.left + 1;
         let top = clientRect.top + elem.offsetHeight;
-        let width = elem.offsetWidth;
+        let width = elem.offsetWidth - 2;
         if (this.config.unscaled) {
             left /= window.scaleFactor;
             top /= window.scaleFactor;

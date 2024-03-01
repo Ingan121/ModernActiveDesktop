@@ -255,8 +255,8 @@ function openMainMenu (event) {
     mainMenuBg.style.top = event.clientY + "px";
     mainMenuBg.style.display = "block";
     const width = getTextWidth(mainMenuItems[1].textContent);
-    mainMenuBg.style.width = `calc(${width}px + 4.5em)`;
-    mainMenu.style.width = `calc(${width}px + 4.5em - 2px)`;
+    mainMenuBg.style.width = `calc(${width}px + 4em)`;
+    mainMenu.style.width = `calc(${width}px + 4em - 2px)`;
     mainMenuBg.style.height = mainMenuItems[0].offsetHeight * 2 + "px";
 
     iframeClickEventCtrl(false);
@@ -612,13 +612,9 @@ function changeMenuStyle(style) {
 // Change underline style
 function changeUnderline(show) {
     if (show) {
-        document.documentElement.style.removeProperty('--underline');
-        document.documentElement.style.removeProperty('--underline-hilight');
-        document.documentElement.style.removeProperty('--underline-disabled');
+        delete document.body.dataset.noUnderline;
     } else {
-        document.documentElement.style.setProperty('--underline', 'transparent');
-        document.documentElement.style.setProperty('--underline-hilight', 'transparent');
-        document.documentElement.style.setProperty('--underline-disabled', 'transparent');
+        document.body.dataset.noUnderline = true;
     }
 }
 
@@ -1785,11 +1781,15 @@ window.addEventListener('load', function () {
         document.documentElement.style.setProperty('--hilight-inverted', 'var(--hilight-text)');
     }
     adjustAllElements();
-
-    if (visDeskMover) {
-        visDeskMover.windowElement.contentWindow.setupListeners();
-    }
 });
+
+if (runningMode === WE) {
+    setTimeout(function () {
+        if (visDeskMover) {
+            visDeskMover.windowElement.contentWindow.setupListeners();
+        }
+    }, 1000);
+}
 
 // Prevent scrolling when a partly off-screen deskMover gets focus, its iframe loads, etc.
 document.addEventListener('scroll', function () {

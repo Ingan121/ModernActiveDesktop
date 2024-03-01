@@ -50,7 +50,7 @@ body {
     padding: calc((var(--menu-height) - 14px) / 2 + 1px) 7px 2px 8px;
 }
 
-.menuBtn[data-active] {
+body:not([data-no-sunken-menus]) .menuBtn[data-active] {
     padding-top: calc((var(--menu-height) - 14px) / 2 + 2px);
 }
 
@@ -481,6 +481,16 @@ body::after { /* preload images */
     margin-left: 2px;
 }
 
+#sslIndicator {
+    background-size: 16px 16px;
+    background-position: 2px 1px;
+    background-repeat: no-repeat;
+}
+
+#sslIndicator[data-secure] {
+    background-image: url('images/padlock.png');
+}
+
 #zone {
     width: 290px;
     height: 18px;
@@ -578,7 +588,7 @@ body[data-fullscreen] #statusBar {
 }
 
 .contextMenuBg {
-    top: calc(var(--menu-height) + 4px);
+    top: calc(var(--menu-height) + 5px);
     z-index: 100;
 }
 
@@ -595,11 +605,12 @@ body[data-fullscreen] #statusBar {
     padding-top: 4px;
 }
 
-.favoriteItem {
-    background-image: url('images/icon.png');
-    background-size: 16px 16px;
-    background-position: 4px 2px;
-    background-repeat: no-repeat;
+.favoriteItemImage {
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    top: 2px;
+    left: 4px;
 }
 
 #favoritesMenu > .contextMenuItem > p {

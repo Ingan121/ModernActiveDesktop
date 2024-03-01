@@ -17,6 +17,13 @@
                 src: location.href
             }
         };
+        Object.defineProperties(window.madDeskMover, {
+            isFullscreen: {
+                get: function () {
+                    return !!document.fullscreenElement;
+                }
+            }
+        });
         window.madScaleFactor = 1;
         window.madRunningMode = 0;
         window.madOpenWindow = function (url, temp, width, height, style) {
@@ -136,8 +143,18 @@
             const menuConfig = localStorage.madesktopMenuStyle;
             if (menuConfig) {
                 menuStyleElement.href = parentMenuStyleElement.href;
+                if (menuConfig.includes("mb") || localStorage.madesktopColorScheme === "7css4mad") {
+                    document.body.dataset.noSunkenMenus = true;
+                } else {
+                    delete document.body.dataset.noSunkenMenus;
+                }
             } else {
                 menuStyleElement.href = "";
+                if (localStorage.madesktopColorScheme === "7css4mad") {
+                    document.body.dataset.noSunkenMenus = true;
+                } else {
+                    delete document.body.dataset.noSunkenMenus;
+                }
             }
         }
 
@@ -226,13 +243,9 @@
 
     function changeUnderline(show) {
         if (show) {
-            document.documentElement.style.removeProperty('--underline');
-            document.documentElement.style.removeProperty('--underline-hilight');
-            document.documentElement.style.removeProperty('--underline-disabled');
+            delete document.body.dataset.noUnderline;
         } else {
-            document.documentElement.style.setProperty('--underline', 'transparent');
-            document.documentElement.style.setProperty('--underline-hilight', 'transparent');
-            document.documentElement.style.setProperty('--underline-disabled', 'transparent');
+            document.body.dataset.noUnderline = true;
         }
     }
 

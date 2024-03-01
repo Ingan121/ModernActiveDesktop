@@ -50,6 +50,7 @@ const historyMenu = document.getElementById("historyMenu");
 const throbber = document.getElementById("throbber");
 const fullscreenThrobber = document.getElementById("windowBtnContainer");
 const statusText = document.getElementById("statusText");
+const sslIndicator = document.getElementById("sslIndicator");
 const statusZone = document.getElementById("zone");
 const statusZoneText = document.getElementById("zoneText");
 
@@ -411,7 +412,6 @@ for (const expandButton of [backExpandButton, forwardExpandButton]) {
         if (menuItems.length === 0) {
             return;
         }
-        console.log(menuItems)
         for (const item of menuItems) {
             item.addEventListener("pointerover", function () {
                 for (const item of menuItems) {
@@ -552,6 +552,12 @@ windowCloseButton.addEventListener('click', function () {
 toolbars.addEventListener('contextmenu', function (event) {
     event.preventDefault();
     madDeskMover.menu.openMenu('toolbars', { x: event.clientX / madScaleFactor, y: event.clientY / madScaleFactor });
+});
+
+sslIndicator.addEventListener('click', function () {
+    if (this.dataset.secure) {
+        madAlert("The connection to this site is secure.", null, "info");
+    }
 });
 
 if (localStorage.madesktopChanViewHideToolbar) {
@@ -881,6 +887,10 @@ function appendFavoriteItem(favorite) {
     const item = document.createElement("div");
     item.classList.add("contextMenuItem");
     item.classList.add("favoriteItem");
+    const img = document.createElement("img");
+    img.classList.add("favoriteItemImage");
+    img.src = favorite[2] || "images/icon.png";
+    item.appendChild(img);
     const p = document.createElement("p");
     p.textContent = favorite[1];
     item.addEventListener("click", function () {
@@ -903,11 +913,6 @@ function appendFavoriteItem(favorite) {
         favoritesMenuBg.blur();
     });
     item.appendChild(p);
-    if (favorite[2]) {
-        item.style.backgroundImage = "url(" + favorite[2] + ")";
-    } else {
-        item.style.backgroundImage = "url(images/icon.png)";
-    }
     favoritesMenu.appendChild(item);
 }
 
@@ -1229,7 +1234,17 @@ function injectStyle() {
             styleElement.id = "madChanView-style";
             iframe.contentDocument.head.insertBefore(styleElement, iframe.contentDocument.head.firstChild);
         }
-        styleElement.textContent = baseStylesheet + themeStylesheet;
+        let baseStylesheetLocal = baseStylesheet;
+        if (iframe.contentDocument.body.bgColor) {
+            baseStylesheetLocal = baseStylesheetLocal.replace("body/*not-if-bgcolor*/", "null");
+        }
+        if (iframe.contentDocument.body.text) {
+            baseStylesheetLocal = baseStylesheetLocal.replace("body/*not-if-text*/", "null");
+        }
+        if (iframe.contentDocument.body.link) {
+            baseStylesheetLocal = baseStylesheetLocal.replace("a/*not-if-link*/", "null");
+        }
+        styleElement.textContent = baseStylesheetLocal + themeStylesheet;
 
         let svgStyleElement = iframe.contentDocument.getElementById("madChanView-svgStyle");
         if (!svgStyleElement) {
@@ -1454,6 +1469,11 @@ iframe.addEventListener('load', function () {
     if (url.startsWith(madBase)) {
         statusZone.style.backgroundImage = "url(images/zone_local.png)";
         statusZoneText.textContent = "My Computer";
+    }
+    if (url.startsWith("https://") && !loadedWithProxy) {
+        sslIndicator.dataset.secure = true;
+    } else {
+        delete sslIndicator.dataset.secure;
     }
     historyItems[historyIndex - 1] = [urlbar.value, title];
     historyItems = historyItems.slice(0, historyLength);

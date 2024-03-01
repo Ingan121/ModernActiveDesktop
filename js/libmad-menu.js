@@ -423,9 +423,10 @@ class MadMenu {
         let separatorHeight = 0;
         if (separators.length > 0) {
             const styles = getComputedStyle(separators[0]);
-            separatorHeight = separators[0].offsetHeight + parseInt(styles.marginTop) + parseInt(styles.marginBottom);
+            separatorHeight = separators[0].offsetHeight + parseFloat(styles.marginTop) + parseFloat(styles.marginBottom);
         }
-        const height = menuItems.length * menuItemHeight + separators.length * separatorHeight;
+        const height = parseInt(menuItems.length * menuItemHeight + separators.length * separatorHeight);
+        //console.log(`${menuItems.length} * ${menuItemHeight} + ${separators.length} * ${separatorHeight} = ${height}`)
         return height;
     }
 }

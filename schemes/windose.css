@@ -8,8 +8,8 @@
     --button-alternate-face: #815CDC;
     --button-dk-shadow: #815CDC;
     --button-face: #FCF1FF;
-    --button-hilight: #FDF1FD;
-    --button-light: #FDF1FD;
+    --button-hilight: #FFFFFF;
+    --button-light: #FFF5FF;
     --button-shadow: #ad9dd5;
     --button-text: #815CDC;
     --gradient-active-title: #F0D0F1;
@@ -38,6 +38,7 @@
     --scrollbar-size: 16px;
     --menu-height: 18px;
     --palette-title-height: 15px;
+    --client-edge-size: 0px;
     --bottom-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB8AAAAGCAYAAAA7d0VqAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnMAABJzAYwiuQcAAABISURBVChTY/RVPvufgQpg811jks0Ca5hbKwXlkgeSm5/BLQfRIDGYQ/DxmUCMgQJUtxzkI5gvQQAfn6rBDuUSDaiW4EgHDAwAlEkyJY3231wAAAAASUVORK5CYII=");
     --close-button: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMCAxMCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIj48bGluZSB4MT0iMCIgeTE9IjAiIHgyPSIxMCIgeTI9IjEwIiB2ZWN0b3ItZWZmZWN0PSJub24tc2NhbGluZy1zdHJva2UiIHN0cm9rZT0iIzREMjNDRCIgc2hhcGUtcmVuZGVyaW5nPSJjcmlzcEVkZ2VzIiAvPjxsaW5lIHgxPSIxMCIgeTE9IjAiIHgyPSIwIiB5Mj0iMTAiIHZlY3Rvci1lZmZlY3Q9Im5vbi1zY2FsaW5nLXN0cm9rZSIgc3Ryb2tlPSIjNEQyM0NEIiBzaGFwZS1yZW5kZXJpbmc9ImNyaXNwRWRnZXMiIC8+PC9zdmc+");
     --maximize-button: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMCAxMCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIj48cmVjdCB4PSIyIiB5PSIyIiB3aWR0aD0iNyIgaGVpZ2h0PSI3IiBzdHJva2U9IiM0RDIzQ0QiIGZpbGw9InRyYW5zcGFyZW50IiBzaGFwZS1yZW5kZXJpbmc9ImNyaXNwRWRnZXMiIC8+PC9zdmc+");
@@ -49,6 +50,7 @@
     --extra-title-height: -1px !important;
     --extra-border-size: 1px !important;
     --extra-border-bottom: 5px !important;
+    --context-menu-left: 3px;
 }
 
 .windowContainer[data-style="wnd"],
@@ -153,14 +155,6 @@
 
 .windowContainer[data-style="wnd"] .windowElement {
     border-color: var(--title-text) !important;
-}
-
-.windowContainer[data-style="wnd"] .windowMenuBg {
-    left: 3px;
-}
-
-.windowContainer[data-style="wnd"] .confMenuBg {
-    left: 103px;
 }
 
 .clientEdge:not(.forcedClientEdge) {

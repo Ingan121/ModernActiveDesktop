@@ -49,6 +49,12 @@
     --mad-margin-bottom: 48px;
 }
 
+body[data-no-underline] {
+    --underline: transparent;
+    --underline-hilight: transparent;
+    --underline-disabled: transparent;
+}
+
 .menu {
     display: flex;
     margin-top: 0;
@@ -78,10 +84,13 @@
 
 .menuBtn[data-active] {
     border-color: var(--button-shadow) var(--button-hilight) var(--button-hilight) var(--button-shadow);
+}
+
+body:not([data-no-sunken-menus]) .menuBtn[data-active] {
     padding-top: calc((var(--menu-height) - 14px) / 2 + 1px);
 }
 
-.menuBtn[data-active] > span {
+body:not([data-no-sunken-menus]) .menuBtn[data-active] > span {
     margin-top: 1px;
     margin-left: 1px;
     margin-right: -1px;
@@ -181,8 +190,9 @@ body[data-fullscreen] .contextMenuBg {
 
 .submenuMark {
     position: absolute;
-    top: -3px;
+    top: 50%;
     right: -2px;
+    transform: translateY(calc(-50% - 4px));
 }
 
 .disabled,

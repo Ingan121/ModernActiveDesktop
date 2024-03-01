@@ -409,6 +409,11 @@ body:not(#madChanView) .menu, .menus {
         padding-bottom: 0;
     }
 
+    &.madconf-misc .window-body {
+        margin-top: 5px;
+        margin-bottom: 6px;
+    }
+
     #creditsMain {
         height: 120px;
     }

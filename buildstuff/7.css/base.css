@@ -38,6 +38,7 @@
     --scrollbar-size: 17px;
     --menu-height: 19px;
     --palette-title-height: 22px;
+    --client-edge-size: 0px;
     --ui-font: "Segoe UI", "SegoeUI", "Noto Sans", sans-serif;
     --caption-font: 9pt/1.2 var(--ui-font);
     --menu-font: 9pt/0.9 var(--ui-font);

@@ -39,6 +39,7 @@ button {
     min-height: 0 !important;
     color: blue !important;
     text-shadow: none !important;
+    padding: 0 !important;
     margin-bottom: 1px;
     box-shadow: inset -1px -1px var(--button-dk-shadow), inset 1px 1px var(--button-light),
         inset -2px -2px var(--button-shadow), inset 2px 2px var(--button-hilight);
@@ -57,7 +58,6 @@ button[data-active] {
 .topButton {
     width: 63px;
     height: 29px;
-    padding: 0 !important;
     margin-bottom: 4px;
 }
 
@@ -78,12 +78,4 @@ button[data-active] {
 .memButton,
 .operButton {
     color: red !important;
-}
-
-.memButton {
-    padding: 0 11px !important;
-}
-
-.operButton2 {
-    padding: 0 10px !important;
 }

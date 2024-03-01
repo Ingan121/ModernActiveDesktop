@@ -112,6 +112,8 @@
   --palette-title-height: 15px;
   --menu-height: 18px;
 
+  --client-edge-size: 2px;
+
   /* SVGs */
   --scroll-up: svg-load("./icon/button-up.svg");
   --scroll-down: svg-load("./icon/button-down.svg");
@@ -162,7 +164,11 @@ body {
     inset 1px 1px var(--button-shadow),
     inset -2px -2px var(--button-light),
     inset 2px 2px var(--button-dk-shadow);
-  padding: 2px;
+  padding: var(--client-edge-size);
+}
+
+.forcedClientEdge {
+  --client-edge-size: 2px !important;
 }
 
 button,

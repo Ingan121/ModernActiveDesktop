@@ -38,6 +38,7 @@
     --scrollbar-size: 17px;
     --menu-height: 19px;
     --palette-title-height: 17px;
+    --client-edge-size: 1px;
     --ui-font: Tahoma, Arial, var(--cjk-fontlink);
     --caption-font: bold 10pt/1 "Trebuchet MS", var(--ui-font);
     --menu-font: 8pt/1.1 var(--ui-font);
