@@ -66,31 +66,45 @@
 
 ## Changelog
 
-### 3.1
-* Added a music visualizer
-    * Currently supports WMP Bar-like visualizer and a simple album art visualizer
-    * Supports customizable colors and media information integration
-    * Also supports media controls if the system plugin integration is enabled
-* Added a customizable flat menu option, which was previously exclusive to the XP theme
-* Background colors can now be changed independently when using system colors
-* Added thick frames to resizable windows for a more authentic look
-* Added an option to make windows non-resizable
-* Added various sound schemes (3.1, 95, NT4, 2000/Me, XP, Vista, 7, 8, 10, 11)
-* Improved the XP theme
-    * Dialogs will use XP icons when using the XP theme
-    * Title bars will always use appropriate fonts, regardless of the no-pixel fonts option
-* Changed the default style and size of new windows
-* Several visual improvements
-* Prevent Windows 7 / 8 from installing the system plugin, as it requires Windows 10 or higher
-* Added an additional safeguard to prevent arbitrary web pages from accessing the system plugin APIs
-* System plugin is now distributed zipped
-* Several bugfixes and optimizations
-    * Fixed dark color schemes having invisible checkmarks on checkboxes
-    * Fixed dark theme detection not working properly with custom colors
-    * Fixed 'Always on top' windows going on top of important UI elements and its own dialogs
-    * Fixed the default color scheme having some inaccurate colors
-    * Fixed the circle mark in context menus being rendered as broken texts in some cases
-* Updated dependencies
+## 3.2
+* Added Clock and Calculator
+* Revamped the ChannelViewer
+    * It now more resembles IE4 or IE6
+    * It can now open pages that don't allow embedding
+    * Improved external link handling
+    * Note: the system plugin ChannelViewer has deprecated. Please use the in-wallpaper ChannelViewer or any external browser on your system
+* Improved the customization settings
+    * You can now adjust the window metrics and font settings. Updated the built-in themes to have unique metrics as well
+    * Made the configuration window pretty pixel-perfect to the 98 apperance control panel
+    * Added an option to hide the keyboard navigation underlines
+    * Added an option to show only window outlines when dragging
+    * Support saving color schemes to the storage
+    * Support importing Windows theme files and exported color registry files
+    * Support exporting scheme as CSS or JSON by typing !copycss or !copyjson to the scheme save dialog
+    * Support adjusting top and bottom margins. Adjust these based on your desktop, for example the bottom margin would be the size of the taskbar.
+    * Support exporting and importing the complete configuration of ModernActiveDesktop
+    * Resetting configs will only remove its own configs and not touch other wallpaper's ones
+* Added a Windows Aero theme, and improved the XP theme
+    * JSPaint will use Windows Vista or Windows XP looks if you use one of these themes
+* Added more Classic schemes
+    * Catppuccin Mocha
+    * Some Plus! themes that were missing previously
+    * Reverted the 98 Classic scheme to 3.0 one, as this was indeed the correct one.
+    * The previous 98 scheme of MAD 3.1 has been renamed to Windows Classic (98SE) - in fact this slightly variant of the Classic scheme is also present in later versions of Windows.
+* More controls, including radio buttons and dropdowns, now follow the color scheme
+* Visualizer updates
+    * Added more configurable options to the visualizer
+    * Added fullscreen mode
+    * Automatically pause drawing when idle to reduce the CPU usage
+* ChannelBar is now a openable app, like the visualizer and others
+    * It no longer re-opens when opening a new window
+* Made various UI elements look more accurate
+    * Added ClientEdge in various places
+* Windows now can be resized diagonally
+* Added support for Firefox and iOS Safari, as well as touch screens
+* Support menu navigation with keyboard (when keyboard input is available)
+* Moving mouse over the menu while playing the animation effect will cancel the animation
+* Updated dependencies (Electron, JSPaint)
 
 ### Previous changelog
 Please see [here](docs/Updated.md) for the previous changes

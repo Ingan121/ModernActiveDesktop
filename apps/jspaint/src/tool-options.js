@@ -69,7 +69,7 @@ const ChooserDiv = (
 		const use_svg = localStorage.madesktopColorScheme === "7css4mad" ?
 			false :
 			// with nearest neighbor scaling, favor raster at larger integer sizes as well, for retro look
-			(window.devicePixelRatio >= 3 || (window.devicePixelRatio % 1) !== 0)
+			(window.devicePixelRatio * madScaleFactor >= 3 || (window.devicePixelRatio * madScaleFactor % 1) !== 0)
 		div.classList.toggle("use-svg", use_svg);
 		// The classic theme's transparency tool options spritesheet uses an
 		// overlapped border, shared by the top and bottom options, as it is

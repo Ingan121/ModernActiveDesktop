@@ -6,7 +6,7 @@
     * It now more resembles IE4 or IE6
     * It can now open pages that don't allow embedding
     * Improved external link handling
-    * Note: the system plugin ChannelViewer has been deprecated. Please use the in-wallpaper ChannelViewer or any external browser on your system
+    * Note: the system plugin ChannelViewer has deprecated. Please use the in-wallpaper ChannelViewer or any external browser on your system
 * Improved the customization settings
     * You can now adjust the window metrics and font settings. Updated the built-in themes to have unique metrics as well
     * Made the configuration window pretty pixel-perfect to the 98 apperance control panel
@@ -14,9 +14,9 @@
     * Added an option to show only window outlines when dragging
     * Support saving color schemes to the storage
     * Support importing Windows theme files and exported color registry files
-    * Support exporting scheme as CSS or JSON, by typing !copycss or !copyjson to the scheme save dialog
+    * Support exporting scheme as CSS or JSON by typing !copycss or !copyjson to the scheme save dialog
     * Support adjusting top and bottom margins. Adjust these based on your desktop, for example the bottom margin would be the size of the taskbar.
-    * Support exporting and importing the full configuration of ModernActiveDesktop
+    * Support exporting and importing the complete configuration of ModernActiveDesktop
     * Resetting configs will only remove its own configs and not touch other wallpaper's ones
 * Added a Windows Aero theme, and improved the XP theme
     * JSPaint will use Windows Vista or Windows XP looks if you use one of these themes
@@ -38,6 +38,7 @@
 * Added support for Firefox and iOS Safari, as well as touch screens
 * Support menu navigation with keyboard (when keyboard input is available)
 * Moving mouse over the menu while playing the animation effect will cancel the animation
+* Updated dependencies (Electron, JSPaint)
 
 ## 3.1
 * Added a music visualizer
