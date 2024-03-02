@@ -345,7 +345,7 @@
                         if (isNaN(value)) {
                             return;
                         }
-                        this.selectedIndexReal = value;
+                        this.selectedIndexReal = parseInt(value);
                         for (const option of this.options) {
                             option.selected = false;
                         }
