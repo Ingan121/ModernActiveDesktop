@@ -144,8 +144,8 @@
 }
 
 .window-button-icon {
-    width: 100%;
-    height: 100%;
+    width: 100% !important;
+    height: 100% !important;
 }
 
 .window-action-close .window-button-icon::before  {
@@ -185,6 +185,10 @@
 .tool-window .window-button {
     height: calc(var(--palette-title-height) - 2px) !important;
     width: calc(var(--palette-title-height) - 2px) !important;
+}
+
+.tool-window .window-button .window-button-icon::before {
+    font-size: calc(var(--palette-title-height) - 6px);
 }
 
 .maximized .window-titlebar {
