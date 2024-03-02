@@ -321,7 +321,9 @@ function updateDisplay() {
 }
 
 function clickButton(elem) {
-    elem.dataset.active = true;
+    if (localStorage.madesktopColorScheme !== 'xpcss4mad') {
+        elem.dataset.active = true;
+    }
     elem.click();
     setTimeout(() => {
         delete elem.dataset.active;
