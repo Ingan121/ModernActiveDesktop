@@ -413,6 +413,17 @@ body:not(#madChanView) .menu, .menus {
         margin-top: 5px;
         margin-bottom: 6px;
     }
+    
+    &.madconf-inet-general .window-body,
+    &.madconf-inet-connection .window-body {
+        margin-top: 2px;
+        margin-bottom: 4px;
+    }
+
+    &.madconf-inet-connection ul {
+        margin-top: 2px;
+        margin-bottom: 0;
+    }
 
     #creditsMain {
         height: 120px;

@@ -351,12 +351,21 @@ body[data-cm-shadow] .contextMenuBg {
     padding-top: 2px;
 }
 
-.contextMenuItem:not(.hasIcon) p {
+.contextMenuItem p {
     padding-left: 15px;
 }
 
 .confMenu .contextMenuItem p {
     padding-left: 20px;
+}
+
+.contextMenuItem.closeIcon p::before {
+    font-family: "marlett-icons";
+    content: "\e904";
+    font-size: 1.1em;
+    position: absolute;
+    top: 3px;
+    left: 1px;
 }
 
 .contextMenuItem.activeStyle p::before {
@@ -447,7 +456,7 @@ body[data-cm-shadow] .contextMenuBg {
     overflow: hidden;
     animation: cmDropdown 0.25s linear;
     display: none;
-    pointer-events: auto !important;
+    pointer-events: auto;
     cursor: default !important;
 }
 

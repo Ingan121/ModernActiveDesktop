@@ -86,8 +86,8 @@ a {
     margin-bottom: 6px;
 }
 
-#visMenu > .contextMenuItem:not(.hasIcon):not(.activeStyle):not(.checkedItem) > p,
-#viewMenu > .contextMenuItem:not(.hasIcon):not(.activeStyle):not(.checkedItem) > p {
+#visMenu > .contextMenuItem:not(.activeStyle):not(.checkedItem) > p,
+#viewMenu > .contextMenuItem:not(.activeStyle):not(.checkedItem) > p {
     padding-left: 20px;
 }
 

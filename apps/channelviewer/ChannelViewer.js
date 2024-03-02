@@ -75,7 +75,7 @@ if (parent === window) {
 const cvBase = madBase + 'apps/channelviewer/';
 
 let title = "";
-let favorites = JSON.parse(localStorage.madesktopChanViewFavorites || "[[\"https://www.ingan121.com/\",\"Ingan121's Webpage!\"],[\"https://github.com/Ingan121/ModernActiveDesktop\",\"ModernActiveDesktop GitHub\"]]");
+window.favorites = JSON.parse(localStorage.madesktopChanViewFavorites || "[[\"https://www.ingan121.com/\",\"Ingan121's Webpage!\"],[\"https://github.com/Ingan121/ModernActiveDesktop\",\"ModernActiveDesktop GitHub\"]]");
 let didFirstLoad = false;
 let isCrossOrigin = madRunningMode !== 1; // Wallpaper Engine disables all cross-origin iframe restrictions
 let historyLength = 0;
@@ -166,11 +166,22 @@ viewMenuItems[5].addEventListener("click", function () { // Source button
     }
 });
 
-viewMenuItems[6].addEventListener("click", function () { // Full Screen button
+viewMenuItems[6].addEventListener("click", function () { // Run JavaScript Code button
+    if (isCrossOrigin) {
+        madAlert(NO_ADV_MSG, null, "warning");
+    } else {
+        madPrompt("Enter JavaScript code to run.", function (code) {
+            if (code === null) return;
+            iframe.contentWindow.eval(code);
+        });
+    }
+});
+
+viewMenuItems[7].addEventListener("click", function () { // Full Screen button
     fullscreenButton.click();
 });
 
-viewMenuItems[7].addEventListener("click", function () { // Internet Options button
+viewMenuItems[8].addEventListener("click", function () { // Internet Options button
     const left = parseInt(madDeskMover.config.xPos) + 25 + 'px';
     const top = parseInt(madDeskMover.config.yPos) + 50 + 'px';
     const url = isCrossOrigin ? iframe.src : historyItems[historyIndex - 1][0];
@@ -495,7 +506,7 @@ urlbar.addEventListener('click', function (event) {
             madAlert("This page is from a different origin. Advanced features are not available for this page.", null, "info");
         } else if (iframe.contentDocument.head.dataset.forceLoaded) {
             if (loadedWithProxy) {
-                madAlert("This page was loaded with an external proxy. Advanced features are available, but the page may not work properly. Also, DO NOT ENTER YOUR PASSWORDS HERE!", null, "warning");
+                madAlert("This page was loaded with an external proxy. Advanced features are available, but the page may not work properly. Also, do not enter your passwords here!", null, "warning");
             } else if (madRunningMode !== 1) {
                 madAlert("This page was forcefully loaded with advanced features. The page may not work properly, especially if it has complex scripts.", null, "warning");
             } else {
@@ -845,6 +856,14 @@ function hookIframeSize(iframe) {
 }
 
 function go(url, noHistory, forceForceLoad = false) {
+    if (url.startsWith("javascript:")) {
+        if (isCrossOrigin) {
+            location.href = url;
+        } else {
+            iframe.contentWindow.location = url;
+        }
+        return;
+    }
     if (noHistory) {
         didHistoryNav = false;
     }
@@ -895,9 +914,18 @@ function appendFavoriteItem(favorite) {
     p.textContent = favorite[1];
     item.addEventListener("click", function () {
         if (favEditMode) {
-            madPrompt("Enter a new name (leave empty to delete)", function (name) {
+            madPrompt("Enter a new name (leave empty to delete; type !url to edit URL)", function (name) {
                 if (name === null) return;
-                if (name === "") {
+                if (name === "!url") {
+                    madPrompt("Enter a new URL", function (url) {
+                        if (url === null) return;
+                        favorite[0] = url;
+                        localStorage.madesktopChanViewFavorites = JSON.stringify(favorites);
+                        if (mainArea.classList.contains("sidebarOpen") && sidebarTitle.textContent === "Favorites") {
+                            openSidebar("Favorites");
+                        }
+                    }, favorite[0], favorite[0]);
+                } else if (name === "") {
                     favorites.splice(favorites.indexOf(favorite), 1);
                 } else {
                     favorite[1] = name;
@@ -1154,6 +1182,14 @@ async function forceLoad(url) {
 async function fetchProxy(url, options) {
     loadedWithProxy = false;
     const proxy = localStorage.madesktopCorsProxy || 'https://api.codetabs.com/v1/proxy/?quest=';
+    if (!options && madRunningMode === 1) {
+        options = {
+            headers: {
+                /* Otherwise GitHub blob pages will return a JSON file */
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7'
+            }
+        };
+    }
     try {
         const res = await fetch(url, options);
         if (!res.ok) {
@@ -1228,6 +1264,15 @@ function injectStyle() {
         }
         schemeElement.textContent += "}";
 
+        let svgStyleElement = iframe.contentDocument.getElementById("madChanView-svgStyle");
+        if (!svgStyleElement) {
+            svgStyleElement = document.createElement("style");
+            svgStyleElement.id = "madChanView-svgStyle";
+            iframe.contentDocument.head.insertBefore(svgStyleElement, iframe.contentDocument.head.firstChild);
+        }
+        const parentStyleElement = parent.document.getElementById("style");
+        svgStyleElement.textContent = parentStyleElement.textContent;
+
         let styleElement = iframe.contentDocument.getElementById("madChanView-style");
         if (!styleElement) {
             styleElement = document.createElement("style");
@@ -1245,15 +1290,6 @@ function injectStyle() {
             baseStylesheetLocal = baseStylesheetLocal.replace("a/*not-if-link*/", "null");
         }
         styleElement.textContent = baseStylesheetLocal + themeStylesheet;
-
-        let svgStyleElement = iframe.contentDocument.getElementById("madChanView-svgStyle");
-        if (!svgStyleElement) {
-            svgStyleElement = document.createElement("style");
-            svgStyleElement.id = "madChanView-svgStyle";
-            iframe.contentDocument.head.insertBefore(svgStyleElement, iframe.contentDocument.head.firstChild);
-        }
-        const parentStyleElement = parent.document.getElementById("style");
-        svgStyleElement.textContent = parentStyleElement.textContent;
     }
 }
 
@@ -1470,7 +1506,7 @@ iframe.addEventListener('load', function () {
         statusZone.style.backgroundImage = "url(images/zone_local.png)";
         statusZoneText.textContent = "My Computer";
     }
-    if (url.startsWith("https://") && !loadedWithProxy) {
+    if (urlbar.value.startsWith("https://") && !loadedWithProxy) {
         sslIndicator.dataset.secure = true;
     } else {
         delete sslIndicator.dataset.secure;

@@ -28,6 +28,13 @@
 
     /* Fonts */
     --cjk-fontlink: "MS UI Gothic", Gulim, SimSun, PMingLiU;
+
+    /* SVGs */
+    --scroll-up: url("data:image/svg+xml,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20fill-rule%3D%22evenodd%22%20clip-rule%3D%22evenodd%22%20d%3D%22M8%206H7V7H6V8H5V9H4V10H11V9H10V8H9V7H8V6Z%22%20fill%3D%22%20%23000000%22%2F%3E%3C%2Fsvg%3E");
+    --scroll-down: url("data:image/svg+xml,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20fill-rule%3D%22evenodd%22%20clip-rule%3D%22evenodd%22%20d%3D%22M8%206H4V7H5V8H6V9H7V10H8V9H9V8H10V7H11V6Z%22%20fill%3D%22%20%23000000%22%2F%3E%3C%2Fsvg%3E");
+    --scroll-left: url("data:image/svg+xml,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20fill-rule%3D%22evenodd%22%20clip-rule%3D%22evenodd%22%20d%3D%22M6%204H8V5H7V6H6V7H5V8H6V9H7V10H8V11H9V4Z%22%20fill%3D%22%20%23000000%22%2F%3E%3C%2Fsvg%3E");
+    --scroll-right: url("data:image/svg+xml,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20fill-rule%3D%22evenodd%22%20clip-rule%3D%22evenodd%22%20d%3D%22M10%204H6V11H7V10H8V9H9V8H10V7H9V6H8V5H7V4Z%22%20fill%3D%22%20%23000000%22%2F%3E%3C%2Fsvg%3E");
+    --scroll-track: url("data:image/svg+xml,%3Csvg%20width%3D%222%22%20height%3D%222%22%20viewBox%3D%220%200%202%202%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20fill-rule%3D%22evenodd%22%20clip-rule%3D%22evenodd%22%20d%3D%22M1%200H0V1H1V2H2V1H1V0Z%22%20fill%3D%22%20%23c0c0c0%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20fill-rule%3D%22evenodd%22%20clip-rule%3D%22evenodd%22%20d%3D%22M2%200H1V1H0V2H1V1H2V0Z%22%20fill%3D%22%20%23ffffff%22%2F%3E%3C%2Fsvg%3E");
 }
 
 body/*not-if-bgcolor*/ {
@@ -110,7 +117,6 @@ button, input, label, li[role=tab], select, table, textarea {
 [type="tel"],
 [type="number"],
 [type="search"],
-select,
 textarea {
   padding: 3px 4px;
   color: var(--window-text);

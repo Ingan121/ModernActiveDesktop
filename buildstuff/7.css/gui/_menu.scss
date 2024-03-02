@@ -317,7 +317,6 @@ body:not(#madChanView) .menu, .menus {
 }
 
 .contextMenuBg {
-  min-width: 120px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -346,10 +345,6 @@ body:not(#madChanView) .menu, .menus {
     margin-left: 29px;
     width: calc(100% - 27px);
   }
-}
-
-.contextMenu {
-  min-width: 118px;
 }
 
 .contextMenuItem {
@@ -417,6 +412,16 @@ body:not(#madChanView) .menu, .menus {
       content: "";
     }
   }
+  &.closeIcon::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 8px;
+    transform: translateY(-50%);
+    background-image: url('icon/cm-close.png');
+    width: 7px;
+    height: 6px;
+  }
   &.activeStyle::before {
     content: "";
     left: 8px;
@@ -448,7 +453,6 @@ body:not([data-no-underline]) .contextMenuItem u {
 }
 
 .menu-popup {
-  min-width: 120px;
   margin: 0;
   padding: 0;
   list-style: none;

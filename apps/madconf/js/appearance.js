@@ -50,6 +50,7 @@ async function main() {
     const outlineModeChkBox = document.getElementById("outlineModeChkBox");
     const underlineChkBox = document.getElementById("underlineChkBox");
     const transparencyChkBox = document.getElementById("transparencyChkBox");
+    const animChkBox = document.getElementById("animChkBox");
     const effectsBtn = document.getElementById("effectsBtn");
 
     const itemMappings = {
@@ -218,9 +219,13 @@ async function main() {
             secondColorPickerColor.style.backgroundColor = "#4580c4";
             transparencyChkBox.disabled = false;
             transparencyChkBox.checked = true;
+            animChkBox.disabled = false;
+            animChkBox.checked = true;
         } else {
             transparencyChkBox.disabled = true;
             transparencyChkBox.checked = false;
+            animChkBox.disabled = true;
+            animChkBox.checked = false;
         }
     });
 
@@ -519,11 +524,7 @@ async function main() {
     });
 
     transparencyChkBox.addEventListener("change", function () {
-        if (this.checked) {
-            preview.contentWindow.changeAeroGlass(false);
-        } else {
-            preview.contentWindow.changeAeroGlass(true);
-        }
+        preview.contentWindow.changeAeroGlass(this.checked);
     });
 
     effectsBtn.addEventListener("click", function () {
@@ -605,10 +606,17 @@ async function main() {
             } else {
                 localStorage.madesktopAeroNoGlass = true;
             }
+            if (animChkBox.checked) {
+                delete localStorage.madesktopNoWinAnim;
+            } else {
+                localStorage.madesktopNoWinAnim = true;
+            }
         } else {
             delete localStorage.madesktopAeroNoGlass;
+            delete localStorage.madesktopNoWinAnim;
         }
         parent.changeAeroGlass(localStorage.madesktopAeroNoGlass);
+        parent.changeWinAnim(localStorage.madesktopNoWinAnim);
 
         if (selector.disabled && schemeSelector.value !== "sys") {
             parent.adjustAllElements(parseInt(scheme["extra-title-height"]) || 0, parseInt(scheme["extra-border-size"]) || 0, parseInt(scheme["extra-border-bottom"]) || 0);
@@ -634,6 +642,8 @@ async function main() {
                 secondColorPickerColor.style.backgroundColor = localStorage.madesktopAeroColor || "#4580c4";
                 transparencyChkBox.disabled = false;
                 transparencyChkBox.checked = !localStorage.madesktopAeroNoGlass;
+                animChkBox.disabled = false;
+                animChkBox.checked = !localStorage.madesktopNoWinAnim;
             }
         }
         schemeName = schemeSelector.options[schemeSelector.selectedIndex].textContent;

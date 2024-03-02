@@ -34,6 +34,7 @@
     * It no longer re-opens when opening a new window
 * Made various UI elements look more accurate
     * Added ClientEdge in various places
+* Windows now can be resized diagonally
 * Added support for Firefox and iOS Safari, as well as touch screens
 * Support menu navigation with keyboard (when keyboard input is available)
 * Moving mouse over the menu while playing the animation effect will cancel the animation

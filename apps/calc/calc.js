@@ -43,13 +43,17 @@ let lastOper = '';
 let lastOperNum = 0;
 let preCeNum = '';
 let memNum = 0;
+let copying = false;
 
 madDeskMover.menu = new MadMenu(menuBar, ['edit', 'view', 'help']);
 
 editMenuItem.addEventListener('click', function () { // Copy button
+    copying = true;
     calcDisplay.select();
     document.execCommand('copy');
     calcDisplay.selectionStart = calcDisplay.selectionEnd;
+    copying = false;
+    calcDisplay.blur();
 });
 
 helpMenuItem.addEventListener('click', function () { // About Calculator button
@@ -64,7 +68,9 @@ for (const button of buttons) {
 }
 
 calcDisplay.addEventListener('focus', function () {
-    calcDisplay.blur();
+    if (!copying) {
+        calcDisplay.blur();
+    }
 });
 
 backspace.addEventListener('click', function () {

@@ -24,4 +24,6 @@ if (parent !== window) {
             debugReady = false;
         }
     }
+} else {
+    document.body.dataset.notMad = true;
 }

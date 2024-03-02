@@ -90,6 +90,7 @@ if (localStorage.madesktopBgHtmlSrc) bgHtmlView.src = localStorage.madesktopBgHt
 changeColorScheme(localStorage.madesktopColorScheme || "98");
 changeAeroColor(localStorage.madesktopAeroColor);
 changeAeroGlass(localStorage.madesktopAeroNoGlass);
+changeWinAnim(localStorage.madesktopNoWinAnim);
 changeScale(localStorage.madesktopScaleFactor);
 if (localStorage.madesktopDebugMode) activateDebugMode();
 if (localStorage.madesktopDebugLog) toggleDebugLog();
@@ -296,8 +297,9 @@ window.wallpaperPropertyListener = {
             isStartup = true;
         }
 
-        if (properties.bgcolor && !isStartup) {
+        if (properties.bgcolor && !isStartup && localStorage.madesktopBgWeColor !== properties.bgcolor.value) {
             changeBgColor(parseWallEngColorProp(properties.bgcolor.value));
+            localStorage.madesktopBgWeColor = properties.bgcolor.value;
         }
         if (properties.bgimg) {
             if (properties.bgimg.value) {
@@ -554,6 +556,18 @@ function changeAeroGlass(noGlass) {
     }
 }
 
+function changeWinAnim(noAnim) {
+    if (localStorage.madesktopColorScheme === "7css4mad") {
+        if (noAnim) {
+            document.body.dataset.noAnim = true;
+        } else {
+            delete document.body.dataset.noAnim;
+        }
+    } else {
+        delete document.body.dataset.noAnim;
+    }
+}
+
 // Change the scaling factor
 function changeScale(scale) {
     scaleFactor = scale || 1;
@@ -722,16 +736,6 @@ function changeSoundScheme(scheme) {
             soundScheme.navStart = new Audio("sounds/Aero/Windows Navigation Start.wav");
             break;
     }
-}
-
-// Change the 'open with' option of the system plugin, by sending a POST request to the system plugin
-function updateSysplugOpenOpt(option) {
-    fetch("http://localhost:3031/config", { method: "POST", body: `{"openWith": ${option}}` })
-        .catch(error => {
-            madAlert("Failed to change the open option because system plugin is not running. Please install it first then try again.", function () {
-                openWindow("SysplugSetupGuide.md", true);
-            }, "warning");
-        });
 }
 
 // Convert rgb(red, green, blue) to #rrggbb
@@ -1025,6 +1029,9 @@ function openExternalExternally(url, fullscreen, noInternal = false) {
         if (fullscreen) {
             headers["X-Fullscreen"] = "true";
         }
+        if (localStorage.madesktopLinkOpenMode === "2") {
+            headers["X-Use-ChannelViewer"] = "true";
+        }
         fetch("http://localhost:3031/open", { method: "POST", body: url, headers })
             .then(response => response.text())
             .then(responseText => {
@@ -1289,7 +1296,7 @@ async function flashElement(elem, isContextMenu) {
 }
 
 async function waitForAnim(elem) {
-    if (elem.style.animation.includes("none")) return;
+    if (elem.style.animationName === "none") return;
     return new Promise(resolve => {
         elem.addEventListener('animationend', function () {
             resolve();
@@ -1332,7 +1339,7 @@ async function madAlert(msg, callback, icon = "info") {
             }
         }
         function close() {
-            msgboxBg.style.display = "none";
+            hideDialog();
             document.removeEventListener('keypress', keypress);
             document.removeEventListener('keyup', keyup);
             msgboxBtn1.removeEventListener('click', close);
@@ -1375,18 +1382,17 @@ async function madConfirm(msg, callback) {
             }
         }
         function ok() {
-            msgboxBg.style.display = "none";
             removeEvents();
             if (callback) callback(true);
             resolve(true);
         }
         function close() {
-            msgboxBg.style.display = "none";
             removeEvents();
             if (callback) callback(false);
             resolve(false);
         }
         function removeEvents() {
+            hideDialog();
             document.removeEventListener('keypress', keypress);
             document.removeEventListener('keyup', keyup);
             msgboxBtn1.removeEventListener('click', ok);
@@ -1433,18 +1439,17 @@ async function madPrompt(msg, callback, hint, text) {
             }
         }
         function ok() {
-            msgboxBg.style.display = "none";
             removeEvents();
             if (callback) callback(msgboxInput.value);
             resolve(msgboxInput.value);
         }
         function close() {
-            msgboxBg.style.display = "none";
             removeEvents();
             if (callback) callback(null);
             resolve(null);
         }
         function removeEvents() {
+            hideDialog();
             document.removeEventListener('keypress', keypress);
             document.removeEventListener('keyup', keyup);
             msgboxBtn1.removeEventListener('click', ok);
@@ -1469,6 +1474,13 @@ function showDialog() {
         msgboxLoopCount = 0;
     }, 5000);
 
+    if (localStorage.madesktopColorScheme === "7css4mad" && !localStorage.madesktopNoWinAnim) {
+        msgbox.style.animation = "0.22s aeroWinOpen linear";
+        msgbox.addEventListener('animationend', function () {
+            msgbox.style.animation = "";
+        }, { once: true });
+    }
+
     if (!localStorage.madesktopNoDeactivate) {
         deskMovers[activeWindow].windowTitlebar.classList.add("inactive");
     }
@@ -1476,6 +1488,18 @@ function showDialog() {
     msgbox.style.top = (vHeight - msgbox.offsetHeight) / 2 + "px";
     msgbox.style.left = (vWidth - msgbox.offsetWidth) / 2 + "px";
     msgboxBtn1.focus();
+}
+
+function hideDialog() {
+    if (localStorage.madesktopColorScheme === "7css4mad" && !localStorage.madesktopNoWinAnim) {
+        msgbox.style.animation = "0.2s aeroWinClose linear";
+        msgbox.addEventListener('animationend', function () {
+            msgbox.style.animation = "";
+            msgboxBg.style.display = "none";
+        }, { once: true });
+    } else {
+        msgboxBg.style.display = "none";
+    }
 }
 
 function flashDialog() {

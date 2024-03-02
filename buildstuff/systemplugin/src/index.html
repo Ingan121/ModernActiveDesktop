@@ -19,11 +19,6 @@
             <input id="98rad" type="radio" name="radgroup" value="98" onclick="config.theme = this.value" checked><label class="block" for="98rad">WinClassic</label>
             <input id="bsrad" type="radio" name="radgroup" value="bootstrap" onclick="config.theme = this.value"><label class="block" for="bsrad">Bootstrap (but why?)</label>
         </form>
-        <select id="openWith" onchange="config.openWith = this.selectedIndex">
-            <option>Classic style channel viewer</option>
-            <option>Classic style channel viewer (fullscreen)</option>
-            <option>System default browser</option>
-        </select>
     </div>
     <script>
     const fs = require('fs');
@@ -41,8 +36,7 @@
         return true;
       }
     });
-    
-    document.getElementById('openWith').selectedIndex = config.openWith;
+
     document.getElementById('bsrad').checked = config.theme === 'bootstrap';
 
     document.onkeydown = function (e) {

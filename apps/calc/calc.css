@@ -9,6 +9,7 @@ html, body {
     overflow: hidden;
     user-select: none;
     --grouped-element-spacing: 3px;
+    background-color: var(--button-face);
 }
 
 #calcDisplay {

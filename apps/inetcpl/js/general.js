@@ -45,11 +45,6 @@ window.apply = function () {
     localStorage.madesktopChanViewHome = homePageInput.value;
 
     localStorage.madesktopLinkOpenMode = openOptSelector.selectedIndex;
-    if (openOptSelector.selectedIndex === 2) {
-        parent.updateSysplugOpenOpt(0);
-    } else if (localStorage.sysplugIntegration) {
-        parent.updateSysplugOpenOpt(2);
-    }
 
     if (faviconChkBox.checked) {
         localStorage.madesktopChanViewShowFavicon = true;

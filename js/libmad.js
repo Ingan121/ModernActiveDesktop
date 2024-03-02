@@ -10,24 +10,48 @@
         const noop = () => {};
         window.madDeskMover = {
             config: {
-                xPos: window.screenX,
-                yPos: window.screenY,
-                width: window.outerWidth,
-                height: window.outerHeight,
                 src: location.href
             },
             isFullscreen: false
         };
+        Object.defineProperties(window.madDeskMover.config, {
+            xPos: {
+                get: function () {
+                    return window.screenX;
+                }
+            },
+            yPos: {
+                get: function () {
+                    return window.screenY;
+                }
+            },
+            width: {
+                get: function () {
+                    return window.outerWidth;
+                }
+            },
+            height: {
+                get: function () {
+                    return window.outerHeight;
+                }
+            } 
+        });
 
         window.madScaleFactor = 1;
         window.madRunningMode = 0;
-        window.madOpenWindow = function (url, temp, optionsOrWidth, heightArg, style, centeredArg, topArg, leftArg) {
+        window.madOpenWindow = function (url, temp, optionsOrWidth = {}, heightArg, style, centeredArg, topArg, leftArg) {
             if (url.startsWith("apps/")) {
                 url = "../../" + url;
             } else if (!url.endsWith(".html")) {
                 url = "../../docs/index.html?src=" + url;
+                optionsOrWidth = {
+                    width: optionsOrWidth.width || 800,
+                    height: optionsOrWidth.height || 600,
+                    top: optionsOrWidth.top || 200,
+                    left: optionsOrWidth.left || 250
+                }
             }
-            const width = typeof optionsOrWidth === "object" ? optionsOrWidth.width : optionsOrWidth;
+            const width = optionsOrWidth.width || optionsOrWidth;
             const height = optionsOrWidth.height || heightArg;
             const centered = optionsOrWidth.centered || centeredArg;
             const top = centered ? (screen.availHeight - parseInt(height)) / 2 : (optionsOrWidth.top || topArg);
@@ -45,11 +69,17 @@
             if (left) {
                 specs += `left=${left},`;
             }
-            window.open(url, "_blank", specs);
+            const newWnd = window.open(url, "_blank", specs);
+            return {
+                windowElement: {
+                    contentWindow: newWnd,
+                    addEventListener: newWnd.addEventListener.bind(newWnd),
+                }
+            }
         }
         window.madOpenConfig = function (page) {
             if (page === "about") {
-                madOpenWindow(`apps/madconf/${page}.html`, false, 398, 423);
+                madOpenWindow(`apps/madconf/about.html`, false, 398, 423, "wnd", false, 200, 250);
             } else if (parent === window) {
                 alert("This page cannot be opened when not running in ModernActiveDesktop. Please open it from ModernActiveDesktop.");
             } else {

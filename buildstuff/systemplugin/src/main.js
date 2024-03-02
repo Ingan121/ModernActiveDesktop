@@ -40,7 +40,7 @@ const configPath = app.getPath('userData') + '/config.json';
 const tempFilePath = app.getPath('temp') + '/madsp-uploaded.dat';
 
 if (!fs.existsSync(configPath)) { // Setup initial config
-  fs.writeFileSync(configPath, '{"theme":"98", "openWith":1}');
+  fs.writeFileSync(configPath, '{"theme":"98"}');
 }
 
 const config = new Proxy({}, {
@@ -183,7 +183,7 @@ function processNewWindow(childWindow, details) {
   const searchParams = new URL(url).searchParams;
   pageUrl = searchParams.get('page');
   
-  if (config.openWith === 1 || searchParams.get('fullscreen')) {
+  if (searchParams.get('fullscreen')) {
     childWindow.webContents.executeJavaScript('document.body.requestFullscreen()', true);
   }
 
@@ -431,7 +431,7 @@ function onRequest(req, res) {
             body = url.pathToFileURL(path.normalize(`${__dirname}/../../../${body}`)).toString();
           }
 
-          if (config.openWith < 2) {
+          if (req.headers['x-use-channelviewer']) {
             if (req.headers['x-fullscreen']) {
               mainWindow.webContents.executeJavaScript(`openPage("${body}", true);`);
             } else {
@@ -478,23 +478,6 @@ function onRequest(req, res) {
         res.writeHead(405, {'Content-Type': 'text/html'});
         res.end('<h1>405 Method Not Allowed</h1><p>Usage: send a POST request with a file in the request body</p>')
       }
-      break;
-
-    case '/config':
-      if (req.method === 'POST') {
-        processPost(req, res, function (body) {
-          const reqParse = JSON.parse(body);
-          config.openWith = reqParse.openWith;
-        });
-      } else {
-        res.writeHead(405, {'Content-Type': 'text/html'});
-        res.end('<h1>405 Method Not Allowed</h1><p>Usage: send a POST request with a JSON with the following format:<br><pre>{"openWith": number}</pre><br>0: Classic style channel viewer<br>1: Classic style channel viewer (fullscreen)<br>2: System default browser</p>')
-      }
-      break;
-
-    case '/config/openwith':
-      res.writeHead(200, {'Content-Type':'application/json'});
-      res.end(JSON.stringify({openWith: config.openWith}));
       break;
 
     case '/systemscheme':
@@ -568,8 +551,6 @@ function onRequest(req, res) {
       <p>Available pages:<br>
       <a href="/open">/open</a><br>
       <a href="/save">/save</a><br>
-      <a href="/config">/config</a><br>
-      <a href="/config/openwith">/config/openwith</a><br>
       <a href="/systemscheme">/systemscheme</a><br>
       <a href="/playpause">/playpause</a><br>
       <a href="/stop">/stop</a><br>

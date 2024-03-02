@@ -4,10 +4,9 @@
 
 'use strict';
 
-const favorites = JSON.parse(localStorage.madesktopChanViewFavorites || "[[\"https://www.ingan121.com/\",\"Ingan121's Webpage!\"],[\"https://github.com/Ingan121/ModernActiveDesktop\",\"ModernActiveDesktop GitHub\"]]");
 const dummyItem = document.getElementById('dummyFavoriteItem');
 
-for (const favorite of favorites) {
+for (const favorite of parent.favorites) {
     const newItem = dummyItem.cloneNode(true);
     newItem.id = '';
     newItem.querySelector('.FavoriteItemText').textContent = favorite[1];

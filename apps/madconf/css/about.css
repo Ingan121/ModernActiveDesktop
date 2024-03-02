@@ -1,5 +1,9 @@
 @import 'common.css';
 
+body[data-not-mad] li:not([aria-selected]) {
+    display: none;
+}
+
 #title {
     font-size: 20px;
     font-weight: bold;

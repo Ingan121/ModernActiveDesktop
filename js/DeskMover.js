@@ -377,7 +377,15 @@ class DeskMover {
         } else {
             if (this.numStr !== "" || reinit) {
                 // Assign default values
-                this.changeWndStyle("wnd");
+                this.changeWndStyle(style || "wnd");
+
+                if (localStorage.madesktopColorScheme === "7css4mad" && !localStorage.madesktopNoWinAnim && this.config.style === "wnd" && !reinit) {
+                    this.windowContainer.style.animation = "0.22s aeroWinOpen linear";
+                    this.windowContainer.addEventListener("animationend", () => {
+                        this.windowContainer.style.animation = "";
+                    }, {once: true});
+                }
+
                 let url = "placeholder.html";
                 let defaultLeft = window.vWidth - (parseInt(localStorage.madesktopChanViewRightMargin) || 0) - 600 + 'px';
                 let defaultTop = '200px';
@@ -433,7 +441,11 @@ class DeskMover {
         /* Init complete */
     }
 
-    closeWindow() {
+    async closeWindow() {
+        if (localStorage.madesktopColorScheme === "7css4mad" && !localStorage.madesktopNoWinAnim && this.config.style === "wnd") {
+            this.windowContainer.style.animation = "0.2s aeroWinClose linear";
+            await waitForAnim(this.windowContainer);
+        }
         if (this.numStr !== "") {
             this.windowContainer.style.display = "none";
             this.windowContainer.innerHTML = "";
@@ -587,7 +599,7 @@ class DeskMover {
     }
 
     openConfMenu() {
-        if (this.confMenuBg.style.display === "block") {
+        if (this.confMenuBg.style.display === "block" || this.contextMenuBg.style.display !== "block") {
             return;
         }
         switch (localStorage.madesktopCmAnimation) {
@@ -797,7 +809,14 @@ class DeskMover {
             this.dropdown.appendChild(item);
             optionCnt++;
         }
-        
+
+        if (this.dropdownBg.style.animationName !== "none") {
+            this.dropdownBg.style.pointerEvents = "none";
+            this.dropdownBg.addEventListener("animationend", () => {
+                this.dropdownBg.style.pointerEvents = "";
+            }, {once: true});
+        }
+
         // Set these first to ensure the item height is retrieved correctly
         this.dropdownBg.style.display = "block";
         
@@ -1392,7 +1411,7 @@ class DeskMover {
                 if (this.isVisualizer) {
                     window.visDeskMover = null;
                 }
-                deskMovers[this.numStr || 0] = new DeskMover(this.windowContainer, this.numStr, false, {}, true);
+                deskMovers[this.numStr || 0] = new DeskMover(this.windowContainer, this.numStr, undefined, false, {}, true);
             }
         });
     }
