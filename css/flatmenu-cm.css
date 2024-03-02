@@ -17,6 +17,7 @@ body[data-cm-shadow] .contextMenuBg {
     border: none !important;
     box-shadow: var(--button-shadow) -1px -1px inset, var(--button-shadow) 1px 1px inset;
     background-color: var(--menu) !important;
+    padding: 3px;
 }
 
 body[data-cm-shadow] .menu-popup {

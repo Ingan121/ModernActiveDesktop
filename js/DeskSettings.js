@@ -1781,15 +1781,15 @@ window.addEventListener('load', function () {
         document.documentElement.style.setProperty('--hilight-inverted', 'var(--hilight-text)');
     }
     adjustAllElements();
-});
 
-if (runningMode === WE) {
-    setTimeout(function () {
-        if (visDeskMover) {
-            visDeskMover.windowElement.contentWindow.setupListeners();
-        }
-    }, 1000);
-}
+    if (runningMode === WE) {
+        setTimeout(function () {
+            if (visDeskMover) {
+                visDeskMover.windowElement.contentWindow.setupListeners();
+            }
+        }, 1000);
+    }
+});
 
 // Prevent scrolling when a partly off-screen deskMover gets focus, its iframe loads, etc.
 document.addEventListener('scroll', function () {

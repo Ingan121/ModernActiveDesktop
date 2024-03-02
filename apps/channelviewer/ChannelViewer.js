@@ -341,7 +341,7 @@ toolbarsMenuItems[6].addEventListener("click", function () { // Go Button button
     }
 });
 
-historyMenuBg.addEventListener("beforemenuclose", function () {
+historyMenuBg.addEventListener("aftermenuclose", function () {
     historyMenu.innerHTML = "";
     delete backButton.dataset.hover;
     delete backExpandButton.dataset.active;

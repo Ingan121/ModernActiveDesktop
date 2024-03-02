@@ -18,7 +18,7 @@ class MadMenu {
         this.shouldNotCloseSubmenu = false;
         this.menuHierarchy = {};
         this.beforeMenuOpenEvent = new Event('beforemenuopen');
-        this.beforeMenuCloseEvent = new Event('beforemenuclose');
+        this.afterMenuCloseEvent = new Event('aftermenuclose');
 
         for (const menuName of menuOrder) {
             this.menuHierarchy[menuName] = [];
@@ -256,7 +256,7 @@ class MadMenu {
         let parentMenuBg;
         let parentMenuItem;
 
-        menuBg.dispatchEvent(this.beforeMenuCloseEvent);
+        menuBg.dispatchEvent(this.afterMenuCloseEvent);
 
         if (!standalone) {
             if (isSubmenu) {

@@ -4,10 +4,12 @@
 
 'use strict';
 
-if (parent === window) {
-    alert("This page is not meant to be opened directly. Please open it from ModernActiveDesktop.");
-} else if (!frameElement) {
-    alert("MADConf is being cross-origin restricted. Please run ModernActiveDesktop with a web server.");
+if (!location.href.includes("about.html")) {
+    if (parent === window) {
+        alert("This page is not meant to be opened directly. Please open it from ModernActiveDesktop.");
+    } else if (!frameElement) {
+        alert("MADConf is being cross-origin restricted. Please run ModernActiveDesktop with a web server.");
+    }
 }
 
 parent.confDeskMover = madDeskMover;

@@ -10,32 +10,51 @@
         const noop = () => {};
         window.madDeskMover = {
             config: {
-                xPos: screen.screenX,
-                yPos: screen.screenY,
+                xPos: window.screenX,
+                yPos: window.screenY,
                 width: window.outerWidth,
                 height: window.outerHeight,
                 src: location.href
-            }
+            },
+            isFullscreen: false
         };
-        Object.defineProperties(window.madDeskMover, {
-            isFullscreen: {
-                get: function () {
-                    return !!document.fullscreenElement;
-                }
-            }
-        });
+
         window.madScaleFactor = 1;
         window.madRunningMode = 0;
-        window.madOpenWindow = function (url, temp, width, height, style) {
+        window.madOpenWindow = function (url, temp, optionsOrWidth, heightArg, style, centeredArg, topArg, leftArg) {
             if (url.startsWith("apps/")) {
                 url = "../../" + url;
             } else if (!url.endsWith(".html")) {
                 url = "../../docs/index.html?src=" + url;
             }
-            window.open(url, "_blank", `width=${width},height=${height}`);
+            const width = typeof optionsOrWidth === "object" ? optionsOrWidth.width : optionsOrWidth;
+            const height = optionsOrWidth.height || heightArg;
+            const centered = optionsOrWidth.centered || centeredArg;
+            const top = centered ? (screen.availHeight - parseInt(height)) / 2 : (optionsOrWidth.top || topArg);
+            const left = centered ? (screen.availWidth - parseInt(width)) / 2 : (optionsOrWidth.left || leftArg);
+            let specs = "";
+            if (width) {
+                specs += `width=${width},`;
+            }
+            if (height) {
+                specs += `height=${height},`;
+            }
+            if (top) {
+                specs += `top=${top},`;
+            }
+            if (left) {
+                specs += `left=${left},`;
+            }
+            window.open(url, "_blank", specs);
         }
         window.madOpenConfig = function (page) {
-            madOpenWindow(`apps/madconf/${page}.html`, false, 398, 423);
+            if (page === "about") {
+                madOpenWindow(`apps/madconf/${page}.html`, false, 398, 423);
+            } else if (parent === window) {
+                alert("This page cannot be opened when not running in ModernActiveDesktop. Please open it from ModernActiveDesktop.");
+            } else {
+                alert("This page cannot be opened when cross-origin restricted. Please run ModernActiveDesktop with a web server.");
+            }
         }
         window.madOpenExternal = function (url) {
             window.open(url, "_blank");
@@ -75,6 +94,12 @@
                 }
                 resolve(result);
             });
+        }
+        window.madAnnounce = function (type) {
+            window.postMessage({ type }, "*");
+            if (window.opener) {
+                window.opener.postMessage({ type }, "*");
+            }
         }
         window.madCloseWindow = window.close;
         window.madResizeTo = window.resizeTo;
@@ -317,6 +342,9 @@
                         return this.selectedIndexReal;
                     },
                     set: function (value) {
+                        if (isNaN(value)) {
+                            return;
+                        }
                         this.selectedIndexReal = value;
                         for (const option of this.options) {
                             option.selected = false;
