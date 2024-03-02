@@ -815,16 +815,22 @@ $(menu_bar.element).on("default-info", () => {
 });
 
 // Hidden in a menu, these GIFs are not as obtrusive even though they can't be dismissed
-const theme_updated_period = 20 * day;
-const theme_new_period = 40 * day;
-if (Date.now() < Date.parse("2024-02-22") + theme_new_period) {
-	$("[role=menuitem][aria-label*='Modern Dark'] .menu-item-shortcut").append("<img src='images/new2.gif' alt='New!'/>");
-}
-if (Date.now() < Date.parse("2024-02-22") + theme_updated_period) {
-	$("[role=menuitem][aria-label*='Modern Light'] .menu-item-shortcut").append("<img src='images/updated.gif' alt='Updated!'/>");
-	$("[role=menuitem][aria-label*='Classic Dark'] .menu-item-shortcut").append("<img src='images/updated.gif' alt='Updated!'/>");
-	$("[role=menuitem][aria-label*='Occult'] .menu-item-shortcut").append("<img src='images/updated.gif' alt='Updated!'/>");
-}
+// const theme_updated_period = 20 * day;
+// const theme_new_period = 40 * day;
+// const theme_soon_period = 40 * day;
+// if (Date.now() < Date.parse("2024-02-22") + theme_new_period) {
+// 	$("[role=menuitem][aria-label*='Modern Dark'] .menu-item-shortcut").append("<img src='images/new2.gif' alt='New!'/>");
+// }
+// if (Date.now() < Date.parse("2024-02-24") + theme_soon_period) {
+// 	$("[role=menuitem][aria-label*='Bubblegum'] .menu-item-shortcut").append("<img src='images/soon-twist-anim.gif' alt='Coming Soon!' class='too-big-soon-gif'/>");
+// 	// $("[role=menuitem][aria-label*='Retro Futurist'] .menu-item-shortcut").append("<img src='images/soon.gif' alt='Coming Soon!'/>");
+// 	// $("[role=menuitem][aria-label*='Picnic'] .menu-item-shortcut").append("<img src='images/soon.gif' alt='Coming Soon!'/>");
+// }
+// if (Date.now() < Date.parse("2024-02-22") + theme_updated_period) {
+// 	$("[role=menuitem][aria-label*='Modern Light'] .menu-item-shortcut").append("<img src='images/updated.gif' alt='Updated!'/>");
+// 	$("[role=menuitem][aria-label*='Classic Dark'] .menu-item-shortcut").append("<img src='images/updated.gif' alt='Updated!'/>");
+// 	$("[role=menuitem][aria-label*='Occult'] .menu-item-shortcut").append("<img src='images/updated.gif' alt='Updated!'/>");
+// }
 
 // </menu bar>
 
