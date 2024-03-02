@@ -66,10 +66,8 @@ const ChooserDiv = (
 
 	// @TODO: single listener for all divs
 	const on_zoom_etc = () => {
-		const modern = get_theme() === "modern.css" || get_theme() === "modern-dark.css" || get_theme() === "bubblegum.css";
-		const use_svg = modern ?
-			// only use raster when screen pixels line up with image pixels exactly
-			(window.devicePixelRatio !== 1) :
+		const use_svg = localStorage.madesktopColorScheme === "7css4mad" ?
+			false :
 			// with nearest neighbor scaling, favor raster at larger integer sizes as well, for retro look
 			(window.devicePixelRatio >= 3 || (window.devicePixelRatio % 1) !== 0)
 		div.classList.toggle("use-svg", use_svg);
@@ -83,7 +81,7 @@ const ChooserDiv = (
 	if (div._on_zoom_etc) { // condition is needed, otherwise it will remove all listeners! (leading to only the last graphic being updated when zooming)
 		$G.off("theme-load resize", div._on_zoom_etc);
 	}
-	$G.on("theme-load resize", on_zoom_etc);
+	$G.on("theme-load resize message", on_zoom_etc);
 	div._on_zoom_etc = on_zoom_etc;
 	on_zoom_etc();
 

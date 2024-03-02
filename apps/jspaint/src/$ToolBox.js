@@ -24,9 +24,8 @@
 			const update_css = () => {
 				const use_svg = !theme_dev_blob_url && (
 					(
-						get_theme() === "modern.css" || get_theme() === "modern-dark.css" ?
-							// only use raster when screen pixels line up with image pixels exactly
-							(window.devicePixelRatio !== 1) :
+						localStorage.madesktopColorScheme === "7css4mad" ?
+							false :
 							// with nearest neighbor scaling, favor raster at larger integer sizes as well, for retro look
 							(window.devicePixelRatio >= 3 || (window.devicePixelRatio % 1) !== 0)
 					) ||
@@ -45,7 +44,7 @@
 				$icon.toggleClass("use-svg", use_svg);
 			};
 			update_css();
-			$G.on("theme-load resize", update_css);
+			$G.on("theme-load resize message", update_css);
 
 			$b.on("click", e => {
 				if (e.shiftKey || e.ctrlKey) {
