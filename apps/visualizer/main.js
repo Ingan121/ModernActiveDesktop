@@ -86,7 +86,9 @@ let mouseOverMenu = false;
 let mediaIntegrationAvailable = isWin10;
 
 let lastAlbumArt = null;
-let lastMusic = null;
+let lastMusic = {
+    title: ''
+};
 let schemeBarColor = null;
 let schemeTopColor = null;
 

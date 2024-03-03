@@ -507,8 +507,9 @@ body:not(#madChanView) .menu, .menus {
         content: url('../apps/channelviewer/images/xp/Back.png');
     }
 
-    #back-button:hover:not([data-disabled]) .toolbarButtonImage,
-    #back-button[data-hover]:not([data-disabled]) .toolbarButtonImage {
+    #back-button:hover .toolbarButtonImage,
+    #back-button[data-hover] .toolbarButtonImage,
+    #back-button[data-disabled] .toolbarButtonImage {
         content: url('../apps/channelviewer/images/xp/Back_hover.png');
     }
 
@@ -516,8 +517,9 @@ body:not(#madChanView) .menu, .menus {
         content: url('../apps/channelviewer/images/xp/Forward.png');
     }
 
-    #forward-button:hover:not([data-disabled]) .toolbarButtonImage,
-    #forward-button[data-hover]:not([data-disabled]) .toolbarButtonImage {
+    #forward-button:hover .toolbarButtonImage,
+    #forward-button[data-hover] .toolbarButtonImage,
+    #forward-button[data-disabled] .toolbarButtonImage {
         content: url('../apps/channelviewer/images/xp/Forward_hover.png');
     }
 

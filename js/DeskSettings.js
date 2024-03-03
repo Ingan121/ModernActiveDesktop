@@ -1624,10 +1624,7 @@ function playSound(sound) {
 
 function reset(res) {
     if (typeof res === "undefined" || res) {
-        let msg = "This will remove every configuration change of ModernActiveDesktop you made. Are you sure you want to continue?";
-        if (runningMode === WE) {
-            msg += "<br>Do note that this won't reset the Wallpaper Engine properties panel, and you will need to unload and reload a video wallpaper if you have one set.";
-        }
+        const msg = "This will remove every configuration change of ModernActiveDesktop you made. Are you sure you want to continue?";
         madConfirm(msg, function (res) {
             if (res) {
                 location.replace("confmgr.html?action=reset");

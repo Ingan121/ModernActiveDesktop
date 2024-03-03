@@ -229,15 +229,17 @@ class MadMenu {
             let top = '';
             let left = 0;
             if (isSubmenu) {
-                top = parentMenuBg.offsetTop + parentMenuItem.offsetTop + 'px';
+                top = parentMenuBg.offsetTop + parentMenuItem.offsetTop;
                 left = parentMenuBg.offsetLeft + parentMenuBg.offsetWidth - 6;
             } else {
+                top = menuBtn.offsetTop + menuBtn.offsetHeight;
                 left = menuBtn.offsetLeft;
             }
             if (madDeskMover.isFullscreen) {
+                top += parseInt(localStorage.madesktopChanViewTopMargin || '0');
                 left += parseInt(localStorage.madesktopChanViewLeftMargin || '75px');
             }
-            menuBg.style.top = top;
+            menuBg.style.top = top + 'px';
             menuBg.style.left = left + 'px';
         }
         menuBg.style.display = 'block';

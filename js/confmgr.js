@@ -24,6 +24,7 @@ switch (action) {
             for (const key in parsed) {
                 localStorage.setItem(key, parsed[key]);
             }
+            localStorage.madesktopLastVer = "3.2.0";
         }
 }
 

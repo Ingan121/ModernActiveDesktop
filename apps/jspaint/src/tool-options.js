@@ -76,7 +76,7 @@ const ChooserDiv = (
 		// simply a row of black for both, whereas the modern theme's spritesheet
 		// uses a gradient in the border, and so does not use an overlap trick.
 		// This might be clearer if I made the option "shift_y_by_1px_in_classic_themes" with the baseline being the modern theme's metrics.
-		div.style.backgroundPosition = `${-sourceX}px ${-sourceY - (modern && shift_y_by_1px_in_modern_theme_only ? 1 : 0)}px`;
+		div.style.backgroundPosition = `${-sourceX}px ${-sourceY}px`;
 	};
 	if (div._on_zoom_etc) { // condition is needed, otherwise it will remove all listeners! (leading to only the last graphic being updated when zooming)
 		$G.off("theme-load resize", div._on_zoom_etc);

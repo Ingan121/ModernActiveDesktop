@@ -28,7 +28,7 @@
 * More controls, including radio buttons and dropdowns, now follow the color scheme
 * Visualizer updates
     * Added more configurable options to the visualizer
-    * Added fullscreen mode
+    * Added support for fullscreen mode
     * Automatically pause drawing when idle to reduce the CPU usage
 * ChannelBar is now a openable app, like the visualizer and others
     * It no longer re-opens when opening a new window
@@ -140,7 +140,3 @@
 * Support multiple color schemes
 * Support multiple Active Desktop item windows
 * Show a documentation window on first run
-
-Copyright (c) 2024 Ingan121  
-[https://github.com/Ingan121/ModernActiveDesktop](javascript:openUrl('https://github.com/Ingan121/ModernActiveDesktop'))  
-[Licensed under the MIT license](?src=../license.txt&showbackbtn=1)

@@ -28,6 +28,8 @@ const resetBtn = document.getElementById('resetBtn');
 
 const isWin10 = navigator.userAgent.includes('Windows NT 10.0');
 
+const NEWER_CONF_MSG = "This configuration file is for a newer version of ModernActiveDesktop. Please update ModernActiveDesktop to import this configuration.";
+
 let config = {
     dpi: parent.scaleFactor,
     sysplug: localStorage.sysplugIntegration,
@@ -271,7 +273,29 @@ importBtn.addEventListener('click', async function () {
     const text = await file.text();
 
     try {
-        JSON.parse(text);
+        const parsed = JSON.parse(text);
+        const confVer = parsed.madesktopLastVer;
+        if (confVer) {
+            const confVerSplit = confVer.split(".");
+            const lastVerSplit = localStorage.madesktopLastVer.split(".");
+            if (confVerSplit[0] > lastVerSplit[0]) {
+                madAlert(NEWER_CONF_MSG, null, "info");
+                return;
+            } else if (confVerSplit[0] === lastVerSplit[0]) {
+                if (confVerSplit[1] > lastVerSplit[1]) {
+                    madAlert(NEWER_CONF_MSG, null, "info");
+                    return;
+                } else if (confVerSplit[1] === lastVerSplit[1]) {
+                    if (confVerSplit[2] > lastVerSplit[2]) {
+                        madAlert(NEWER_CONF_MSG, null, "info");
+                        return;
+                    }
+                }
+            }
+        } else {
+            madAlert("Invalid configuration file!", null, "error");
+            return;
+        }
         const res = await madConfirm("Importing this configuration will overwrite your current configuration. Are you sure you want to continue?");
         if (res) {
             localStorage.madesktopConfigToImport = text;
@@ -296,7 +320,7 @@ function checkSysplug() {
             }
         })
         .catch(error => {
-            connectionStatus.textContent = "System plugin is not running. Please install the system plugin with the guide.";
+            connectionStatus.textContent = "System plugin is not running. Please install the system plugin.";
         });
 }
 

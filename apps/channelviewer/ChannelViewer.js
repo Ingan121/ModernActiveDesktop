@@ -273,26 +273,20 @@ helpMenuItems[0].addEventListener("click", function () { // About ChannelViewer 
 
 toolbarsMenuItems[0].addEventListener("click", function () { // Standard Buttons button
     if (localStorage.madesktopChanViewHideToolbar) {
-        toolbar.style.display = "";
-        toolbarsMenuItems[0].classList.add("checkedItem");
         delete localStorage.madesktopChanViewHideToolbar;
     } else {
-        toolbar.style.display = "none";
-        toolbarsMenuItems[0].classList.remove("checkedItem");
         localStorage.madesktopChanViewHideToolbar = true;
     }
+    reorderToolbars();
 });
 
 toolbarsMenuItems[1].addEventListener("click", function () { // Address Bar button
     if (localStorage.madesktopChanViewHideAddressBar) {
-        addressBar.style.display = "";
-        toolbarsMenuItems[1].classList.add("checkedItem");
         delete localStorage.madesktopChanViewHideAddressBar;
     } else {
-        addressBar.style.display = "none";
-        toolbarsMenuItems[1].classList.remove("checkedItem");
         localStorage.madesktopChanViewHideAddressBar = true;
     }
+    reorderToolbars();
 });
 
 toolbarsMenuItems[2].addEventListener("click", function () { // Labels on right button
@@ -571,15 +565,7 @@ sslIndicator.addEventListener('click', function () {
     }
 });
 
-if (localStorage.madesktopChanViewHideToolbar) {
-    toolbar.style.display = "none";
-    toolbarsMenuItems[0].classList.remove("checkedItem");
-}
-
-if (localStorage.madesktopChanViewHideAddressBar) {
-    addressBar.style.display = "none";
-    toolbarsMenuItems[1].classList.remove("checkedItem");
-}
+reorderToolbars();
 
 switch (localStorage.madesktopChanViewLabels) {
     case "right":
@@ -605,13 +591,6 @@ updateSandboxFlags();
 
 if (localStorage.madesktopChanViewSidebarWidth) {
     document.documentElement.style.setProperty("--sidebar-width", localStorage.madesktopChanViewSidebarWidth);
-}
-
-if (localStorage.madesktopChanViewToolbarOrder) {
-    const order = localStorage.madesktopChanViewToolbarOrder.split(",");
-    for (const toolbarId of order) {
-        toolbars.appendChild(document.getElementById(toolbarId));
-    }
 }
 
 if (localStorage.madesktopChanViewLockToolbars) {
@@ -641,6 +620,40 @@ new MutationObserver(function (mutations) {
     document.body,
     { attributes: true, attributeFilter: ["style"] }
 );
+
+function reorderToolbars() {
+    const order = (localStorage.madesktopChanViewToolbarOrder || "menuBar,toolbar,addressBar").split(",");
+    const hidden = [];
+
+    if (localStorage.madesktopChanViewHideToolbar) {
+        toolbar.style.display = "none";
+        toolbarsMenuItems[0].classList.remove("checkedItem");
+        hidden.push("toolbar");
+    } else {
+        toolbar.style.display = "";
+        toolbarsMenuItems[0].classList.add("checkedItem");
+    }
+
+    if (localStorage.madesktopChanViewHideAddressBar) {
+        addressBar.style.display = "none";
+        toolbarsMenuItems[1].classList.remove("checkedItem");
+        hidden.push("addressBar");
+    } else {
+        addressBar.style.display = "";
+        toolbarsMenuItems[1].classList.add("checkedItem");
+    }
+
+    const visible = order.filter((id) => !hidden.includes(id));
+    for (const toolbarId of visible) {
+        toolbars.appendChild(document.getElementById(toolbarId));
+    }
+    // Put hidden toolbars at the bottom, to make sure the throbber is at the right place
+    // and the Aero theme's top toolbar gradient works correctly
+    for (const toolbarId of hidden) {
+        toolbars.appendChild(document.getElementById(toolbarId));
+    }
+    toolbars.children[0].appendChild(throbber);
+}
 
 // innerWidth/Height hook
 // Fixes some sites that are broken when scaled, such as YT
@@ -1411,8 +1424,10 @@ sidebarWindow.addEventListener('load', function () {
 
         document.addEventListener('pointerup', function () {
             iframeClickEventCtrl(true);
-            downGrabber = -1;
-            localStorage.madesktopChanViewToolbarOrder = Array.from(toolbars.children).map(el => el.id).join(',');
+            if (downGrabber !== -1) {
+                localStorage.madesktopChanViewToolbarOrder = Array.from(toolbars.children).map(el => el.id).join(',');
+                downGrabber = -1;
+            }
         }, true);
     }
 

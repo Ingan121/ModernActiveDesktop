@@ -138,10 +138,19 @@ button.toggle {
 #madChanView {
     #toolbar {
         min-height: 38px;
-    }
-    .toolbarButton:not(#go-button) {
-        min-width: 29px;
-        min-height: 38px;
+        .toolbarButton:not(#go-button) {
+            min-height: 38px;
+        }
+        &:not(.rightLabels) .toolbarButton:not(#go-button) {
+            min-width: 37px;
+            .toolbarButtonImage {
+                margin-left: 5px;
+            }
+            &#channels-button .toolbarButtonImage {
+                margin-left: 9px;
+            }
+        }
+
     }
     .toolbarButtonImage {
         margin-top: 6px;
@@ -153,6 +162,19 @@ button.toggle {
         .toolbarButtonLabel {
             top: -10px !important;
         }
+        .toolbarButton:not(#go-button):not(#back-button):not(#forward-button) {
+            min-width: 32px;
+            .toolbarButtonImage {
+                margin-left: 3px;
+            }
+            &#channels-button .toolbarButtonImage {
+                margin-left: 7px;
+            }
+        }
+    }
+    #back-button .toolbarButtonImage,
+    #forward-button .toolbarButtonImage {
+        margin-left: 5px;
     }
     &:not([data-fullscreen]) #toolbar.bottomLabels {
         min-height: 52px;

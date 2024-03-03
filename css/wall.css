@@ -432,18 +432,6 @@ body[data-cm-shadow] .contextMenuBg {
     animation: cmDropdownright 0.25s linear;
 }
 
-.windowMenu {
-    width: 98px;
-}
-
-.confMenu {
-    width: 198px;
-}
-
-#mainMenu {
-    width: 98px;
-}
-
 .dropdownBg {
     width: 200px;
     height: 14px;
@@ -706,8 +694,4 @@ body[data-debug-mode] #debugLabel {
 
 body[data-debug-mode] #debugLabel + br {
     display: inline;
-}
-
-body[data-debug-mode] .windowMenuBg {
-    height: 85px;
 }
