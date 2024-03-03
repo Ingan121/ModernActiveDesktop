@@ -18,6 +18,7 @@ const main_canvas = make_canvas();
 main_canvas.classList.add("main-canvas");
 const main_ctx = main_canvas.ctx;
 
+// #region Colors
 const default_palette = [
 	"rgb(0,0,0)", // Black
 	"rgb(128,128,128)", // Dark Gray
@@ -107,6 +108,7 @@ let custom_colors = [
 	"#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF",
 	"#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF",
 ];
+// #endregion
 
 // This feature is not ready yet.
 // It needs to let the user decide when to switch the palette or not, when saving/opening an image.
@@ -124,9 +126,12 @@ let enable_palette_loading_from_indexed_images = false;
 // There are cases where 0-byte files are created, which is either a serious problem,
 // it's just from canceling saving when the file name has a problem, and it needs to be cleaned up.
 // Also, while I've implemented most of the UI, it'd be nice to release this with recent files support.
-// MAD Notes: This doesn't work in Wallpaper Engine Either
+
+// MAD Notes: This doesn't work in Wallpaper Engine either
 // showSaveFilePicker works but createWritable returns NotAllowedError
 let enable_fs_access_api = false;
+
+// #region System Hooks and default implementations
 
 // The methods in systemHooks can be overridden by a containing page like 98.js.org which hosts jspaint in a same-origin iframe.
 // This allows integrations like setting the wallpaper as the background of the host page, or saving files to a server.
@@ -540,6 +545,9 @@ palette_formats.sort((a, b) =>
 	0
 );
 
+// #endregion
+
+// #region App State
 
 // declared like this for Cypress tests
 window.default_brush_shape = "circle";
@@ -620,6 +628,9 @@ let update_helper_layer_on_pointermove_active = false;
 /** works in client coordinates */
 let pointers = [];
 
+// #endregion
+
+// #region URL Params
 const update_from_url_params = () => {
 	if (location.hash.match(/eye-gaze-mode/i)) {
 		if (!$("body").hasClass("eye-gaze-mode")) {
@@ -703,6 +714,10 @@ if (location.search.match(/vertical-colors?-box/)) {
 	update_from_url_params();
 }
 
+// #endregion
+
+// #region App UI
+
 const $app = $(E("div")).addClass("jspaint").appendTo("body");
 
 const $V = $(E("div")).addClass("vertical").appendTo($app);
@@ -736,12 +751,16 @@ if (get_direction() === "rtl") {
 	$right.prependTo($H);
 }
 
+// #endregion (arguably still App UI stuff below, but it becomes a fuzzy line later on)
+
+// #region Status Bar
 const $status_area = $(E("div")).addClass("status-area").appendTo($V);
 const $status_text = $(E("div")).addClass("status-text status-field inset-shallow").appendTo($status_area);
 const $status_position = $(E("div")).addClass("status-coordinates status-field inset-shallow").appendTo($status_area);
 const $status_size = $(E("div")).addClass("status-coordinates status-field inset-shallow").appendTo($status_area);
 const $status_resize_area = $(E("div")).addClass("status-resize-area").appendTo($status_area);
 
+// #region News Indicator
 // const news_seen_key = "jspaint latest news seen";
 // const latest_news_datetime = $this_version_news.find("time").attr("datetime");
 // const $news_indicator = $(`
@@ -783,13 +802,16 @@ const day = 24 * 60 * 60 * 1000;
 // if (Date.now() < Date.parse(latest_news_datetime) + news_period && news_seen !== latest_news_datetime) {
 // 	$status_area.append($news_indicator);
 // }
+// #endregion
 
 $status_text.default = () => {
 	$status_text.text(localize("For Help, click Help Topics on the Help Menu."));
 };
 $status_text.default();
 
-// menu bar
+// #endregion
+
+// #region Menu Bar
 let menu_bar_outside_frame = false;
 if (frameElement) {
 	try {
@@ -832,7 +854,77 @@ $(menu_bar.element).on("default-info", () => {
 // 	$("[role=menuitem][aria-label*='Occult'] .menu-item-shortcut").append("<img src='images/updated.gif' alt='Updated!'/>");
 // }
 
-// </menu bar>
+// Extras menu emoji icons
+// (OS-GUI.js doesn't support icons yet but I wanted to spruce it up a bit.)
+// Originally I defined the emoji as part of the label, which worked well for a while.
+// Now I'm rendering the emoji as pseudo elements.
+// - It allows for matching on the menu item text exactly, without including emoji in my tests,
+//   which will hopefully be replaced with custom icons in the future.
+// - It makes it easier to replace the emoji with custom icons in the future.
+// - It hides the emoji from `aria-label`, for screen reader users.
+// - It makes the menu data cleaner.
+// - It allows aligning the emoji nicely, even when some don't show as emoji, depending on the platform.
+
+function* traverse_menu(menu_items, menu_element) {
+	// Traverse menu data and elements in tandem, yielding pairs of menu item specifications and elements.
+	// This approach handles identically named menu items in separate menus,
+	// as is the case with "File > Manage Storage" and "Edit > History", both present in the Extras menu,
+	// but also in the other menus for discoverability.
+	// However, it doesn't handle identically named menu items in the same menu,
+	// as it still matches up items within the menu using aria-label.
+
+	// Menu structure:
+	// - Menu popups are not descendants of the menu bar or other menu popups; they are always direct children of the body.
+	// - Menu items that open submenus have "aria-controls" pointing to the ID of the submenu.
+	// - (Menu popups also have "data-semantic-parent" pointing to the ID of the menu item that opens them.)
+	// - `submenu` is an array, but the top level (menu bar) is represented as an object, which is a bit awkward.
+	//   However, this function doesn't deal with the top level.
+
+	const menu_item_elements = [...menu_element.querySelectorAll(".menu-item")];
+	for (const menu_item of menu_items) {
+		const label = menu_item.label || menu_item.item;
+		if (!label) {
+			continue;
+		}
+		const aria_label = remove_hotkey(menu_item.label || menu_item.item); // logic copied from OS-GUI's MenuBar.js
+		const menu_item_element = menu_item_elements.filter((el) =>
+			el.getAttribute("aria-label") === aria_label
+		)[0];
+		if (!menu_item_element) {
+			console.warn("Couldn't find menu item", menu_item, "with aria-label", aria_label);
+			continue;
+		}
+		yield [menu_item, menu_item_element];
+		if (menu_item.submenu) {
+			yield* traverse_menu(menu_item.submenu, document.getElementById(menu_item_element.getAttribute("aria-controls")));
+		}
+	}
+}
+
+const extras_menu_button = document.querySelector(`.extras-menu-button`);
+const extras_menu_popup = document.getElementById(extras_menu_button.getAttribute("aria-controls"));
+
+let emoji_css = `
+	.menu-item .menu-item-label::before {
+		display: inline-block;
+		width: 1.8em;
+		margin-right: 0.2em;
+		text-align: center;
+	}
+`;
+for (const [menu_item, menu_item_element] of traverse_menu(menus["E&xtras"], extras_menu_popup)) {
+	if (menu_item.emoji_icon) {
+		emoji_css += `
+			#${menu_item_element.id} .menu-item-label::before {
+				content: '${menu_item.emoji_icon}';
+			}
+		`;
+	}
+}
+$("<style>").text(emoji_css).appendTo("head");
+
+
+// #endregion
 
 let $toolbox = $ToolBox(tools);
 // let $toolbox2 = $ToolBox(extra_tools, true);//.hide();
@@ -885,6 +977,7 @@ $G.on("scroll focusin", () => {
 	window.scrollTo(0, 0);
 });
 
+// #region Drag and Drop
 $("body").on("dragover dragenter", (event) => {
 	const dt = event.originalEvent.dataTransfer;
 	const has_files = dt && Array.from(dt.types).includes("Files");
@@ -967,6 +1060,9 @@ $("body").on("dragover dragenter", (event) => {
 	}
 });
 
+// #endregion
+
+// #region Keyboard Shortcuts
 $G.on("keydown", e => {
 	if (e.isDefaultPrevented()) {
 		return;
@@ -1211,6 +1307,9 @@ $G.on("keydown", e => {
 		// put nothing below! note return above
 	}
 });
+// #endregion
+
+// #region Alt+Mousewheel Zooming (and also some dev helper that I haven't used in years)
 let alt_zooming = false;
 addEventListener("keyup", (e) => {
 	if (e.key === "Alt" && alt_zooming) {
@@ -1254,7 +1353,9 @@ addEventListener("wheel", (e) => {
 		// $canvas_area.scrollLeft(0);
 	}
 }, { passive: false });
+// #endregion
 
+// #region Clipboard Handling
 $G.on("cut copy paste", e => {
 	if (e.isDefaultPrevented()) {
 		return;
@@ -1323,6 +1424,10 @@ $G.on("cut copy paste", e => {
 		}
 	}
 });
+// #endregion
+
+// #region Initialization
+// This sort of thing should really be at the END of the file.
 
 reset_file();
 reset_selected_colors();
@@ -1365,7 +1470,9 @@ if (window.initial_system_file_handle) {
 		show_error_message(`Failed to open file ${window.initial_system_file_handle}`, error);
 	});
 }
+// #endregion
 
+// #region Colors (continued)
 const lerp = (a, b, b_ness) => a + (b - a) * b_ness;
 
 const color_ramp = (num_colors, start_hsla, end_hsla) =>
@@ -1462,8 +1569,13 @@ const update_palette_from_theme = () => {
 };
 
 $G.on("theme-load", update_palette_from_theme);
+// #region Initialization (continued)
 update_palette_from_theme();
+// #endregion
 
+// #endregion
+
+// #region Coordinate Transformations
 function to_canvas_coords({ clientX, clientY }) {
 	if (clientX === undefined || clientY === undefined) {
 		throw new TypeError("clientX and clientY must be defined (not {x, y} or x, y or [x, y])");
@@ -1481,6 +1593,7 @@ function from_canvas_coords({ x, y }) {
 		clientY: ~~(y / main_canvas.height * rect.height + rect.top),
 	};
 }
+// #endregion
 
 function update_fill_and_stroke_colors_and_lineWidth(selected_tool) {
 	main_ctx.lineWidth = stroke_size;
@@ -1512,6 +1625,7 @@ function update_fill_and_stroke_colors_and_lineWidth(selected_tool) {
 	}
 }
 
+// #region Primary Canvas Interaction
 function tool_go(selected_tool, event_name) {
 	update_fill_and_stroke_colors_and_lineWidth(selected_tool);
 
@@ -1605,7 +1719,9 @@ $canvas.on("pointerleave", (e) => {
 		update_helper_layer_on_pointermove_active = false;
 	}
 });
+// #endregion
 
+// #region Eye Gaze Mode
 let clean_up_eye_gaze_mode = () => { };
 $G.on("eye-gaze-mode-toggled", () => {
 	if ($("body").hasClass("eye-gaze-mode")) {
@@ -1615,7 +1731,9 @@ $G.on("eye-gaze-mode-toggled", () => {
 	}
 });
 if ($("body").hasClass("eye-gaze-mode")) {
+	// #region Initialization (continued; marking stuff that ideally should be at the end of the file)
 	init_eye_gaze_mode();
+	// #endregion
 }
 
 const eye_gaze_mode_config = {
@@ -2211,7 +2329,9 @@ async function init_eye_gaze_mode() {
 		clean_up_eye_gaze_mode = () => { };
 	};
 }
+// #endregion
 
+// #region Panning and Zooming
 let last_zoom_pointer_distance;
 let pan_last_pos;
 let pan_start_magnification; // for panning and zooming in the same gesture
@@ -2306,9 +2426,9 @@ $G.on("pointermove", (event) => {
 		pan_last_pos = current_pos;
 	}
 });
+// #endregion
 
-// window.onerror = show_error_message;
-
+// #region Primary Canvas Interaction (continued)
 $canvas.on("pointerdown", e => {
 	update_canvas_rect();
 
@@ -2409,7 +2529,9 @@ $canvas.on("pointerdown", e => {
 
 	update_helper_layer(e);
 });
+// #endregion
 
+// #region Deselection / Selection Prevention
 $canvas_area.on("pointerdown", e => {
 	if (e.button === 0) {
 		if ($canvas_area.is(e.target)) {
@@ -2448,12 +2570,14 @@ prevent_selection($app);
 prevent_selection($toolbox);
 // prevent_selection($toolbox2);
 prevent_selection($colorbox);
+// #endregion
 
 // Stop drawing (or dragging or whatever) if you Alt+Tab or whatever
 $G.on("blur", () => {
 	$G.triggerHandler("pointerup");
 });
 
+// #region Fullscreen Handling for iOS
 // For Safari on iPad, Fullscreen mode overlays the system bar, completely obscuring our menu bar.
 // See CSS .fullscreen handling (and exit_fullscreen_if_ios) for more info.
 function iOS() {
@@ -2475,4 +2599,4 @@ $G.on("fullscreenchange webkitfullscreenchange", () => {
 	// $status_text.text(`fullscreen: ${fullscreen}`);
 	$("html").toggleClass("fullscreen", fullscreen);
 });
-
+// #endregion

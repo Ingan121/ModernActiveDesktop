@@ -742,7 +742,8 @@
 		],
 		[localize("E&xtras")]: [
 			{
-				item: "⌚ " + localize("&History"),
+				emoji_icon: "⌚",
+				item: localize("&History"),
 				shortcut: "Ctrl+Shift+Y",
 				speech_recognition: [
 					// This is a duplicate menu item (for easy access), so it doesn't need speech recognition data here.
@@ -751,7 +752,8 @@
 				description: localize("Shows the document history and lets you navigate to states not accessible with Undo or Repeat."),
 			},
 			{
-				item: "🎞️ " + localize("&Render History As GIF"),
+				emoji_icon: "🎞️",
+				item: localize("&Render History As GIF"),
 				shortcut: "Ctrl+Shift+G",
 				speech_recognition: [
 					// @TODO: animated gif, blah
@@ -911,7 +913,8 @@
 				]
 			},*/
 			{
-				item: "💄 " + localize("&Themes"),
+				emoji_icon: "💄",
+				item: localize("&Themes"),
 				/*submenu: [
 					{
 						item: "⬜ " + localize("&Classic Light"),
@@ -1060,7 +1063,8 @@
 				}
 			},
 			{
-				item: "🌍 " + localize("&Language"),
+				emoji_icon: "🌍",
+				item: localize("&Language"),
 				submenu: available_languages.map((available_language) => (
 					{
 						item: get_language_emoji(available_language) + " " + get_language_endonym(available_language),
@@ -1073,7 +1077,8 @@
 				)),
 			},
 			{
-				item: "👁️ " + localize("&Eye Gaze Mode"),
+				emoji_icon: "👁️",
+				item: localize("&Eye Gaze Mode"),
 				speech_recognition: [
 					"toggle eye gaze mode",
 					"enable eye gaze mode",
@@ -1132,7 +1137,8 @@
 				description: localize("Enlarges buttons and provides dwell clicking."),
 			},
 			{
-				item: "🎙️ " + localize("&Speech Recognition"),
+				emoji_icon: "🎙️",
+				item: localize("&Speech Recognition"),
 				speech_recognition: [
 					"toggle speech recognition", "toggle speech recognition mode",
 					"disable speech recognition", "disable speech recognition mode", "turn off speech recognition", "turn off speech recognition mode", "leave speech recognition mode", "exit speech recognition mode",
@@ -1153,7 +1159,8 @@
 				description: localize("Controls the application with voice commands."),
 			},
 			{
-				item: "↕️ " + localize("&Vertical Color Box"),
+				emoji_icon: "↕️",
+				item: localize("&Vertical Color Box"),
 				speech_recognition: [
 					"toggle vertical color box", "toggle vertical color box mode",
 					"toggle vertical colors box", "toggle vertical colors box mode",
@@ -1190,7 +1197,8 @@
 			},
 			MENU_DIVIDER,
 			{
-				item: "🗃️ " + localize("Manage Storage"),
+				emoji_icon: "🗃️",
+				item: localize("Manage Storage"),
 				speech_recognition: [
 					// This is a duplicate menu item (for easy access), so it doesn't need speech recognition data here.
 				],
@@ -1199,7 +1207,8 @@
 			},
 			MENU_DIVIDER,
 			{
-				item: "📢 " + localize("Project News"),
+				emoji_icon: "📢",
+				item: localize("Project News"),
 				speech_recognition: [
 					"project news", "news about the project", "news about this project",
 					"app news", "news about the app", "news about this app",
@@ -1211,7 +1220,8 @@
 				description: localize("Shows news about JS Paint."),
 			},
 			{
-				item: "ℹ️ " + localize("GitHub"),
+				emoji_icon: "ℹ️",
+				item: localize("GitHub"),
 				speech_recognition: [
 					"repo on github", "project on github", "show the source code", "show source code",
 				],
@@ -1219,7 +1229,8 @@
 				description: localize("Shows the project on GitHub."),
 			},
 			{
-				item: "💵 " + localize("Donate"),
+				emoji_icon: "💵",
+				item: localize("Donate"),
 				speech_recognition: [
 					"donate", "make a monetary contribution",
 				],
