@@ -6,9 +6,9 @@ html, body {
     background-color: black;
 }
 
-.AactiveChannelItem {
+.ActiveChannelItem {
     display: block;
-    margin: 1px 1px 0 1px;
+    margin: 1px 1px -2px 1px;
     width: 80px;
     float: left;
 }
