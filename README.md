@@ -2,7 +2,7 @@
 <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=2278898637"><img src="https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-steam-workshop.jross.me%2F2278898637%2Fsubscriptions-text" alt="Steam Workshop subscribers count"></a>
 
 * ModernActiveDesktop, also known as Windows 98 Desktop Experience, is a highly customizable re-creation of the classic Windows desktop.
-* Started as a crappy Active Desktop clone, ModernActiveDesktop now features various useful apps that resembles the classic Windows components that will improve your desktop experience.
+* Started as a crappy Active Desktop clone, ModernActiveDesktop now features various useful apps that resemble the classic Windows components that will improve your desktop experience.
 * Primarily designed for Wallpaper Engine, but now it should work well on other modern browsers as well. Lively Wallpaper is also supported.
 <br><br>
 [Old Screenshot (circa 2.3)](docs/images/screenshot.png)
@@ -18,7 +18,7 @@
 |![Solitaire Icon](apps/solitaire/icon.png)|Solitaire|A web-based remake of MS Solitaire|[Original Repo](https://github.com/rjanjic/js-solitaire), [MAD Version](https://github.com/Ingan121/ModernActiveDesktop/tree/master/apps/solitaire)|
 |<img src="apps/clock/icon.png" width="16" alt="Clock Icon">|Clock|A web-based remake of NT4 clock.exe|[Link](https://github.com/Ingan121/ModernActiveDesktop/tree/master/apps/clock)|
 |![Visualizer Icon](apps/visualizer/icon.png)|Visualizer|A music visualizer for Wallpaper Engine<br>WMP6 style controls with WMP7+ bar visualization<br>Lively Wallpaper is partially supported|[Link](https://github.com/Ingan121/ModernActiveDesktop/tree/master/apps/visualizer)|
-|![ChannelViewer Icon](apps/channelviewer/images/icon.png)|ChannelViewer|A IE4 remake with some elements of IE6<br>Supports loading webpages with classic look and features|[Link](https://github.com/Ingan121/ModernActiveDesktop/tree/master/apps/channelviewer)|
+|![ChannelViewer Icon](apps/channelviewer/images/icon.png)|ChannelViewer|An IE4 remake with some elements of IE6<br>Supports loading webpages with a classic look and features|[Link](https://github.com/Ingan121/ModernActiveDesktop/tree/master/apps/channelviewer)|
 |![Calculator Icon](apps/calc/icon.png)|Calculator|A web-based remake of Windows calculator|[Link](https://github.com/Ingan121/ModernActiveDesktop/tree/master/apps/calc)|
 ||Configurator|Remake of the 'Display Properties' and 'Internet Options' control panel applets<br>Some of them are pretty pixel-perfect to the original|[Main](https://github.com/Ingan121/ModernActiveDesktop/tree/master/apps/madconf), [Internet](https://github.com/Ingan121/ModernActiveDesktop/tree/master/apps/inetcpl)|
 
@@ -46,7 +46,7 @@
     * Would be pretty hard as many strings are currently hardcoded in HTML files
     * Or just release various localized versions with embedded localized strings, like the pre-MUI Windows? Just kidding :D
 * ChannelViewer
-    * Hook fetch / XHR with fetchProxy to get AJAX sites working when force loaded
+    * Hook fetch / XHR with fetchProxy to get AJAX sites working when force-loaded
 * More themes to add
     * Windows 3.x
         * I think it would be pretty easy, just give it flat title bars and buttons with border-radius
@@ -56,7 +56,7 @@
     * Aero Lite
     * Windows 10/11?
     * Mac OS 7?
-    * Also if I implement the Win3 theme, i should make a separate visual style selector in the appearance control panel, like the one in XP
+    * Also if I implement the Win3 theme, I should make a separate visual style selector in the appearance control panel, like the one in XP
 * Split the main scripts into multiple JS files
     * Current main JS structure (DeskMover + DeskSettings) hasn't really changed since 1.0 lol
 * Support multi-display background wallpaper configuration?
@@ -72,16 +72,16 @@
     * It now more resembles IE4 or IE6
     * It can now open pages that don't allow embedding
     * Improved external link handling
-    * Note: the system plugin ChannelViewer has deprecated. Please use the in-wallpaper ChannelViewer or any external browser on your system
+    * Note: the system plugin ChannelViewer has been deprecated. Please use the in-wallpaper ChannelViewer or any external browser on your system
 * Improved the customization settings
     * You can now adjust the window metrics and font settings. Updated the built-in themes to have unique metrics as well
-    * Made the configuration window pretty pixel-perfect to the 98 apperance control panel
+    * Made the configuration window pretty pixel-perfect to the 98 appearance control panel
     * Added an option to hide the keyboard navigation underlines
     * Added an option to show only window outlines when dragging
     * Support saving color schemes to the storage
     * Support importing Windows theme files and exported color registry files
     * Support exporting scheme as CSS or JSON by typing !copycss or !copyjson to the scheme save dialog
-    * Support adjusting top and bottom margins. Adjust these based on your desktop, for example the bottom margin would be the size of the taskbar.
+    * Support adjusting the top and bottom margins. Adjust these based on your desktop, for example, the bottom margin would be the size of the taskbar.
     * Support exporting and importing the complete configuration of ModernActiveDesktop
     * Resetting configs will only remove its own configs and not touch other wallpaper's ones
 * Added a Windows Aero theme, and improved the XP theme
@@ -90,20 +90,20 @@
     * Catppuccin Mocha
     * Some Plus! themes that were missing previously
     * Reverted the 98 Classic scheme to 3.0 one, as this was indeed the correct one.
-    * The previous 98 scheme of MAD 3.1 has been renamed to Windows Classic (98SE) - in fact this slightly variant of the Classic scheme is also present in later versions of Windows.
+    * The previous 98 scheme of MAD 3.1 has been renamed to Windows Classic (98SE) - in fact, this slightly different variant of the Classic scheme is also present in later versions of Windows.
 * More controls, including radio buttons and dropdowns, now follow the color scheme
 * Visualizer updates
     * Added more configurable options to the visualizer
     * Added fullscreen mode
     * Automatically pause drawing when idle to reduce the CPU usage
-* ChannelBar is now a openable app, like the visualizer and others
+* ChannelBar is now an openable app, like the visualizer and others
     * It no longer re-opens when opening a new window
 * Made various UI elements look more accurate
     * Added ClientEdge in various places
 * Windows now can be resized diagonally
-* Added support for Firefox and iOS Safari, as well as touch screens
+* Added support for Firefox and iOS Safari, as well as touchscreens
 * Support menu navigation with keyboard (when keyboard input is available)
-* Moving mouse over the menu while playing the animation effect will cancel the animation
+* Moving the mouse over the menu while playing the animation effect will cancel the animation
 * Updated dependencies (Electron, JSPaint)
 
 ### Previous changelog

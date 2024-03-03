@@ -1,120 +1,107 @@
 # Welcome to ModernActiveDesktop!
-* ModernActiveDesktop, also known as Windows 98 Desktop Experience, aims to replicate the original Active Desktop behavior and improve the Classic Theme experience on modern Windows.
-* Designed for Wallpaper Engine and Lively Wallpaper.
-<br><br><img src="images/screenshot.png" width="480px" height="270px" title="Screenshot">
+* ModernActiveDesktop, also known as Windows 98 Desktop Experience, is a highly customizable re-creation of the classic Windows desktop.
+* Started as a crappy Active Desktop clone, ModernActiveDesktop now features various useful apps that resemble the classic Windows components that will improve your desktop experience.
+* Primarily designed for Wallpaper Engine, but now it should work well on other modern browsers as well. Lively Wallpaper is also supported.
 
-## Basic Usage Guide
-* Place the mouse cursor at the top of a window to show its title bar and menus.
-* You can change MAD's settings within Wallpaper Engine. Open the Wallpaper Engine wallpaper selection window, then you'll see the properties panel on the right side.
-* In the properties panel, you can configure the background, change the color scheme, turn on or off the Windows 98 startup sound, change the Active Desktop item style, and so on. Try them out now!
-* To add a new Active Desktop item on your desktop, click the empty box next to the 'Add a new ActiveDesktop item', and a new window will appear. To load a website into it, move the cursor near its upper side, click the ⏷ button, choose Configure, click Change URL, then enter your desired address in the dialog.
-* For better usability, it is highly recommended to install the system plugin. It allows for the wallpaper to open a new browser window and apply the system color scheme to the wallpaper (if you're using a Classic Theme.) For more information, please refer to the [system plugin setup guide](?src=SysplugSetupGuide.md&showbackbtn=1).
-    * System plugin does not work with Lively Wallpaper yet.
-* To reset one window, click its ⏷ button, choose Reset, and its position, size, URL, and style will be reset. To completely reset, go to the Wallpaper Engine properties panel, click the big red Reset button first, then click the 'Reset completely' button. Everything will go back to the initial state.
+## Included Apps
+|Icon|Name|Description|
+|---|---|---|
+|![Channel Bar Icon](../images/mad16.png)|Channel Bar|The Channel Bar from Windows 98 First Edition or IE4|
+|<img src="../apps/jspaint/favicon.ico" width="16" alt="JSPaint Icon">|JSPaint|A web-based remake of MS Paint|
+|![Solitaire Icon](../apps/solitaire/icon.png)|Solitaire|A web-based remake of MS Solitaire|
+|<img src="../apps/clock/icon.png" width="16" alt="Clock Icon">|Clock|A web-based remake of NT4 clock.exe|
+|![Visualizer Icon](../apps/visualizer/icon.png)|Visualizer|A music visualizer for Wallpaper Engine<br>WMP6 style controls with WMP7+ bar visualization<br>Lively Wallpaper is partially supported|
+|![ChannelViewer Icon](../apps/channelviewer/images/icon.png)|ChannelViewer|An IE4 remake with some elements of IE6<br>Supports loading webpages with a classic look and features|
+|![Calculator Icon](../apps/calc/icon.png)|Calculator|A web-based remake of Windows calculator|
+||Configurator|Remake of the 'Display Properties' and 'Internet Options' control panel applets<br>Some of them are pretty pixel-perfect to the original|
+
+## Included Themes
+* XP
+    * A CSS theme based on XP.css
+    * Fallback schemes: Blue, Olive Green, Silver, and Royale
+* Aero
+    * A CSS theme based on 7.css
+* Windows 9x / 2000 Classic schemes
+* Plus! 95 and 98 schemes
+* Windose
+    * Simple CSS theme based on the looks of Needy Girl Overdose
+    * Only the title bars are themed; other controls will use the generic Classic styles
+* Catppuccin Mocha
+* Windows 1-3 schemes
+* Windows 11 high contrast schemes
+* Three schemes found in the JSPaint source files
+* All Classic schemes feature unique window metrics and font settings
+* Can fetch system color schemes if the system plugin is being used
+* Also supports loading Windows *.theme files and an exported file of the "HKCU\Control Panel\Colors" registry key
+
+## Todo
+* Localization
+    * Would be pretty hard as many strings are currently hardcoded in HTML files
+    * Or just release various localized versions with embedded localized strings, like the pre-MUI Windows? Just kidding :D
+* ChannelViewer
+    * Hook fetch / XHR with fetchProxy to get AJAX sites working when force-loaded
+* More themes to add
+    * Windows 3.x
+        * I think it would be pretty easy, just give it flat title bars and buttons with border-radius
+    * Windows Vista/7 Basic
+    * Windows 8
+        * Maybe just modifying the Aero theme a bit would work
+    * Aero Lite
+    * Windows 10/11?
+    * Mac OS 7?
+    * Also if I implement the Win3 theme, I should make a separate visual style selector in the appearance control panel, like the one in XP
+* Split the main scripts into multiple JS files
+    * Current main JS structure (DeskMover + DeskSettings) hasn't really changed since 1.0 lol
+* Support multi-display background wallpaper configuration?
+
+## Notes
+* ModernActiveDesktop is primarily optimized for Chromium 98 and higher. Some features may not work or look well on other browsers.
 
 ## Changelog
 
-### 3.1
-* Added a music visualizer
-    * Currently supports WMP Bar-like visualizer and a simple album art visualizer
-    * Supports customizable colors and media information integration
-    * Also supports media controls if the system plugin integration is enabled
-* Added a customizable flat menu option, which was previously exclusive to the XP theme
-* Background colors can now be changed independently when using system colors
-* Added thick frames to resizable windows for a more authentic look
-* Added an option to make windows non-resizable
-* Added various sound schemes (3.1, 95, NT4, 2000/Me, XP, Vista, 7, 8, 10, 11)
-* Improved the XP theme
-    * Dialogs will use XP icons when using the XP theme
-    * Title bars will always use appropriate fonts, regardless of the no-pixel fonts option
-* Changed the default style and size of new windows
-* Several visual improvements
-* Prevent Windows 7 / 8 from installing the system plugin, as it requires Windows 10 or higher
-* Added an additional safeguard to prevent arbitrary web pages from accessing the system plugin APIs
-* System plugin is now distributed zipped
-* Several bugfixes and optimizations
-    * Fixed dark color schemes having invisible checkmarks on checkboxes
-    * Fixed dark theme detection not working properly with custom colors
-    * Fixed 'Always on top' windows going on top of important UI elements and its own dialogs
-    * Fixed the default color scheme having some inaccurate colors
-    * Fixed the circle mark in context menus being rendered as broken texts in some cases
-* Updated dependencies
+## 3.2
+* Added Clock and Calculator
+* Revamped the ChannelViewer
+    * It now more resembles IE4 or IE6
+    * It can now open pages that don't allow embedding
+    * Improved external link handling
+    * Note: the system plugin ChannelViewer has been deprecated. Please use the in-wallpaper ChannelViewer or any external browser on your system
+* Improved the customization settings
+    * You can now adjust the window metrics and font settings. Updated the built-in themes to have unique metrics as well
+    * Made the configuration window pretty pixel-perfect to the 98 appearance control panel
+    * Added an option to hide the keyboard navigation underlines
+    * Added an option to show only window outlines when dragging
+    * Support saving color schemes to the storage
+    * Support importing Windows theme files and exported color registry files
+    * Support exporting scheme as CSS or JSON by typing !copycss or !copyjson to the scheme save dialog
+    * Support adjusting the top and bottom margins. Adjust these based on your desktop, for example, the bottom margin would be the size of the taskbar.
+    * Support exporting and importing the complete configuration of ModernActiveDesktop
+    * Resetting configs will only remove its own configs and not touch other wallpaper's ones
+* Added a Windows Aero theme, and improved the XP theme
+    * JSPaint will use Windows Vista or Windows XP looks if you use one of these themes
+* Added more Classic schemes
+    * Catppuccin Mocha
+    * Some Plus! themes that were missing previously
+    * Reverted the 98 Classic scheme to 3.0 one, as this was indeed the correct one.
+    * The previous 98 scheme of MAD 3.1 has been renamed to Windows Classic (98SE) - in fact, this slightly different variant of the Classic scheme is also present in later versions of Windows.
+* More controls, including radio buttons and dropdowns, now follow the color scheme
+* Visualizer updates
+    * Added more configurable options to the visualizer
+    * Added fullscreen mode
+    * Automatically pause drawing when idle to reduce the CPU usage
+* ChannelBar is now an openable app, like the visualizer and others
+    * It no longer re-opens when opening a new window
+* Made various UI elements look more accurate
+    * Added ClientEdge in various places
+* Windows now can be resized diagonally
+* Added support for Firefox and iOS Safari, as well as touchscreens
+* Support menu navigation with keyboard (when keyboard input is available)
+* Moving the mouse over the menu while playing the animation effect will cancel the animation
+* Updated dependencies (Electron, JSPaint)
 
-### 3.1.1
-* Removed an unnecessary zip file that contained a full copy of itself duplicated
-* Fixed an error in environments other than Wallpaper Engine that happened by a visualizer-related code
-* Visual improvements to the Windose theme
-
-### 3.1.2
-* Fixed a critical error occurring on the first start or after reset
-
-### 3.0
-* Added a new 'Window' styling
-* Improved the configuration UI
-    * Added a lot of color schemes and themes, including an XP theme
-    * Added the ability to customize color schemes fully
-    * Added an option to use non-pixel fonts
-    * Added an option to change or disable the animation effects
-* Added various apps for your desktop experience
-    * JS Paint and Solitaire are currently included
-    * Both are optimized for use within ModernActiveDesktop and Wallpaper Engine
-* Added a new welcome screen
-* Added an option to keep a window on top of other windows
-* Added a basic support for CSS themes
-* Windows won't be created in the same position over and over anymore
-* 'Reload' in the main window context menu will only reload that window
-    * Use Configure -> Reload wallpaper to reload the whole wallpaper
-* Overhauled the general code base
-    * Optimized the configuration saving mechanism
-    * Unused configs are automatically cleaned up
-    * Allows accessing DeskMover functions globally
-    * Improved the context menu opening and closing mechanism
-    * Various codes are simplified
-* Updated dependencies
-    * Fixed security vulnerabilities found in old components (Electron, minimist)
-* System plugin now only accepts connection from localhost
-    * Provides safety for devices that are connected to the internet without a router
-    * Can be overridden with --listen argument but is not recommended
-* Added devtools support in the system plugin ChannelViewer
-    * Click the toolbar first then press F12
-
-### 2.3
-* Added an option to disable scaling per window
-* Fixed some websites (e. g. YouTube embed) not displaying properly when scaled
-* Made the window configuration context menu look better
-* Updated dependencies
-
-### 2.2
-* Added support for video and web backgrounds
-    * Configurable in the properties panel
-* Windows can now be placed off-screen, as long as its title bar is still visible
-* Window Z-orders are now persistent across reloads
-* Added per-window style setting
-* Fixed bugs with window resize and reset
-* Replaced default dialogs with 98-styled ones
-* Added initial support for Lively Wallpaper
-* Added a standalone properties panel for non-Wallpaper Engine usage
-* Added a right-click menu for browser usage
-* Resetting windows no longer reloads the entire wallpaper
-* Added advanced debugging features
-* Major code improvements
-
-### 2.1
-* Added a scaling feature for high DPI displays
-    * Configurable in the properties panel
-<br><img src="images/MADScale.webp" width="360px" height="384px" title="Scaling screenshot">
-* Added error handling
-* Code improvements
-
-### 2.0
-* Added a system plugin for better usability
-    * Open pages with ChannelViewer in a new window or with your default browser
-    * Use system color scheme for theming the wallpaper
-* Support non-ActiveDesktop style windows
-* Support multiple color schemes
-* Support multiple Active Desktop item windows
-* Show a documentation window on first run
+### Previous changelog
+Please see [here](?src=Updated.md&showbackbtn=1) for the previous changes
 
 Copyright (c) 2024 Ingan121  
-[https://github.com/Ingan121/ModernActiveDesktop](javascript:openUrl('https://github.com/Ingan121/ModernActiveDesktop'))  
+[https://github.com/Ingan121/ModernActiveDesktop](javascript:madOpenExternal('https://github.com/Ingan121/ModernActiveDesktop'))  
 [Licensed under the MIT license](?src=../license.txt&showbackbtn=1)

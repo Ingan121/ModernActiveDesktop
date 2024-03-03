@@ -39,11 +39,6 @@
     const url = new URL(location.href);
     const src = url.searchParams.get('src');
 
-    function openUrl(url) {
-      window.open(url);
-      return;
-    }
-
     if (url.searchParams.get('showbackbtn')) document.getElementById('backbtn').style.display = 'block';
 
     if (src) {
