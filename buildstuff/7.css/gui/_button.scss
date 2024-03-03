@@ -175,6 +175,12 @@ button:not(.window-button):not(.lightweight),
 .eye-gaze-mode .tool-icon.use-svg {
 	background-image: url("../../../apps/jspaint/images/classic/tools.svg");
 }
+.transparent-mode-option {
+	background-image: url("../../../apps/jspaint/images/modern/options-transparency.png");
+}
+.transparent-mode-option.use-svg {
+	background-image: url("../../../apps/jspaint/images/modern/options-transparency.svg");
+}
 
 /* ChannelViewer stuff */
 .toolbarButton {

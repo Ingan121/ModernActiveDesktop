@@ -30,6 +30,7 @@
     * Added more configurable options to the visualizer
     * Added support for fullscreen mode
     * Automatically pause drawing when idle to reduce the CPU usage
+    * Added a troubleshooting guide for some cases that it fails to initialize
 * ChannelBar is now a openable app, like the visualizer and others
     * It no longer re-opens when opening a new window
 * Made various UI elements look more accurate

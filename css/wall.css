@@ -218,6 +218,12 @@ body[data-no-underline] {
     cursor: se-resize;
 }
 
+.resizeArea.extraMargin {
+    right: 2px;
+    bottom: 0;
+    background-color: transparent;
+}
+
 .windowBtn {
     width: 12px;
     height: 10px;

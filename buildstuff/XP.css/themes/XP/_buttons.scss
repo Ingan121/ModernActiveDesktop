@@ -177,9 +177,9 @@ button.toggle {
         margin-left: 5px;
     }
     &:not([data-fullscreen]) #toolbar.bottomLabels {
-        min-height: 52px;
+        min-height: 52px !important;
         .toolbarButton {
-            min-height: 52px;
+            min-height: 52px !important;
             &:not(#back-expand-button):not(#forward-expand-button) {
                 min-width: 77px;
             }

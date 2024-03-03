@@ -667,6 +667,10 @@ body:not(#madChanView) .menu, .menus {
 
 .windowContainer .resizeArea {
     background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnMAABJzAYwiuQcAAABPSURBVChTpY/BDcAgDANd9l+i6gp5sF2oJb8ihEHcB53C4wxHjy97vClF07vmAfJH5uFnIr2kNu9tqM1uA49EernBNc83uObqFCK1fgAwAC7BbGGRv58cAAAAAElFTkSuQmCC");
+    &.extraMargin {
+        /* Well XP did put a invisible resize area when located at the corner of scroll bars */
+        background-image: none;
+    }
 }
 
 /* Change dialog icons to XP ones */

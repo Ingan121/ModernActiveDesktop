@@ -957,7 +957,21 @@ $G.on("eye-gaze-mode-toggled", () => {
 $G.on("resize", () => { // for browser zoom, and in-app zoom of the canvas
 	update_canvas_rect();
 	update_disable_aa();
-	madSetResizeArea(getComputedStyle($status_area[0]).display !== "none");
+	if (getComputedStyle($status_area[0]).display !== "none") {
+		madSetResizeArea(true);
+	} else {
+		if ($bottom.children().length !== 0 && getComputedStyle($bottom[0]).display !== "none") {
+			madSetResizeArea(false);
+		} else {
+			if ($canvas_area[0].scrollHeight > $canvas_area[0].clientHeight &&
+				$canvas_area[0].scrollWidth > $canvas_area[0].clientWidth)
+			{
+				madSetResizeArea(2);
+			} else {
+				madSetResizeArea(false);
+			}
+		}
+	}
 });
 $canvas_area.on("scroll", () => {
 	update_canvas_rect();

@@ -1060,7 +1060,7 @@
     box-shadow: none;
     margin: 0 3px 0 2px;
     height: 100%;
-    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAADCAYAAABWKLW/AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnMAABJzAYwiuQcAAAAnSURBVBhXY/j05dd/EGYAAkYQ48WLZwzHT19lYOLjYWMEMRgYGBgA1QoTRs6jRL4AAAAASUVORK5CYII=");
+    background-image: url("icon/grabber.png");
   }
 
   .separator {
@@ -1071,7 +1071,13 @@
 
 .windowContainer .resizeArea {
   background-color: transparent;
-  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnMAABJzAYwiuQcAAABESURBVChTYxgp4D8QnD9//j+IzQQWIQBevHjB8ODBAyiPWgDZGUQ5CdkZ1HMSLmcgs1GchGz148ePGW7fvg1mI8QZGADVzExp2mG/hAAAAABJRU5ErkJggg==');
+  background-image: url("icon/resize-area.png");
+  &.extraMargin {
+    width: 15px;
+    height: 15px;
+    right: 4px;
+    bottom: 2px;
+  }
 }
 
 /* Change dialog icons to Vista/7/8 ones */

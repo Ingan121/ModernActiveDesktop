@@ -1027,6 +1027,12 @@ class DeskMover {
 
     setResizeArea(show) {
         if (show) {
+            if (show === 2) {
+                // For resize areas located at the corner of two scroll bars
+                this.resizeArea.classList.add("extraMargin");
+            } else {
+                this.resizeArea.classList.remove("extraMargin");
+            }
             this.resizeArea.style.display = "block";
             this.resizeAreaShown = true;
         } else {
