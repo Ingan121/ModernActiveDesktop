@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>ModernActiveDesktop Properties</title>
+    <title data-locid="MADCONF_TITLE">ModernActiveDesktop Properties</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="../../css/98.css">
     <link rel="stylesheet" href="css/background.css">
@@ -11,10 +11,10 @@
 <body>
     <div id="madconf" class="madconf-background window-body">
         <menu role="tablist">
-            <li class="tab" role="tab" data-pagename="background" aria-selected="true"><a href="#tabs">Background</a></li>
-            <li class="tab" role="tab" data-pagename="appearance"><a href="#tabs">Appearance</a></li>
-            <li class="tab" role="tab" data-pagename="misc"><a href="#tabs">Miscellaneous</a></li>
-            <li class="tab" role="tab" data-pagename="about"><a href="#tabs">About</a></li>
+            <li class="tab" role="tab" data-pagename="background" aria-selected="true"><a href="#tabs"><mad-string data-locid="MADCONF_PAGE_BACKGROUND">Background</mad-string></a></li>
+            <li class="tab" role="tab" data-pagename="appearance"><a href="#tabs"><mad-string data-locid="MADCONF_PAGE_APPEARANCE">Appearance</mad-string></a></li>
+            <li class="tab" role="tab" data-pagename="misc"><a href="#tabs"><mad-string data-locid="MADCONF_PAGE_MISC">Miscellaneous</mad-string></a></li>
+            <li class="tab" role="tab" data-pagename="about"><a href="#tabs"><mad-string data-locid="MADCONF_PAGE_ABOUT">About</mad-string></a></li>
         </menu>
         <div class="window" role="tabpanel">
             <div class="window-body">
@@ -23,58 +23,191 @@
                     <iframe id="preview" src="wp_preview.html"></iframe>
                 </div>
                 <fieldset>
-                    <legend>Wallpaper</legend>
-                    <p><u>S</u>elect an HTML Document or a picture:</p>
+                    <legend><mad-string data-locid="MADCONF_WALLPAPER_TITLE">Wallpaper</mad-string></legend>
+                    <p><mad-string data-locid="MADCONF_WPCHOOSER_TITLE"><u>S</u>elect an HTML Document or a picture:</mad-string></p>
                     <div class="field-row">
                         <ul id="wpChooser" class="tree-view borderedScrollBar">
-                            <li data-active><img src="images/none.png"><div class="mask mask-none"></div><span>(None)</span></li>
-                            <li><img src="images/image.png"><div class="mask"></div><span>1stboot</span></li>
-                            <li><img src="images/image.png"><div class="mask"></div><span>Black Thatch</span></li>
-                            <li><img src="images/image.png"><div class="mask"></div><span>Blue Rivets</span></li>
-                            <li><img src="images/image.png"><div class="mask"></div><span>Bubbles</span></li>
-                            <li><img src="images/image.png"><div class="mask"></div><span>Carved Stone</span></li>
-                            <li><img src="images/image.png"><div class="mask"></div><span>Circles</span></li>
-                            <li><img src="images/image.png"><div class="mask"></div><span>Houndstooth</span></li>
-                            <li><img src="images/image.png"><div class="mask"></div><span>Pinstripe</span></li>
-                            <li><img src="images/image.png"><div class="mask"></div><span>Setup</span></li>
-                            <li><img src="images/image.png"><div class="mask"></div><span>Straw Mat</span></li>
-                            <li><img src="images/image.png"><div class="mask"></div><span>Tiles</span></li>
-                            <li><img src="images/image.png"><div class="mask"></div><span>Triangles</span></li>
-                            <li><img src="images/image.png"><div class="mask"></div><span>Clouds</span></li>
-                            <li><img src="images/image.png"><div class="mask"></div><span>Bliss</span></li>
-                            <li><img src="images/image.png"><div class="mask"></div><span>Aurora</span></li>
-                            <li><img src="images/image.png"><div class="mask"></div><span>Harmony</span></li>
-                            <li><img src="images/html.png"><div class="mask mask-html"></div><span>Windows 98</span></li>
-                            <li id="customImgItem"><img src="images/image.png"><div class="mask"></div><span>Current Image</span></li>
-                            <li id="customWebImgItem"><img src="images/html.png"><div class="mask mask-html"></div><span>Current Webpage</span></li>
-                            <li id="weImgItem"><img src="images/image.png"><div class="mask"></div><span>Wallpaper loaded from Wallpaper Engine</span></li>
-                            <li id="videoImgItem"><img src="images/video.png"><div class="mask mask-video"></div><span>Video Wallpaper</span></li>
+                            <li data-active>
+                                <img src="images/none.png">
+                                <div class="mask mask-none"></div>
+                                <span>
+                                    (<mad-string data-locid="UI_NONE">None</mad-string>)
+                                </span>
+                            </li>
+                            <li data-wpname="1stboot">
+                                <img src="images/image.png">
+                                <div class="mask"></div>
+                                <span>1stboot</span>
+                            </li>
+                            <li data-wpname="Black Thatch">
+                                <img src="images/image.png">
+                                <div class="mask"></div>
+                                <span>
+                                    <mad-string data-locid="MADCONF_DEFAULTWP_BLACK_THATCH">Black Thatch</mad-string>
+                                </span>
+                            </li>
+                            <li data-wpname="Blue Rivets">
+                                <img src="images/image.png">
+                                <div class="mask"></div>
+                                <span>
+                                    <mad-string data-locid="MADCONF_DEFAULTWP_BLUE_RIVETS">Blue Rivets</mad-string>
+                                </span>
+                            </li>
+                            <li data-wpname="Bubbles">
+                                <img src="images/image.png">
+                                <div class="mask"></div>
+                                <span>
+                                    <mad-string data-locid="MADCONF_DEFAULTWP_BUBBLES">Bubbles</mad-string>
+                                </span>
+                            </li>
+                            <li data-wpname="Carved Stone">
+                                <img src="images/image.png">
+                                <div class="mask"></div>
+                                <span>
+                                    <mad-string data-locid="MADCONF_DEFAULTWP_CARVED_STONE">Carved Stone</mad-string>
+                                </span>
+                            </li>
+                            <li data-wpname="Circles">
+                                <img src="images/image.png">
+                                <div class="mask"></div>
+                                <span>
+                                    <mad-string data-locid="MADCONF_DEFAULTWP_CIRCLES">Circles</mad-string>
+                                </span>
+                            </li>
+                            <li data-wpname="Houndstooth">
+                                <img src="images/image.png">
+                                <div class="mask"></div>
+                                <span>
+                                    <mad-string data-locid="MADCONF_DEFAULTWP_HOUNDSTOOTH">Houndstooth</mad-string>
+                                </span>
+                            </li>
+                            <li data-wpname="Pinstripe">
+                                <img src="images/image.png">
+                                <div class="mask"></div>
+                                <span>
+                                    <mad-string data-locid="MADCONF_DEFAULTWP_PINSTRIPE">Pinstripe</mad-string>
+                                </span>
+                            </li>
+                            <li data-wpname="Setup" data-nontile="1">
+                                <img src="images/image.png">
+                                <div class="mask"></div>
+                                <span>
+                                    <mad-string data-locid="MADCONF_DEFAULTWP_SETUP">Setup</mad-string>
+                                </span>
+                            </li>
+                            <li data-wpname="Straw Mat">
+                                <img src="images/image.png">
+                                <div class="mask"></div>
+                                <span>
+                                    <mad-string data-locid="MADCONF_DEFAULTWP_STRAW_MAT">Straw Mat</mad-string>
+                                </span>
+                            </li>
+                            <li data-wpname="Tiles">
+                                <img src="images/image.png">
+                                <div class="mask"></div>
+                                <span>
+                                    <mad-string data-locid="MADCONF_DEFAULTWP_TILES">Tiles</mad-string>
+                                </span>
+                            </li>
+                            <li data-wpname="Triangles">
+                                <img src="images/image.png">
+                                <div class="mask"></div>
+                                <span>
+                                    <mad-string data-locid="MADCONF_DEFAULTWP_TRIANGLES">Triangles</mad-string>
+                                </span>
+                            </li>
+                            <li data-wpname="Waves">
+                                <img src="images/image.png">
+                                <div class="mask"></div>
+                                <span>
+                                    <mad-string data-locid="MADCONF_DEFAULTWP_WAVES">Waves</mad-string>
+                                </span>
+                            </li>
+                            <li data-wpname="Clouds" data-nontile="1">
+                                <img src="images/image.png">
+                                <div class="mask"></div>
+                                <span>
+                                    <mad-string data-locid="MADCONF_DEFAULTWP_CLOUDS">Clouds</mad-string>
+                                </span>
+                            </li>
+                            <li data-wpname="Bliss" data-nontile="1">
+                                <img src="images/image.png">
+                                <div class="mask"></div>
+                                <span>
+                                    <mad-string data-locid="MADCONF_DEFAULTWP_BLISS">Bliss</mad-string>
+                                </span>
+                            </li>
+                            <li data-wpname="Aurora" data-nontile="1">
+                                <img src="images/image.png">
+                                <div class="mask"></div>
+                                <span>
+                                    <mad-string data-locid="MADCONF_DEFAULTWP_AURORA">Aurora</mad-string>
+                                </span>
+                            </li>
+                            <li data-wpname="Harmony" data-nontile="1">
+                                <img src="images/image.png">
+                                <div class="mask"></div>
+                                <span>
+                                    <mad-string data-locid="MADCONF_DEFAULTWP_HARMONY">Harmony</mad-string>
+                                </span>
+                            </li>
+                            <li>
+                                <img src="images/html.png">
+                                <div class="mask mask-html"></div>
+                                <span>Windows 98</span></li>
+                            <li id="customImgItem">
+                                <img src="images/image.png">
+                                <div class="mask"></div>
+                                <span>
+                                    <mad-string data-locid="MADCONF_WPCHOOSER_CURRENT_IMG">Current Image</mad-string>
+                                </span>
+                            </li>
+                            <li id="customWebImgItem">
+                                <img src="images/html.png">
+                                <div class="mask mask-html"></div>
+                                <span>
+                                    <mad-string data-locid="MADCONF_WPCHOOSER_CURRENT_WEB">Current Webpage</mad-string>
+                                </span>
+                            </li>
+                            <li id="weImgItem">
+                                <img src="images/image.png">
+                                <div class="mask"></div>
+                                <span>Wallpaper loaded from Wallpaper Engine</span>
+                            </li>
+                            <li id="videoImgItem">
+                                <img src="images/video.png">
+                                <div class="mask mask-video"></div>
+                                <span>
+                                    <mad-string data-locid="MADCONF_WPCHOOSER_VIDEO">Video Wallpaper</mad-string>
+                                </span>
+                            </li>
                         </ul>
                         <div>
-                            <button id="wpBrowseBtn"><u>B</u>rowse...</button><br>
-                            <button id="wpEnterUrlBtn"><u>E</u>nter URL...</button><br>
+                            <button id="wpBrowseBtn"><mad-string data-locid="UI_BROWSE"><u>B</u>rowse...</mad-string></button><br>
+                            <button id="wpEnterUrlBtn"><mad-string data-locid="MADCONF_WALLPAPER_ENTER_URL"><u>E</u>nter URL...</mad-string></button><br>
                             <span id="displayLabel"><u>D</u>isplay:</span><br>
                             <mad-select id="imgModeSelector" disabled>
-                                <option value="center">Center</option>
-                                <option value="grid">Tile</option>
-                                <option value="horizfit">Fit</option>
-                                <option value="vertfit">Fill</option>
-                                <option value="scale">Stretch</option>
+                                <option value="center"><mad-string data-locid="MADCONF_WPDISPLAY_CENTER">Center</mad-string></option>
+                                <option value="grid"><mad-string data-locid="MADCONF_WPDISPLAY_TILE">Tile</mad-string></option>
+                                <option value="horizfit"><mad-string data-locid="MADCONF_WPDISPLAY_FIT">Fit</mad-string></option>
+                                <option value="vertfit"><mad-string data-locid="MADCONF_WPDISPLAY_FILL">Fill</mad-string></option>
+                                <option value="scale"><mad-string data-locid="MADCONF_WPDISPLAY_STRETCH">Stretch</mad-string></option>
                             </mad-select>
                             <input id="wpVideoMuteChkBox" type="checkbox">
-                            <label for="wpVideoMuteChkBox" style="display: none;">Mute video</label>
+                            <label for="wpVideoMuteChkBox"><label><mad-string data-locid="MADCONF_WALLPAPER_MUTE">Mute video</mad-string></label>
                         </div>
                     </div>
                 </fieldset>
             </div>
         </div>
         <section class="bottomButtons field-row">
-            <button id="okBtn">OK</button>
-            <button id="cancelBtn">Cancel</button>
-            <button id="applyBtn"><u>A</u>pply</button>
+            <button id="okBtn"><mad-string data-locid="UI_OK">OK</mad-string></button>
+            <button id="cancelBtn"><mad-string data-locid="UI_CANCEL">Cancel</mad-string></button>
+            <button id="applyBtn"><mad-string data-locid="UI_APPLY"><u>A</u>pply</mad-string></button>
         </section>
     </div>
 
+    <script src="../../js/libmad-strings.js"></script>
     <script src="../../js/libmad.js"></script>
     <script src="js/common.js"></script>
     <script src="js/background.js"></script>

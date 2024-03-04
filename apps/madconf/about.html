@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>ModernActiveDesktop Properties</title>
+    <title data-locid="MADCONF_TITLE">ModernActiveDesktop Properties</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="../../css/98.css">
     <link rel="stylesheet" href="css/about.css">
@@ -11,22 +11,22 @@
 <body>
     <div id="madconf" class="madconf-about window-body">
         <menu role="tablist">
-            <li class="tab" role="tab" data-pagename="background"><a href="#tabs">Background</a></li>
-            <li class="tab" role="tab" data-pagename="appearance"><a href="#tabs">Appearance</a></li>
-            <li class="tab" role="tab" data-pagename="misc"><a href="#tabs">Miscellaneous</a></li>
-            <li class="tab" role="tab" data-pagename="about" aria-selected="true"><a href="#tabs">About</a></li>
+            <li class="tab" role="tab" data-pagename="background"><a href="#tabs"><mad-string data-locid="MADCONF_PAGE_BACKGROUND">Background</mad-string></a></li>
+            <li class="tab" role="tab" data-pagename="appearance"><a href="#tabs"><mad-string data-locid="MADCONF_PAGE_APPEARANCE">Appearance</mad-string></a></li>
+            <li class="tab" role="tab" data-pagename="misc"><a href="#tabs"><mad-string data-locid="MADCONF_PAGE_MISC">Miscellaneous</mad-string></a></li>
+            <li class="tab" role="tab" data-pagename="about" aria-selected="true"><a href="#tabs"><mad-string data-locid="MADCONF_PAGE_ABOUT">About</mad-string></a></li>
         </menu>
         <div class="window" role="tabpanel">
             <div class="window-body">
                 <p id="title">ModernActiveDesktop</p>
                 <img id="logo" src="../../images/mad32.png">
-                <p>Version: 3.2.0 Pre-release</p>
-                <p>Made by Ingan121 - <a href="https://www.ingan121.com/" target="_cv">www.ingan121.com</a></p>
+                <p><mad-string data-locid="UI_VERSION">Version</mad-string>: 3.2.0 Pre-release</p>
+                <p><mad-string data-locid="MADCONF_AUTHOR_NOTIFY">Made by Ingan121</mad-string> - <a href="https://www.ingan121.com/" target="_cv">www.ingan121.com</a></p>
                 <br>
-                <p><a href="#license" onclick="madOpenWindow('../license.txt', true)">Licensed under the MIT License</a></p>
+                <p><a href="#license" onclick="madOpenWindow('../license.txt', true)"><mad-string data-locid="MADCONF_LIC_NOTIFY">Licensed under the MIT License</mad-string></a></p>
                 <fieldset id="credits">
-                    <legend>Credits</legend>
-                    <p>ModernActiveDesktop uses the following projects:</p>
+                    <legend><mad-string data-locid="MADCONF_CREDITS_TITLE">Credits</mad-string></legend>
+                    <p><mad-string data-locid="MADCONF_CREDITS_START">ModernActiveDesktop uses the following projects:</mad-string></p>
                     <div id="creditsMain">
                         * <a href="https://jdan.github.io/98.css/" target="_cv"><b>98.css</b></a> - A CSS library for building Windows 98-like interfaces<br>
                         * <a href="https://botoxparty.github.io/XP.css/" target="_cv"><b>XP.css</b></a> - Used for the Windows XP style<br>
@@ -43,20 +43,29 @@
                     </div>
                 </fieldset>
                 <section class="buttons field-row">
-                    <button onclick="madOpenWindow('apps/welcome/index.html', true, '476px', '322px', 'wnd', true, undefined, undefined, false, true)">Show welcome</button>
-                    <button onclick="madOpenWindow('README.md', true)">Show readme</button>
-                    <button id="changelogBtn" onclick="madOpenWindow('Updated.md', true)">Changelog</button>
-                    <button id="githubBtn" onclick="window.open('https://github.com/Ingan121/ModernActiveDesktop')">GitHub</button>
+                    <button onclick="madOpenWindow('apps/welcome/index.html', true, '476px', '322px', 'wnd', true, undefined, undefined, false, true)">
+                        <mad-string data-locid="MADCONF_SHOW_WELCOME">Show welcome</mad-string>
+                    </button>
+                    <button onclick="madOpenWindow('README.md', true)">
+                        <mad-string data-locid="MADCONF_SHOW_README">Show readme</mad-string>
+                    </button>
+                    <button id="changelogBtn" onclick="madOpenWindow('Updated.md', true)">
+                        <mad-string data-locid="MADCONF_SHOW_CHANGELOG">Changelog</mad-string>
+                    </button>
+                    <button id="githubBtn" onclick="window.open('https://github.com/Ingan121/ModernActiveDesktop')">
+                        GitHub
+                    </button>
                 </section>
             </div>
         </div>
         <section class="bottomButtons field-row">
-            <button id="okBtn">OK</button>
-            <button id="cancelBtn">Cancel</button>
-            <button id="applyBtn"><u>A</u>pply</button>
+            <button id="okBtn"><mad-string data-locid="UI_OK">OK</mad-string></button>
+            <button id="cancelBtn"><mad-string data-locid="UI_CANCEL">Cancel</mad-string></button>
+            <button id="applyBtn"><mad-string data-locid="UI_APPLY"><u>A</u>pply</mad-string></button>
         </section>
     </div>
 
+    <script src="../../js/libmad-strings.js"></script>
     <script src="../../js/libmad.js"></script>
     <script src="js/common.js"></script>
     <script src="js/about.js"></script>

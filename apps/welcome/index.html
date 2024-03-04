@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Welcome to ModernActiveDesktop</title>
+    <title data-locid="WELCOME_TITLE">Welcome to ModernActiveDesktop</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="welcome.css">
     <link rel="stylesheet" href="../../css/98.css">
@@ -30,28 +30,28 @@
     <div id="line1" class="lines"></div>
     <div id="item1" class="items">
         <div class="itemText">
-            What's New
+            <mad-string data-locid="WELCOME_WHATS_NEW">What's New</mad-string>
         </div>
         <div class="checkmark">✓</div>
     </div>
     <div id="line2" class="lines"></div>
     <div id="item2" class="items">
         <div class="itemText">
-            Customize Desktop
+            <mad-string data-locid="WELCOME_CUSTOMIZE_DESKTOP">Customize Desktop</mad-string>
         </div>
         <div class="checkmark">✓</div>
     </div>
     <div id="line3" class="lines"></div>
     <div id="item3" class="items">
         <div class="itemText">
-            Setup System Plugin
+            <mad-string data-locid="WELCOME_SETUP_SYSPLUG">Setup System Plugin</mad-string>
         </div>
         <div class="checkmark">✓</div>
     </div>
     <div id="line4" class="lines"></div>
     <div id="item4" class="items">
         <div class="itemText">
-            Get Help
+            <mad-string data-locid="WELCOME_GET_SUPPORT">Get Support</mad-string>
         </div>
         <div class="checkmark">✓</div>
     </div>
@@ -59,7 +59,7 @@
 
     <div id="content0" class="contents">
         <p class="contentsTitle">
-            Welcome
+            <mad-string data-locid="WELCOME_MAIN_TITLE">Welcome</mad-string>
         </p>
         <p class="contentsText">
             Welcome to the exciting new world of ModernActiveDesktop, where your modern desktop meets the classic experience!
@@ -72,7 +72,7 @@
 
     <div id="content1" class="contents">
         <p class="contentsTitle">
-            What's New
+            <mad-string data-locid="WELCOME_WHATS_NEW">What's New</mad-string>
         </p>
         <p class="contentsText">
             ModernActiveDesktop 3.2 brings a lot of new features and improvements to your experience, including:
@@ -89,7 +89,7 @@
 
     <div id="content2" class="contents">
         <p class="contentsTitle">
-            Customize Desktop
+            <mad-string data-locid="WELCOME_CUSTOMIZE_DESKTOP">Customize Desktop</mad-string>
         </p>
         <p class="contentsText">
             ModernActiveDesktop provides a variety of options to customize your experience.
@@ -102,7 +102,7 @@
 
     <div id="content3" class="contents">
         <p class="contentsTitle">
-            Setup System Plugin
+            <mad-string data-locid="WELCOME_SETUP_SYSPLUG">Setup System Plugin</mad-string>
         </p>
         <p class="contentsText">
             For better usability, it is highly recommended to install the system plugin.
@@ -115,7 +115,7 @@
 
     <div id="content4" class="contents">
         <p class="contentsTitle">
-            Get Help
+            <mad-string data-locid="WELCOME_GET_SUPPORT">Get Support</mad-string>
         </p>
         <p class="contentsText">
             ModernActiveDesktop is an open-source project, and you can get help from the community.
@@ -129,9 +129,10 @@
     <img id="bgImg" src="resources/computer.png">
 
     <input id="showWelcome" type="checkbox" checked>
-    <label for="showWelcome">Show this screen each time ModernActiveDesktop starts.</label>
-    <button id="closeBtn"><u>C</u>lose</button>
+    <label for="showWelcome"><mad-string data-locid="WELCOME_AUTOSTART_CHKBOX">Show this screen each time ModernActiveDesktop starts.</mad-string></label>
+    <button id="closeBtn"><mad-string data-locid="UI_CLOSE"><u>C</u>lose</mad-string></button>
 
+    <script src="../../js/libmad-strings.js"></script>
     <script src="../../js/libmad.js"></script>
     <script src="welcome.js"></script>
 </body>

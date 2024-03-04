@@ -13,7 +13,7 @@
     <div id="container">
         <div id="inactiveWindow" class="window windowContainer">
             <div class="title-bar inactive">
-                <div class="title-bar-text">Inactive Window</div>
+                <div class="title-bar-text"><mad-string data-locid="MADCONF_PREVIEW_INACTIVE_WINDOW">Inactive Window</mad-string></div>
                 <div class="title-bar-controls">
                     <button class="window-button"></button>
                 </div>
@@ -21,32 +21,33 @@
         </div>
         <div id="activeWindow" class="window windowContainer">
             <div class="title-bar">
-                <div class="title-bar-text">Active Window</div>
+                <div class="title-bar-text"><mad-string data-locid="MADCONF_PREVIEW_ACTIVE_WINDOW">Active Window</mad-string></div>
                 <div class="title-bar-controls">
                     <button class="window-button"></button>
                 </div>
             </div>
             <div class="menu">
-                <div class="menuBtn">Normal</div>
-                <div class="menuBtn disabled">Disabled</div>
-                <div class="menuBtn" data-active="1"><span>Selected</span></div>
+                <div class="menuBtn"><mad-string data-locid="MADCONF_PREVIEW_MENU_NORMAL">Normal</mad-string></div>
+                <div class="menuBtn disabled"><mad-string data-locid="MADCONF_PREVIEW_MENU_DISABLED">Disabled</mad-string></div>
+                <div class="menuBtn" data-active="1"><span><mad-string data-locid="MADCONF_PREVIEW_MENU_SELECTED">Selected</mad-string></span></div>
             </div>
             <textarea class="borderedScrollBar" readonly>Window Text</textarea>
             <div id="scrollBarOverlay"></div>
         </div>
         <div id="msgbox" class="window windowContainer">
             <div class="title-bar">
-                <div class="title-bar-text">Message Box</div>
+                <div class="title-bar-text"><mad-string data-locid="MADCONF_PREVIEW_MESSAGE_BOX">Message Box</mad-string></div>
                 <div class="title-bar-controls">
                     <button class="window-button"></button>
                 </div>
             </div>
-            <p id="msgbox-msg">Message Text</p>
+            <p id="msgbox-msg"><mad-string data-locid="MADCONF_PREVIEW_MESSAGE_TEXT">Message Text</mad-string></p>
             <section class="field-row" style="justify-content: center">
-                <button id="msgbox-btn1">OK</button>
+                <button id="msgbox-btn1"><mad-string data-locid="UI_OK">OK</mad-string></button>
             </section>
         </div>
     </div>
+    <script src="../../js/libmad-strings.js"></script>
     <script src="js/scheme_preview.js"></script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Calculator</title>
+    <title data-locid="CALC_TITLE">Calculator</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="../../css/98.css">
@@ -13,9 +13,9 @@
 </head>
 <body id="madCalc">
     <div id="menuBar" class="menu">
-        <div id="editMenuBtn" class="menuBtn"><span><u>E</u>dit</span></div>
-        <div id="viewMenuBtn" class="menuBtn"><span><u>V</u>iew</span></div>
-        <div id="helpMenuBtn" class="menuBtn"><span><u>H</u>elp</span></div>
+        <div id="editMenuBtn" class="menuBtn"><span><mad-string data-locid="UI_MENU_EDIT"><u>E</u>dit</mad-string></span></div>
+        <div id="viewMenuBtn" class="menuBtn"><span><mad-string data-locid="UI_MENU_VIEW"><u>V</u>iew</mad-string></span></div>
+        <div id="helpMenuBtn" class="menuBtn"><span><mad-string data-locid="UI_MENU_HELP"><u>H</u>elp</mad-string></span></div>
     </div>
     <input id="calcDisplay" class="calcDisplay" type="text" value="0.">
     <div id="firstRow" class="field-row">
@@ -61,21 +61,22 @@
 
     <div id="editMenuBg" class="contextMenuBg window" tabindex="-1">
         <div id="editMenu" class="contextMenu window-body">
-            <div class="contextMenuItem"><p><u>C</u>opy</p></div>
-            <div class="contextMenuItem disabled"><p><u>P</u>aste</p></div>
+            <div class="contextMenuItem"><p><mad-string data-locid="UI_COPY"><u>C</u>opy</mad-string></p></div>
+            <div class="contextMenuItem disabled"><p><mad-string data-locid="UI_PASTE"><u>P</u>aste</mad-string></p></div>
         </div>
     </div>
     <div id="viewMenuBg" class="contextMenuBg window" tabindex="-1">
         <div id="viewMenu" class="contextMenu window-body">
-            <div class="contextMenuItem activeStyle"><p>S<u>t</u>andard</p></div>
-            <div class="contextMenuItem disabled"><p><u>S</u>cientific</p></div>
+            <div class="contextMenuItem activeStyle"><p><mad-string data-locid="CALC_VIEW_MENUITEM_STANDARD">S<u>t</u>andard</mad-string></p></div>
+            <div class="contextMenuItem disabled"><p><mad-string data-locid="CALC_VIEW_MENUITEM_SCIENTIFIC"><u>S</u>cientific</mad-string></p></div>
         </div>
     </div>
     <div id="helpMenuBg" class="contextMenuBg window" tabindex="-1">
         <div id="helpMenu" class="contextMenu window-body">
-            <div class="contextMenuItem"><p>A<u>b</u>out Calculator</p></div>
+            <div class="contextMenuItem"><p><mad-string data-locid="CALC_HELP_MENUITEM_ABOUT"><u>A</u>bout Calculator</mad-string></p></div>
         </div>
     </div>
+    <script src="../../js/libmad-strings.js"></script>
     <script src="../../js/libmad.js"></script>
     <script src="../../js/libmad-menu.js"></script>
     <script src="calc.js"></script>

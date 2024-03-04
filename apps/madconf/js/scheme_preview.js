@@ -104,6 +104,7 @@ if (localStorage.madesktopAeroColor) {
     changeAeroColor(localStorage.madesktopAeroColor);
 }
 changeAeroGlass(localStorage.madesktopAeroNoGlass);
+textarea.value = madGetString("MADCONF_PREVIEW_WINDOW_TEXT");
 
 new MutationObserver(function (mutations) {
     document.body.style.zoom = parent.document.body.style.zoom || 1;

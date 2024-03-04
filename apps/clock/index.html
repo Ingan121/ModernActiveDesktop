@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Clock</title>
+    <title data-locid="CLOCK_TITLE">Clock</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="../../css/98.css">
@@ -25,7 +25,7 @@
     </svg>
 
     <div id="menuBar" class="menu">
-        <div id="settingsMenuBtn" class="menuBtn"><span><u>S</u>ettings</span></div>
+        <div id="settingsMenuBtn" class="menuBtn"><span><mad-string data-locid="CLOCK_MENU_SETTINGS"><u>S</u>ettings</mad-string></span></div>
     </div>
     <div id="mainArea">
         <canvas id="analogClock"></canvas>
@@ -39,20 +39,21 @@
 
     <div id="settingsMenuBg" class="contextMenuBg window" tabindex="-1">
         <div id="settingsMenu" class="contextMenu window-body">
-            <div class="contextMenuItem activeStyle"><p><u>A</u>nalog</p></div>
-            <div class="contextMenuItem"><p><u>D</u>igital</p></div>
+            <div class="contextMenuItem activeStyle"><p><mad-string data-locid="CLOCK_MENUITEM_ANALOG"><u>A</u>nalog</mad-string></p></div>
+            <div class="contextMenuItem"><p><mad-string data-locid="CLOCK_MENUITEM_DIGITAL"><u>D</u>igital</mad-string></p></div>
             <hr>
-            <div class="contextMenuItem"><p>Set <span id="confLabel"><u>C</u>olors</span>...</p></div>
+            <div class="contextMenuItem"><p id="confLabel"><mad-string data-locid="CLOCK_MENUITEM_SET_COLORS">Set <u>C</u>olors...</mad-string></p></div>
             <hr>
-            <div class="contextMenuItem"><p><u>G</u>MT</p></div>
-            <div class="contextMenuItem"><p><u>N</u>o Title</p></div>
+            <div class="contextMenuItem"><p><mad-string data-locid="CLOCK_MENUITEM_GMT"><u>G</u>MT</mad-string></p></div>
+            <div class="contextMenuItem"><p><mad-string data-locid="CLOCK_MENUITEM_NO_TITLE"><u>N</u>o Title</mad-string></p></div>
             <hr>
-            <div class="contextMenuItem checkedItem"><p><u>S</u>econds</p></div>
-            <div class="contextMenuItem checkedItem"><p>Da<u>t</u>e</p></div>
+            <div class="contextMenuItem checkedItem"><p><mad-string data-locid="CLOCK_MENUITEM_SECONDS"><u>S</u>econds</mad-string></p></div>
+            <div class="contextMenuItem checkedItem"><p><mad-string data-locid="CLOCK_MENUITEM_DATE">Da<u>t</u>e</mad-string></p></div>
             <hr>
-            <div class="contextMenuItem"><p>A<u>b</u>out Clock...</p></div>
+            <div class="contextMenuItem"><p><mad-string data-locid="CLOCK_MENUITEM_ABOUT">A<u>b</u>out Clock...</mad-string></p></div>
         </div>
     </div>
+    <script src="../../js/libmad-strings.js"></script>
     <script src="../../js/libmad.js"></script>
     <script src="../../js/libmad-menu.js"></script>
     <script src="clock.js"></script>

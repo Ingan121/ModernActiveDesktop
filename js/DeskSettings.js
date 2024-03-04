@@ -36,7 +36,6 @@ const toggleModeBtn = document.getElementById("toggleModeBtn");
 const soundScheme = {};
 
 const isWin10 = navigator.userAgent.includes('Windows NT 10.0');
-const NO_SYSPLUG_ALERT = "System plugin is not running. Please make sure you have installed it properly. If you don't want to use it, please disable the system plugin integration option.";
 
 let lastZIndex = parseInt(localStorage.madesktopItemCount) || 0;
 let lastAoTZIndex = lastZIndex + 50000;
@@ -1036,13 +1035,13 @@ function openExternalExternally(url, fullscreen, noInternal = false) {
             .then(response => response.text())
             .then(responseText => {
                 if (responseText !== "OK") {
-                    madAlert("An error occured!\nSystem plugin response: " + responseText, function () {
+                    madAlert(madGetString("UI_MSG_SYSPLUG_ERROR") + responseText, function () {
                         copyPrompt(url);
                     }, "error");
                 }
             })
             .catch(error => {
-                madAlert("System plugin is not running. Please make sure you have installed it properly.", function () {
+                madAlert(madGetString("UI_MSG_NO_SYSPLUG"), function () {
                     copyPrompt(url);
                 }, "warning");
             });
@@ -1053,7 +1052,7 @@ function openExternalExternally(url, fullscreen, noInternal = false) {
     function copyPrompt(url) {
         if (!noInternal) {
             openExternal(url, fullscreen, "", true, true);
-        } else if (prompt("Paste this URL in the browser's address bar. Click OK to copy.", url)) {
+        } else if (prompt(madGetString("MAD_MSG_LINK_COPY_PROMPT"), url)) {
             const tmp = document.createElement("textarea");
             document.body.appendChild(tmp);
             tmp.value = url;

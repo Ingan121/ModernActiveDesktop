@@ -46,6 +46,10 @@ p {
     margin-bottom: 2px;
 }
 
+fieldset {
+    position: relative;
+}
+
 .topmargin, fieldset {
     margin-top: 5px;
 }

@@ -24,11 +24,10 @@ const showGuideBtn = document.getElementById('showGuideBtn');
 const inetcplBtn = document.getElementById('inetcplBtn');
 const exportBtn = document.getElementById('exportBtn');
 const importBtn = document.getElementById('importBtn');
+const langSelector = document.getElementById('langSelector');
 const resetBtn = document.getElementById('resetBtn');
 
 const isWin10 = navigator.userAgent.includes('Windows NT 10.0');
-
-const NEWER_CONF_MSG = "This configuration file is for a newer version of ModernActiveDesktop. Please update ModernActiveDesktop to import this configuration.";
 
 let config = {
     dpi: parent.scaleFactor,
@@ -40,7 +39,8 @@ let config = {
     leftIcon: localStorage.madesktopChanViewLeftMargin || '75px',
     rightIcon: localStorage.madesktopChanViewRightMargin || 0,
     topIcon: localStorage.madesktopChanViewTopMargin || 0,
-    bottomIcon: localStorage.madesktopChanViewBottomMargin || '48px'
+    bottomIcon: localStorage.madesktopChanViewBottomMargin || '48px',
+    lang: window.madLang
 };
 
 switch (config.dpi * 100) {
@@ -92,7 +92,7 @@ dpiSlider.value = dpiSelector.selectedIndex;
 if (navigator.userAgent.includes("Firefox")) {
     dpiSelector.disabled = true;
     dpiSlider.disabled = true;
-    dpiLabel.textContent = "Display Scaling (not supported in Firefox)";
+    dpiLabel.textContent = madGetString("MADCONF_DPI_TITLE_FF_UNSUPPORTED");
 }
 
 if (isWin10) {
@@ -102,7 +102,7 @@ if (isWin10) {
 } else {
     sysplugChkBox.disabled = true;
     connectTestBtn.disabled = true;
-    connectionStatus.textContent = "System plugin requires Windows 10 or higher.";
+    connectionStatus.textContent = madGetString("MADCONF_SYSPLUG_UNSUPPORTED");
     showGuideBtn.disabled = true;
 }
 
@@ -126,6 +126,8 @@ leftIconArea.value = config.leftIcon;
 rightIconArea.value = config.rightIcon;
 topIconArea.value = config.topIcon;
 bottomIconArea.value = config.bottomIcon;
+
+langSelector.value = config.lang;
 
 window.apply = function () {
     parent.changeScale(config.dpi);
@@ -168,6 +170,9 @@ window.apply = function () {
     localStorage.madesktopChanViewTopMargin = config.topIcon;
     localStorage.madesktopChanViewBottomMargin = config.bottomIcon;
 
+    parent.changeLanguage(config.lang);
+    localStorage.madesktopLang = config.lang;
+
     madAnnounce("sysplug-option-changed");
 }
 
@@ -187,14 +192,14 @@ dpiSelector.addEventListener('change', function () {
                 }
                 dpiSelector.value = config.dpi;
                 dpiSlider.value = dpiSelector.selectedIndex;
-                dpiSelectorCustom.textContent = "Custom";
+                dpiSelectorCustom.textContent = madGetString("UI_CUSTOM");
                 return;
             }
             config.dpi = res / 100;
             dpiSelectorCustom.textContent = res + "%";
         });
     } else {
-        dpiSelectorCustom.textContent = "Custom";
+        dpiSelectorCustom.textContent = madGetString("UI_CUSTOM");
         config.dpi = this.value;
     }
 });
@@ -264,7 +269,7 @@ exportBtn.addEventListener('click', function () {
     }
     const json = JSON.stringify(madConfig);
     copyText(json);
-    madAlert("Configuration copied to clipboard! Paste it to a text file and save it to import it later.");
+    madAlert(madGetString("MADCONF_CONF_COPIED"));
 });
 
 importBtn.addEventListener('click', async function () {
@@ -279,48 +284,52 @@ importBtn.addEventListener('click', async function () {
             const confVerSplit = confVer.split(".");
             const lastVerSplit = localStorage.madesktopLastVer.split(".");
             if (confVerSplit[0] > lastVerSplit[0]) {
-                madAlert(NEWER_CONF_MSG, null, "info");
+                madAlert(madGetString("MADCONF_NEWER_CONF_MSG"));
                 return;
             } else if (confVerSplit[0] === lastVerSplit[0]) {
                 if (confVerSplit[1] > lastVerSplit[1]) {
-                    madAlert(NEWER_CONF_MSG, null, "info");
+                    madAlert(madGetString("MADCONF_NEWER_CONF_MSG"));
                     return;
                 } else if (confVerSplit[1] === lastVerSplit[1]) {
                     if (confVerSplit[2] > lastVerSplit[2]) {
-                        madAlert(NEWER_CONF_MSG, null, "info");
+                        madAlert(madGetString("MADCONF_NEWER_CONF_MSG"));
                         return;
                     }
                 }
             }
         } else {
-            madAlert("Invalid configuration file!", null, "error");
+            madAlert(madGetString("MADCONF_CONF_INVALID"), null, "error");
             return;
         }
-        const res = await madConfirm("Importing this configuration will overwrite your current configuration. Are you sure you want to continue?");
+        const res = await madConfirm(madGetString("MADCONF_CONF_IMPORT_CONFIRM"));
         if (res) {
             localStorage.madesktopConfigToImport = text;
             parent.location.replace("../../confmgr.html?action=import");
         }
     } catch {
-        madAlert("Invalid configuration file!", null, "error");
+        madAlert(madGetString("MADCONF_CONF_INVALID"), null, "error");
     }
+});
+
+langSelector.addEventListener('change', function () {
+    config.lang = this.value;
 });
 
 resetBtn.addEventListener('click', parent.reset);
 
 function checkSysplug() {
-    connectionStatus.textContent = "Checking system plugin connectivity...";
+    connectionStatus.textContent = madGetString("MADCONF_CONNECTTEST_CHECKING");
     fetch("http://localhost:3031/connecttest")
         .then(response => response.text())
         .then(responseText => {
             if (responseText !== localStorage.madesktopLastVer) {
-                connectionStatus.textContent = "System plugin is outdated! Please update the system plugin with the guide.";
+                connectionStatus.textContent = madGetString("MADCONF_CONNECTTEST_OUTDATED");
             } else {
-                connectionStatus.textContent = "System plugin connection successful!";
+                connectionStatus.textContent = madGetString("MADCONF_CONNECTTEST_SUCCESS");
             }
         })
         .catch(error => {
-            connectionStatus.textContent = "System plugin is not running. Please install the system plugin.";
+            connectionStatus.textContent = madGetString("MADCONF_CONNECTTEST_FAIL");
         });
 }
 

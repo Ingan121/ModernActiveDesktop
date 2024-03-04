@@ -40,29 +40,29 @@
         </div>
         <div class="windowMenuBg contextMenuBg window" tabindex="-1">
             <div class="windowMenu contextMenu window-body">
-                <div class="contextMenuItem"><p>C<u>o</u>nfigure</p><p class="submenuMark">⏵</p></div>
-                <div class="contextMenuItem debug"><p><u>D</u>ebug <span class="windowNumber"></span></p></div>
-                <div class="contextMenuItem"><p>R<u>e</u>set</p></div>
-                <div class="contextMenuItem"><p><u>R</u>eload</p></div>
-                <div class="contextMenuItem closeIcon"><p><b><u>C</u>lose</b></p></div>
+                <div class="contextMenuItem"><p><mad-string data-locid="MAD_WINDOW_MENUITEM_CONFIGURE">C<u>o</u>nfigure</mad-string></p><p class="submenuMark">⏵</p></div>
+                <div class="contextMenuItem debug"><p><mad-string data-locid="MAD_WINDOW_MENUITEM_DEBUG"><u>D</u>ebug</mad-string> <span class="windowNumber"></span></p></div>
+                <div class="contextMenuItem"><p><mad-string data-locid="MAD_WINDOW_MENUITEM_RESET">R<u>e</u>set</mad-string></p></div>
+                <div class="contextMenuItem"><p><mad-string data-locid="MAD_WINDOW_MENUITEM_RELOAD"><u>R</u>eload</mad-string></p></div>
+                <div class="contextMenuItem closeIcon"><p><b><mad-string data-locid="UI_CLOSE"><u>C</u>lose</mad-string></b></p></div>
             </div>
         </div>
         <div class="confMenuBg contextMenuBg window" tabindex="-1">
             <div class="confMenu contextMenu window-body">
-                <div class="contextMenuItem"><p><u>A</u>ctive Desktop</p></div>
-                <div class="contextMenuItem"><p><u>N</u>on-ActiveDesktop Channel Bar</p></div>
-                <div class="contextMenuItem"><p><u>W</u>indow</p></div>
+                <div class="contextMenuItem"><p><mad-string data-locid="MAD_CONF_MENUITEM_AD"><u>A</u>ctive Desktop</mad-string></p></div>
+                <div class="contextMenuItem"><p><mad-string data-locid="MAD_CONF_MENUITEM_NONAD"><u>N</u>on-ActiveDesktop Channel Bar</mad-string></p></div>
+                <div class="contextMenuItem"><p><mad-string data-locid="MAD_CONF_MENUITEM_WND"><u>W</u>indow</mad-string></p></div>
                 <hr>
-                <div class="contextMenuItem checkedItem"><p><u>S</u>cale contents</p></div>
-                <div class="contextMenuItem"><p>A<u>l</u>ways on top</p></div>
-                <div class="contextMenuItem checkedItem"><p>Re<u>s</u>izable</p></div>
+                <div class="contextMenuItem checkedItem"><p><mad-string data-locid="MAD_CONF_MENUITEM_SCALE"><u>S</u>cale contents</mad-string></p></div>
+                <div class="contextMenuItem"><p><mad-string data-locid="MAD_CONF_MENUITEM_AOT">A<u>l</u>ways on top</mad-string></p></div>
+                <div class="contextMenuItem checkedItem"><p><mad-string data-locid="MAD_CONF_MENUITEM_RESIZABLE">Re<u>s</u>izable</mad-string></p></div>
                 <hr>
-                <div class="contextMenuItem"><p><u>C</u>hange URL</p></div>
-                <div class="contextMenuItem"><p>Change <u>t</u>itle</p></div>
+                <div class="contextMenuItem"><p><mad-string data-locid="MAD_CONF_MENUITEM_CHANGE_URL"><u>C</u>hange URL</mad-string></p></div>
+                <div class="contextMenuItem"><p><mad-string data-locid="MAD_CONF_MENUITEM_CHANGE_TITLE">Change <u>t</u>itle</mad-string></p></div>
                 <hr>
-                <div class="contextMenuItem"><p>N<u>e</u>w window</p></div>
-                <div class="contextMenuItem"><p><u>R</u>eload wallpaper</p></div>
-                <div class="contextMenuItem"><p><u>P</u>roperties</p></div>
+                <div class="contextMenuItem"><p><mad-string data-locid="MAD_CONF_MENUITEM_NEW_WINDOW">N<u>e</u>w window</mad-string></p></div>
+                <div class="contextMenuItem"><p><mad-string data-locid="MAD_CONF_MENUITEM_RELOAD_WALLPAPER"><u>R</u>eload wallpaper</mad-string></p></div>
+                <div class="contextMenuItem"><p><mad-string data-locid="UI_MENUITEM_PROPERTIES"><u>P</u>roperties</mad-string></p></div>
             </div>
         </div>
     </div>
@@ -71,8 +71,8 @@
     </div>
     <div id="mainMenuBg" class="contextMenuBg window" tabindex="-1">
         <div id="mainMenu" class="contextMenu window-body">
-            <div class="contextMenuItem"><p><u>N</u>ew</p></div>
-            <div class="contextMenuItem"><p>P<u>r</u>operties</p></div>
+            <div class="contextMenuItem"><p><mad-string data-locid="MAD_MAIN_MENUITEM_NEW"><u>N</u>ew</mad-string></p></div>
+            <div class="contextMenuItem"><p><mad-string data-locid="UI_MENUITEM_PROPERTIES">P<u>r</u>operties</mad-string></p></div>
         </div>
     </div>
     <div id="msgboxBg">
@@ -90,8 +90,8 @@
                 </section>
                 <input id="msgbox-input" type="text" autocomplete="off">
                 <section id="msgbox-buttons" class="field-row">
-                    <button id="msgbox-btn1">OK</button>
-                    <button id="msgbox-btn2">Cancel</button>
+                    <button id="msgbox-btn1"><mad-string data-locid="UI_OK">OK</mad-string></button>
+                    <button id="msgbox-btn2"><mad-string data-locid="UI_CANCEL">Cancel</mad-string></button>
                 </section>
             </div>
         </div>
@@ -120,7 +120,7 @@
             <div class="miniPickerColor" style="background-color: #A0A0A4"></div>
         </div>
         <hr>
-        <button class="openColorPickerBtn"><u>O</u>ther...</button>
+        <button class="openColorPickerBtn"><mad-string data-locid="UI_OTHER"><u>O</u>ther...</mad-string></button>
     </div>
     <div id="errorWnd" class="window">
         <p id="errorMsg">ModernActiveDesktop failed to initialize because of an unknown error. Please consult the log below and report this to https://github.com/Ingan121/ModernActiveDesktop/issues.</p>
@@ -164,6 +164,7 @@
             document.body.removeChild(tmp);
         }
     </script>
+    <script src="js/libmad-strings.js"></script>
     <script src="js/DeskMover.js"></script>
     <script src="js/DeskSettings.js"></script>
 </body>

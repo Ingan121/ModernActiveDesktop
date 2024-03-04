@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Visualization</title>
+    <title data-locid="VISUALIZER_TITLE" data-no-update-on-loc-change="1">Visualization</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="../../css/98.css">
@@ -13,22 +13,24 @@
 </head>
 <body id="madVis">
     <div id="menuBar" class="menu">
-        <div id="visMenuBtn" class="menuBtn"><span>Vi<u>s</u>ualizer</span></div>
-        <div id="viewMenuBtn" class="menuBtn"><span><u>V</u>iew</span></div>
-        <div id="optMenuBtn" class="menuBtn"><span><u>O</u>ptions</span></div>
-        <div id="helpMenuBtn" class="menuBtn"><span><u>H</u>elp</span></div>
+        <div id="visMenuBtn" class="menuBtn"><span><mad-string data-locid="VISUALIZER_MENU_VIS">Vi<u>s</u>ualizer</mad-string></span></div>
+        <div id="viewMenuBtn" class="menuBtn"><span><mad-string data-locid="UI_MENU_VIEW"><u>V</u>iew</mad-string></span></div>
+        <div id="optMenuBtn" class="menuBtn"><span><mad-string data-locid="VISUALIZER_MENU_OPT"><u>O</u>ptions</mad-string></span></div>
+        <div id="helpMenuBtn" class="menuBtn"><span><mad-string data-locid="UI_MENU_HELP"><u>H</u>elp</mad-string></span></div>
     </div>
     <div id="mainArea">
         <div id="pausedAlert">
-            Update has been paused. Click here to resume.
+            <mad-string data-locid="VISUALIZER_PAUSED_ALERT">Update has been paused. Click here to resume.</mad-string>
             <span id="extraAlert">
                 <br><br>
-                Having problems? Please try the following:
-                <ul>
-                    <li>1. Make sure 'Audio recording' is enabled in the Wallpaper Engine properties panel.</li>
-                    <li>2. Try <a href="javascript:top.location.reload()">reloading the wallpaper</a>.</li>
-                    <li>3. Try restarting Wallpaper Engine.</li>
-                </ul>
+                <mad-string data-locid="VISUALIZER_EXTRA_ALERT">
+                    Having problems? Please try the following:
+                    <ul>
+                        <li>1. Make sure 'Audio recording' is enabled in the Wallpaper Engine properties panel.</li>
+                        <li>2. Try <a href="javascript:top.location.reload()">reloading the wallpaper</a>.</li>
+                        <li>3. Try restarting Wallpaper Engine.</li>
+                    </ul>
+                </mad-string>
             </span>
         </div>
         <img id="albumArt" src="">
@@ -48,12 +50,24 @@
         <div id="infoArea">
             <div id="infoMainArea">
                 <div id="leftArea">
-                    <div id="title" class="infoItem"><p>Title:</p></div>
-                    <div id="subtitle" class="infoItem"><p>Subtitle:</p></div>
-                    <div id="artist" class="infoItem"><p>Artist:</p></div>
-                    <div id="album" class="infoItem"><p>Album:</p></div>
-                    <div id="albumArtist" class="infoItem"><p>Album Artist:</p></div>
-                    <div id="genre" class="infoItem"><p>Genre:</p></div>
+                    <div id="title" class="infoItem">
+                        <p><mad-string data-locid="VISUALIZER_INFO_TITLE">Title</mad-string>:</p>
+                    </div>
+                    <div id="subtitle" class="infoItem">
+                        <p><mad-string data-locid="VISUALIZER_INFO_SUBTITLE">Subtitle</mad-string>:</p>
+                    </div>
+                    <div id="artist" class="infoItem">
+                        <p><mad-string data-locid="VISUALIZER_INFO_ARTIST">Artist</mad-string>:</p>
+                    </div>
+                    <div id="album" class="infoItem">
+                        <p><mad-string data-locid="VISUALIZER_INFO_ALBUM">Album</mad-string>:</p>
+                    </div>
+                    <div id="albumArtist" class="infoItem">
+                        <p><mad-string data-locid="VISUALIZER_INFO_ALBUM_ARTIST">Album Artist</mad-string>:</p>
+                    </div>
+                    <div id="genre" class="infoItem">
+                        <p><mad-string data-locid="VISUALIZER_INFO_GENRE">Genre</mad-string>:</p>
+                    </div>
                 </div>
                 <div id="rightArea">
                     <div id="titleValue" class="infoItem"><p></p></div>
@@ -66,7 +80,7 @@
             </div>
             <hr id="infoAreaSeparator">
             <div id="statusBar">
-                <div id="statusText" class="infoItem"><p><span>Stopped</span></p></div>
+                <div id="statusText" class="infoItem"><p><span><mad-string data-locid="VISUALIZER_STATUS_STOPPED">Stopped</mad-string></span></p></div>
                 <div id="timeText" class="infoItem"><p><span>00:00 / 00:00</span></p></div>
                 <img id="speaker" src="speaker.png">
             </div>
@@ -75,31 +89,32 @@
 
     <div id="visMenuBg" class="contextMenuBg window" tabindex="-1">
         <div id="visMenu" class="contextMenu window-body">
-            <div class="contextMenuItem"><p><u>A</u>lbum Art</p></div>
-            <div class="contextMenuItem activeStyle"><p>WMP <u>B</u>ars</p></div>
+            <div class="contextMenuItem"><p><mad-string data-locid="VISUALIZER_VIS_MENUITEM_ALBUM_ART"><u>A</u>lbum Art</mad-string></p></div>
+            <div class="contextMenuItem activeStyle"><p><mad-string data-locid="VISUALIZER_VIS_MENUITEM_WMP_BARS">WMP <u>B</u>ars</mad-string></p></div>
             <hr>
-            <div class="contextMenuItem"><p>E<u>x</u>it</p></div>
+            <div class="contextMenuItem"><p><mad-string data-locid="UI_EXIT">E<u>x</u>it</mad-string></p></div>
         </div>
     </div>
     <div id="viewMenuBg" class="contextMenuBg window" tabindex="-1">
         <div id="viewMenu" class="contextMenu window-body">
-            <div class="contextMenuItem"><p><u>A</u>utohide Menu Bar</p></div>
-            <div class="contextMenuItem"><p><u>F</u>ull Screen</p></div>
-            <div class="contextMenuItem"><p><u>I</u>nformation</p></div>
-            <div class="contextMenuItem"><p>Playback <u>S</u>tatus</p></div>
-            <div class="contextMenuItem disabled"><p><u>E</u>nable Media Controls</p></div>
+            <div class="contextMenuItem"><p><mad-string data-locid="VISUALIZER_VIEW_MENUITEM_AUTOHIDE_MENU_BAR"><u>A</u>utohide Menu Bar</mad-string></p></div>
+            <div class="contextMenuItem"><p><mad-string data-locid="UI_MENUITEM_FULL_SCREEN"><u>F</u>ull Screen</mad-string></p></div>
+            <div class="contextMenuItem"><p><mad-string data-locid="VISUALIZER_VIEW_MENUITEM_INFORMATION"><u>I</u>nformation</mad-string></p></div>
+            <div class="contextMenuItem"><p><mad-string data-locid="VISUALIZER_VIEW_MENUITEM_PLAYBACK_STATUS">Playback <u>S</u>tatus</mad-string></p></div>
+            <div class="contextMenuItem disabled"><p><mad-string data-locid="VISUALIZER_VIEW_MENUITEM_ENABLE_MEDIA_CONTROLS"><u>E</u>nable Media Controls</mad-string></p></div>
         </div>
     </div>
     <div id="optMenuBg" class="contextMenuBg window" tabindex="-1">
         <div id="optMenu" class="contextMenu window-body">
-            <div class="contextMenuItem"><p><u>C</u>onfigure Visualization</p></div>
+            <div class="contextMenuItem"><p><mad-string data-locid="VISUALIZER_OPT_MENUITEM_VISCONF"><u>C</u>onfigure Visualization</mad-string></p></div>
         </div>
     </div>
     <div id="helpMenuBg" class="contextMenuBg window" tabindex="-1">
         <div id="helpMenu" class="contextMenu window-body">
-            <div class="contextMenuItem"><p><u>A</u>bout Visualizer</p></div>
+            <div class="contextMenuItem"><p><mad-string data-locid="VISUALIZER_HELP_MENUITEM_ABOUT"><u>A</u>bout Visualizer</mad-string></p></div>
         </div>
     </div>
+    <script src="../../js/libmad-strings.js"></script>
     <script src="../../js/libmad.js"></script>
     <script src="../../js/libmad-menu.js"></script>
     <script src="main.js"></script>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>ModernActiveDesktop Properties</title>
+    <title data-locid="MADCONF_TITLE">ModernActiveDesktop Properties</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="../../css/98.css">
     <link rel="stylesheet" href="css/appearance.css">
@@ -11,50 +11,114 @@
 <body>
     <div id="madconf" class="madconf-appearance window-body">
         <menu role="tablist">
-            <li class="tab" role="tab" data-pagename="background"><a href="#tabs">Background</a></li>
-            <li class="tab" role="tab" data-pagename="appearance" aria-selected="true"><a href="#tabs">Appearance</a></li>
-            <li class="tab" role="tab" data-pagename="misc"><a href="#tabs">Miscellaneous</a></li>
-            <li class="tab" role="tab" data-pagename="about"><a href="#tabs">About</a></li>
+            <li class="tab" role="tab" data-pagename="background"><a href="#tabs"><mad-string data-locid="MADCONF_PAGE_BACKGROUND">Background</mad-string></a></li>
+            <li class="tab" role="tab" data-pagename="appearance" aria-selected="true"><a href="#tabs"><mad-string data-locid="MADCONF_PAGE_APPEARANCE">Appearance</mad-string></a></li>
+            <li class="tab" role="tab" data-pagename="misc"><a href="#tabs"><mad-string data-locid="MADCONF_PAGE_MISC">Miscellaneous</mad-string></a></li>
+            <li class="tab" role="tab" data-pagename="about"><a href="#tabs"><mad-string data-locid="MADCONF_PAGE_ABOUT">About</mad-string></a></li>
         </menu>
         <div class="window" role="tabpanel">
             <div class="window-body">
                 <iframe id="schemePreview" src="scheme_preview.html"></iframe>
                 <div id="conf">
                     <p id="schemeSelectorGroup">
-                        <span class="groupLabel"><u>S</u>cheme:</span><br>
+                        <span class="groupLabel"><mad-string data-locid="MADCONF_SCHEME_TITLE"><u>S</u>cheme:</mad-string></span><br>
                         <mad-select id="schemeSelector">
-                            <option value="current" selected hidden>Current Scheme</option>
-                            <option value="98">Windows Classic (98)</option>
-                            <option value="2k">Windows Standard (2000 / Me)</option>
-                            <option value="xpcss4mad" data-inconfigurable="1">Windows XP style</option>
-                            <option value="7css4mad" data-inconfigurable="1">Windows Aero</option>
-                            <option value="sys" data-inconfigurable="1" data-condition="sysplugIntegration">System Scheme</option>
-                            <option value="import" data-inconfigurable="1">Browse...</option>
-                            <option value="brick">Brick</option>
-                            <option value="desert">Desert</option>
-                            <option value="eggplant">Eggplant</option>
-                            <option value="lilac">Lilac</option>
-                            <option value="maple">Maple</option>
-                            <option value="marine">Marine</option>
-                            <option value="plum">Plum</option>
-                            <option value="pumpkin">Pumpkin</option>
-                            <option value="rainy_day">Rainy Day</option>
-                            <option value="red_white_and_blue">Red, White, and Blue</option>
-                            <option value="rose">Rose</option>
-                            <option value="slate">Slate</option>
-                            <option value="spruce">Spruce</option>
-                            <option value="storm">Storm</option>
-                            <option value="teal">Teal</option>
-                            <option value="wheat">Wheat</option>
-                            <option value="windose" data-inconfigurable="1">Windose</option>
-                            <option value="catppuccin_mocha">Catppuccin Mocha</option>
-                            <option value="xp_olive">Windows XP Olive Green</option>
-                            <option value="xp_silver">Windows XP Silver</option>
-                            <option value="xp_royale">Windows XP Royale</option>
-                            <option value="xp">Windows XP Fallback</option>
-                            <option value="aero">Windows Aero Fallback</option>
-                            <option value="95">Windows Classic (95 / NT4)</option>
-                            <option value="98se">Windows Classic (98SE)</option>
+                            <option value="current" selected hidden>
+                                <mad-string data-locid="MADCONF_CURRENT_SCHEME">Current Scheme</mad-string>
+                            </option>
+                            <option value="98">
+                                <mad-string data-locid="MADCONF_SCHEME_CLASSIC">Windows Classic</mad-string> (98)
+                            </option>
+                            <option value="2k">
+                                <mad-string data-locid="MADCONF_SCHEME_STANDARD">Windows Standard</mad-string> (2000 / Me)
+                            </option>
+                            <option value="xpcss4mad" data-inconfigurable="1">
+                                <mad-string data-locid="MADCONF_SCHEME_LUNA">Windows XP style</mad-string>
+                            </option>
+                            <option value="7css4mad" data-inconfigurable="1">
+                                Windows Aero
+                            </option>
+                            <option value="sys" data-inconfigurable="1" data-condition="sysplugIntegration">
+                                <mad-string data-locid="MADCONF_SCHEME_SYSTEM">System Scheme</mad-string>
+                            </option>
+                            <option value="import" data-inconfigurable="1">
+                                <mad-string data-locid="MADCONF_SCHEME_IMPORT">Browse...</mad-string>
+                            </option>
+                            <option value="brick">
+                                <mad-string data-locid="MADCONF_SCHEME_BRICK">Brick</mad-string>
+                            </option>
+                            <option value="desert">
+                                <mad-string data-locid="MADCONF_SCHEME_DESERT">Desert</mad-string>
+                            </option>
+                            <option value="eggplant">
+                                <mad-string data-locid="MADCONF_SCHEME_EGGPLANT">Eggplant</mad-string>
+                            </option>
+                            <option value="lilac">
+                                <mad-string data-locid="MADCONF_SCHEME_LILAC">Lilac</mad-string>
+                            </option>
+                            <option value="maple">
+                                <mad-string data-locid="MADCONF_SCHEME_MAPLE">Maple</mad-string>
+                            </option>
+                            <option value="marine">
+                                <mad-string data-locid="MADCONF_SCHEME_MARINE">Marine</mad-string>
+                            </option>
+                            <option value="plum">
+                                <mad-string data-locid="MADCONF_SCHEME_PLUM">Plum</mad-string>
+                            </option>
+                            <option value="pumpkin">
+                                <mad-string data-locid="MADCONF_SCHEME_PUMPKIN">Pumpkin</mad-string>
+                            </option>
+                            <option value="rainy_day">
+                                <mad-string data-locid="MADCONF_SCHEME_RAINY_DAY">Rainy Day</mad-string>
+                            </option>
+                            <option value="red_white_and_blue">
+                                <mad-string data-locid="MADCONF_SCHEME_RED_WHITE_AND_BLUE">Red, White, and Blue</mad-string>
+                            </option>
+                            <option value="rose">
+                                <mad-string data-locid="MADCONF_SCHEME_ROSE">Rose</mad-string>
+                            </option>
+                            <option value="slate">
+                                <mad-string data-locid="MADCONF_SCHEME_SLATE">Slate</mad-string>
+                            </option>
+                            <option value="spruce">
+                                <mad-string data-locid="MADCONF_SCHEME_SPRUCE">Spruce</mad-string>
+                            </option>
+                            <option value="storm">
+                                <mad-string data-locid="MADCONF_SCHEME_STORM">Storm</mad-string>
+                            </option>
+                            <option value="teal">
+                                <mad-string data-locid="MADCONF_SCHEME_TEAL">Teal</mad-string>
+                            </option>
+                            <option value="wheat">
+                                <mad-string data-locid="MADCONF_SCHEME_WHEAT">Wheat</mad-string>
+                            </option>
+                            <option value="windose" data-inconfigurable="1">
+                                Windose
+                            </option>
+                            <option value="catppuccin_mocha">
+                                Catppuccin Mocha
+                            </option>
+                            <option value="xp_olive">
+                                Windows XP <mad-string data-locid="MADCONF_SCHEME_XP_OLIVE">Olive Green</mad-string>
+                            </option>
+                            <option value="xp_silver">
+                                Windows XP <mad-string data-locid="MADCONF_SCHEME_XP_SILVER">Silver</mad-string>
+                            </option>
+                            <option value="xp_royale">
+                                Windows XP <mad-string data-locid="MADCONF_SCHEME_XP_ROYALE">Royale</mad-string>
+                            </option>
+                            <option value="xp">
+                                Windows XP <mad-string data-locid="MADCONF_SCHEME_FALLBACK">Fallback</mad-string>
+                            </option>
+                            <option value="aero">
+                                Windows Aero <mad-string data-locid="MADCONF_SCHEME_FALLBACK">Fallback</mad-string>
+                            </option>
+                            <option value="95">
+                                <mad-string data-locid="MADCONF_SCHEME_CLASSIC">Windows Classic</mad-string> (95 / NT4)
+                            </option>
+                            <option value="98se">
+                                <mad-string data-locid="MADCONF_SCHEME_CLASSIC">Windows Classic</mad-string> (98SE)
+                            </option>
                             <option value="plus_baseball">Plus! Baseball</option>
                             <option value="plus_dangerous_creatures">Plus! Dangerous Creatures</option>
                             <option value="plus_inside_your_computer">Plus! Inside your Computer</option>
@@ -114,38 +178,80 @@
                             <option value="win3_valentine">Win 3 - Valentine</option>
                             <option value="win3_wingtips">Win 3 - Wingtips</option>
                         </mad-select>
-                        <button id="saveAsBtn">Sa<u>v</u>e As..</button>
-                        <button id="deleteBtn" disabled><u>D</u>elete</button>
+                        <button id="saveAsBtn"><mad-string data-locid="MADCONF_SCHEME_SAVE_AS">Sa<u>v</u>e As..</mad-string></button>
+                        <button id="deleteBtn" disabled><mad-string data-locid="MADCONF_SCHEME_DELETE"><u>D</u>elete</mad-string></button>
                     </p>
                     <section id="schemeEditorGroup" class="field-row">
                         <p id="selectorWrap">
-                            <span class="groupLabel"><u>I</u>tem:</span>
+                            <span class="groupLabel"><mad-string data-locid="MADCONF_ITEM_TITLE"><u>I</u>tem:</mad-string></span>
                             <mad-select id="selector">
-                                <option value="button-face">3D Object</option>
-                                <option value="button-hilight">3D Light</option>
-                                <option value="button-shadow">3D Shadow</option>
-                                <option value="active-title">Active Title Bar</option>
-                                <option value="active-border">Active Window Border</option>
-                                <option value="app-workspace">Application Background</option>
-                                <option value="caption-buttons">Caption Buttons</option>
-                                <option value="background" selected>Desktop</option>
-                                <option value="gray-text">Disabled Item</option>
-                                <option value="hot-tracking-color">Hyperlink</option>
-                                <option value="inactive-title">Inactive Title Bar</option>
-                                <option value="inactive-border">Inactive Window Border</option>
-                                <option value="menu">Menu</option>
-                                <option value="menu-bar">Menu Bar (Flat)</option>
-                                <option value="message-box">Message Box</option>
-                                <option value="palette-title">Palette Title</option>
-                                <option value="scrollbar">Scrollbar</option>
-                                <option value="hilight">Selected Item</option>
-                                <option value="info-window">ToolTip</option>
-                                <option value="user-interface">UI Font</option>
-                                <option value="window">Window</option>
+                                <option value="button-face">
+                                    <mad-string data-locid="MADCONF_ITEM_BUTTON_FACE">3D Object</mad-string>
+                                </option>
+                                <option value="button-hilight">
+                                    <mad-string data-locid="MADCONF_ITEM_BUTTON_HILIGHT">3D Light</mad-string>
+                                </option>
+                                <option value="button-shadow">
+                                    <mad-string data-locid="MADCONF_ITEM_BUTTON_SHADOW">3D Shadow</mad-string>
+                                </option>
+                                <option value="active-title">
+                                    <mad-string data-locid="MADCONF_ITEM_ACTIVE_TITLE">Active Title Bar</mad-string>
+                                </option>
+                                <option value="active-border">
+                                    <mad-string data-locid="MADCONF_ITEM_ACTIVE_BORDER">Active Window Border</mad-string>
+                                </option>
+                                <option value="app-workspace">
+                                    <mad-string data-locid="MADCONF_ITEM_APP_WORKSPACE">Application Background</mad-string>
+                                </option>
+                                <option value="caption-buttons">
+                                    <mad-string data-locid="MADCONF_ITEM_CAPTION_BUTTONS">Caption Buttons</mad-string>
+                                </option>
+                                <option value="background" selected>
+                                    <mad-string data-locid="MADCONF_ITEM_BACKGROUND">Desktop</mad-string>
+                                </option>
+                                <option value="gray-text">
+                                    <mad-string data-locid="MADCONF_ITEM_GRAY_TEXT">Disabled Item</mad-string>
+                                </option>
+                                <option value="hot-tracking-color">
+                                    <mad-string data-locid="MADCONF_ITEM_HOT_TRACKING_COLOR">Hyperlink</mad-string>
+                                </option>
+                                <option value="inactive-title">
+                                    <mad-string data-locid="MADCONF_ITEM_INACTIVE_TITLE">Inactive Title Bar</mad-string>
+                                </option>
+                                <option value="inactive-border">
+                                    <mad-string data-locid="MADCONF_ITEM_INACTIVE_BORDER">Inactive Window Border</mad-string>
+                                </option>
+                                <option value="menu">
+                                    <mad-string data-locid="MADCONF_ITEM_MENU">Menu</mad-string>
+                                </option>
+                                <option value="menu-bar">
+                                    <mad-string data-locid="MADCONF_ITEM_MENU_BAR">Menu Bar (Flat)</mad-string>
+                                </option>
+                                <option value="message-box">
+                                    <mad-string data-locid="MADCONF_ITEM_MESSAGE_BOX">Message Box</mad-string>
+                                </option>
+                                <option value="palette-title">
+                                    <mad-string data-locid="MADCONF_ITEM_PALETTE_TITLE">Palette Title</mad-string>
+                                </option>
+                                <option value="scrollbar">
+                                    <mad-string data-locid="MADCONF_ITEM_SCROLLBAR">Scrollbar</mad-string>
+                                </option>
+                                <option value="hilight">
+                                    <mad-string data-locid="MADCONF_ITEM_HILIGHT">Selected Item</mad-string>
+                                </option>
+                                <option value="info-window">
+                                    <mad-string data-locid="MADCONF_ITEM_INFO_WINDOW">ToolTip</mad-string>
+                                </option>
+                                <option value="user-interface">
+                                    <mad-string data-locid="MADCONF_ITEM_USER_INTERFACE">UI Font</mad-string>
+                                </option>
+                                <option value="window">
+                                    <mad-string data-locid="MADCONF_ITEM_WINDOW">Window</mad-string>
+                                </option>
                             </mad-select>
                         </p>
                         <p id="itemSizeWrap" class="disabled">
-                            <span id="itemSizeLabel" class="label">Si<u>z</u>e:</span>
+                            <span id="itemSizeLabel" class="label"><mad-string data-locid="MADCONF_ITEM_SIZE_TITLE">Si<u>z</u>e:</mad-string></span>
                             <input id="itemSize" type="number" min="0" max="100" value="" disabled>
                             <span id="itemSizeButtons">
                                 <button id="itemSizeUp" disabled>⏶</button>
@@ -153,7 +259,7 @@
                             </span>
                         </p>
                         <p id="firstColorWrap">
-                            <span id="firstColorLabel" class="label">Co<u>l</u>or:</span>
+                            <span id="firstColorLabel" class="label"><mad-string data-locid="MADCONF_COLOR_TITLE">Co<u>l</u>or:</mad-string></span>
                             <button id="firstColor" class="colorPicker">
                                 <div class="colorPicker-color"></div>
                                 <div class="colorPicker-bar"></div>
@@ -161,7 +267,7 @@
                             </button>
                         </p>
                         <p id="secondColorWrap" class="disabled">
-                            <span id="secondColorLabel" class="label">Color <u>2</u>:</span>
+                            <span id="secondColorLabel" class="label"><mad-string data-locid="MADCONF_COLOR2_TITLE">Color <u>2</u>:</mad-string></span>
                             <button id="secondColor" class="colorPicker" disabled>
                                 <div class="colorPicker-color"></div>
                                 <div class="colorPicker-bar"></div>
@@ -171,20 +277,20 @@
                     </section>
                     <section id="fontEditorGroup" class="field-row">
                         <p id="fontSelectorWrap">
-                            <span class="groupLabel"><u>F</u>ont:</span>
+                            <span class="groupLabel"><mad-string data-locid="MADCONF_FONT_TITLE"><u>F</u>ont:</mad-string></span>
                             <mad-select id="fontSelector" disabled>
                                 <option hidden selected></option>
                                 <option value="Pixelated MS Sans Serif">Pixelated MS Sans Serif</option>
                                 <option value="Fixedsys Excelsior">Fixedsys Excelsior</option>
-                                <option value="custom">Custom</option>
+                                <option value="custom"><mad-string data-locid="UI_CUSTOM">Custom</mad-string></option>
                             </mad-select>
                         </p>
                         <p id="fontSizeWrap" class="disabled">
-                            <span class="label">Siz<u>e</u>:</span>
+                            <span class="label"><mad-string data-locid="MADCONF_FONT_SIZE_TITLE">Siz<u>e</u>:</mad-string></span>
                             <input id="fontSize" type="number" min="0" max="100" value="" disabled>
                         </p>
                         <p id="textColorWrap" class="disabled">
-                            <span id="textColorLabel" class="label">Colo<u>r</u>:</span>
+                            <span id="textColorLabel" class="label"><mad-string data-locid="MADCONF_TEXT_COLOR_TITLE">Colo<u>r</u>:</mad-string></span>
                             <button id="textColor" class="colorPicker" disabled>
                                 <div class="colorPicker-color"></div>
                                 <div class="colorPicker-bar"></div>
@@ -216,13 +322,14 @@
             </div>
         </div>
         <section class="bottomButtons field-row">
-            <button id="effectsBtn"><u>E</u>ffects</button>
-            <button id="okBtn">OK</button>
-            <button id="cancelBtn">Cancel</button>
-            <button id="applyBtn"><u>A</u>pply</button>
+            <button id="effectsBtn"><mad-string data-locid="MADCONF_EFFECTS_BTN"><u>E</u>ffects</mad-string></button>
+            <button id="okBtn"><mad-string data-locid="UI_OK">OK</mad-string></button>
+            <button id="cancelBtn"><mad-string data-locid="UI_CANCEL">Cancel</mad-string></button>
+            <button id="applyBtn"><mad-string data-locid="UI_APPLY"><u>A</u>pply</mad-string></button>
         </section>
     </div>
 
+    <script src="../../js/libmad-strings.js"></script>
     <script src="../../js/libmad.js"></script>
     <script src="js/common.js"></script>
     <script src="../jspaint/lib/font-detective.js"></script>

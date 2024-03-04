@@ -9,18 +9,18 @@ if (parent === window) {
 } else if (!frameElement) {
     alert("MADVis is being cross-origin restricted. Please run ModernActiveDesktop with a web server.");
 } else if (madRunningMode === 0) {
-    madAlert("Sorry, but the visualizer is only available for Wallpaper Engine and Lively Wallpaper.", null, "error");
+    madAlert(madGetString("VISUALIZER_UNSUPPORTED_MSG"), null, "error");
     madDeskMover.isVisualizer = true;
     madCloseWindow();
 } else if (parent.visDeskMover && parent.visDeskMover !== madDeskMover) {
-    madAlert("Only one instance of the visualizer can be open at a time.", null, "warning");
+    madAlert(madGetString("VISUALIZER_MULTI_INSTANCE_MSG"), null, "warning");
     madCloseWindow();
 } else if (localStorage.madesktopVisUnavailable) {
     // Although the media integration is available, it is not reliable to be used in MAD
     // because we don't have a way to check if the media listener is invalidated or not
     // This happens frequently when an iframe loads a page or gets closed
     // See also: the bottom of wmpvis.js
-    madAlert("Audio recording is not enabled. Please enable it in the Wallpaper Engine properties panel.", null, "error");
+    madAlert(madGetString("VISUALIZER_NO_AUDIO_MSG"), null, "error");
     madDeskMover.isVisualizer = true;
     madCloseWindow();
 } else {
@@ -78,9 +78,7 @@ const optMenuItems = document.querySelectorAll('#optMenu .contextMenuItem');
 const helpMenuItems = document.querySelectorAll('#helpMenu .contextMenuItem');
 
 const isWin10 = navigator.userAgent.includes('Windows NT 10.0');
-const NO_MEDINT_MSG = isWin10
-    ? 'Media integration support is disabled. Please enable it in Wallpaper Engine settings -> General -> Media integration support.'
-    : 'This feature requires Windows 10 or higher.';
+const NO_MEDINT_MSG = isWin10 ? "NO_MEDINT_MSG" : "MEDINT_UNAVAILABLE_MSG";
 
 let mouseOverMenu = false;
 let mediaIntegrationAvailable = isWin10;
@@ -171,7 +169,7 @@ madDeskMover.menu = new MadMenu(menuBar, ['vis', 'view', 'opt', 'help']);
 
 visMenuItems[0].addEventListener('click', () => { // Album Art button
     if (!mediaIntegrationAvailable) {
-        madAlert(NO_MEDINT_MSG, null, isWin10 ? 'info' : 'error');
+        madAlert(madGetString(NO_MEDINT_MSG), null, isWin10 ? 'info' : 'error');
         return;
     }
 
@@ -230,7 +228,7 @@ viewMenuItems[1].addEventListener('click', () => { // Fullscreen button
 
 viewMenuItems[2].addEventListener('click', () => { // Information button
     if (!mediaIntegrationAvailable) {
-        madAlert(NO_MEDINT_MSG, null, isWin10 ? 'info' : 'error');
+        madAlert(madGetString(NO_MEDINT_MSG), null, isWin10 ? 'info' : 'error');
         return;
     }
 
@@ -278,7 +276,7 @@ viewMenuItems[2].addEventListener('click', () => { // Information button
 
 viewMenuItems[3].addEventListener('click', () => { // Playback Status button
     if (!mediaIntegrationAvailable) {
-        madAlert(NO_MEDINT_MSG, null, isWin10 ? 'info' : 'error');
+        madAlert(madGetString(NO_MEDINT_MSG), null, isWin10 ? 'info' : 'error');
         return;
     }
 
@@ -335,7 +333,7 @@ viewMenuItems[3].addEventListener('click', () => { // Playback Status button
 
 viewMenuItems[4].addEventListener('click', () => { // Enable Media Controls button
     if (!mediaIntegrationAvailable) {
-        madAlert(NO_MEDINT_MSG, null, isWin10 ? 'info' : 'error');
+        madAlert(madGetString(NO_MEDINT_MSG), null, isWin10 ? 'info' : 'error');
         return;
     }
 
@@ -352,7 +350,7 @@ viewMenuItems[4].addEventListener('click', () => { // Enable Media Controls butt
                 viewMenuItems[3].click();
             }
         } else {
-            madAlert('This feature requires system plugin integration.', () => {
+            madAlert(madGetString("UI_MSG_SYSPLUG_REQUIRED"), () => {
                 madOpenWindow('SysplugSetupGuide.md', true);
             });
         }
@@ -384,11 +382,11 @@ function mediaControl(action, title = lastMusic.title) {
         .then(response => response.text())
         .then(responseText => {
             if (responseText !== 'OK') {
-                madAlert('An error occurred while processing the media control request.<br>' + responseText);
+                madAlert(madGetString("VISUALIZER_MEDIA_CONTROL_ERROR") + '<br>' + responseText);
             }
         })
         .catch(error => {
-            madAlert("System plugin is not running. Please make sure you have installed it properly.", function () {
+            madAlert(madGetString("UI_MSG_NO_SYSPLUG"), function () {
                 madOpenWindow('SysplugSetupGuide.md', true);
             }, "warning");
         });
@@ -430,7 +428,7 @@ function wallpaperMediaStatusListener(event) {
 
 function wallpaperMediaPropertiesListener(event) {
     if (!event.title) {
-        document.title = 'Visualization';
+        document.title = madGetString("VISUALIZER_TITLE");
         titleValue.textContent = '';
         subtitleValue.textContent = '';
         artistValue.textContent = '';
@@ -536,21 +534,21 @@ function wallpaperMediaPlaybackListener(event) {
             delete pauseIcon.dataset.active;
             delete stopIcon.dataset.active;
             delete pauseIcon.dataset.disabled;
-            statusText.textContent = 'Playing';
+            statusText.textContent = madGetString("VISUALIZER_STATUS_PLAYING");
             break;
         case window.wallpaperMediaIntegration.PLAYBACK_PAUSED:
             delete playIcon.dataset.active;
             pauseIcon.dataset.active = true;
             delete stopIcon.dataset.active;
             delete pauseIcon.dataset.disabled;
-            statusText.textContent = 'Paused';
+            statusText.textContent = madGetString("VISUALIZER_STATUS_PAUSED");
             break;
         case window.wallpaperMediaIntegration.PLAYBACK_STOPPED:
             delete playIcon.dataset.active;
             delete pauseIcon.dataset.active;
             stopIcon.dataset.active = true;
             pauseIcon.dataset.disabled = true;
-            statusText.textContent = 'Stopped';
+            statusText.textContent = madGetString("VISUALIZER_STATUS_STOPPED");
     }
 }
 

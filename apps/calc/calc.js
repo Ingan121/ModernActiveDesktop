@@ -158,7 +158,7 @@ sqrt.addEventListener('click', function () {
         return;
     }
     if (parseFloat(calcDisplay.value) < 0) {
-        calcDisplay.value = 'Invalid input for function.';
+        calcDisplay.value = madGetString("CALC_ERROR_NEGATIVE_SQRT");
         displayNum = '';
         return;
     }
@@ -307,11 +307,11 @@ function updateDisplay() {
         calcDisplay.value = '0.';
     } else {
         if (displayNum === 'Infinity') {
-            calcDisplay.value = 'Error: Positive Infinity.';
+            calcDisplay.value = madGetString("CALC_ERROR_POSITIVE_INFINITY");
         } else if (displayNum === '-Infinity') {
-            calcDisplay.value = 'Error: Negative Infinity.';
+            calcDisplay.value = madGetString("CALC_ERROR_NEGATIVE_INFINITY");
         } else if (displayNum === 'NaN') {
-            calcDisplay.value = 'Result of function is undefined.';
+            calcDisplay.value = madGetString("CALC_ERROR_NAN");
         } else if (displayNum.includes('.')) {
             calcDisplay.value = displayNum;
         } else {

@@ -1369,11 +1369,11 @@ class DeskMover {
         if (window.runningMode === WE) {
             if (this.windowElement.contentWindow.location.href === "chrome-error://chromewebdata/") {
                 if (this.firstLoadSuccess) {
-                    madAlert("ModernActiveDesktop cannot load this URL due to a security policy.", () => {
+                    madAlert(madGetString("MAD_ERROR_X_FRAME_OPTIONS"), () => {
                         this.windowElement.src = this.config.src || "placeholder.html";
                     }, "error");
                 } else {
-                    madConfirm("ModernActiveDesktop cannot load this URL due to a security policy. Do you want to open this page in ChannelViewer instead?", res => {
+                    madConfirm(madGetString("MAD_CONFIRM_X_FRAME_OPTIONS"), res => {
                         if (res) {
                             openExternal(this.config.src, false, "", false);
                         }
@@ -1407,11 +1407,11 @@ class DeskMover {
                 localStorage.removeItem("madesktopCheckedGithub");
                 this.windowElement.contentWindow.location.reload();
             } else {
-                madAlert("This window is temporary, so it cannot be reset. Just close it.");
+                madAlert(madGetString("MAD_MSG_TEMP_WINDOW"));
             }
             return;
         }
-        madConfirm("Are you sure you want to reset this window?", res => {
+        madConfirm(madGetString("MAD_CONFIRM_RESET"), res => {
             if (res) {
                 this.#clearConfig();
                 if (this.isVisualizer) {
@@ -1470,7 +1470,7 @@ class DeskMover {
             urlToShow = "";
         }
 
-        madPrompt("Enter URL (leave empty to reset)", url => {
+        madPrompt(madGetString("MAD_PROMPT_ENTER_URL"), url => {
             if (url === null) return;
             if (!url) {
                 if (this.numStr === "") url = "ChannelBar.html";
@@ -1496,7 +1496,7 @@ class DeskMover {
 
     #changeTitle() {
         this.closeContextMenu();
-        madPrompt("Enter title (leave empty to reset)", title => {
+        madPrompt(madGetString("MAD_PROMPT_ENTER_TITLE"), title => {
             if (title === null) return;
             if (title) {
                 this.windowTitleText.textContent = title;

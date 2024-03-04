@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>ModernActiveDesktop Properties</title>
+    <title data-locid="MADCONF_TITLE">ModernActiveDesktop Properties</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="../../css/98.css">
     <link rel="stylesheet" href="css/misc.css">
@@ -11,15 +11,15 @@
 <body>
     <div id="madconf" class="madconf-misc window-body">
         <menu role="tablist">
-            <li class="tab" role="tab" data-pagename="background"><a href="#tabs">Background</a></li>
-            <li class="tab" role="tab" data-pagename="appearance"><a href="#tabs">Appearance</a></li>
-            <li class="tab" role="tab" data-pagename="misc" aria-selected="true"><a href="#tabs">Miscellaneous</a></li>
-            <li class="tab" role="tab" data-pagename="about"><a href="#tabs">About</a></li>
+            <li class="tab" role="tab" data-pagename="background"><a href="#tabs"><mad-string data-locid="MADCONF_PAGE_BACKGROUND">Background</mad-string></a></li>
+            <li class="tab" role="tab" data-pagename="appearance"><a href="#tabs"><mad-string data-locid="MADCONF_PAGE_APPEARANCE">Appearance</mad-string></a></li>
+            <li class="tab" role="tab" data-pagename="misc" aria-selected="true"><a href="#tabs"><mad-string data-locid="MADCONF_PAGE_MISC">Miscellaneous</mad-string></a></li>
+            <li class="tab" role="tab" data-pagename="about"><a href="#tabs"><mad-string data-locid="MADCONF_PAGE_ABOUT">About</mad-string></a></li>
         </menu>
         <div class="window" role="tabpanel">
             <div class="window-body">
                 <fieldset>
-                    <legend id="dpiLabel">Display scaling</legend>
+                    <legend id="dpiLabel"><mad-string data-locid="MADCONF_DPI_TITLE">Display scaling</mad-string></legend>
                     <div class="field-row">
                         100%
                         <input id="dpiSlider" type="range" min="0" max="8" value="0" />
@@ -38,31 +38,32 @@
                             <option value="3.5">350%</option>
                             <option value="3.75">375%</option>
                             <option value="4">400%</option>
-                            <option value="custom">Custom</option>
+                            <option value="custom"><mad-string data-locid="UI_CUSTOM">Custom</mad-string></option>
                         </mad-select>
                     </div>
                 </fieldset>
                 <fieldset>
-                    <legend>System plugin integration</legend>
+                    <legend><mad-string data-locid="MADCONF_SYSPLUG_INT_TITLE">System plugin integration</mad-string></legend>
                     <input id="sysplugChkBox" type="checkbox">
-                    <label for="sysplugChkBox">Enable system plugin integration</label>
+                    <label for="sysplugChkBox"><mad-string data-locid="MADCONF_SYSPLUG_CHKBOX">Enable system plugin integration</mad-string></label>
+                    <button id="inetcplBtn"><mad-string data-locid="MADCONF_OPEN_INETCPL">Internet Options</mad-string></button>
                     <div class="topmargin field-row">
-                        <button id="connectTestBtn">Check connectivity</button>
-                        <button id="showGuideBtn">Show setup guide</button>
+                        <button id="connectTestBtn"><mad-string data-locid="MADCONF_SYSPLUG_CONNECTTEST">Check connectivity</mad-string></button>
+                        <button id="showGuideBtn"><mad-string data-locid="MADCONF_SYSPLUG_GUIDE">Show setup guide</mad-string></button>
                     </div>
-                    <p id="connectionStatus">Click the above button to begin the connectivity check</p>
+                    <p id="connectionStatus"><mad-string data-locid="MADCONF_CONNECTTEST_INITIAL">Click the above button to begin the connectivity check</mad-string></p>
                 </fieldset>
                 <fieldset>
-                    <legend>Sounds</legend>
+                    <legend><mad-string data-locid="MADCONF_SOUND_TITLE">Sounds</mad-string></legend>
                     <div class="field-row">
                         <div id="soundChkBoxes">
                             <input id="startSoundChkBox" type="checkbox">
-                            <label for="startSoundChkBox">Play startup sound</label><br>
+                            <label for="startSoundChkBox"><mad-string data-locid="MADCONF_START_SOUND">Play startup sound</mad-string></label><br>
                             <input id="alertSoundChkBox" type="checkbox">
-                            <label for="alertSoundChkBox">Play alert sounds</label>
+                            <label for="alertSoundChkBox"><mad-string data-locid="MADCONF_ALERT_SOUND">Play alert sounds</mad-string></label>
                         </div>
                         <div id="schemeArea">
-                            <span id="soundSchemeLabel">Sound Scheme:</span>
+                            <span id="soundSchemeLabel"><mad-string data-locid="MADCONF_SOUND_SCHEME">Sound Scheme</mad-string></span>
                             <mad-select id="soundSchemeSelector">
                                 <option value="3">Windows 3.x</option>
                                 <option value="95">Windows 95</option>
@@ -80,36 +81,42 @@
                     </div>
                 </fieldset>
                 <fieldset>
-                    <legend>Window management</legend>
-                    <span id="iconAreaLabel">Wallpaper margin (icon area):</span>
+                    <legend><mad-string data-locid="MADCONF_WIN_MGMT_TITLE">Window management</mad-string></legend>
+                    <span id="iconAreaLabel"><mad-string data-locid="MADCONF_MARGIN_TITLE">Wallpaper margin (icon area)</mad-string>:</span>
                     <input id="noDisableChkBox" type="checkbox">
-                    <label for="noDisableChkBox">Do not deactivate windows</label><br>
+                    <label for="noDisableChkBox"><mad-string data-locid="MADCONF_NODEACTIVATE">Do not deactivate windows</mad-string></label><br>
                     <div class="topmargin field-row">
-                        <label for="leftIconArea">Left</label>
+                        <label for="leftIconArea"><mad-string data-locid="MADCONF_MARGIN_LEFT">Left</mad-string></label>
                         <input id="leftIconArea" class="shortInput" type="text" value="75px"/>
-                        <label for="rightIconArea">Right</label>
+                        <label for="rightIconArea"><mad-string data-locid="MADCONF_MARGIN_RIGHT">Right</mad-string></label>
                         <input id="rightIconArea" class="shortInput" type="text" value="0"/>
-                        <label for="topIconArea">Top</label>
+                        <label for="topIconArea"><mad-string data-locid="MADCONF_MARGIN_TOP">Top</mad-string></label>
                         <input id="topIconArea" class="shortInput" type="text" value="0"/>
-                        <label for="bottomIconArea">Bottom</label>
+                        <label for="bottomIconArea"><mad-string data-locid="MADCONF_MARGIN_BOTTOM">Bottom</mad-string></label>
                         <input id="bottomIconArea" class="shortInput" type="text" value="48px"/>
                     </div>
                 </fieldset>
                 <div class="buttons field-row">
-                    <button id="inetcplBtn">Internet Options</button>
-                    <button id="exportBtn">Export config</button>
-                    <button id="importBtn">Import config</button>
+                    <mad-string data-locid="MADCONF_CONFIG_TITLE">Config</mad-string>:
+                    <button id="exportBtn"><mad-string data-locid="MADCONF_CONFIG_EXPORT">Export</mad-string></button>
+                    <button id="importBtn"><mad-string data-locid="MADCONF_CONFIG_IMPORT">Import</mad-string></button>
+                    <mad-string data-locid="MADCONF_LANG_TITLE">Language</mad-string>:
+                    <mad-select id="langSelector">
+                        <option value="en">English</option>
+                        <option value="ko">한국어</option>
+                    </mad-select>
                 </div>
             </div>
         </div>
         <section class="bottomButtons field-row">
-            <button id="resetBtn">Reset config</button>
-            <button id="okBtn">OK</button>
-            <button id="cancelBtn">Cancel</button>
-            <button id="applyBtn"><u>A</u>pply</button>
+            <button id="resetBtn"><mad-string data-locid="MADCONF_CONFIG_RESET">Reset config</mad-string></button>
+            <button id="okBtn"><mad-string data-locid="UI_OK">OK</mad-string></button>
+            <button id="cancelBtn"><mad-string data-locid="UI_CANCEL">Cancel</mad-string></button>
+            <button id="applyBtn"><mad-string data-locid="UI_APPLY"><u>A</u>pply</mad-string></button>
         </section>
     </div>
 
+    <script src="../../js/libmad-strings.js"></script>
     <script src="../../js/libmad.js"></script>
     <script src="js/common.js"></script>
     <script src="js/misc.js"></script>

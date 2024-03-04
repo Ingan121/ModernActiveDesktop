@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Select Card Back</title>
+    <title data-locid="SOL_CARD_BACK_TITLE">Select Card Back</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="../../css/98.css">
     <link rel="stylesheet" href="cards.css">
@@ -37,11 +37,12 @@
             <img src="cards/xp_12.png">
         </div>
         <section class="field-row" style="justify-content: center;">
-            <button id="okBtn">OK</button>
-            <button id="cancelBtn" onclick="madCloseWindow()">Cancel</button>
+            <button id="okBtn"><mad-string data-locid="UI_OK">OK</mad-string></button>
+            <button id="cancelBtn" onclick="madCloseWindow()"><mad-string data-locid="UI_CANCEL">Cancel</mad-string></button>
         </section>
     </div>
-    
+
+    <script src="../../js/libmad-strings.js"></script>
     <script src="../../js/libmad.js"></script>
     <script src="cards.js"></script>
 </body>

@@ -4,6 +4,12 @@
     width: 80px;
 }
 
+#inetcplBtn {
+    position: absolute;
+    top: 6px;
+    right: 12px;
+}
+
 #schemeArea {
     margin-left: 20px;
 }
@@ -20,9 +26,17 @@
 label[for="noDisableChkBox"] {
     position: absolute !important;
     margin-top: 2px;
-    right: 28px;
+    right: 20px;
 }
 
 .buttons {
     margin-top: 5px;
+}
+
+#exportBtn {
+    margin-left: 5px;
+}
+
+#langSelector {
+    width: 70px;
 }

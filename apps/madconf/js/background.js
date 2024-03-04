@@ -19,7 +19,7 @@ const wpVideoMuteChkBox = document.getElementById('wpVideoMuteChkBox');
 const wpVideoMuteLabel = document.querySelector('label[for=wpVideoMuteChkBox]');
 
 for (const imgItem of imgItems) {
-    wallMap[imgItem.textContent] = imgItem;
+    wallMap[imgItem.dataset.wpname] = imgItem;
     imgItem.addEventListener('click', function () {
         const i = Array.from(imgItems).indexOf(this);
         if (i === 0) {
@@ -27,8 +27,8 @@ for (const imgItem of imgItems) {
             preview.contentDocument.body.style.backgroundImage = 'none';
             imgModeSelector.disabled = true;
             switchDisplayOptionElement(false);
-        } else if (i >= 1 && i <= 16) {
-            if (i === 9 || i === 13 || i === 14 || i === 15 || i === 16) {
+        } else if (i >= 1 && i <= 17) {
+            if (this.dataset.nontile) {
                 imgModeSelector.value = 'scale';
                 preview.contentWindow.changeBgImgMode('scale');
             } else {
@@ -36,10 +36,10 @@ for (const imgItem of imgItems) {
                 preview.contentWindow.changeBgImgMode('grid');
             }
             preview.contentWindow.changeBgType('image');
-            preview.contentDocument.body.style.backgroundImage = `url('../../wallpapers/${this.textContent}.png')`;
+            preview.contentDocument.body.style.backgroundImage = `url('../../wallpapers/${this.dataset.wpname}.png')`;
             imgModeSelector.disabled = false;
             switchDisplayOptionElement(false);
-        } else if (i === 17) {
+        } else if (i === 18) {
             preview.contentWindow.changeBgType('web');
             preview.contentWindow.bgHtmlView.src = '../../bghtml/index.html';
             imgModeSelector.disabled = true;
@@ -214,8 +214,8 @@ if (localStorage.madesktopBgType == 'web') {
         if (activeItem) {
             delete activeItem.dataset.active;
         }
-        imgItems[17].dataset.active = true;
-        scrollIntoView(imgItems[17]);
+        imgItems[18].dataset.active = true;
+        scrollIntoView(imgItems[18]);
     } else {
         const activeItem = document.querySelector('li[data-active]');
         if (activeItem) {
@@ -240,8 +240,8 @@ window.apply = function () {
     const i = Array.from(imgItems).indexOf(activeItem);
     if (i == 0) {
         delete localStorage.madesktopBgImg;
-    } else if (i >= 1 && i <= 16) {
-        localStorage.madesktopBgImg = `wallpapers/${activeItem.textContent}.png`;
+    } else if (i >= 1 && i <= 17) {
+        localStorage.madesktopBgImg = `wallpapers/${activeItem.dataset.wpname}.png`;
     } else if (activeItem.id === 'customImgItem') {
         if (activeItem.dataset.base64) {
             try {
@@ -289,7 +289,7 @@ window.apply = function () {
     // Less likely to happen as of writing tho
     if (activeItem.id !== 'customImgItem' && !customImgItem.dataset.base64) {
         delete customImgItem.dataset.active;
-        customImgItem.querySelector('span').textContent = "Current Image";
+        customImgItem.querySelector('span').textContent = madGetString("MADCONF_WPCHOOSER_CURRENT_IMG");
         customImgItem.style.display = 'none';
     }
 }

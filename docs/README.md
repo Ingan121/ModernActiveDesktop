@@ -35,9 +35,6 @@
 * Also supports loading Windows *.theme files and an exported file of the "HKCU\Control Panel\Colors" registry key
 
 ## Todo
-* Localization
-    * Would be pretty hard as many strings are currently hardcoded in HTML files
-    * Or just release various localized versions with embedded localized strings, like the pre-MUI Windows? Just kidding :D
 * ChannelViewer
     * Hook fetch / XHR with fetchProxy to get AJAX sites working when force-loaded
 * More themes to add

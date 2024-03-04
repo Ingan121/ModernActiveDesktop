@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Effects</title>
+    <title data-locid="MADCONF_EFFECTS_TITLE">Effects</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="../../css/98.css">
     <link rel="stylesheet" href="css/effects.css">
@@ -11,34 +11,35 @@
 <body id="madconf">
     <div class="madconf-effects window-body">
         <input id="enableAnimationsChkBox" type="checkbox">
-        <label for="enableAnimationsChkBox" class="hasDropdown">Use the following transition effect for menus:</label><br>
+        <label for="enableAnimationsChkBox" class="hasDropdown"><mad-string data-locid="MADCONF_CM_ANIM_TITLE"><u>U</u>se the following transition effect for menus:</mad-string></label><br>
         <mad-select id="animationSelector">
-            <option value="slide">Slide effect</option>
-            <option value="fade">Fade effect</option>
+            <option value="slide"><mad-string data-locid="MADCONF_CM_ANIM_SLIDE">Slide effect</mad-string></option>
+            <option value="fade"><mad-string data-locid="MADCONF_CM_ANIM_FADE">Fade effect</mad-string></option>
         </mad-select><br>
         <input id="flatMenuChkBox" type="checkbox">
-        <label for="flatMenuChkBox" class="hasDropdown">Use flat menus for:</label><br>
+        <label for="flatMenuChkBox" class="hasDropdown"><mad-string data-locid="MADCONF_FLAT_MENU_TITLE">Use <u>f</u>lat menus for:</mad-string></label><br>
         <mad-select id="flatMenuSelector" disabled>
-            <option value="mb">menu bars (95 / NT4)</option>
-            <option value="cm">context menus</option>
-            <option value="mbcm">menu bars and context menus (XP)</option>
+            <option value="mb"><mad-string data-locid="MADCONF_FLAT_MENU_MB">Menu bars</mad-string> (95 / NT4)</option>
+            <option value="cm"><mad-string data-locid="MADCONF_FLAT_MENU_CM">Context menus</mad-string></option>
+            <option value="mbcm"><mad-string data-locid="MADCONF_FLAT_MENU_MBCM">Menu bars and context menus</mad-string> (XP)</option>
         </mad-select><br>
         <input id="shadowChkBox" type="checkbox">
-        <label for="shadowChkBox">Show shadows under meus</label><br>
+        <label for="shadowChkBox"><mad-string data-locid="MADCONF_CM_SHADOW">Show sh<u>a</u>dows under menus</mad-string></label><br>
         <input id="outlineModeChkBox" type="checkbox">
-        <label for="outlineModeChkBox">Show window contents while dragging</label><br>
+        <label for="outlineModeChkBox"><mad-string data-locid="MADCONF_OUTLINE_MODE">Show <u>w</u>indow contents while dragging</mad-string></label><br>
         <input id="underlineChkBox" type="checkbox">
-        <label for="underlineChkBox">Hide underlined letters for keyboard navigation</label><br>
+        <label for="underlineChkBox"><mad-string data-locid="MADCONF_NO_UNDERLINE"><u>H</u>ide underlined letters for keyboard navigation</mad-string></label><br>
         <input id="transparencyChkBox" type="checkbox">
-        <label for="transparencyChkBox">Enable Aero transparency</label><br>
+        <label for="transparencyChkBox"><mad-string data-locid="MADCONF_AERO_GLASS">Enable Aero <u>t</u>ransparency</mad-string></label><br>
         <input id="animChkBox" type="checkbox">
-        <label for="animChkBox">Enable Aero animations</label>
-        <section class="bottom field-row">
-            <button id="okBtn">OK</button>
-            <button id="cancelBtn">Cancel</button>
+        <label for="animChkBox"><mad-string data-locid="MADCONF_WIN_ANIM">Enable Aero a<u>n</u>imations</mad-string></label>
+        <section class="bottomButtons field-row">
+            <button id="okBtn"><mad-string data-locid="UI_OK">OK</mad-string></button>
+            <button id="cancelBtn"><mad-string data-locid="UI_CANCEL">Cancel</mad-string></button>
         </section>
     </div>
 
+    <script src="../../js/libmad-strings.js"></script>
     <script src="../../js/libmad.js"></script>
     <script src="js/effects.js"></script>
 </body>

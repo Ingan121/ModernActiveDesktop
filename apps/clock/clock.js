@@ -32,7 +32,7 @@ settingsMenuItems[0].addEventListener('click', () => { // Analog button
     delete localStorage.madesktopClockDigital;
     settingsMenuItems[0].classList.add('activeStyle');
     settingsMenuItems[1].classList.remove('activeStyle');
-    confLabel.innerHTML = "<u>C</u>olors";
+    confLabel.innerHTML = madGetString("CLOCK_MENUITEM_SET_COLORS");
     clockCanvas.style.display = 'block';
     digitalClock.style.display = 'none';
     updateSize();
@@ -42,7 +42,7 @@ settingsMenuItems[1].addEventListener('click', () => { // Digital button
     localStorage.madesktopClockDigital = true;
     settingsMenuItems[1].classList.add('activeStyle');
     settingsMenuItems[0].classList.remove('activeStyle');
-    confLabel.innerHTML = "<u>F</u>ont";
+    confLabel.innerHTML = madGetString("CLOCK_MENUITEM_SET_FONT");
     clockCanvas.style.display = 'none';
     digitalClock.style.display = 'table';
     updateSize();
@@ -105,7 +105,7 @@ settingsMenuItems[7].addEventListener('click', () => { // About Clock button
 if (localStorage.madesktopClockDigital) {
     settingsMenuItems[0].classList.remove('activeStyle');
     settingsMenuItems[1].classList.add('activeStyle');
-    confLabel.innerHTML = "<u>F</u>ont";
+    confLabel.innerHTML = madGetString("CLOCK_MENUITEM_SET_FONT");
     clockCanvas.style.display = 'none';
     digitalClock.style.display = 'table';
 }
@@ -330,7 +330,7 @@ function drawClock() {
         } else {
             digitalClockDate.textContent = time.toLocaleDateString();
         }
-        document.title = "Clock";
+        document.title = madGetString("CLOCK_TITLE");
     } else {
         clockCtx.clearRect(0, 0, clockCanvas.width, clockCanvas.height);
         drawBackground();
@@ -341,9 +341,9 @@ function drawClock() {
             drawSecondHand(time);
         }
         if (localStorage.madesktopClockHideDate) {
-            document.title = "Clock";
+            document.title = madGetString("CLOCK_TITLE");
         } else {
-            document.title = "Clock - " + time.toLocaleDateString();
+            document.title = madGetString("CLOCK_TITLE") + " - " + time.toLocaleDateString();
         }
     }
 }
