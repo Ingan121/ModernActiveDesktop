@@ -211,7 +211,7 @@
     "MADCONF_MSG_COPYCSS": "CSS 구성표가 클립보드에 복사되었습니다.",
     "MADCONF_MSG_COPYJSON": "구성표 JSON이 클립보드에 복사되었습니다.",
     "MADCONF_MSG_INVALID_SCHEME_FILE": "가져온 파일이 올바른 색상을 포함하고 있지 않습니다.",
-    "MADCONF_CONFIRM_SCHEME_SAVE_CSS": "이 구성표를 저장하면 이 테마의 고유한 모양이 사라지고 색상과 창 메트릭만 저장됩니다. 계속하시겠습니까?",
+    "MADCONF_CONFIRM_SCHEME_SAVE_CSS": "이 구성표를 저장하면 이 테마의 고유한 모양이 사라지고 색상과 창 크기 속성만 저장됩니다. 계속하시겠습니까?",
     "MADCONF_CONFIRM_SCHEME_SAVE_SYSTEM": "이 구성표를 저장하면 %n은 더 이상 시스템 구성표를 동적으로 가져오지 않습니다. 계속하시겠습니까?",
     "MADCONF_CONFIRM_SCHEME_OVERWRITE": "같은 이름의 구성표가 이미 있습니다. 덮어쓰시겠습니까?",
     "MADCONF_PROMPT_SCHEME_SAVE": "색 구성표 이름 이름 입력",

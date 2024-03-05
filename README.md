@@ -97,6 +97,8 @@
     * It no longer re-opens when opening a new window
 * Made various UI elements look more accurate
     * Added ClientEdge in various places
+* Added localization support
+    * Added Korean language
 * Windows now can be resized diagonally
 * Added support for Firefox and iOS Safari, as well as touchscreens
 * Support menu navigation with keyboard (when keyboard input is available)
