@@ -55,7 +55,7 @@
     "MAD_ERROR_X_FRAME_OPTIONS": "%n은 보안 정책으로 인해 이 URL을 로드할 수 없습니다.",
     "MAD_CONFIRM_X_FRAME_OPTIONS": "%n은 보안 정책으로 인해 이 URL을 로드할 수 없습니다. 대신 이 페이지를 ChannelViewer에서 열까요?",
     "MAD_CONFIRM_WIN_RESET": "정말로 이 창을 초기화하시겠습니까?",
-    "MAD_CONFIRM_RESET": "%n의 모든 설정 변경 사항이 제거됩니다. 계속하시겠습니까?",
+    "MAD_CONFIRM_RESET": "%n의 모든 설정 변경 사항이 삭제됩니다. 계속하시겠습니까?",
     "MAD_MSG_TEMP_WINDOW": "이 창은 임시 창이므로 초기화할 수 없습니다. 그냥 닫으세요.",
     "MAD_PROMPT_ENTER_URL": "URL 입력 (빈칸으로 두면 초기화)",
     "MAD_PROMPT_ENTER_TITLE": "창 제목 입력 (빈칸으로 두면 초기화)",

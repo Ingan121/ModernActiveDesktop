@@ -613,17 +613,25 @@
                 lang = newLang;
                 window.madLang = lang;
                 if (lang !== "en") {
-                    fetch(`lang/${lang}.json`)
+                    let url = `lang/${lang}.json`;
+                    if (location.href.includes("apps/")) {
+                        url = `../../${url}`;
+                    }
+                    fetch(url)
                         .then(response => response.json())
                         .then(json => {
                             window.madStrings = Object.assign({}, fallbackStrings, json);
                             readyAll();
-                            announce("language-ready");
+                            if (window.announce) {
+                                announce("language-ready");
+                            }
                         })
                         .catch(err => {
                             console.error(`Failed to load language file for ${lang}. Using English strings instead.`);
                             readyAll();
-                            announce("language-ready");
+                            if (window.announce) {
+                                announce("language-ready");
+                            }
                         });
                 } else {
                     window.madStrings = fallbackStrings;

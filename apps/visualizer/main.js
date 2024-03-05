@@ -439,7 +439,7 @@ function wallpaperMediaPropertiesListener(event) {
         albumArtistText.style.display = 'none';
         genreText.style.display = 'none';
         pauseIcon.dataset.disabled = true;
-        statusText.textContent = 'Stopped';
+        statusText.locId = "VISUALIZER_STATUS_STOPPED";
         delete playIcon.dataset.active;
         delete pauseIcon.dataset.active;
         stopIcon.dataset.active = true;
