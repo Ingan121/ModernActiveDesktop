@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Visualization Properties</title>
+    <title data-locid="VISCONF_TITLE">Visualization Properties</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="../../css/98.css">
     <link rel="stylesheet" href="config.css">
@@ -11,34 +11,34 @@
 <body id="madVisConf">
     <div class="window-body">
         <fieldset>
-            <legend>Colors</legend>
+            <legend><mad-string data-locid="VISCONF_COLOR_TITLE">Colors</mad-string></legend>
             <form name="colorSelecor">
                 <input id="radDefault" type="radio" name="color" value="default" checked>
-                <label for="radDefault">Default</label><br>
+                <label for="radDefault"><mad-string data-locid="UI_DEFAULT">Default</mad-string></label><br>
                 <input id="radScheme" type="radio" name="color" value="scheme">
-                <label for="radScheme">Follow color scheme</label><br>
+                <label for="radScheme"><mad-string data-locid="VISCONF_COLOR_FOLLOW_SCHEME">Follow color scheme</mad-string></label><br>
                 <input id="radCustom" type="radio" name="color" value="custom">
-                <label for="radCustom">Custom</label><br>
+                <label for="radCustom"><mad-string data-locid="UI_CUSTOM">Custom</mad-string></label><br>
                 <input id="followAlbumArtChkBox" type="checkbox" name="followAlbumArt">
-                <label for="followAlbumArtChkBox">Follow album art colors if available</label>
+                <label for="followAlbumArtChkBox"><mad-string data-locid="VISCONF_COLOR_FOLLOW_ALBUM_ART">Follow album art colors if available</mad-string></label>
             </form>
         </fieldset>
         <fieldset>
-            <legend>Custom colors</legend>
+            <legend><mad-string data-locid="VISCONF_CUSTOM_COLOR_TITLE">Custom colors</mad-string></legend>
             <section id="customColors" class="field-row disabled">
-                <span id="bgColorPickerLabel">Background:</span>
+                <span id="bgColorPickerLabel"><mad-string data-locid="VISCONF_CUSTOM_COLOR_BG">Background:</mad-string></span>
                 <button id="bgColorPicker" class="colorPicker" disabled>
                     <div class="colorPicker-color"></div>
                     <div class="colorPicker-bar"></div>
                     <div class="colorPicker-expandMark">⏷</div>
                 </button>
-                <span id="barColorPickerLabel">Bar:</span>
+                <span id="barColorPickerLabel"><mad-string data-locid="VISCONF_CUSTOM_COLOR_BAR">Bar:</mad-string></span>
                 <button id="barColorPicker" class="colorPicker" disabled>
                     <div class="colorPicker-color" style="background-color: #a4eb0c;"></div>
                     <div class="colorPicker-bar"></div>
                     <div class="colorPicker-expandMark">⏷</div>
                 </button>
-                <span id="topColorPickerLabel">Top:</span>
+                <span id="topColorPickerLabel"><mad-string data-locid="VISCONF_CUSTOM_COLOR_TOP">Top:</mad-string></span>
                 <button id="topColorPicker" class="colorPicker" disabled>
                     <div class="colorPicker-color" style="background-color: #dfeaf7;"></div>
                     <div class="colorPicker-bar"></div>
@@ -47,47 +47,50 @@
             </section>
         </fieldset>
         <fieldset>
-            <legend>Album art</legend>
+            <legend><mad-string data-locid="VISCONF_ALBUM_ART_TITLE">Album art</mad-string></legend>
             <input id="albumArtChkBox" type="checkbox" name="albumArt">
-            <label for="albumArtChkBox">Show album art</label><br>
+            <label for="albumArtChkBox"><mad-string data-locid="VISCONF_ALBUM_ART_SHOW">Show album art</mad-string></label><br>
             <input id="dimAlbumArtChkBox" type="checkbox" name="albumArt" disabled>
-            <label for="dimAlbumArtChkBox">Dim album art</label>
+            <label for="dimAlbumArtChkBox"><mad-string data-locid="VISCONF_ALBUM_ART_DIM">Dim album art</mad-string></label>
         </fieldset>
         <fieldset>
-            <legend>Channel separation</legend>
+            <legend><mad-string data-locid="VISCONF_CHAN_SEP_TITLE">Channel separation</mad-string></legend>
             <form name="separationSelecor">
                 <input id="radNoProcessing" type="radio" name="separation" value="default">
-                <label for="radNoProcessing">No processing (pre-3.2 behavior)</label><br>
+                <label for="radNoProcessing"><mad-string data-locid="VISCONF_CHAN_SEP_DISABLE">No processing (pre-3.2 behavior)</mad-string></label><br>
                 <input id="radReverse" type="radio" name="separation" value="reverse" checked>
-                <label for="radReverse">Reverse the right channel (default)</label><br>
+                <label for="radReverse"><mad-string data-locid="VISCONF_CHAN_SEP_REVERSE">Reverse the right channel (default)</mad-string></label><br>
                 <input id="radCombine" type="radio" name="separation" value="combine">
-                <label for="radCombine">Combine left and right channels</label>
+                <label for="radCombine"><mad-string data-locid="VISCONF_CHAN_SEP_COMBINE">Combine left and right channels</mad-string></label>
             </form>
         </fieldset>
         <fieldset>
-            <legend>Visualization</legend>
+            <legend><mad-string data-locid="VISCONF_VIS_TITLE">Visualization</mad-string></legend>
             <div id="visConfArea">
                 <input id="fixedBarsChkBox" type="checkbox">
-                <label for="fixedBarsChkBox">Fixed bar width:</label>
+                <label for="fixedBarsChkBox"><mad-string data-locid="VISCONF_BAR_WIDTH">Fixed bar width:</mad-string></label>
                 <input id="barWidthInput" type="number" name="barWidth" value="6" step="1" placeholder="6" disabled>
                 <br>
-                <span id="primaryScaleLabel">Primary scale:</span>
+                <span id="primaryScaleLabel"><mad-string data-locid="VISCONF_PRIMARY_SCALE">Primary scale:</mad-string></span>
                 <input id="primaryScaleInput" type="number" name="primaryScale" value="1.0" max="1.0" step="0.01" placeholder="1.0">
-                <span id="diffScaleLabel">Difference scale</span>
+                <span id="diffScaleLabel"><mad-string data-locid="VISCONF_DIFF_SCALE">Difference scale:</mad-string></span>
                 <input id="diffScaleInput" type="number" name="diffScale" value="0.07" max="1.0" step="0.001" placeholder="0.07">
             </div>
             <p id="diffScaleInfo">
-                * Adjust the scale values if you think the bars reach the top too fast.<br>
-                * Pre-3.2 difference scale was 0.15.
+                <mad-string data-locid="VISCONF_SCALE_INFO">
+                    * Adjust the scale values if you think the bars reach the top too fast.<br>
+                    * Pre-3.2 difference scale was 0.15.
+                </mad-string>
             </p>
         </fieldset>
         <section class="bottomButtons field-row">
-            <button id="okBtn">OK</button>
-            <button id="cancelBtn">Cancel</button>
-            <button id="applyBtn">Apply</button>
+            <button id="okBtn"><mad-string data-locid="UI_OK">OK</mad-string></button>
+            <button id="cancelBtn"><mad-string data-locid="UI_CANCEL">Cancel</mad-string></button>
+            <button id="applyBtn"><mad-string data-locid="UI_APPLY"><u>A</u>pply</mad-string></button>
         </section>
     </div>
 
+    <script src="../../js/libmad-strings.js"></script>
     <script src="../../js/libmad.js"></script>
     <script src="config.js"></script>
 </body>

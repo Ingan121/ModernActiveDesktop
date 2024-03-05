@@ -30,10 +30,10 @@ function openApp(app) {
             break;
         case "vis":
             if (parent.visDeskMover) {
-                madAlert("Only one instance of the visualizer can be open at a time.", null, "warning");
+                madAlert(madGetString("VISUALIZER_MULTI_INSTANCE_MSG"), null, "warning");
                 return;
             } else if (localStorage.madesktopVisUnavailable) {
-                madAlert("Audio recording is not enabled. Please enable it in the Wallpaper Engine properties panel.", null, "error");
+                madAlert(madGetString("VISUALIZER_NO_AUDIO_MSG"), null, "error");
                 return;
             }
             madResizeTo(725, 380);
@@ -64,11 +64,11 @@ function openApp(app) {
 }
 
 function openYoutube() {
-    madPrompt("Enter a YouTube URL", function (url) {
+    madPrompt(madGetString("PH_PROMPT_YT_URL"), function (url) {
         if (url == null) return;
         const id = parseVideoId(url);
         if (id == null) {
-            madAlert("Invalid URL", null, "error");
+            madAlert(madGetString("PH_MSG_INVALID_URL"), null, "error");
             return;
         }
         madResizeTo(560, 315);

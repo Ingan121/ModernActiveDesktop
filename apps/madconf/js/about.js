@@ -16,7 +16,7 @@ if (parent !== window) {
 
     window.apply = function () {
         if (debugReady && !localStorage.madesktopDebugMode) {
-            madConfirm("Enable debug mode?", function(res) {
+            madConfirm(madGetString("MADCONF_CONFIRM_DEBUG"), function(res) {
                 if (res) {
                     parent.activateDebugMode();
                 }

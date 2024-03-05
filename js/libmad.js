@@ -418,10 +418,16 @@
             this.label = document.createElement("span");
             this.label.classList.add("label");
             this.style.minWidth = 30 + scrollBarSize + "px";
+            let maxWidth = 0;
 
             for (const option of this.options) {
                 if (option.selected) {
                     this.selectedIndex = Array.from(this.options).indexOf(option);
+                }
+
+                const width = getTextWidth(option.textContent.trim(), "11px " + getComputedStyle(document.documentElement).getPropertyValue("--ui-font"));
+                if (width > maxWidth) {
+                    maxWidth = width;
                 }
 
                 new MutationObserver((mutations) => {
@@ -433,6 +439,7 @@
                     { characterData: false, attributes: false, childList: true, subtree: false }
                 )
             }
+            this.style.minWidth = maxWidth + 20 + scrollBarSize + "px";
 
             if (this.getAttribute('disabled') !== null) {
                 this.dataset.disabled = true;
@@ -444,6 +451,12 @@
             this.addEventListener("click", () => {
                 if (!this.disabled) {
                     deskMover.openDropdown(this);
+                }
+            });
+
+            window.addEventListener("message", (event) => {
+                if (event.data.type === "language-ready") {
+                    this.label.textContent = this.options[this.selectedIndex].textContent;
                 }
             });
         }
@@ -478,3 +491,20 @@
     window.madPlaySound = top.playSound;
     window.madAnnounce = top.announce;
 })();
+
+/**
+  * Uses canvas.measureText to compute and return the width of the given text of given font in pixels.
+  * 
+  * @param {String} text The text to be rendered.
+  * @param {String} font The css font descriptor that text is to be rendered with (e.g. "bold 14px verdana").
+  * 
+  * @see https://stackoverflow.com/questions/118241/calculate-text-width-with-javascript/21015393#21015393
+  */
+function getTextWidth(text, font = getComputedStyle(document.documentElement).getPropertyValue("--menu-font")) {
+    // re-use canvas object for better performance
+    const canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
+    const context = canvas.getContext("2d");
+    context.font = font;
+    const metrics = context.measureText(text);
+    return metrics.width;
+}

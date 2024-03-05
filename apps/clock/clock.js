@@ -20,6 +20,7 @@ const settingsMenu = document.getElementById('settingsMenu');
 const settingsMenuItems = settingsMenu.querySelectorAll('.contextMenuItem');
 const confLabel = document.getElementById('confLabel');
 
+let clockTitle = madGetString("CLOCK_TITLE")
 let dblClickTimer, dblClickPositon = null, isTitleHidden = false;
 
 if (madDeskMover.config.noFrames) {
@@ -32,7 +33,7 @@ settingsMenuItems[0].addEventListener('click', () => { // Analog button
     delete localStorage.madesktopClockDigital;
     settingsMenuItems[0].classList.add('activeStyle');
     settingsMenuItems[1].classList.remove('activeStyle');
-    confLabel.innerHTML = madGetString("CLOCK_MENUITEM_SET_COLORS");
+    confLabel.locId = "CLOCK_MENUITEM_SET_COLORS";
     clockCanvas.style.display = 'block';
     digitalClock.style.display = 'none';
     updateSize();
@@ -330,7 +331,7 @@ function drawClock() {
         } else {
             digitalClockDate.textContent = time.toLocaleDateString();
         }
-        document.title = madGetString("CLOCK_TITLE");
+        document.title = clockTitle;
     } else {
         clockCtx.clearRect(0, 0, clockCanvas.width, clockCanvas.height);
         drawBackground();
@@ -341,9 +342,9 @@ function drawClock() {
             drawSecondHand(time);
         }
         if (localStorage.madesktopClockHideDate) {
-            document.title = madGetString("CLOCK_TITLE");
+            document.title = clockTitle;
         } else {
-            document.title = madGetString("CLOCK_TITLE") + " - " + time.toLocaleDateString();
+            document.title = clockTitle + " - " + time.toLocaleDateString();
         }
     }
 }
@@ -356,13 +357,24 @@ function configChanged(configColors) {
 setInterval(drawClock, 1000);
 
 window.addEventListener("message", (event) => {
-    if (event.data.type === "scheme-updated") {
-        delete localStorage.madesktopClockBackgroundColor;
-        if (localStorage.madesktopColorScheme !== 'custom' && localStorage.madesktopColorScheme !== '98' && !localStorage.madesktopClockDigital) {
-            location.reload();
-        }
-        colors.background = getComputedStyle(document.documentElement).getPropertyValue('--button-face');
-        drawClock();
+    switch (event.data.type) {
+        case "scheme-updated":
+            delete localStorage.madesktopClockBackgroundColor;
+            if (localStorage.madesktopColorScheme !== 'custom' && localStorage.madesktopColorScheme !== '98' && !localStorage.madesktopClockDigital) {
+                location.reload();
+            }
+            colors.background = getComputedStyle(document.documentElement).getPropertyValue('--button-face');
+            drawClock();
+            break;
+        case "language-ready":
+            clockTitle = madGetString("CLOCK_TITLE");
+            if (localStorage.madesktopClockDigital) {
+                confLabel.locId = "CLOCK_MENUITEM_SET_FONT";
+            } else {
+                confLabel.locId = "CLOCK_MENUITEM_SET_COLORS";
+            }
+            drawClock();
+            break;
     }
 });
 

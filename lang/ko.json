@@ -1,4 +1,6 @@
 {
+    "STYLESHEET": "#madconf #schemeSelectorGroup button { min-width: 0; padding: 0 6px; }",
+
     "UI_OK": "확인",
     "UI_CANCEL": "취소",
     "UI_APPLY": "적용(&A)",
@@ -14,7 +16,8 @@
     "UI_BACK": "뒤로(&B)",
     "UI_FORWARD": "앞으로(&F)",
     "UI_EXIT": "종료(&X)",
-    "UI_CUSTOM": "사용자 지정",
+    "UI_DEFAULT": "기본값",
+    "UI_CUSTOM": "사용자 정의",
     "UI_VERSION": "버전",
     "UI_NONE": "없음",
 
@@ -34,7 +37,7 @@
     "MAD_WINDOW_MENUITEM_CONFIGURE": "구성(&C)",
     "MAD_WINDOW_MENUITEM_DEBUG": "디버그(&D)",
     "MAD_WINDOW_MENUITEM_RESET": "초기화(&E)",
-    "MAD_WINDOW_MENUITEM_RELOAD": "새로고침(&R)",
+    "MAD_WINDOW_MENUITEM_RELOAD": "다시 로드(&R)",
 
     "MAD_CONF_MENUITEM_AD": "액티브 데스크톱(&A)",
     "MAD_CONF_MENUITEM_NONAD": "비 액티브 데스크톱 채널 바(&N)",
@@ -45,17 +48,42 @@
     "MAD_CONF_MENUITEM_CHANGE_URL": "URL 변경(&C)",
     "MAD_CONF_MENUITEM_CHANGE_TITLE": "제목 변경(&T)",
     "MAD_CONF_MENUITEM_NEW_WINDOW": "새 창(&N)",
-    "MAD_CONF_MENUITEM_RELOAD_WALLPAPER": "배경화면 새로고침(&R)",
+    "MAD_CONF_MENUITEM_RELOAD_WALLPAPER": "배경화면 다시 로드(&R)",
 
     "MAD_MAIN_MENUITEM_NEW": "새 창(&N)",
 
     "MAD_ERROR_X_FRAME_OPTIONS": "%n은 보안 정책으로 인해 이 URL을 로드할 수 없습니다.",
     "MAD_CONFIRM_X_FRAME_OPTIONS": "%n은 보안 정책으로 인해 이 URL을 로드할 수 없습니다. 대신 이 페이지를 ChannelViewer에서 열까요?",
-    "MAD_CONFIRM_RESET": "정말로 이 창을 초기화하시겠습니까?",
+    "MAD_CONFIRM_WIN_RESET": "정말로 이 창을 초기화하시겠습니까?",
+    "MAD_CONFIRM_RESET": "%n의 모든 설정 변경 사항이 제거됩니다. 계속하시겠습니까?",
     "MAD_MSG_TEMP_WINDOW": "이 창은 임시 창이므로 초기화할 수 없습니다. 그냥 닫으세요.",
     "MAD_PROMPT_ENTER_URL": "URL 입력 (빈칸으로 두면 초기화)",
     "MAD_PROMPT_ENTER_TITLE": "창 제목 입력 (빈칸으로 두면 초기화)",
     "MAD_MSG_LINK_COPY_PROMPT": "다음 URL을 브라우저 주소 표시줄에 붙여넣으세요. 복사하려면 확인을 클릭하세요.",
+
+
+    "PH_CONTENT": "이 버튼을 눌러 이 창을 구성하세요.<br><br>혹은 다음을 사용해보세요:",
+    "PH_APP_CB": "채널 바",
+    "PH_APP_SOL": "카드놀이",
+    "PH_APP_CLOCK": "시계",
+    "PH_APP_CALC": "계산기",
+    "PH_APP_VIS": "시각화",
+    "PH_PROMPT_YT_URL": "YouTube URL 입력",
+    "PH_MSG_INVALID_URL": "올바르지 않은 URL",
+
+
+    "COLORPICKER_TITLE": "색",
+    "COLORPICKER_BASIC_COLORS": "기본 색(&B)",
+    "COLORPICKER_CUSTOM_COLORS": "사용자 정의 색(&C)",
+    "COLORPICKER_DEFINE_CUSTOM": "사용자 정의 색 만들기(&D) >>",
+    "COLORPICKER_ADD_TO_CUSTOM": "사용자 정의 색에 추가(&A)",
+    "COLORPICKER_COLOR_SOLID": "색|단색(&O)",
+    "COLORPICKER_HUE": "색상(&E):",
+    "COLORPICKER_SAT": "채도(&S):",
+    "COLORPICKER_LUM": "명도(&L):",
+    "COLORPICKER_RED": "빨강(&R):",
+    "COLORPICKER_GREEN": "녹색(&G):",
+    "COLORPICKER_BLUE": "파랑(&B):",
 
 
     "MADCONF_TITLE": "%n 등록 정보",
@@ -71,11 +99,11 @@
     "MADCONF_WPCHOOSER_VIDEO": "동영상 배경화면",
     "MADCONF_WALLPAPER_BROWSE": "찾아보기",
     "MADCONF_WALLPAPER_ENTER_URL": "&Enter URL",
-    "MADCONF_WALLPAPER_DISPLAY": "&Display",
+    "MADCONF_WALLPAPER_DISPLAY": "표시 형식(&D)",
     "MADCONF_WPDISPLAY_CENTER": "가운데",
     "MADCONF_WPDISPLAY_TILE": "바둑판식 배열",
-    "MADCONF_WPDISPLAY_FIT": "Fit",
-    "MADCONF_WPDISPLAY_FILL": "Fill",
+    "MADCONF_WPDISPLAY_FIT": "맞춤",
+    "MADCONF_WPDISPLAY_FILL": "채우기",
     "MADCONF_WPDISPLAY_STRETCH": "늘이기",
     "MADCONF_WALLPAPER_MUTE": "동영상 음소거",
 
@@ -96,9 +124,13 @@
     "MADCONF_DEFAULTWP_AURORA": "오로라",
     "MADCONF_DEFAULTWP_HARMONY": "하모니",
 
+    "MADCONF_MSG_VIDEOWP": "Wallpaper Engine 속성 창에서 동영상 배경을 설정하세요.",
+    "MADCONF_MSG_LARGE_IMG": "이미지 크기가 너무 커서 배경화면으로 설정할 수 없습니다. 더 작은 이미지를 사용하세요.",
+    "MADCONF_MSG_LARGE_IMG_WE": "이미지 크기가 너무 커서 배경화면으로 설정할 수 없습니다. 더 작은 이미지를 사용하거나 Wallpaper Engine 속성 창에서 배경화면을 설정하세요.",
+
     "MADCONF_SCHEME_TITLE": "색 구성표(&S):",
-    "MADCONF_SCHEME_SAVE_AS": "Sa&ve As..",
-    "MADCONF_SCHEME_DELETE": "삭제(&D)",
+    "MADCONF_SCHEME_SAVE_AS": "다른 이름으로 저장",
+    "MADCONF_SCHEME_DELETE": "삭제",
     "MADCONF_ITEM_TITLE": "항목(&I):",
     "MADCONF_ITEM_SIZE_TITLE": "크기(&Z):",
     "MADCONF_COLOR_TITLE": "색(&L):",
@@ -134,6 +166,14 @@
     "MADCONF_SCHEME_XP_SILVER": "은색",
     "MADCONF_SCHEME_XP_ROYALE": "Royale",
     "MADCONF_SCHEME_FALLBACK": "안전 모드",
+    "MADCONF_SCHEME_HC_1": "고대비 #1",
+    "MADCONF_SCHEME_HC_2": "고대비 #2",
+    "MADCONF_SCHEME_HC_BLACK": "고대비 Black",
+    "MADCONF_SCHEME_HC_WHITE": "고대비 White",
+    "MADCONF_SCHEME_HC11_AQUATIC": "Win 11 - 고대비 수생",
+    "MADCONF_SCHEME_HC11_DESERT": "Win 11 - 고대비 사막",
+    "MADCONF_SCHEME_HC11_DUSK": "Win 11 - 고대비 황혼",
+    "MADCONF_SCHEME_HC11_NIGHT_SKY": "Win 11 - 고대비 밤하늘",
 
     "MADCONF_ITEM_BUTTON_FACE": "3차원 개체",
     "MADCONF_ITEM_BUTTON_HILIGHT": "3차원 밝은 부분",
@@ -166,11 +206,23 @@
     "MADCONF_PREVIEW_MESSAGE_BOX": "메시지 상자",
     "MADCONF_PREVIEW_MESSAGE_TEXT": "메시지 텍스트",
 
+    "MADCONF_SCHEME_MODIFIED": "수정됨",
+    "MADCONF_MSG_SCHEME_NAME_EMPTY": "구성표 이름은 비워둘 수 없습니다.",
+    "MADCONF_MSG_COPYCSS": "CSS 구성표가 클립보드에 복사되었습니다.",
+    "MADCONF_MSG_COPYJSON": "구성표 JSON이 클립보드에 복사되었습니다.",
+    "MADCONF_MSG_INVALID_SCHEME_FILE": "가져온 파일이 올바른 색상을 포함하고 있지 않습니다.",
+    "MADCONF_CONFIRM_SCHEME_SAVE_CSS": "이 구성표를 저장하면 이 테마의 고유한 모양이 사라지고 색상과 창 메트릭만 저장됩니다. 계속하시겠습니까?",
+    "MADCONF_CONFIRM_SCHEME_SAVE_SYSTEM": "이 구성표를 저장하면 %n은 더 이상 시스템 구성표를 동적으로 가져오지 않습니다. 계속하시겠습니까?",
+    "MADCONF_CONFIRM_SCHEME_OVERWRITE": "같은 이름의 구성표가 이미 있습니다. 덮어쓰시겠습니까?",
+    "MADCONF_PROMPT_SCHEME_SAVE": "색 구성표 이름 이름 입력",
+    "MADCONF_PROMPT_CUSTOM_FONT": "올바른 CSS font-family 이름 입력",
+    "MADCONF_PROMPT_FONT_SIZE": "글꼴 크기 입력 (슬래시로 구분된 줄 간격 입력 가능)",
+
     "MADCONF_EFFECTS_TITLE": "효과",
     "MADCONF_CM_ANIM_TITLE": "메뉴 및 도구 설명에 다음 전환 효과 사용(&U):",
     "MADCONF_CM_ANIM_SLIDE": "스크롤 효과",
     "MADCONF_CM_ANIM_FADE": "페이드 효과",
-    "MADCONF_FLAT_MENU_TITLE": "다음에 플랫 메뉴 사용(&F):",
+    "MADCONF_FLAT_MENU_TITLE": "다음에 평평한 메뉴 사용(&F):",
     "MADCONF_FLAT_MENU_MB": "메뉴 모음",
     "MADCONF_FLAT_MENU_CM": "컨텍스트 메뉴",
     "MADCONF_FLAT_MENU_MBCM": "메뉴 모음 및 컨텍스트 메뉴",
@@ -182,7 +234,7 @@
 
     "MADCONF_DPI_TITLE": "디스플레이 배율",
     "MADCONF_DPI_TITLE_FF_UNSUPPORTED": "디스플레이 배율 (Firefox 지원 안함)",
-    "MADCONF_DPI_CUSTOM": "사용자 지정",
+    "MADCONF_DPI_CUSTOM": "사용자 정의",
 
     "MADCONF_SYSPLUG_INT_TITLE": "시스템 플러그인 연동",
     "MADCONF_SYSPLUG_CHKBOX": "시스템 플러그인 사용",
@@ -212,11 +264,12 @@
     "MADCONF_LANG_TITLE": "언어",
 
     "MADCONF_CONNECTTEST_CHECKING": "시스템 플러그인 연결 확인 중...",
-    "MADCONF_CONNECTTEST_SUCCESS": "시스템 플러그인 연결 확인 성공!",
-    "MADCONF_CONNECTTEST_FAIL": "시스템 플러그인이 실행 중이 아닙니다. 시스템 플러그인을 설치해주세요.",
-    "MADCONF_CONNECTTEST_OUTDATED": "시스템 플러그인이 오래되었습니다. 시스템 플러그인을 업데이트해주세요.",
+    "MADCONF_CONNECTTEST_SUCCESS": "시스템 플러그인 연결 성공!",
+    "MADCONF_CONNECTTEST_FAIL": "시스템 플러그인이 실행 중이 아닙니다. 플러그인을 설치해주세요.",
+    "MADCONF_CONNECTTEST_OUTDATED": "시스템 플러그인이 오래되었습니다. 플러그인을 업데이트해주세요.",
     "MADCONF_SYSPLUG_UNSUPPORTED": "시스템 플러그인은 Windows 10 이상에서만 지원됩니다.",
 
+    "MADCONF_PROMPT_ENTER_SCALE": "배율 입력 (%) :",
     "MADCONF_CONF_COPIED": "설정이 클립보드에 복사되었습니다! 텍스트 파일에 붙여넣어 저장하면 나중에 가져올 수 있습니다.",
     "MADCONF_NEWER_CONF_MSG": "이 설정 파일은 더 최신 버전의 %n을 위한 것입니다. %n을 업데이트하여 이 설정을 가져오세요.",
     "MADCONF_CONF_INVALID": "올바르지 않은 설정 파일입니다!",
@@ -230,6 +283,40 @@
     "MADCONF_SHOW_WELCOME": "환영 화면 표시",
     "MADCONF_SHOW_README": "Readme 표시",
     "MADCONF_SHOW_CHANGELOG": "변경 내역",
+
+    "MADCONF_CONFIRM_DEBUG": "디버그 모드를 활성화하시겠습니까?",
+
+
+    "INETCPL_TITLE": "인터넷 옵션",
+    "INETCPL_TAB_GENERAL": "일반",
+    "INETCPL_TAB_CONNECTION": "연결",
+
+    "INETCPL_HOME_PAGE_TITLE": "홈 페이지",
+    "INETCPL_HOME_PAGE_DESC": "홈 페이지로 사용할 페이지를 변경할 수 있습니다.",
+    "INETCPL_ADDRESS": "주소(&R):",
+    "INETCPL_USE_CURRENT": "현재 페이지(&C)",
+    "INETCPL_USE_DEFAULT": "기본 페이지(&D)",
+    "INETCPL_USE_BLANK": "빈 페이지(&B)",
+
+    "INETCPL_MISC_TITLE": "기타",
+    "INETCPL_OPEN_WITH_TITLE": "페이지를 열 곳 선택:",
+    "INETCPL_OPEN_WITH_BROWSER": "새 브라우저 탭 / 창",
+    "INETCPL_OPEN_WITH_CV": "새 %c 창",
+    "INETCPL_OPEN_WITH_SYSPLUG_CV": "시스템 플러그인 채널 뷰어 (지원 중단)",
+    "INETCPL_OPEN_WITH_SYSPLUG": "시스템 기본 브라우저",
+
+    "INETCPL_ADV_TITLE": "고급",
+    "INETCPL_CHKBOX_FAVICON": "주소 표시줄에 웹 사이트 아이콘 표시(&F)",
+    "INETCPL_CHKBOX_SOUND": "시스템 사운드 재생(&S)",
+    "INETCPL_CHKBOX_JS": "JavaScript 활성화(&J)",
+    "INETCPL_CHKBOX_CHAN_FULLSCREEN": "채널을 전체 화면으로 열기(&C)",
+    "INETCPL_CHKBOX_INJECT_CSS": "고전 스타일 적용(&C)",
+
+    "INETCPL_CORS_PROXY_TITLE": "CORS 프록시",
+    "INETCPL_CORS_PROXY_DESC": "리소스를 가져오는 데 사용할 프록시를 변경할 수 있습니다.",
+
+    "INETCPL_FORCELOAD_CHKBOX": "모든 페이지를 고급 기능과 함께 불러오기",
+    "INETCPL_FORCELOAD_DESC": "<li>이 옵션을 사용하면 다른 출처에서 불러온 페이지도 고급 기능을 사용할 수 있습니다.</li><li>이 옵션을 사용하면 일부 페이지가 제대로 작동하지 않을 수 있습니다. (특히 복잡한 스크립트가 있는 경우)</li>",
 
 
     "VISUALIZER_TITLE": "시각화",
@@ -268,6 +355,31 @@
     "VISUALIZER_NO_MEDINT_MSG": "미디어 통합 지원이 비활성화되어 있습니다. Wallpaper Engine 설정 -> 일반에서 '미디어 통합 지원'을 활성화하세요.",
     "VISUALIZER_MEDINT_UNSUPPORTED_MSG": "이 기능은 Windows 10 이상에서만 지원됩니다.",
     "VISUALIZER_MEDIA_CONTROL_ERROR": "미디어 제어 요청을 처리하는 동안 오류가 발생했습니다.",
+
+    "VISCONF_TITLE": "시각화 속성",
+    "VISCONF_COLOR_TITLE": "색상",
+    "VISCONF_COLOR_FOLLOW_SCHEME": "색 구성표 따르기",
+    "VISCONF_COLOR_FOLLOW_ALBUM_ART": "앨범 아트 색상 따르기 (가능할 경우)",
+
+    "VISCONF_CUSTOM_COLOR_TITLE": "사용자 정의 색상",
+    "VISCONF_CUSTOM_COLOR_BG": "배경:",
+    "VISCONF_CUSTOM_COLOR_BAR": "막대:",
+    "VISCONF_CUSTOM_COLOR_TOP": "윗 부분:",
+
+    "VISCONF_ALBUM_ART_TITLE": "앨범 아트",
+    "VISCONF_ALBUM_ART_SHOW": "앨범 아트 표시",
+    "VISCONF_ALBUM_ART_DIM": "앨범 아트 어둡게 표시",
+
+    "VISCONF_CHAN_SEP_TITLE": "채널 분리",
+    "VISCONF_CHAN_SEP_DISABLE": "처리 안함 (3.2 이전 작동 방식)",
+    "VISCONF_CHAN_SEP_REVERSE": "우측 채널 반전 (기본값)",
+    "VISCONF_CHAN_SEP_COMBINE": "좌우 채널 합치기",
+
+    "VISCONF_VIS_TITLE": "시각화",
+    "VISCONF_BAR_WIDTH": "고정 막대 너비:",
+    "VISCONF_PRIMARY_SCALE": "주 배율:",
+    "VISCONF_DIFF_SCALE": "차이 배율:",
+    "VISCONF_SCALE_INFO": "* 막대가 너무 빨리 상단에 도달한다고 생각하면 배율 값을 조정하세요.<br>* 3.2 이전 차이 배율은 0.15였습니다.",
 
 
     "CALC_TITLE": "계산기",
@@ -320,6 +432,7 @@
 
     "CV_FAVORITES_MENUITEM_ADDITEM": "즐겨찾기에 추가(&A)...",
     "CV_FAVORITES_MENUITEM_EDITITEM": "즐겨찾기 구성(&O)...",
+    "CV_FAVORITES_MENUITEM_EDITITEM_CLICKED": "수정할 항목 클릭",
 
     "CV_HELP_MENUITEM_ABOUT": "ChannelViewer 정보(&A)",
 
@@ -335,6 +448,20 @@
     "CV_EXPLORER_BARS_MENUITEM_CHANNELS": "채널(&C)",
     "CV_EXPLORER_BARS_MENUITEM_NONE": "없음(&N)",
 
+    "CV_MSG_OPENTYPE_CROSSORIGIN": "이 페이지는 다른 출처에서 불러왔습니다. 고급 기능을 사용할 수 없습니다.",
+    "CV_MSG_OPENTYPE_PROXIED": "이 페이지는 외부 프록시를 통해 불러왔습니다. 고급 기능은 사용할 수 있지만 페이지가 제대로 작동하지 않을 수 있습니다. 또한 여기에 비밀번호를 입력하지 마세요!",
+    "CV_MSG_OPENTYPE_FORCELOADED": "이 페이지는 강제로 고급 기능을 사용할 수 있게 불러왔습니다. 페이지가 제대로 작동하지 않을 수 있습니다. (특히 복잡한 스크립트가 있는 경우)",
+    "CV_MSG_OPENTYPE_FORCELOADED_WE": "이 페이지는 임베딩을 허용하지 않아서 수 없어서 강제로 불러왔습니다. 고급 기능은 사용할 수 있지만 페이지가 제대로 작동하지 않을 수 있습니다. (특히 복잡한 스크립트가 있는 경우)",
+    "CV_MSG_OPENTYPE_NORMAL": "이 페이지는 일반적으로 불러왔습니다. 고급 기능을 사용할 수 있습니다.",
+    "CV_MSG_NO_ADV": "이 페이지에서 고급 기능은 사용할 수 없습니다. 더 많은 정보를 얻으려면 인터넷 옵션을 참조하세요.",
+    "CV_MSG_SSL_SECURE": "이 사이트에 안전하게 연결되어 있습니다.",
+    "CV_MSG_PROXY_INSECURE": "이 페이지는 외부 프록시를 통해 불러왔습니다. 이곳에 비밀번호를 입력하는 것은 위험합니다!",
+    "CV_MSG_LOAD_ERROR": "%c는 \"%s\" 페이지를 열 수 없습니다.<br>서버와의 연결을 설정할 수 없습니다.",
+    "CV_PROMPT_ENTER_URL": "URL 입력",
+    "CV_PROMPT_FAV_ADD": "즐겨찾기 이름을 입력하세요.",
+    "CV_PROMPT_FAV_EDIT": "새 이름 입력 (비워두면 삭제; !url 입력하여 URL 수정)",
+    "CV_PROMPT_FAV_EDIT_URL": "새 URL 입력",
+
 
     "CLOCK_TITLE": "시계",
     "CLOCK_MENU_SETTINGS": "설정(&S)",
@@ -347,6 +474,21 @@
     "CLOCK_MENUITEM_SECONDS": "초(&S)",
     "CLOCK_MENUITEM_DATE": "날짜(&T)",
     "CLOCK_MENUITEM_ABOUT": "시계 정보(&B)",
+
+    "CLOCKCONF_TITLE": "시계 속성",
+    "CLOCKCONF_COLOR_TITLE": "아날로그 시계 색상",
+    "CLOCKCONF_COLOR_BG": "배경:",
+    "CLOCKCONF_COLOR_PRIMARY": "주 색상:",
+    "CLOCKCONF_COLOR_LIGHT": "밝은 부분:",
+    "CLOCKCONF_COLOR_HIGHLIGHT": "하이라이트:",
+    "CLOCKCONF_COLOR_SHADOW": "그림자:",
+    "CLOCKCONF_COLOR_DKSHADOW": "어두운 그림자:",
+
+    "CLOCKCONF_FONT_TITLE": "글꼴",
+    "CLOCKCONF_FONT_OUTLINE": "윤곽선 모드 사용",
+
+    "CLOCKCONF_RESET": "기본값 복원",
+    "CLOCKCONF_CONFIRM_RESET": "정말로 시계 설정을 기본값으로 복원하시겠습니까?",
 
 
     "SOL_TITLE": "카드놀이",
@@ -363,5 +505,10 @@
     "WELCOME_SETUP_SYSPLUG": "시스템 플러그인 설치",
     "WELCOME_GET_SUPPORT": "지원 받기",
     "WELCOME_MAIN_TITLE": "환영합니다!",
-    "WELCOME_AUTOSTART_CHKBOX": "%n을 시작할 때 이 화면 표시"
+    "WELCOME_AUTOSTART_CHKBOX": "%n을 시작할 때 이 화면 표시",
+    "WELCOME_MAIN_CONTENT": "현대적 데스크톱과 클래식한 경험의 만남!<br><br>%n이 펼치는 멋진 세계에 여러분을 환영합니다.<br><br>원하는 옵션을 선택하십시오.",
+    "WELCOME_WHATS_NEW_CONTENT": "%n 3.2에는 새로운 기능과 개선 사항을 많이 추가되었습니다.<br><br>* 새로운 앱: 시계, 계산기<br>* 완전히 새로운 ChannelViewer<br>* 설정 가능한 옵션 추가 - 창 크기, 글꼴, Aero 테마 등<br><br>자세한 정보를 보려면 클릭하세요.",
+    "WELCOME_CUSTOMIZE_DESKTOP_CONTENT": "바탕 화면을 꾸미고 싶나요? %n은 여러분의 바탕 화면을 더욱 멋지게 꾸밀 수 있도록 도와줍니다.<br><br>배경화면과 색 구성표 등을 설정할 수 있습니다.<br><br>클릭하여 설정 창을 여세요.",
+    "WELCOME_SETUP_SYSPLUG_CONTENT": "시스템 플러그인을 설치하면 %n이 여러분의 컴퓨터와 더욱 잘 연동됩니다.<br><br>시스템 플러그인을 설치하면 더 많은 기능을 사용할 수 있습니다.<br><br>클릭하여 설치 가이드를 보세요.",
+    "WELCOME_GET_SUPPORT_CONTENT": "%n은 오픈 소스 프로젝트이며, 커뮤니티에서 도움을 받을 수 있습니다.<br><br>문제가 있으면 GitHub 이슈 페이지에 보고할 수 있습니다.<br>또한 프로젝트에 기여할 수도 있습니다.<br><br>클릭하여 GitHub 저장소를 여세요."
 }

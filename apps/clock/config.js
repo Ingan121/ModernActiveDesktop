@@ -70,7 +70,7 @@ function changeColor(color) {
 }
 
 resetBtn.addEventListener("click", () => {
-    madConfirm("Are you sure you want to reset the clock settings?", function (res) {
+    madConfirm(madGetString("CLOCKCONF_CONFIRM_RESET"), function (res) {
         if (res) {
             delete localStorage.madesktopClockMainColor;
             delete localStorage.madesktopClockLightColor;

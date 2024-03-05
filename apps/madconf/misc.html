@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="../../css/98.css">
     <link rel="stylesheet" href="css/misc.css">
     <link id="scheme" rel="stylesheet" href="data:text/css,">
+    <style id="langStyle"></style>
     <style id="style"></style>
 </head>
 <body>
@@ -51,7 +52,7 @@
                         <button id="connectTestBtn"><mad-string data-locid="MADCONF_SYSPLUG_CONNECTTEST">Check connectivity</mad-string></button>
                         <button id="showGuideBtn"><mad-string data-locid="MADCONF_SYSPLUG_GUIDE">Show setup guide</mad-string></button>
                     </div>
-                    <p id="connectionStatus"><mad-string data-locid="MADCONF_CONNECTTEST_INITIAL">Click the above button to begin the connectivity check</mad-string></p>
+                    <p><mad-string id="connectionStatus" data-locid="MADCONF_CONNECTTEST_INITIAL">Click the above button to begin the connectivity check</mad-string></p>
                 </fieldset>
                 <fieldset>
                     <legend><mad-string data-locid="MADCONF_SOUND_TITLE">Sounds</mad-string></legend>
@@ -63,7 +64,7 @@
                             <label for="alertSoundChkBox"><mad-string data-locid="MADCONF_ALERT_SOUND">Play alert sounds</mad-string></label>
                         </div>
                         <div id="schemeArea">
-                            <span id="soundSchemeLabel"><mad-string data-locid="MADCONF_SOUND_SCHEME">Sound Scheme</mad-string></span>
+                            <span id="soundSchemeLabel"><mad-string data-locid="MADCONF_SOUND_SCHEME">Sound Scheme</mad-string>:</span>
                             <mad-select id="soundSchemeSelector">
                                 <option value="3">Windows 3.x</option>
                                 <option value="95">Windows 95</option>

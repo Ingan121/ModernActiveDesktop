@@ -6,53 +6,57 @@
     <link rel="stylesheet" href="../../css/98.css">
     <link rel="stylesheet" href="css/connection.css">
     <link id="scheme" rel="stylesheet" href="data:text/css,">
+    <style id="langStyle"></style>
     <style id="style"></style>
 </head>
 <body>
     <div id="madconf" class="madconf-inet-connection window-body">
         <menu role="tablist">
-            <li class="tab" role="tab" data-pagename="general"><a href="#tabs">General</a></li>
-            <li class="tab" role="tab" data-pagename="connection" aria-selected="true"><a href="#tabs">Connection</a></li>
+            <li class="tab" role="tab" data-pagename="general"><a href="#tabs"><mad-string data-locid="INETCPL_TAB_GENERAL">General</mad-string></a></li>
+            <li id="connectionBtn" class="tab" role="tab" data-pagename="connection" aria-selected="true"><a href="#tabs"><mad-string data-locid="INETCPL_TAB_CONNECTION">Connection</mad-string></a></li>
         </menu>
         <div class="window" role="tabpanel">
             <div class="window-body">
                 <fieldset>
-                    <legend>CORS proxy</legend>
+                    <legend><mad-string data-locid="INETCPL_CORS_PROXY_TITLE">CORS proxy</mad-string></legend>
                     <img src="images/proxy.png" alt="Proxy icon">
                     <div id="proxyFieldMain" class="fieldMain">
-                        <p>You can change which proxy to use for fetching resources.</p>
+                        <p><mad-string data-locid="INETCPL_CORS_PROXY_DESC">You can change which proxy to use for fetching resources.</mad-string></p>
                         <p id="proxyInputWrap">
-                            <span>Pro<u>x</u>y:</span>
+                            <span><mad-string data-locid="INETCPL_ADDRESS">Add<u>r</u>ess:</mad-string></span>
                             <input id="proxyInput" type="text" value="https://api.codetabs.com/v1/proxy/?quest=">
                         </p>
                         <div id="proxyButtons" class="field-row">
-                            <button id="useDefaultBtn">Use <u>d</u>efault</button>
+                            <button id="useDefaultBtn"><mad-string data-locid="INETCPL_USE_DEFAULT">Use <u>d</u>efault</mad-string></button>
                         </div>
                     </div>
                 </fieldset>
                 <fieldset>
-                    <legend>Advanced</legend>
+                    <legend><mad-string data-locid="INETCPL_ADV_TITLE">Advanced</mad-string></legend>
                     <img src="images/connection.png" alt="Connection icon">
                     <div id="advancedFieldMain" class="fieldMain">
                         <input id="forceLoadChkBox" type="checkbox" checked>
-                        <label for="forceLoadChkBox">Load all pages with advanced features</label>
+                        <label for="forceLoadChkBox"><mad-string data-locid="INETCPL_FORCELOAD_CHKBOX">Load all pages with advanced features</mad-string></label>
                         <ul>
-                            <li>ChannelViewer will try to load all pages with a CORS proxy.</li>
-                            <li>Advanced features will be enabled for all Web pages, including those from another origin.</li>
-                            <li>Web pages that doesn't allow embedding normally will also be forcefully loaded.</li>
-                            <li>Do note that some pages might not function correctly, especially those with complex scripts.</li>
+                            <mad-string data-locid="INETCPL_FORCELOAD_DESC">
+                                <li>ChannelViewer will try to load all pages with a CORS proxy.</li>
+                                <li>Advanced features will be enabled for all Web pages, including those from another origin.</li>
+                                <li>Web pages that doesn't allow embedding normally will also be forcefully loaded.</li>
+                                <li>Do note that some pages might not function correctly, especially those with complex scripts.</li>
+                            </mad-string>
                         </ul>
                     </div>
                 </fieldset>
             </div>
         </div>
         <section class="bottomButtons field-row">
-            <button id="okBtn">OK</button>
-            <button id="cancelBtn">Cancel</button>
-            <button id="applyBtn"><u>A</u>pply</button>
+            <button id="okBtn"><mad-string data-locid="UI_OK">OK</mad-string></button>
+            <button id="cancelBtn"><mad-string data-locid="UI_CANCEL">Cancel</mad-string></button>
+            <button id="applyBtn"><mad-string data-locid="UI_APPLY"><u>A</u>pply</mad-string></button>
         </section>
     </div>
 
+    <script src="../../js/libmad-strings.js"></script>
     <script src="../../js/libmad.js"></script>
     <script src="js/common.js"></script>
     <script src="js/connection.js"></script>

@@ -43,6 +43,7 @@ const explorerBarMenuItems = document.querySelectorAll("#explorerBarMenu .contex
 const favoritesMenuBtn = document.getElementById("favoritesMenuBtn");
 const favoritesMenuBg = document.getElementById("favoritesMenuBg");
 const favoritesMenu = document.getElementById("favoritesMenu");
+const organizeFavItemStr = favoritesMenuItems[1].querySelector("mad-string");
 
 const historyMenuBg = document.getElementById("historyMenuBg");
 const historyMenu = document.getElementById("historyMenu");
@@ -65,8 +66,6 @@ const sidebarWindow = document.getElementById("sidebarWindow");
 const border = document.getElementById("border");
 
 window.iframe = document.getElementById("iframe");
-
-const NO_ADV_MSG = "Sorry, but advanced features are unavailable for this webpage. Please consult the internet options for more details.";
 
 let madBase = parent.location.href.split('/').slice(0, -1).join('/') + '/';
 if (parent === window) {
@@ -98,7 +97,7 @@ fileMenuItems[0].addEventListener("click", function () { // New window button
 });
 
 fileMenuItems[1].addEventListener("click", function () { // Open button
-    madPrompt("Enter URL", function (url) {
+    madPrompt(madGetString("CV_PROMPT_ENTER_URL"), function (url) {
         if (url === null) return;
         go(url);
     });
@@ -114,7 +113,7 @@ fileMenuItems[3].addEventListener("click", function () { // Close button
 
 editMenuItems[0].addEventListener("click", function () { // Cut button
     if (isCrossOrigin) {
-        madAlert(NO_ADV_MSG, null, "warning");
+        madAlert(madGetString("CV_MSG_NO_ADV"), null, "warning");
     } else {
         iframe.contentWindow.document.execCommand("cut");
     }
@@ -122,7 +121,7 @@ editMenuItems[0].addEventListener("click", function () { // Cut button
 
 editMenuItems[1].addEventListener("click", function () { // Copy button
     if (isCrossOrigin) {
-        madAlert(NO_ADV_MSG, null, "warning");
+        madAlert(madGetString("CV_MSG_NO_ADV"), null, "warning");
     } else {
         iframe.contentWindow.document.execCommand("copy");
     }
@@ -130,7 +129,7 @@ editMenuItems[1].addEventListener("click", function () { // Copy button
 
 editMenuItems[2].addEventListener("click", function () { // Select all button
     if (isCrossOrigin) {
-        madAlert(NO_ADV_MSG, null, "warning");
+        madAlert(madGetString("CV_MSG_NO_ADV"), null, "warning");
     } else {
         iframe.contentWindow.document.execCommand("selectAll");
     }
@@ -160,7 +159,7 @@ viewMenuItems[4].addEventListener("click", function () { // Refresh button
 
 viewMenuItems[5].addEventListener("click", function () { // Source button
     if (isCrossOrigin) {
-        madAlert(NO_ADV_MSG, null, "warning");
+        madAlert(madGetString("CV_MSG_NO_ADV"), null, "warning");
     } else {
         madOpenExternal("data:text/plain," + encodeURIComponent(iframe.contentDocument.documentElement.outerHTML), false, "popup");
     }
@@ -168,9 +167,9 @@ viewMenuItems[5].addEventListener("click", function () { // Source button
 
 viewMenuItems[6].addEventListener("click", function () { // Run JavaScript Code button
     if (isCrossOrigin) {
-        madAlert(NO_ADV_MSG, null, "warning");
+        madAlert(madGetString("CV_MSG_NO_ADV"), null, "warning");
     } else {
-        madPrompt("Enter JavaScript code to run.", function (code) {
+        madPrompt(madGetString("UI_PROMPT_RUNJS"), function (code) {
             if (code === null) return;
             iframe.contentWindow.eval(code);
         });
@@ -210,7 +209,7 @@ goMenuItems[3].addEventListener("click", function () { // Search the Web button
 
 favoritesMenuBg.addEventListener("beforemenuopen", function () {
     favEditMode = false;
-    favoritesMenuItems[1].innerHTML = "<p>Organize Favorites</p>";
+    organizeFavItemStr.locId = "CV_FAVORITES_MENUITEM_EDITITEM";
     const prevMenuItems = Array.from(favoritesMenu.querySelectorAll(".contextMenuItem")).slice(2);
     if (prevMenuItems.length > 0) {
         for (const item of prevMenuItems) {
@@ -238,7 +237,7 @@ favoritesMenuBg.addEventListener("beforemenuopen", function () {
 });
 
 favoritesMenuItems[0].addEventListener("click", function () { // Add to Favorites button
-    madPrompt("Enter a name for this page", async function (name) {
+    madPrompt(madGetString("CV_PROMPT_FAV_ADD"), async function (name) {
         if (name === null) return;
         const iconBlob = await getFavicon(true);
         if (iconBlob) {
@@ -252,7 +251,7 @@ favoritesMenuItems[0].addEventListener("click", function () { // Add to Favorite
             favorites.push([historyItems[historyIndex - 1][0], name]);
         }
         localStorage.madesktopChanViewFavorites = JSON.stringify(favorites);
-        if (mainArea.classList.contains("sidebarOpen") && sidebarTitle.textContent === "Favorites") {
+        if (mainArea.classList.contains("sidebarOpen") && sidebarTitle.locId === "CV_SIDEBAR_FAVORITES") {
             openSidebar("Favorites");
         }
     }, title, title);
@@ -262,7 +261,7 @@ favoritesMenuItems[1].addEventListener("click", function () { // Organize Favori
     if (favEditMode) {
         favoritesMenuBg.blur();
     } else {
-        this.innerHTML = "<p>Click an item to modify</p>";
+        organizeFavItemStr.locId = "CV_FAVORITES_MENUITEM_EDITITEM_CLICKED";
         favEditMode = true;
     }
 });
@@ -457,7 +456,7 @@ homeButton.addEventListener("click", function () {
 });
 
 favoritesButton.addEventListener("click", function () {
-    if (mainArea.classList.contains("sidebarOpen") && sidebarTitle.textContent === "Favorites") {
+    if (mainArea.classList.contains("sidebarOpen") && sidebarTitle.locId === "CV_SIDEBAR_FAVORITES") {
         closeSidebar();
     } else {
         openSidebar("Favorites");
@@ -465,7 +464,7 @@ favoritesButton.addEventListener("click", function () {
 });
 
 channelsButton.addEventListener("click", function () {
-    if (mainArea.classList.contains("sidebarOpen") && sidebarTitle.textContent === "Channels") {
+    if (mainArea.classList.contains("sidebarOpen") && sidebarTitle.locId === "CV_SIDEBAR_CHANNELS") {
         closeSidebar();
     } else {
         openSidebar("Channels");
@@ -497,22 +496,22 @@ openButton.addEventListener("click", function () {
 urlbar.addEventListener('click', function (event) {
     if (event.offsetX <= 24 * madScaleFactor) {
         if (isCrossOrigin) {
-            madAlert("This page is from a different origin. Advanced features are not available for this page.", null, "info");
+            madAlert(madGetString("CV_MSG_OPENTYPE_CROSSORIGIN"));
         } else if (iframe.contentDocument.head.dataset.forceLoaded) {
             if (loadedWithProxy) {
-                madAlert("This page was loaded with an external proxy. Advanced features are available, but the page may not work properly. Also, do not enter your passwords here!", null, "warning");
+                madAlert(madGetString("CV_MSG_OPENTYPE_PROXIED"), null, "warning");
             } else if (madRunningMode !== 1) {
-                madAlert("This page was forcefully loaded with advanced features. The page may not work properly, especially if it has complex scripts.", null, "warning");
+                madAlert(madGetString("CV_MSG_OPENTYPE_FORCELOADED"), null, "warning");
             } else {
-                madAlert("This page does not allow embedding normally, so it was forcefully loaded. Advanced features are available, but the page may not work properly, especially if it has complex scripts.", null, "warning");
+                madAlert(madGetString("CV_MSG_OPENTYPE_FORCELOADED_WE"), null, "warning");
             }
         } else {
-            madAlert("This page was loaded normally, and advanced features are available.", null, "info");
+            madAlert(madGetString("CV_MSG_OPENTYPE_NORMAL"));
         }
         return;
     }
     if (madRunningMode === 1) {
-        madPrompt("Enter URL", function (url) {
+        madPrompt(madGetString("CV_PROMPT_ENTER_URL"), function (url) {
             if (url === null) return;
             if (goButton.style.display !== "block") {
                 go(url);
@@ -561,7 +560,7 @@ toolbars.addEventListener('contextmenu', function (event) {
 
 sslIndicator.addEventListener('click', function () {
     if (this.dataset.secure) {
-        madAlert("The connection to this site is secure.", null, "info");
+        madAlert(madGetString("CV_MSG_SSL_SECURE"));
     }
 });
 
@@ -814,14 +813,14 @@ function hookIframeSize(iframe) {
         }
         if (activeElement.matches("input[type='text'], input[type='search'], input[type='url'], input[type='tel'], input[type='email'], input[type='password'], textarea")) {
             if (madRunningMode === 1) {
-                madPrompt("Enter value", function (res) {
+                madPrompt(madGetString("UI_ENTER_VALUE"), function (res) {
                     if (res === null) return;
                     activeElement.value = res;
                     activeElement.dispatchEvent(new Event('input', { bubbles: true }));
                     activeElement.dispatchEvent(new Event('change', { bubbles: true }));
                 }, '', activeElement.value);
             } else if (loadedWithProxy && activeElement.matches("input[type='password']")) {
-                madAlert("This page was loaded with an external proxy. Entering passwords here is NOT SECURE!", function () {
+                madAlert(madGetString("CV_MSG_PROXY_INSECURE"), function () {
                     activeElement.focus();
                 }, "warning");
             }
@@ -854,13 +853,13 @@ function hookIframeSize(iframe) {
         if (!loading) {
             if (hoverElement && hoverElement.tagName === "A" && hoverElement.href) {
                 statusText.textContent = hoverElement.href;
-            } else if (statusText.textContent !== "Done" && statusText.textContent !== pageSetStatusText) {
+            } else if (statusText.textContent !== madGetString("CV_STATUS_DONE") && statusText.textContent !== pageSetStatusText) {
                 statusText.textContent = pageSetStatusText;
             }
         }
     });
     iframe.addEventListener('pointerleave', () => {
-        if (statusText.textContent !== "Done" && statusText.textContent !== pageSetStatusText) {
+        if (statusText.textContent !== madGetString("CV_STATUS_DONE") && statusText.textContent !== pageSetStatusText) {
             statusText.textContent = pageSetStatusText;
         }
     });
@@ -927,14 +926,14 @@ function appendFavoriteItem(favorite) {
     p.textContent = favorite[1];
     item.addEventListener("click", function () {
         if (favEditMode) {
-            madPrompt("Enter a new name (leave empty to delete; type !url to edit URL)", function (name) {
+            madPrompt(madGetString("CV_PROMPT_FAV_EDIT"), function (name) {
                 if (name === null) return;
                 if (name === "!url") {
-                    madPrompt("Enter a new URL", function (url) {
+                    madPrompt(madGetString("CV_PROMPT_FAV_EDIT_URL"), function (url) {
                         if (url === null) return;
                         favorite[0] = url;
                         localStorage.madesktopChanViewFavorites = JSON.stringify(favorites);
-                        if (mainArea.classList.contains("sidebarOpen") && sidebarTitle.textContent === "Favorites") {
+                        if (mainArea.classList.contains("sidebarOpen") && sidebarTitle.locId === "CV_SIDEBAR_FAVORITES") {
                             openSidebar("Favorites");
                         }
                     }, favorite[0], favorite[0]);
@@ -944,7 +943,7 @@ function appendFavoriteItem(favorite) {
                     favorite[1] = name;
                 }
                 localStorage.madesktopChanViewFavorites = JSON.stringify(favorites);
-                if (mainArea.classList.contains("sidebarOpen") && sidebarTitle.textContent === "Favorites") {
+                if (mainArea.classList.contains("sidebarOpen") && sidebarTitle.locId === "CV_SIDEBAR_FAVORITES") {
                     openSidebar("Favorites");
                 }
             }, favorite[1], favorite[1]);
@@ -959,7 +958,7 @@ function appendFavoriteItem(favorite) {
 
 function openSidebar(name) {
     mainArea.classList.add("sidebarOpen");
-    sidebarTitle.textContent = name;
+    sidebarTitle.locId = "CV_SIDEBAR_" + name.toUpperCase();
     sidebarWindow.src = cvBase + "sidebars/" + name + ".html";
     switch (name) {
         case "Channels":
@@ -1146,17 +1145,17 @@ function loadStart() {
     loading = true;
     throbber.dataset.busy = true;
     fullscreenThrobber.dataset.busy = true;
-    statusText.textContent = "Opening page " + urlbar.value;
+    statusText.textContent = madGetString("CV_STATUS_OPENING", urlbar.value);
     madPlaySound("navStart");
     statusZone.style.backgroundImage = "";
-    statusZoneText.textContent = "Internet zone";
+    statusZoneText.locId = "CV_ZONE_INTERNET"
 }
 
 function loadFinish() {
     loading = false;
     delete throbber.dataset.busy;
     delete fullscreenThrobber.dataset.busy;
-    statusText.textContent = "Done";
+    statusText.textContent = madGetString("CV_STATUS_DONE");
     pageSetStatusText = "";
 }
 
@@ -1170,7 +1169,7 @@ async function forceLoad(url) {
     }
     let data = await fetchProxy(url).then(res => res.text()).catch(e => {
         iframe.removeAttribute("srcdoc");
-        madAlert(`ChannelViewer cannot open the Internet site "${url}".<br>A connection with the server could not be established.`, null, "error");
+        madAlert(madGetString("CV_MSG_LOAD_ERROR", url), null, "error");
         go("about:NavigationCanceled", true);
     });
 
@@ -1519,7 +1518,7 @@ iframe.addEventListener('load', function () {
     }
     if (url.startsWith(madBase)) {
         statusZone.style.backgroundImage = "url(images/zone_local.png)";
-        statusZoneText.textContent = "My Computer";
+        statusZoneText.locId = "CV_ZONE_LOCAL";
     }
     if (urlbar.value.startsWith("https://") && !loadedWithProxy) {
         sslIndicator.dataset.secure = true;

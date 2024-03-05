@@ -509,9 +509,9 @@ class DeskMover {
             delete item.dataset.active;
         }
         this.contextMenuBg.style.display = "block";
-        const width = getTextWidth(this.contextMenuItems[0].textContent);
-        this.contextMenuBg.style.width = `calc(${width}px + 4.5em)`;
-        this.contextMenu.style.width = `calc(${width}px + 4.5em - 2px)`;
+        const width = this.calcMenuWidth("window");
+        this.contextMenuBg.style.width = width + ")";
+        this.contextMenu.style.width = width + " - 2px)";
         this.contextMenuBg.style.height = this.calcMenuHeight("window") + "px";
 
         // For handling window icon double click
@@ -567,9 +567,9 @@ class DeskMover {
             delete item.dataset.active;
         }
         this.contextMenuBg.style.display = "block";
-        const width = getTextWidth(this.contextMenuItems[0].textContent);
-        this.contextMenuBg.style.width = `calc(${width}px + 4.5em)`;
-        this.contextMenu.style.width = `calc(${width}px + 4.5em - 2px)`;
+        const width = this.calcMenuWidth("window");
+        this.contextMenuBg.style.width = width + ")";
+        this.contextMenu.style.width = width + " - 2px)";
         this.contextMenuBg.style.height = this.calcMenuHeight("window") + "px";
 
         iframeClickEventCtrl(false);
@@ -620,9 +620,9 @@ class DeskMover {
         this.contextMenuItems[0].dataset.active = true;
         this.confMenuBg.style.left = this.contextMenuBg.offsetLeft + this.contextMenuBg.offsetWidth - 6 + 'px';
         this.confMenuBg.style.display = "block";
-        const width = getTextWidth(this.confMenuItems[1].textContent);
-        this.confMenuBg.style.width = `calc(${width}px + 4.5em)`;
-        this.confMenu.style.width = `calc(${width}px + 4.5em - 2px)`;
+        const width = this.calcMenuWidth("conf");
+        this.confMenuBg.style.width = width + ")";
+        this.confMenu.style.width = width + " - 2px)";
         this.confMenuBg.style.height = this.calcMenuHeight("conf") + "px";
         iframeClickEventCtrl(false);
         openedMenu = this.confMenuBg;
@@ -644,6 +644,22 @@ class DeskMover {
             delay = 300;
         }
         this.timeout3 = setTimeout(this.closeConfMenu.bind(this), delay);
+    }
+
+    calcMenuWidth(menuName) {
+        const menuBg = this.windowContainer.getElementsByClassName(menuName + 'MenuBg')[0];
+        let menuItems;
+        if (localStorage.madesktopDebugMode) {
+            menuItems = menuBg.querySelectorAll('.contextMenuItem:not([data-hidden])');
+        } else {
+            menuItems = menuBg.querySelectorAll('.contextMenuItem:not([data-hidden]):not(.debug)');
+        }
+        const width = Array.from(menuItems).reduce((maxWidth, elem) => {
+            const text = elem.textContent;
+            const width = getTextWidth(text);
+            return Math.max(maxWidth, width);
+        }, 0);
+        return `calc(${width}px + 4.5em`;
     }
 
     calcMenuHeight(menuName) {
@@ -846,7 +862,8 @@ class DeskMover {
         if (optionCnt >= 25) {
             this.dropdownBg.style.height = itemHeight * 25 + "px";
         } else {
-            this.dropdownBg.style.height = itemHeight * optionCnt + "px";
+            this.dropdown.style.height = "auto";
+            this.dropdownBg.style.height = this.dropdown.scrollHeight + "px";
         }
         this.dropdown.style.height = this.dropdownBg.style.height;
 
@@ -1411,7 +1428,7 @@ class DeskMover {
             }
             return;
         }
-        madConfirm(madGetString("MAD_CONFIRM_RESET"), res => {
+        madConfirm(madGetString("MAD_CONFIRM_WIN_RESET"), res => {
             if (res) {
                 this.#clearConfig();
                 if (this.isVisualizer) {

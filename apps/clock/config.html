@@ -1,31 +1,32 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Clock Properties</title>
+    <title data-locid="CLOCKCONF_TITLE">Clock Properties</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="../../css/98.css">
     <link rel="stylesheet" href="config.css">
     <link id="scheme" rel="stylesheet" href="data:text/css,">
+    <style id="langStyle"></style>
     <style id="style"></style>
 </head>
 <body id="madClockConf">
     <div class="window-body">
         <fieldset>
-            <legend>Analog clock colors</legend>
+            <legend><mad-string data-locid="CLOCKCONF_COLOR_TITLE">Analog clock colors</mad-string></legend>
             <section id="customColors" class="field-row">
-                <span id="backgroundColorPickerLabel">Background:</span>
+                <span id="backgroundColorPickerLabel"><mad-string data-locid="CLOCKCONF_COLOR_BG">Background:</mad-string></span>
                 <button id="backgroundColorPicker" class="colorPicker">
                     <div class="colorPicker-color"></div>
                     <div class="colorPicker-bar"></div>
                     <div class="colorPicker-expandMark">⏷</div>
                 </button>
-                <span id="mainColorPickerLabel">Primary:</span>
+                <span id="mainColorPickerLabel"><mad-string data-locid="CLOCKCONF_COLOR_PRIMARY">Primary:</mad-string></span>
                 <button id="mainColorPicker" class="colorPicker">
                     <div class="colorPicker-color" style="background-color: #008080;"></div>
                     <div class="colorPicker-bar"></div>
                     <div class="colorPicker-expandMark">⏷</div>
                 </button>
-                <span id="lightColorPickerLabel">Light:</span>
+                <span id="lightColorPickerLabel"><mad-string data-locid="CLOCKCONF_COLOR_LIGHT">Light:</mad-string></span>
                 <button id="lightColorPicker" class="colorPicker">
                     <div class="colorPicker-color" style="background-color: #00ffff;"></div>
                     <div class="colorPicker-bar"></div>
@@ -33,19 +34,19 @@
                 </button>
             </section>
             <section id="customColors2" class="field-row">
-                <span id="hilightColorPickerLabel">Higlight:</span>
+                <span id="hilightColorPickerLabel"><mad-string data-locid="CLOCKCONF_COLOR_HIGHLIGHT">Higlight:</mad-string></span>
                 <button id="hilightColorPicker" class="colorPicker">
                     <div class="colorPicker-color" style="background-color: #ffffff;"></div>
                     <div class="colorPicker-bar"></div>
                     <div class="colorPicker-expandMark">⏷</div>
                 </button>
-                <span id="shadowColorPickerLabel">Shadow:</span>
+                <span id="shadowColorPickerLabel"><mad-string data-locid="CLOCKCONF_COLOR_SHADOW">Shadow:</mad-string></span>
                 <button id="shadowColorPicker" class="colorPicker">
                     <div class="colorPicker-color" style="background-color: #a0a0a0;"></div>
                     <div class="colorPicker-bar"></div>
                     <div class="colorPicker-expandMark">⏷</div>
                 </button>
-                <span id="dkShadowColorPickerLabel">Dark shadow:</span>
+                <span id="dkShadowColorPickerLabel"><mad-string data-locid="CLOCKCONF_COLOR_DKSHADOW">Dark shadow:</mad-string></span>
                 <button id="dkShadowColorPicker" class="colorPicker">
                     <div class="colorPicker-color" style="background-color: #000000;"></div>
                     <div class="colorPicker-bar"></div>
@@ -54,7 +55,7 @@
             </section>
         </fieldset>
         <fieldset>
-            <legend>Font</legend>
+            <legend><mad-string data-locid="CLOCKCONF_FONT_TITLE">Font</mad-string></legend>
             <section id="font" class="field-row">
                 <mad-select id="fontSelector" disabled>
                     <option hidden selected></option>
@@ -62,17 +63,18 @@
                     <option value="Fixedsys Excelsior">Fixedsys Excelsior</option>
                 </mad-select>
                 <input id="outlineModeChkBox" type="checkbox" name="outlineMode" checked disabled>
-                <label for="outlineModeChkBox">Enable outline mode</label>
+                <label for="outlineModeChkBox"><mad-string data-locid="CLOCKCONF_FONT_OUTLINE">Enable outline mode</mad-string></label>
             </section>
         </fieldset>
         <section class="bottomButtons field-row"> 
-            <button id="resetBtn">Restore defaults</button>
-            <button id="okBtn">OK</button>
-            <button id="cancelBtn">Cancel</button>
-            <button id="applyBtn">Apply</button>
+            <button id="resetBtn"><mad-string data-locid="CLOCKCONF_RESET">Restore defaults</mad-string></button>
+            <button id="okBtn"><mad-string data-locid="UI_OK">OK</mad-string></button>
+            <button id="cancelBtn"><mad-string data-locid="UI_CANCEL">Cancel</mad-string></button>
+            <button id="applyBtn"><mad-string data-locid="UI_APPLY">Apply</mad-string></button>
         </section>
     </div>
 
+    <script src="../../js/libmad-strings.js"></script>
     <script src="../../js/libmad.js"></script>
     <script src="../jspaint/lib/font-detective.js"></script>
     <script src="config.js"></script>

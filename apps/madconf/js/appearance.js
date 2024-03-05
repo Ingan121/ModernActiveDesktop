@@ -15,7 +15,7 @@ main();
 
 async function main() {
     scheme = parseCssScheme(await getSchemeText());
-    let schemeName = "Windows Classic (98)";
+    let schemeName = madGetString("MADCONF_SCHEME_CLASSIC") + " (98)";
     const parentSchemeElement = parent.document.getElementById("style");
     const preview = document.getElementById("schemePreview");
     const schemeSelector = document.getElementById("schemeSelector");
@@ -160,7 +160,7 @@ async function main() {
             scheme = parseCssScheme(await getSchemeText(`../../schemes/${schemeSelector.value}.css`));
             deleteBtn.disabled = true;
         }
-        schemeName = schemeSelector.options[schemeSelector.selectedIndex].textContent;
+        schemeName = schemeSelector.options[schemeSelector.selectedIndex].textContent.trim();
 
         if (schemeSelector.options[schemeSelector.selectedIndex].dataset.inconfigurable) {
             selector.value = "background";
@@ -231,10 +231,7 @@ async function main() {
 
     saveAsBtn.addEventListener("click", function () {
         if (schemeSelector.options[schemeSelector.selectedIndex].dataset.inconfigurable) {
-            let msg = "If you save this scheme, the unique look of this theme will be lost and only the colors and window metrics will be saved. Are you sure you want to continue?";
-            if (schemeSelector.value === "sys") {
-                msg = "If you save this scheme, ModernActiveDesktop will no longer fetch the system scheme dynamically. Are you sure you want to continue?";
-            }
+            const msg = madGetString(schemeSelector.value === "sys" ? "MADCONF_CONFIRM_SCHEME_SAVE_SYSTEM" : "MADCONF_CONFIRM_SCHEME_SAVE_CSS");
             madConfirm(msg, function (res) {
                 if (res) {
                     saveScheme();
@@ -246,24 +243,24 @@ async function main() {
     });
 
     function saveScheme() {
-        madPrompt("Save this color scheme as:", function (res) {
+        madPrompt(madGetString("MADCONF_PROMPT_SCHEME_SAVE"), function (res) {
             switch (res) {
                 case null:
                     return;
                 case "":
-                    madAlert("The scheme name cannot be empty.", null, "error");
+                    madAlert(madGetString("MADCONF_MSG_SCHEME_NAME_EMPTY"), null, "error");
                     return;
                 case "!copycss":
                     copyText(generateCssScheme(scheme, true));
-                    madAlert("CSS scheme copied to clipboard.", null, "info");
+                    madAlert(madGetString("MADCONF_MSG_COPYCSS"), null, "info");
                     return;
                 case "!copyjson":
                     copyText(JSON.stringify(scheme));
-                    madAlert("Scheme JSON copied to clipboard.", null, "info");
+                    madAlert(madGetString("MADCONF_MSG_COPYJSON"), null, "info");
                     return;
             }
             if (savedSchemes[res]) {
-                madConfirm("A scheme with the same name already exists. Do you want to overwrite it?", function (res2) {
+                madConfirm(madGetString("MADCONF_CONFIRM_SCHEME_OVERWRITE"), function (res2) {
                     if (res2) {
                         savedSchemes[res] = scheme;
                         localStorage.madesktopSavedSchemes = JSON.stringify(savedSchemes);
@@ -445,7 +442,7 @@ async function main() {
 
     fontSelector.addEventListener("change", function () {
         if (fontSelector.value === "custom") {
-            madPrompt("Enter a valid CSS font-family name", function (res) {
+            madPrompt(madGetString("MADCONF_PROMPT_CUSTOM_FONT"), function (res) {
                 if (res === null) return;
                 setFont(res);
             });
@@ -455,7 +452,7 @@ async function main() {
     });
 
     fontSize.addEventListener("click", function () {
-        madPrompt("Enter font size (optionally append a slash and line height)", function (res) {
+        madPrompt(madGetString("MADCONF_PROMPT_FONT_SIZE"), function (res) {
             if (res === null) return;
             if (parseInt(res).toString() === res) {
                 res += "pt";
@@ -548,7 +545,7 @@ async function main() {
             parent.changeBgColor(colorPickerColor.style.backgroundColor);
             delete localStorage.madesktopAeroColor;
         } else if (selector.disabled) {
-            schemeName = schemeSelector.options[schemeSelector.selectedIndex].textContent;
+            schemeName = schemeSelector.options[schemeSelector.selectedIndex].textContent.trim();
             schemeSelector.options[0].textContent = schemeName;
             parentSchemeElement.textContent = preview.contentDocument.getElementById("style").textContent;
             parent.changeColorScheme(schemeSelector.value);
@@ -646,7 +643,7 @@ async function main() {
                 animChkBox.checked = !localStorage.madesktopNoWinAnim;
             }
         }
-        schemeName = schemeSelector.options[schemeSelector.selectedIndex].textContent;
+        schemeName = schemeSelector.options[schemeSelector.selectedIndex].textContent.trim();
         schemeSelector.options[0].textContent = schemeName;
     }
 
@@ -688,7 +685,7 @@ async function main() {
         schemeName = localStorage.madesktopLastSchemeName;
         schemeSelector.options[0].textContent = schemeName;
     } else if (localStorage.madesktopColorScheme === "98" || !localStorage.madesktopColorScheme) {
-        schemeName = "Windows Classic (98)";
+        schemeName = madGetString("MADCONF_SCHEME_CLASSIC") + " (98)";
         schemeSelector.options[0].textContent = schemeName;
     }
 
@@ -754,8 +751,9 @@ async function main() {
     }
 
     function appendModified() {
-        if (!selector.disabled && !schemeName.endsWith(" (Modified)")) {       
-            schemeName += " (Modified)";
+        const modifiedStr = ` (${madGetString("MADCONF_SCHEME_MODIFIED")})`;
+        if (!selector.disabled && !schemeName.endsWith(modifiedStr)) {       
+            schemeName += modifiedStr;
             schemeSelector.options[0].textContent = schemeName;
             schemeSelector.selectedIndex = 0;
         }
@@ -866,7 +864,8 @@ async function main() {
                     applyPreview();
                     selector.dispatchEvent(new Event("change"));
                 } catch {
-                    madAlert("The imported theme file does not contain valid colors.", null, "error");
+                    madAlert(madGetString("MADCONF_MSG_INVALID_SCHEME_FILE"), null, "error");
+                    throw new Error();
                 }
             }
         }

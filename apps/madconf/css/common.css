@@ -28,6 +28,10 @@ menu[role="tablist"] {
     margin-top: 3px;
 }
 
+menu[role="tablist"] li {
+    min-width: 52px;
+}
+
 menu[role="tablist"] a {
     margin-left: 9px !important;
     margin-top: 7px !important;

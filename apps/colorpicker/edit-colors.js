@@ -115,9 +115,9 @@
 		const $left_right_split = $(`<div class="left-right-split">`).appendTo($w.$main);
 		const $left = $(`<div class="left-side">`).appendTo($left_right_split);
 		const $right = $(`<div class="right-side">`).appendTo($left_right_split).hide();
-		$left.append(`<label for="basic-colors">${display_hotkey("&Basic colors:")}</label>`);
+		$left.append(`<label for="basic-colors">${madGetString("COLORPICKER_BASIC_COLORS")}</label>`);
 		const $basic_colors_grid = make_color_grid(basic_colors, "basic-colors").appendTo($left);
-		$left.append(`<label for="custom-colors">${display_hotkey("&Custom colors:")}</label>`);
+		$left.append(`<label for="custom-colors">${madGetString("COLORPICKER_CUSTOM_COLORS")}</label>`);
 		const custom_colors_dom_order = []; // (wanting) horizontal top to bottom
 		for (let list_index = 0; list_index < custom_colors.length; list_index++) {
 			const row = list_index % 2;
@@ -137,7 +137,7 @@
 		}
 
 		const $define_custom_colors_button = $(`<button class="define-custom-colors-button" type="button">`)
-			.html(display_hotkey("&Define Custom Colors >>"))
+			.html(madGetString("COLORPICKER_DEFINE_CUSTOM"))
 			.appendTo($left)
 			.on("click", (e) => {
 				// prevent the form from submitting
@@ -151,7 +151,7 @@
 				madResizeTo(447, 298);
 			});
 
-		const $color_solid_label = $(`<label for="color-solid-canvas">${display_hotkey("Color|S&olid")}</label>`);
+		const $color_solid_label = $(`<label for="color-solid-canvas">${madGetString("COLORPICKER_COLOR_SOLID")}</label>`);
 		$color_solid_label.css({
 			position: "absolute",
 			left: 10,
@@ -269,13 +269,13 @@
 
 		["hsl", "rgb"].forEach((color_model, color_model_index) => {
 			[...color_model].forEach((component_letter, component_index) => {
-				const text_with_hotkey = {
-					h: "Hu&e:",
-					s: "&Sat:",
-					l: "&Lum:",
-					r: "&Red:",
-					g: "&Green:",
-					b: "Bl&ue:",
+				const locId = {
+					h: "COLORPICKER_HUE",
+					s: "COLORPICKER_SAT",
+					l: "COLORPICKER_LUM",
+					r: "COLORPICKER_RED",
+					g: "COLORPICKER_GREEN",
+					b: "COLORPICKER_BLUE",
 				}[component_letter];
 				const input = document.createElement("input");
 				// not doing type="number" because the inputs have no up/down buttons and they have special behavior with validation
@@ -292,12 +292,12 @@
 					b: 255,
 				}[component_letter];
 				const label = document.createElement("label");
-				label.innerHTML = display_hotkey(text_with_hotkey);
+				label.innerHTML = madGetString(locId);
 				const input_y_spacing = 22;
 				$(label).css({
 					position: "absolute",
-					left: 63 + color_model_index * 80,
-					top: 202 + component_index * input_y_spacing,
+					left: 70 + color_model_index * 75,
+					top: 198 + component_index * input_y_spacing,
 					textAlign: "right",
 					display: "inline-block",
 					width: 40,
@@ -306,7 +306,7 @@
 				});
 				$(input).css({
 					position: "absolute",
-					left: 106 + color_model_index * 80,
+					left: 113 + color_model_index * 75,
 					top: 202 + component_index * input_y_spacing + (component_index > 1), // spacing of rows is uneven by a pixel
 					width: 21,
 					height: 14,
@@ -471,7 +471,7 @@
 		$right.append(rainbow_canvas, luminosity_canvas, result_canvas, $color_solid_label, lum_arrow_canvas);
 
 		const $add_to_custom_colors_button = $(`<button class="add-to-custom-colors-button" type="button">`)
-			.html(display_hotkey("&Add To Custom Colors"))
+			.html(madGetString("COLORPICKER_ADD_TO_CUSTOM"))
 			.appendTo($right)
 			.on("click", (event) => {
 				// prevent the form from submitting
@@ -487,11 +487,11 @@
 				$w.removeClass("defining-custom-colors"); // for mobile layout
 			});
 
-		$w.$Button("OK", () => {
+		$w.$Button(madGetString("UI_OK"), () => {
 			callback(get_current_color());
 			$w.close();
 		}, { type: "submit" });
-		$w.$Button("Cancel", () => {
+		$w.$Button(madGetString("UI_CANCEL"), () => {
 			$w.close();
 		});
 
@@ -528,11 +528,6 @@
 			$define_custom_colors_button.click();
 			$w.trigger("pointerup"); // to force the custom colors to render
 		}
-	}
-
-	function display_hotkey(text) {
-		// misnomer: using .menu-hotkey out of laziness, instead of a more general term like .hotkey or .accelerator
-		return `<span style="white-space: pre">${text.replace(/([^&]|^)&([^&\s])/, "$1<span class='menu-hotkey'>$2</span>").replace(/&&/g, "&")}</span>`;
 	}
 	exports.choose_color = choose_color;
 

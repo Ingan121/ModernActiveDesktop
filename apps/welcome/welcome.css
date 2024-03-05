@@ -50,7 +50,6 @@ body {
     left: 90px;
     width: 32px;
     height: 32px;
-    font-family: sans-serif;
 }
 
 #title {
@@ -58,7 +57,7 @@ body {
     top: 19px;
     left: 42px;
     font-size: 22px;
-    font-family: sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 #ver {
@@ -109,13 +108,8 @@ body {
     background-image: linear-gradient(to right, #009cff, white);
 }
 
-.offscreen {
-    position: absolute;
-    left: -1000px;
-    top: auto;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
+mad-string {
+    white-space: inherit !important;
 }
 
 #itemsTitle {

@@ -11,11 +11,18 @@
 </head>
 
 <body id="placeholder">
-    ⮡ Click this button to configure<br><br>
-    Or try one of the following:<br>
+    ⮡
+    <mad-string data-locid="PH_CONTENT">
+      Click this button to configure
+      <br><br>
+      Or try one of the following:
+    </mad-string>
+    <br>
     <div class="icon" onclick="openApp('channelbar')">
       <img src="images/mad32.png" width="32" height="32"><br>
-      <div>ChannelBar</div>
+      <div>
+        <mad-string data-locid="PH_APP_CB">ChannelBar</mad-string>
+      </div>
     </div>
     <div class="icon" onclick="openApp('jspaint')">
       <img src="images/mspaint.png" width="32" height="32"><br>
@@ -23,15 +30,21 @@
     </div>
     <div class="icon" onclick="openApp('sol')">
       <img src="images/sol.png" width="32" height="32"><br>
-      <div>Solitaire</div>
+      <div>
+        <mad-string data-locid="PH_APP_SOL">Solitaire</mad-string>
+      </div>
     </div>
     <div class="icon" onclick="openApp('clock')">
       <img src="apps/clock/icon.png" width="32" height="32"><br>
-      <div>Clock</div>
+      <div>
+        <mad-string data-locid="PH_APP_CLOCK">Clock</mad-string>
+      </div>
     </div>
     <div id="visIcon" class="icon" onclick="openApp('vis')">
       <img src="apps/visualizer/icon32.png" width="32" height="32"><br>
-      <div>Visualizer</div>
+      <div>
+        <mad-string data-locid="PH_APP_VIS">Visualizer</mad-string>
+      </div>
     </div>
     <div class="icon" onclick="openApp('cv')">
       <img src="apps/channelviewer/images/icon32.png" width="32" height="32"><br>
@@ -39,12 +52,15 @@
     </div>
     <div class="icon" onclick="openApp('calc')">
       <img src="apps/calc/icon32.png" width="32" height="32"><br>
-      <div>Calculator</div>
+      <div>
+        <mad-string data-locid="PH_APP_CALC">Calculator</mad-string>
+      </div>
     </div>
     <div class="icon" onclick="openYoutube()">
       <img src="images/youtube.svg" width="32" height="32"><br>
       <div>YouTube</div>
     </div>
+    <script src="js/libmad-strings.js"></script>
     <script src="js/libmad.js"></script>
     <script src="js/placeholder.js"></script>
 </body>

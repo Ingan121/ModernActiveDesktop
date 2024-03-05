@@ -102,7 +102,7 @@ if (isWin10) {
 } else {
     sysplugChkBox.disabled = true;
     connectTestBtn.disabled = true;
-    connectionStatus.textContent = madGetString("MADCONF_SYSPLUG_UNSUPPORTED");
+    connectionStatus.locId = "MADCONF_SYSPLUG_UNSUPPORTED";
     showGuideBtn.disabled = true;
 }
 
@@ -184,7 +184,7 @@ dpiSlider.addEventListener('input', function () {
 dpiSelector.addEventListener('change', function () {
     dpiSlider.value = this.selectedIndex;
     if (this.value === 'custom') {
-        madPrompt("Enter scale (%) :", async (res) => {
+        madPrompt(madGetString("MADCONF_PROMPT_ENTER_SCALE"), async (res) => {
             if (res === null) {
                 if (madRunningMode === 1) {
                     // Weird timing issues with prompt() and libmad mad-select
@@ -268,8 +268,16 @@ exportBtn.addEventListener('click', function () {
         }
     }
     const json = JSON.stringify(madConfig);
-    copyText(json);
-    madAlert(madGetString("MADCONF_CONF_COPIED"));
+    if (madRunningMode === 0) {
+        const a = document.createElement('a');
+        const file = new Blob([json], { type: 'application/json' });
+        a.href = URL.createObjectURL(file);
+        a.download = 'madesktop-config.json';
+        a.click();
+    } else {
+        copyText(json);
+        madAlert(madGetString("MADCONF_CONF_COPIED"));
+    }
 });
 
 importBtn.addEventListener('click', async function () {
@@ -318,18 +326,18 @@ langSelector.addEventListener('change', function () {
 resetBtn.addEventListener('click', parent.reset);
 
 function checkSysplug() {
-    connectionStatus.textContent = madGetString("MADCONF_CONNECTTEST_CHECKING");
+    connectionStatus.locId = "MADCONF_CONNECTTEST_CHECKING";
     fetch("http://localhost:3031/connecttest")
         .then(response => response.text())
         .then(responseText => {
             if (responseText !== localStorage.madesktopLastVer) {
-                connectionStatus.textContent = madGetString("MADCONF_CONNECTTEST_OUTDATED");
+                connectionStatus.locId = "MADCONF_CONNECTTEST_OUTDATED";
             } else {
-                connectionStatus.textContent = madGetString("MADCONF_CONNECTTEST_SUCCESS");
+                connectionStatus.locId = "MADCONF_CONNECTTEST_SUCCESS";
             }
         })
         .catch(error => {
-            connectionStatus.textContent = madGetString("MADCONF_CONNECTTEST_FAIL");
+            connectionStatus.locId = "MADCONF_CONNECTTEST_FAIL";
         });
 }
 

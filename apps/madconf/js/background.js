@@ -69,7 +69,7 @@ for (const imgItem of imgItems) {
                 preview.contentDocument.body.style.backgroundImage = 'none';
                 switchDisplayOptionElement(true);
             } else {
-                madAlert("Please use the Wallpaper Engine properties panel to configure a video wallpaper.");
+                madAlert(madGetString("MADCONF_MSG_VIDEOWP"));
                 return;
             }
         }
@@ -248,11 +248,8 @@ window.apply = function () {
                 localStorage.madesktopBgImg = activeItem.dataset.base64;
             } catch (e) {
                 if (e.name === 'QuotaExceededError') {
-                    let msg = "Failed to set the image as wallpaper due to the large size of the image. Please use a smaller image";
-                    if (madRunningMode === 1) {
-                        msg += " or use the Wallpaper Engine properties panel to set the image as wallpaper";
-                    }
-                    madAlert(msg + '.', null, 'error');
+                    const msg = madRunningMode === 1 ? madGetString("MADCONF_MSG_LARGE_IMG_WE") : madGetString("MADCONF_MSG_LARGE_IMG");
+                    madAlert(msg, null, 'error');
                 } else {
                     throw e;
                 }

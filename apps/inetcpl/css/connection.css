@@ -31,3 +31,7 @@ ul {
     padding-left: 15px;
     margin-bottom: 1px;
 }
+
+ul mad-string {
+    white-space: initial !important;
+}

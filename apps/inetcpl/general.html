@@ -1,74 +1,76 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Internet Options</title>
+    <title data-locid="INETCPL_TITLE">Internet Options</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="../../css/98.css">
     <link rel="stylesheet" href="css/general.css">
     <link id="scheme" rel="stylesheet" href="data:text/css,">
+    <style id="langStyle"></style>
     <style id="style"></style>
 </head>
 <body>
     <div id="madconf" class="madconf-inet-general window-body">
         <menu role="tablist">
-            <li class="tab" role="tab" data-pagename="general" aria-selected="true"><a href="#tabs">General</a></li>
-            <li id="connectionBtn" class="tab" role="tab" data-pagename="connection"><a href="#tabs">Connection</a></li>
+            <li class="tab" role="tab" data-pagename="general" aria-selected="true"><a href="#tabs"><mad-string data-locid="INETCPL_TAB_GENERAL">General</mad-string></a></li>
+            <li id="connectionBtn" class="tab" role="tab" data-pagename="connection"><a href="#tabs"><mad-string data-locid="INETCPL_TAB_CONNECTION">Connection</mad-string></a></li>
         </menu>
         <div class="window" role="tabpanel">
             <div class="window-body">
                 <fieldset>
-                    <legend>Home page</legend>
+                    <legend><mad-string data-locid="INETCPL_HOME_PAGE_TITLE">Home page</mad-string></legend>
                     <img src="images/homepage.png" alt="Home page icon">
                     <div id="homePageFieldMain" class="fieldMain">
-                        <p>You can change which page to use for your home page.</p>
+                        <p><mad-string data-locid="INETCPL_HOME_PAGE_DESC">You can change which page to use for your home page.</mad-string></p>
                         <p id="homePageInputWrap">
-                            <span>Add<u>r</u>ess:</span>
+                            <span><mad-string data-locid="INETCPL_ADDRESS">Add<u>r</u>ess:</mad-string></span>
                             <input id="homePageInput" type="text" value="https://www.ingan121.com/">
                         </p>
                         <div id="homePageButtons" class="field-row">
-                            <button id="useCurrentBtn" disabled>Use <u>c</u>urrent</button>
-                            <button id="useDefaultBtn">Use <u>d</u>efault</button>
-                            <button id="useBlankBtn">Use <u>b</u>lank</button>
+                            <button id="useCurrentBtn" disabled><mad-string data-locid="INETCPL_USE_CURRENT">Use <u>c</u>urrent</mad-string></button>
+                            <button id="useDefaultBtn"><mad-string data-locid="INETCPL_USE_DEFAULT">Use <u>d</u>efault</mad-string></button>
+                            <button id="useBlankBtn"><mad-string data-locid="INETCPL_USE_BLANK">Use <u>b</u>lank</mad-string></button>
                         </div>
                     </div>
                 </fieldset>
                 <fieldset>
-                    <legend>Miscellaneous</legend>
+                    <legend><mad-string data-locid="INETCPL_MISC_TITLE">Miscellaneous</mad-string></legend>
                     <div id="openOptGroup" class="field-row">
-                        Open pages in...
+                        <mad-string data-locid="INETCPL_OPEN_WITH_TITLE">Open pages in...</mad-string>
                         <mad-select id="openOptSelector">
-                            <option data-condition-runmode="0">New browser tab / window</option>
-                            <option selected>New ChannelViewer window</option>
-                            <option data-condition="sysplugIntegration">System plugin ChannelViewer (deprecated)</option>
-                            <option data-condition="sysplugIntegration">System default browser</option>
+                            <option data-condition-runmode="0"><mad-string data-locid="INETCPL_OPEN_WITH_BROWSER">New browser tab / window</mad-string></option>
+                            <option selected><mad-string data-locid="INETCPL_OPEN_WITH_CV">New ChannelViewer window</mad-string></option>
+                            <option data-condition="sysplugIntegration"><mad-string data-locid="INETCPL_OPEN_WITH_SYSPLUG_CV">System plugin ChannelViewer (deprecated)</mad-string></option>
+                            <option data-condition="sysplugIntegration"><mad-string data-locid="INETCPL_OPEN_WITH_SYSPLUG">System default browser</mad-string></option>
                         </mad-select>
                     </div>
                 </fieldset>
                 <fieldset>
-                    <legend>Advanced</legend>
+                    <legend><mad-string data-locid="INETCPL_ADV_TITLE">Advanced</mad-string></legend>
                     <img src="images/advanced.png" alt="Advanced icon">
                     <div id="advancedFieldMain" class="fieldMain">
                         <input id="faviconChkBox" type="checkbox">
-                        <label for="faviconChkBox">Show favicon in the address bar</label><br>
+                        <label for="faviconChkBox"><mad-string data-locid="INETCPL_CHKBOX_FAVICON">Show <u>f</u>avicon in the address bar</mad-string></label><br>
                         <input id="soundChkBox" type="checkbox" checked>
-                        <label for="soundChkBox">Play system sounds</label><br>
+                        <label for="soundChkBox"><mad-string data-locid="INETCPL_CHKBOX_SOUND">Play system <u>s</u>ounds</mad-string></label><br>
                         <input id="jsChkBox" type="checkbox" checked>
-                        <label for="jsChkBox">Enable JavaScript</label><br>
+                        <label for="jsChkBox"><mad-string data-locid="INETCPL_CHKBOX_JS">Enable <u>J</u>avaScript</mad-string></label><br>
                         <input id="autoFullscrnChkBox" type="checkbox" checked>
-                        <label for="autoFullscrnChkBox">Launch Channels in full screen window</label><br>
+                        <label for="autoFullscrnChkBox"><mad-string data-locid="INETCPL_CHKBOX_CHAN_FULLSCREEN">Launch Channels in <u>f</u>ull screen window</mad-string></label><br>
                         <input id="injectStyleChkBox" type="checkbox" checked>
-                        <label for="injectStyleChkBox">Enable classic styling</label>
+                        <label for="injectStyleChkBox"><mad-string data-locid="INETCPL_CHKBOX_INJECT_CSS">Enable <u>c</u>lassic styling</mad-string></label>
                     </div>
                 </fieldset>
             </div>
         </div>
         <section class="bottomButtons field-row">
-            <button id="okBtn">OK</button>
-            <button id="cancelBtn">Cancel</button>
-            <button id="applyBtn"><u>A</u>pply</button>
+            <button id="okBtn"><mad-string data-locid="UI_OK">OK</mad-string></button>
+            <button id="cancelBtn"><mad-string data-locid="UI_CANCEL">Cancel</mad-string></button>
+            <button id="applyBtn"><mad-string data-locid="UI_APPLY"><u>A</u>pply</mad-string></button>
         </section>
     </div>
 
+    <script src="../../js/libmad-strings.js"></script>
     <script src="../../js/libmad.js"></script>
     <script src="js/common.js"></script>
     <script src="js/general.js"></script>

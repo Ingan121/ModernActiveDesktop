@@ -12,6 +12,9 @@
 
     // Default English strings
     const fallbackStrings = {
+        // Stylesheet to inject
+        "STYLESHEET": "",
+
         // #region General UI strings
         "UI_OK": "OK",
         "UI_CANCEL": "Cancel",
@@ -28,6 +31,7 @@
         "UI_BACK": "&Back",
         "UI_FORWARD": "&Forward",
         "UI_EXIT": "E&xit",
+        "UI_DEFAULT": "Default",
         "UI_CUSTOM": "Custom",
         "UI_VERSION": "Version",
         "UI_NONE": "None",
@@ -45,6 +49,8 @@
         "UI_MSG_SYSPLUG_REQUIRED": "This feature requires system plugin integration.",
         "UI_MSG_NO_SYSPLUG": "System plugin is not running. Please make sure you have installed it properly.",
         "UI_MSG_SYSPLUG_ERROR": "An error occured!<br>System plugin response: ",
+        "UI_PROMPT_RUNJS": "Enter JavaScript code to run.",
+        "UI_PROMPT_ENTER_VALUE": "Enter value",
         // #endregion
         // #endregion
 
@@ -68,13 +74,42 @@
 
         "MAD_MAIN_MENUITEM_NEW": "&New",
 
-        "MAD_ERROR_X_FRAME_OPTIONS": "ModernActiveDesktop cannot load this URL due to a security policy.",
-        "MAD_CONFIRM_X_FRAME_OPTIONS": "ModernActiveDesktop cannot load this URL due to a security policy. Do you want to open this page in ChannelViewer instead?",
-        "MAD_CONFIRM_RESET": "Are you sure you want to reset this window?",
+        "MAD_ERROR_X_FRAME_OPTIONS": "%n cannot load this URL due to a security policy.",
+        "MAD_CONFIRM_X_FRAME_OPTIONS": "%n cannot load this URL due to a security policy. Do you want to open this page in ChannelViewer instead?",
+        "MAD_CONFIRM_WIN_RESET": "Are you sure you want to reset this window?",
+        "MAD_CONFIRM_RESET": "This will remove every configuration change of %n you made. Are you sure you want to continue?",
         "MAD_MSG_TEMP_WINDOW": "This window is temporary, so it cannot be reset. Just close it.",
         "MAD_PROMPT_ENTER_URL": "Enter URL (leave empty to reset)",
         "MAD_PROMPT_ENTER_TITLE": "Enter title (leave empty to reset)",
         "MAD_MSG_LINK_COPY_PROMPT": "Paste this URL in the browser's address bar. Click OK to copy.",
+        // #endregion
+
+
+        // #region Placeholder strings
+        "PH_CONTENT": "Click this button to configure<br><br>Or try one of the following:",
+        "PH_APP_CB": "ChannelBar",
+        "PH_APP_SOL": "Solitaire",
+        "PH_APP_CLOCK": "Clock",
+        "PH_APP_CALC": "Calculator",
+        "PH_APP_VIS": "Visualizer",
+        "PH_PROMPT_YT_URL": "Enter a YouTube URL",
+        "PH_MSG_INVALID_URL": "Invalid URL",
+        // #endregion
+
+
+        // #region Color picker strings
+        "COLORPICKER_TITLE": "Colors",
+        "COLORPICKER_BASIC_COLORS": "&Basic Colors",
+        "COLORPICKER_CUSTOM_COLORS": "&Custom Colors",
+        "COLORPICKER_DEFINE_CUSTOM": "&Define Custom Colors >>",
+        "COLORPICKER_ADD_TO_CUSTOM": "&Add to Custom Colors",
+        "COLORPICKER_COLOR_SOLID": "Color|S&olid",
+        "COLORPICKER_HUE": "Hu&e:",
+        "COLORPICKER_SAT": "&Sat:",
+        "COLORPICKER_LUM": "&Lum:",
+        "COLORPICKER_RED": "&Red:",
+        "COLORPICKER_GREEN": "&Green:",
+        "COLORPICKER_BLUE": "&Blue:",
         // #endregion
 
 
@@ -117,6 +152,12 @@
         "MADCONF_DEFAULTWP_BLISS": "Bliss",
         "MADCONF_DEFAULTWP_AURORA": "Aurora",
         "MADCONF_DEFAULTWP_HARMONY": "Harmony",
+        // #endregion
+
+        // #region JS strings
+        "MADCONF_MSG_VIDEOWP": "Please use the Wallpaper Engine properties panel to configure a video wallpaper.",
+        "MADCONF_MSG_LARGE_IMG": "Failed to set the image as wallpaper due to the large size of the image. Please use a smaller image.",
+        "MADCONF_MSG_LARGE_IMG_WE": "Failed to set the image as wallpaper due to the large size of the image. Please use a smaller image or use the Wallpaper Engine properties panel to configure the wallpaper.",
         // #endregion
         // #endregion
 
@@ -162,6 +203,14 @@
         "MADCONF_SCHEME_XP_SILVER": "Silver",
         "MADCONF_SCHEME_XP_ROYALE": "Royale",
         "MADCONF_SCHEME_FALLBACK": "Fallback",
+        "MADCONF_SCHEME_HC_1": "High Contrast #1",
+        "MADCONF_SCHEME_HC_2": "High Contrast #2",
+        "MADCONF_SCHEME_HC_BLACK": "High Contrast Black",
+        "MADCONF_SCHEME_HC_WHITE": "High Contrast White",
+        "MADCONF_SCHEME_HC11_AQUATIC": "Win 11 - High Contrast Aquatic",
+        "MADCONF_SCHEME_HC11_DESERT": "Win 11 - High Contrast Desert",
+        "MADCONF_SCHEME_HC11_DUSK": "Win 11 - High Contrast Dusk",
+        "MADCONF_SCHEME_HC11_NIGHT_SKY": "Win 11 - High Contrast Night sky",
         // #endregion
 
         // #region Item names
@@ -197,6 +246,20 @@
         "MADCONF_PREVIEW_WINDOW_TEXT": "Window Text",
         "MADCONF_PREVIEW_MESSAGE_BOX": "Message Box",
         "MADCONF_PREVIEW_MESSAGE_TEXT": "Message Text",
+        // #endregion
+
+        // #region JS strings
+        "MADCONF_SCHEME_MODIFIED": "Modified",
+        "MADCONF_MSG_SCHEME_NAME_EMPTY": "The scheme name cannot be empty.",
+        "MADCONF_MSG_COPYCSS": "CSS scheme copied to clipboard.",
+        "MADCONF_MSG_COPYJSON": "Scheme JSON copied to clipboard.",
+        "MADCONF_MSG_INVALID_SCHEME_FILE": "The imported theme file does not contain valid colors.",
+        "MADCONF_CONFIRM_SCHEME_SAVE_CSS": "If you save this scheme, the unique look of this theme will be lost and only the colors and window metrics will be saved. Are you sure you want to continue?",
+        "MADCONF_CONFIRM_SCHEME_SAVE_SYSTEM": "If you save this scheme, %n will no longer fetch the system scheme dynamically. Are you sure you want to continue?",
+        "MADCONF_CONFIRM_SCHEME_OVERWRITE": "A scheme with the same name already exists. Do you want to overwrite it?",
+        "MADCONF_PROMPT_SCHEME_SAVE": "Save this color scheme as:",
+        "MADCONF_PROMPT_CUSTOM_FONT": "Enter a valid CSS font-family name",
+        "MADCONF_PROMPT_FONT_SIZE": "Enter font size (optionally append a slash and line height)",
         // #endregion
         // #endregion
 
@@ -247,13 +310,14 @@
 
         "MADCONF_LANG_TITLE": "Language",
 
-        // #region Miscellaneous tab - JS strings
+        // #region JS strings
         "MADCONF_CONNECTTEST_CHECKING": "Checking system plugin connectivity...",
         "MADCONF_CONNECTTEST_SUCCESS": "System plugin connection successful!",
         "MADCONF_CONNECTTEST_FAIL": "System plugin is not running. Please install the system plugin.",
         "MADCONF_CONNECTTEST_OUTDATED": "System plugin is outdated! Please update the system plugin.",
         "MADCONF_SYSPLUG_UNSUPPORTED": "System plugin requires Windows 10 or higher.",
 
+        "MADCONF_PROMPT_ENTER_SCALE": "Enter scale (%) :",
         "MADCONF_CONF_COPIED": "Configuration copied to clipboard! Paste it to a text file and save it to import it later.",
         "MADCONF_NEWER_CONF_MSG": "This configuration file is for a newer version of %n. Please update %n to import this configuration.",
         "MADCONF_CONF_INVALID": "Invalid configuration file!",
@@ -270,7 +334,43 @@
         "MADCONF_SHOW_WELCOME": "Show welcome",
         "MADCONF_SHOW_README": "Show readme",
         "MADCONF_SHOW_CHANGELOG": "Changelog",
+
+        "MADCONF_CONFIRM_DEBUG": "Enable debug mode?",
         // #endregion
+        // #endregion
+
+
+        // #region Internet Options strings
+        "INETCPL_TITLE": "Internet Options",
+        "INETCPL_TAB_GENERAL": "General",
+        "INETCPL_TAB_CONNECTION": "Connection",
+
+        "INETCPL_HOME_PAGE_TITLE": "Home page",
+        "INETCPL_HOME_PAGE_DESC": "You can change which page to use for your home page.",
+        "INETCPL_ADDRESS": "Add&ress:",
+        "INETCPL_USE_CURRENT": "Use &current",
+        "INETCPL_USE_DEFAULT": "Use &default",
+        "INETCPL_USE_BLANK": "Use &blank",
+
+        "INETCPL_MISC_TITLE": "Miscellaneous",
+        "INETCPL_OPEN_WITH_TITLE": "Open pages in...",
+        "INETCPL_OPEN_WITH_BROWSER": "New browser tab / window",
+        "INETCPL_OPEN_WITH_CV": "New %c window",
+        "INETCPL_OPEN_WITH_SYSPLUG_CV": "System plugin ChannelViewer (deprecated)",
+        "INETCPL_OPEN_WITH_SYSPLUG": "System default browser",
+
+        "INETCPL_ADV_TITLE": "Advanced",
+        "INETCPL_CHKBOX_FAVICON": "Show &favicon in the address bar",
+        "INETCPL_CHKBOX_SOUND": "Play system &sounds",
+        "INETCPL_CHKBOX_JS": "Enable &JavaScript",
+        "INETCPL_CHKBOX_CHAN_FULLSCREEN": "Launch Channels in &full screen window",
+        "INETCPL_CHKBOX_INJECT_CSS": "Enable &classic styling",
+
+        "INETCPL_CORS_PROXY_TITLE": "CORS proxy",
+        "INETCPL_CORS_PROXY_DESC": "You can change which proxy to use for fetching resources.",
+
+        "INETCPL_FORCELOAD_CHKBOX": "Load all pages with advanced features",
+        "INETCPL_FORCELOAD_DESC": "<li>%c will try to load all pages with a CORS proxy.</li><li>Advanced features will be enabled for all Web pages, including those from another origin.</li><li>Web pages that doesn't allow embedding normally will also be forcefully loaded.</li><li>Do note that some pages might not function correctly, especially those with complex scripts.</li>",
         // #endregion
 
 
@@ -311,6 +411,33 @@
         "VISUALIZER_NO_MEDINT_MSG": "Media integration support is disabled. Please enable it in Wallpaper Engine settings -> General -> Media integration support.",
         "VISUALIZER_MEDINT_UNSUPPORTED_MSG": "This feature requires Windows 10 or higher.",
         "VISUALIZER_MEDIA_CONTROL_ERROR": "An error occurred while processing the media control request.",
+
+        // #region Visualizer Configuration strings
+        "VISCONF_TITLE": "Visualizer Properties",
+        "VISCONF_COLOR_TITLE": "Colors",
+        "VISCONF_COLOR_FOLLOW_SCHEME": "Follow color scheme",
+        "VISCONF_COLOR_FOLLOW_ALBUM_ART": "Follow album art colors if available",
+
+        "VISCONF_CUSTOM_COLOR_TITLE": "Custom colors",
+        "VISCONF_CUSTOM_COLOR_BG": "Background:",
+        "VISCONF_CUSTOM_COLOR_BAR": "Bar:",
+        "VISCONF_CUSTOM_COLOR_TOP": "Top:",
+
+        "VISCONF_ALBUM_ART_TITLE": "Album art",
+        "VISCONF_ALBUM_ART_SHOW": "Show album art",
+        "VISCONF_ALBUM_ART_DIM": "Dim album art",
+
+        "VISCONF_CHAN_SEP_TITLE": "Channel separation",
+        "VISCONF_CHAN_SEP_DISABLE": "No processing (pre-3.2 behavior)",
+        "VISCONF_CHAN_SEP_REVERSE": "Reverse the right channel (default)",
+        "VISCONF_CHAN_SEP_COMBINE": "Combine left and right channels",
+
+        "VISCONF_VIS_TITLE": "Visualization",
+        "VISCONF_BAR_WIDTH": "Fixed bar width:",
+        "VISCONF_PRIMARY_SCALE": "Primary scale:",
+        "VISCONF_DIFF_SCALE": "Difference scale:",
+        "VISCONF_SCALE_INFO": "* Adjust the scale values if you think the bars reach the top too fast.<br>* Pre-3.2 difference scale was 0.15.",
+        // #endregion
         // #endregion
 
 
@@ -327,6 +454,7 @@
 
 
         // #region ChannelViewer strings
+        // #region ChannelViewer UI strings
         "CV_MENU_GO": "&Go",
         "CV_MENU_FAVORITES": "&Favorites",
 
@@ -350,6 +478,7 @@
         "CV_STATUS_OPENING": "Opening page %s",
         "CV_ZONE_INTERNET": "Internet zone",
         "CV_ZONE_LOCAL": "My Computer",
+        // #endregion
 
         // #region ChannelViewer menu items
         "CV_FILE_MENUITEM_NEW_WINDOW": "&New Window",
@@ -368,6 +497,7 @@
 
         "CV_FAVORITES_MENUITEM_ADDITEM": "&Add to Favorites...",
         "CV_FAVORITES_MENUITEM_EDITITEM": "&Organize Favorites...",
+        "CV_FAVORITES_MENUITEM_EDITITEM_CLICKED": "Click an item to modify",
 
         "CV_HELP_MENUITEM_ABOUT": "&About ChannelViewer",
 
@@ -382,6 +512,22 @@
         "CV_EXPLORER_BARS_MENUITEM_FAVORITES": "&Favorites",
         "CV_EXPLORER_BARS_MENUITEM_CHANNELS": "&Channels",
         "CV_EXPLORER_BARS_MENUITEM_NONE": "&None",
+        // #endregion
+
+        // #region ChannelViewer messages
+        "CV_MSG_OPENTYPE_CROSSORIGIN": "This page is from a different origin. Advanced features are not available for this page.",
+        "CV_MSG_OPENTYPE_PROXIED": "This page was loaded with an external proxy. Advanced features are available, but the page may not work properly. Also, do not enter your passwords here!",
+        "CV_MSG_OPENTYPE_FORCELOADED": "This page was forcefully loaded with advanced features. The page may not work properly, especially if it has complex scripts.",
+        "CV_MSG_OPENTYPE_FORCELOADED_WE": "This page does not allow embedding normally, so it was forcefully loaded. Advanced features are available, but the page may not work properly, especially if it has complex scripts.",
+        "CV_MSG_OPENTYPE_NORMAL": "This page was loaded normally, and advanced features are available.",
+        "CV_MSG_NO_ADV": "Sorry, but advanced features are unavailable for this webpage. Please consult the internet options for more details.",
+        "CV_MSG_SSL_SECURE": "The connection to this site is secure.",
+        "CV_MSG_PROXY_INSECURE": "This page was loaded with an external proxy. Entering passwords here is NOT SECURE!",
+        "CV_MSG_LOAD_ERROR": "%c cannot open the Internet site \"%s\".<br>A connection with the server could not be established.",
+        "CV_PROMPT_ENTER_URL": "Enter URL",
+        "CV_PROMPT_FAV_ADD": "Enter a name for this page",
+        "CV_PROMPT_FAV_EDIT": "Enter a new name (leave empty to delete; type !url to edit URL)",
+        "CV_PROMPT_FAV_EDIT_URL": "Enter a new URL",
         // #endregion
         // #endregion
 
@@ -398,6 +544,23 @@
         "CLOCK_MENUITEM_SECONDS": "&Seconds",
         "CLOCK_MENUITEM_DATE": "Da&te",
         "CLOCK_MENUITEM_ABOUT": "A&bout Clock",
+
+        // #region Clock settings strings
+        "CLOCKCONF_TITLE": "Clock Properties",
+        "CLOCKCONF_COLOR_TITLE": "Analog clock colors",
+        "CLOCKCONF_COLOR_BG": "Background:",
+        "CLOCKCONF_COLOR_PRIMARY": "Primary:",
+        "CLOCKCONF_COLOR_LIGHT": "Light:",
+        "CLOCKCONF_COLOR_HIGHLIGHT": "Highlight:",
+        "CLOCKCONF_COLOR_SHADOW": "Shadow:",
+        "CLOCKCONF_COLOR_DKSHADOW": "Dark shadow:",
+
+        "CLOCKCONF_FONT_TITLE": "Font",
+        "CLOCKCONF_FONT_OUTLINE": "Enable outline mode",
+
+        "CLOCKCONF_RESET": "Restore defaults",
+        "CLOCKCONF_CONFIRM_RESET": "Are you sure you want to reset the clock settings?",
+        // #endregion
         // #endregion
 
 
@@ -419,25 +582,31 @@
         "WELCOME_GET_SUPPORT": "Get Support",
         "WELCOME_MAIN_TITLE": "Welcome",
         "WELCOME_AUTOSTART_CHKBOX": "Show this screen each time %n starts.",
+        "WELCOME_MAIN_CONTENT": "Welcome to the exciting new world of %n, where your modern desktop meets the classic experience!<br><br>Sit back and relax as you take a brief tour of the options available on this screen.<br><br>If you want to explore an option, just click it.",
+        "WELCOME_WHATS_NEW_CONTENT": "%n 3.2 brings a lot of new features and improvements to your experience, including:<br><br>* New apps: Clock and Calculator<br>* All-new ChannelViewer<br>* More customizable options - window metrics, fonts, Aero theme, and more<br><br>Click for more information.",
+        "WELCOME_CUSTOMIZE_DESKTOP_CONTENT": "%n provides a variety of options to customize your experience.<br><br>You can change the color scheme, the wallpaper, and more.<br><br>Click to configure %n.",
+        "WELCOME_SETUP_SYSPLUG_CONTENT": "For better usability, it is highly recommended to install the system plugin.<br><br>It allows a better integration between your system and the wallpaper, such as opening a new browser window from the wallpaper.<br><br>Click for more information, including the setup instructions.",
+        "WELCOME_GET_SUPPORT_CONTENT": "%n is an open-source project, and you can get help from the community.<br><br>If you have any problems, you can report them on the GitHub issues page.<br>You can also contribute to the project by submitting a pull request.<br><br>Click to open the GitHub repository."
         // #endregion
     }
-    window.madStrings = parent.madStrings || fallbackStrings;
+    window.madStrings = top.madStrings || fallbackStrings;
 
     const supportedLanguages = ["en", "ko"];
 
-    let lang = parent.madLang || localStorage.madesktopLang || navigator.language || navigator.userLanguage;
+    let lang = top.madLang || localStorage.madesktopLang || navigator.language || navigator.userLanguage;
     lang = lang.split("-")[0];
     window.madLang = lang;
 
-    let localizableElements = [];
+    const localizableElements = [];
     const titleElem = document.querySelector("title");
     const titleLocId = titleElem.dataset.locid;
+    const langStyleElement = document.getElementById("langStyle");
 
     if (!supportedLanguages.includes(lang)) {
         lang = "en";
     }
 
-    if (parent === window) {
+    if (top === window) {
         // Only for the main MAD page
         window.changeLanguage = (newLang) => {
             if (supportedLanguages.includes(newLang)) {
@@ -470,11 +639,16 @@
         }
     } else {
         updateTitle();
+        updateStyle();
         document.documentElement.lang = lang;
         window.addEventListener("message", (event) => {
             if (event.data.type === "language-ready") {
-                window.madStrings = parent.madStrings;
+                window.madStrings = top.madStrings;
+                lang = top.madLang;
+                window.madLang = lang;
+                document.documentElement.lang = lang;
                 readyAll();
+                updateTitle();
             }
         });
     }
@@ -499,6 +673,7 @@
             element.ready();
         }
         updateTitle();
+        updateStyle();
         document.documentElement.lang = lang;
     }
 
@@ -515,12 +690,23 @@
         }
     }
 
+    function updateStyle() {
+        if (langStyleElement) {
+            if (window.madStrings["STYLESHEET"]) {
+                langStyleElement.textContent = window.madStrings["STYLESHEET"];
+            } else {
+                langStyleElement.textContent = "";
+            }
+        }
+    }
+
     function getString(locId, extraString) {
         if (window.madStrings[locId]) {
             return processString(window.madStrings[locId], extraString);
         } else if (fallbackStrings[locId]) {
             return processString(fallbackStrings[locId], extraString);
         } else {
+            console.error(`No string found for locId ${locId}`);
             return null;
         }
     }
@@ -529,10 +715,20 @@
     class MadString extends HTMLElement {
         constructor() {
             super();
+            Object.defineProperties(this, {
+                locId: {
+                    get() {
+                        return this.dataset.locid
+                    },
+                    set(value) {
+                        this.dataset.locid = value;
+                        this.ready();
+                    }
+                }
+            });
         }
 
         connectedCallback() {
-            this.locId = this.dataset.locid;
             localizableElements.push(this);
             this.ready();
         }

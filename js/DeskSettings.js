@@ -190,6 +190,7 @@ if (localStorage.madesktopLastVer) {
     }
 
     if (localStorage.madesktopLastVer !== "3.2.0" && localStorage.sysplugIntegration) { // Update from 3.2.0 and below
+        // Not really localizable
         madAlert("System plugin has been updated, and it needs a reinstall. Please update it with the setup guide.", function () {
             openWindow("SysplugSetupGuide.md", true);
         });
@@ -254,7 +255,9 @@ function openMainMenu (event) {
     mainMenuBg.style.left = event.clientX + "px";
     mainMenuBg.style.top = event.clientY + "px";
     mainMenuBg.style.display = "block";
-    const width = getTextWidth(mainMenuItems[1].textContent);
+    const width0 = getTextWidth(mainMenuItems[0].textContent);
+    const width1 = getTextWidth(mainMenuItems[1].textContent);
+    const width = Math.max(width0, width1);
     mainMenuBg.style.width = `calc(${width}px + 4em)`;
     mainMenu.style.width = `calc(${width}px + 4em - 2px)`;
     mainMenuBg.style.height = mainMenuItems[0].offsetHeight * 2 + "px";
@@ -1623,8 +1626,7 @@ function playSound(sound) {
 
 function reset(res) {
     if (typeof res === "undefined" || res) {
-        const msg = "This will remove every configuration change of ModernActiveDesktop you made. Are you sure you want to continue?";
-        madConfirm(msg, function (res) {
+        madConfirm(madGetString("MAD_CONFIRM_RESET"), function (res) {
             if (res) {
                 location.replace("confmgr.html?action=reset");
             }
@@ -1673,7 +1675,7 @@ function log(str, level, caller) {
 
 // Just for debugging
 function debug(event) {
-    madPrompt("Enter JavaScript code to run.", function (res) {
+    madPrompt(madGetString("UI_PROMPT_RUNJS"), function (res) {
         eval(res);
     });
     event.preventDefault();

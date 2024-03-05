@@ -69,7 +69,7 @@ const genreValue = document.getElementById('genreValue').querySelector('p');
 
 const infoAreaSeparator = document.getElementById('infoAreaSeparator');
 const statusBar = document.getElementById('statusBar');
-const statusText = document.getElementById('statusText').querySelector('p');
+const statusText = document.getElementById('statusText').querySelector('mad-string');
 const timeText = document.getElementById('timeText').querySelector('p');
 
 const visMenuItems = document.querySelectorAll('#visMenu .contextMenuItem');
@@ -84,9 +84,7 @@ let mouseOverMenu = false;
 let mediaIntegrationAvailable = isWin10;
 
 let lastAlbumArt = null;
-let lastMusic = {
-    title: ''
-};
+let lastMusic = null;
 let schemeBarColor = null;
 let schemeTopColor = null;
 
@@ -374,7 +372,7 @@ helpMenuItems[0].addEventListener('click', () => { // About Visualizer button
     madOpenConfig('about');
 });
 
-function mediaControl(action, title = lastMusic.title) {
+function mediaControl(action, title = lastMusic.title || '') {
     if (!localStorage.sysplugIntegration || !localStorage.madesktopVisMediaControls) {
         return;
     }
@@ -448,6 +446,7 @@ function wallpaperMediaPropertiesListener(event) {
         seekBar.style.backgroundColor = 'transparent';
         seekHandle.style.display = 'none';
         timeText.parentElement.style.display = 'none';
+        lastMusic = null;
         return;
     }
 
@@ -534,21 +533,21 @@ function wallpaperMediaPlaybackListener(event) {
             delete pauseIcon.dataset.active;
             delete stopIcon.dataset.active;
             delete pauseIcon.dataset.disabled;
-            statusText.textContent = madGetString("VISUALIZER_STATUS_PLAYING");
+            statusText.locId = "VISUALIZER_STATUS_PLAYING";
             break;
         case window.wallpaperMediaIntegration.PLAYBACK_PAUSED:
             delete playIcon.dataset.active;
             pauseIcon.dataset.active = true;
             delete stopIcon.dataset.active;
             delete pauseIcon.dataset.disabled;
-            statusText.textContent = madGetString("VISUALIZER_STATUS_PAUSED");
+            statusText.locId = "VISUALIZER_STATUS_PAUSED";
             break;
         case window.wallpaperMediaIntegration.PLAYBACK_STOPPED:
             delete playIcon.dataset.active;
             delete pauseIcon.dataset.active;
             stopIcon.dataset.active = true;
             pauseIcon.dataset.disabled = true;
-            statusText.textContent = madGetString("VISUALIZER_STATUS_STOPPED");
+            statusText.locId = "VISUALIZER_STATUS_STOPPED";
     }
 }
 
@@ -614,6 +613,10 @@ window.addEventListener("message", (event) => {
                     viewMenuItems[4].classList.remove('checkedItem');
                     delete statusArea.dataset.controllable;
                 }
+            }
+        case "language-ready":
+            if (lastMusic === null) {
+                document.title = madGetString("VISUALIZER_TITLE");
             }
     }
 });
