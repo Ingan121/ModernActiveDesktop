@@ -37,7 +37,7 @@
     --scrollbar-size: 21px;
     --menu-height: 22px;
     --palette-title-height: 22px;
-    --caption-font: bold 14pt/0.8 "Microsoft Sans Serif", var(--ui-font);
+    --caption-font: bold 14pt/1.1 "Microsoft Sans Serif", var(--ui-font);
     --menu-font: 12pt/0.7 "Microsoft Sans Serif", var(--ui-font);
     --message-font: 10pt var(--ui-font);
     --status-font: 12pt "Microsoft Sans Serif", var(--ui-font);

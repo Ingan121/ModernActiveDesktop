@@ -37,7 +37,7 @@
     --scrollbar-size: 13px;
     --menu-height: 18px;
     --palette-title-height: 17px;
-    --caption-font: bold 11pt/0.9 "Times New Roman", var(--ui-font);
+    --caption-font: bold 11pt/1 "Times New Roman", var(--ui-font);
     --menu-font: 10pt/1 "Times New Roman", var(--ui-font);
     --message-font: 10pt "Times New Roman", var(--ui-font);
     --status-font: 10pt "Times New Roman", var(--ui-font);

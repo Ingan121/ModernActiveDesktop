@@ -102,10 +102,10 @@
   --cjk-fontlink: "MS UI Gothic", Gulim, SimSun, PMingLiU;
   --ui-font: "Pixelated MS Sans Serif", Arial, var(--cjk-fontlink);
   --caption-font: bold 11px var(--ui-font);
-  --menu-font: 8pt var(--ui-font);
-  --message-font: 8pt var(--ui-font);
-  --status-font: 8pt var(--ui-font);
-  --sm-caption-font: bold 8pt var(--ui-font);
+  --menu-font: 11px var(--ui-font);
+  --message-font: 11px var(--ui-font);
+  --status-font: 11px var(--ui-font);
+  --sm-caption-font: bold 11px var(--ui-font);
 
   /* WindowMetrics */
   --scrollbar-size: 16px;

@@ -14,7 +14,7 @@
         inset -2px -2px var(--button-light),
         inset 2px 2px var(--button-dk-shadow);
     border: none;
-    padding: 3px;
+    padding: 2px;
 }
 
 #conf {

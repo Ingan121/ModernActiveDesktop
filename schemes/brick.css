@@ -38,7 +38,7 @@
     --menu-height: 18px;
     --palette-title-height: 15px;
     --caption-font: bold 9pt Arial, var(--cjk-fontlink);
-    --sm-caption-font: 8pt var(--ui-font);
+    --sm-caption-font: 11px var(--ui-font);
 }
 .window {
     --extra-border-size: 1px;

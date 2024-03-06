@@ -38,9 +38,9 @@
     --menu-height: 18px;
     --palette-title-height: 18px;
     --caption-font: bold 10pt/1.1 "Book Antiqua", var(--ui-font);
-    --menu-font: 8pt/1.1 "Book Antiqua", var(--ui-font);
-    --status-font: 8pt "Book Antiqua", var(--ui-font);
-    --sm-caption-font: bold 8pt "Book Antiqua", var(--ui-font);
+    --menu-font: 11px/1 "Book Antiqua", var(--ui-font);
+    --status-font: 11px "Book Antiqua", var(--ui-font);
+    --sm-caption-font: bold 11px/1 "Book Antiqua", var(--ui-font);
 }
 .window {
     --extra-border-size: 1px;

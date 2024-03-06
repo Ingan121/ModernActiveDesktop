@@ -37,7 +37,7 @@
     --scrollbar-size: 16px;
     --menu-height: 18px;
     --palette-title-height: 16px;
-    --caption-font: bold 10pt "Calisto MT", var(--ui-font);
+    --caption-font: bold 10pt/1 "Calisto MT", var(--ui-font);
     --menu-font: 10pt/0.9 "Calisto MT", var(--ui-font);
     --status-font: 9pt "Calisto MT", var(--ui-font);
     --sm-caption-font: bold 9pt "Calisto MT", var(--ui-font);

@@ -39,7 +39,7 @@
     --palette-title-height: 17px;
     --caption-font: bold 11pt/1 Arial, var(--cjk-fontlink);
     --menu-font: 10pt/0.9 Arial, var(--cjk-fontlink);
-    --message-font: 8pt Arial, var(--cjk-fontlink);
+    --message-font: 11px Arial, var(--cjk-fontlink);
     --status-font: bold 9pt Arial, var(--cjk-fontlink);
     --sm-caption-font: 10pt/1 Arial, var(--cjk-fontlink);
 }

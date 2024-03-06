@@ -38,7 +38,7 @@
     --menu-height: 18px;
     --palette-title-height: 15px;
     --caption-font: bold 9pt "Trebuchet MS", var(--ui-font);
-    --menu-font: 8pt "Trebuchet MS", var(--ui-font);
+    --menu-font: 11px/1 "Trebuchet MS", var(--ui-font);
     --sm-caption-font: bold 6pt/1.8 var(--ui-font);
 }
 .window {

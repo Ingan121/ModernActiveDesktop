@@ -229,6 +229,7 @@ function drawHourHand(time) {
     let hour = time.getHours();
     hour = hour + minute / 60;
     let angle = (Math.PI / 6) * hour - Math.PI / 2;
+    angle = angle % (2 * Math.PI);
     clockCtx.beginPath();
     const startPoint = [radius - radius * 0.15 * Math.cos(angle), radius - radius * 0.15 * Math.sin(angle)]
     const narrowSide1 = [radius - radius * 0.07 * Math.cos(angle + Math.PI / 2), radius - radius * 0.07 * Math.sin(angle + Math.PI / 2)];
@@ -264,6 +265,7 @@ function drawMinuteHand(time) {
     const radius = clockCanvas.width / 2;
     let minute = time.getMinutes();
     let angle = (Math.PI / 30) * minute - Math.PI / 2;
+    angle = angle % (2 * Math.PI);
     clockCtx.beginPath();
     const startPoint = [radius - radius * 0.15 * Math.cos(angle), radius - radius * 0.15 * Math.sin(angle)]
     const narrowSide1 = [radius - radius * 0.05 * Math.cos(angle + Math.PI / 2), radius - radius * 0.05 * Math.sin(angle + Math.PI / 2)];

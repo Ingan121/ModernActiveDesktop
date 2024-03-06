@@ -614,7 +614,7 @@
                 window.madLang = lang;
                 if (lang !== "en") {
                     let url = `lang/${lang}.json`;
-                    if (location.href.includes("apps/")) {
+                    if (!window.madMainWindow) {
                         url = `../../${url}`;
                     }
                     fetch(url)

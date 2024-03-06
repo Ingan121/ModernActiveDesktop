@@ -26,7 +26,7 @@
     "UI_MENU_VIEW": "보기(&V)",
     "UI_MENU_HELP": "도움말(&H)",
     "UI_MENUITEM_NEW_WINDOW": "새 창(&N)",
-    "UI_MENUITEM_PROPERTIES": "속성(&R)",
+    "UI_MENUITEM_PROPERTIES": "등록 정보(&R)",
     "UI_MENUITEM_FULL_SCREEN": "전체 화면(&F)",
 
     "UI_MSG_SYSPLUG_REQUIRED": "이 기능은 시스템 플러그인 연동이 필요합니다.",
@@ -356,7 +356,7 @@
     "VISUALIZER_MEDINT_UNSUPPORTED_MSG": "이 기능은 Windows 10 이상에서만 지원됩니다.",
     "VISUALIZER_MEDIA_CONTROL_ERROR": "미디어 제어 요청을 처리하는 동안 오류가 발생했습니다.",
 
-    "VISCONF_TITLE": "시각화 속성",
+    "VISCONF_TITLE": "시각화 등록 정보",
     "VISCONF_COLOR_TITLE": "색상",
     "VISCONF_COLOR_FOLLOW_SCHEME": "색 구성표 따르기",
     "VISCONF_COLOR_FOLLOW_ALBUM_ART": "앨범 아트 색상 따르기 (가능할 경우)",
@@ -475,7 +475,7 @@
     "CLOCK_MENUITEM_DATE": "날짜(&T)",
     "CLOCK_MENUITEM_ABOUT": "시계 정보(&B)",
 
-    "CLOCKCONF_TITLE": "시계 속성",
+    "CLOCKCONF_TITLE": "시계 등록 정보",
     "CLOCKCONF_COLOR_TITLE": "아날로그 시계 색상",
     "CLOCKCONF_COLOR_BG": "배경:",
     "CLOCKCONF_COLOR_PRIMARY": "주 색상:",

@@ -454,11 +454,12 @@ async function main() {
     fontSize.addEventListener("click", function () {
         madPrompt(madGetString("MADCONF_PROMPT_FONT_SIZE"), function (res) {
             if (res === null) return;
-            if (parseInt(res).toString() === res) {
+            if (parseFloat(res).toString() === res) {
                 res += "pt";
             }
             fontSize.dataset.fullValue = res;
-            fontSize.textContent = res.split("/")[0];
+            fontSize.value = parseFloat(res.split("/")[0]);
+            console.log(fontSize.textContent)
             setFont();
         }, '', fontSize.dataset.fullValue);
     }, );

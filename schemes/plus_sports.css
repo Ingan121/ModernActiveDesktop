@@ -38,7 +38,7 @@
     --menu-height: 18px;
     --palette-title-height: 15px;
     --caption-font: bold 9pt/1.2 "OCR A Extended", "OCR A", var(--ui-font);
-    --menu-font: 8pt "OCR A Extended", "OCR A", var(--ui-font);
+    --menu-font: 11px "OCR A Extended", "OCR A", var(--ui-font);
 }
 .window {
     --extra-title-height: -2px;

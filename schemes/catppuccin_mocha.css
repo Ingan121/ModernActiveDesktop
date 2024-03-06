@@ -38,7 +38,6 @@
     --scrollbar-size: 17px;
     --menu-height: 18px;
     --palette-title-height: 15px;
-    --status-font: bold 8pt var(--ui-font);
 }
 .window {
     --extra-border-size: 1px;
