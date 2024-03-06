@@ -201,6 +201,14 @@ u {
   border-bottom: 0.5px solid var(--underline);
 }
 
+:disabled u,
+:disabled + label u,
+[disabled] u,
+u[disabled],
+[data-disabled] u {
+  border-bottom-color: var(--underline-disabled);
+}
+
 button,
 input[type="submit"],
 input[type="reset"] {

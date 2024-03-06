@@ -1,4 +1,4 @@
-@import '../../../css/fonts.css';
+@import '../../../css/libmad.css';
 
 :root {
     --hilight-inverted: #FFFF7F;
@@ -29,7 +29,8 @@ menu[role="tablist"] {
 }
 
 menu[role="tablist"] li {
-    min-width: 52px;
+    min-width: 42px !important;
+    text-align: left !important;
 }
 
 menu[role="tablist"] a {

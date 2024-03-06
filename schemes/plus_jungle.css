@@ -37,7 +37,7 @@
     --scrollbar-size: 13px;
     --menu-height: 18px;
     --palette-title-height: 15px;
-    --caption-font: 12pt/1.2 "Matisse ITC", "Tempus Sans ITC", var(--ui-font);
+    --caption-font: 12pt/1.3 "Matisse ITC", "Tempus Sans ITC", var(--ui-font);
     --menu-font: 11px/1 "Tempus Sans ITC", var(--ui-font);
     --message-font: 9pt "Tempus Sans ITC", var(--ui-font);
     --status-font: bold 9pt var(--ui-font);

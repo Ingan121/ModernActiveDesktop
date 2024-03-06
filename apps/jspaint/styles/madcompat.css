@@ -126,10 +126,16 @@
     border-bottom: none !important;
 }
 
+.window-title-area {
+    height: unset !important;
+}
+
 .window-title {
+    position: unset !important;
     display: inline-block !important;
-    margin-top: 1px !important;
+    margin-top: 4px !important;
     font: var(--caption-font) !important;
+    box-sizing: border-box;
 }
 
 .window-button {

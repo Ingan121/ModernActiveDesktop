@@ -291,7 +291,7 @@ async function main() {
         schemeSelector.options[schemeSelector.selectedIndex].remove();
         localStorage.madesktopSavedSchemes = JSON.stringify(savedSchemes);
         schemeSelector.selectedIndex = 0;
-        schemeSelector.options[0].textContent = "Current Scheme";
+        schemeSelector.options[0].textContent = madGetString("MADCONF_CURRENT_SCHEME");
         delete localStorage.madesktopLastSchemeName;
         deleteBtn.disabled = true;
     });

@@ -746,6 +746,8 @@ function hookIframeSize(iframe) {
         // Will fail if the page doesn't have a title element
     }
 
+    iframe.contentDocument.addEventListener('pointerdown', ensuerBaseUrl);
+
     // Do this on pointerup instead of click, as click doesn't work with Google Search links
     // Probably because it uses something like event.stopPropagation()?
     iframe.contentDocument.addEventListener('pointerup', (event) => {
@@ -1257,6 +1259,17 @@ async function fetchStyle() {
             break;
         default:
             themeStylesheet = "";
+    }
+}
+
+// Some single page sites (e.g. GitHub) delete the base tag on navigation
+function ensuerBaseUrl() {
+    if (!isCrossOrigin && iframe.contentDocument.head.dataset.forceLoaded) {
+        if (iframe.contentDocument.baseURI !== iframe.contentDocument.location.href) {
+            const base = iframe.contentDocument.createElement("base");
+            base.href = iframe.contentDocument.location.href;
+            iframe.contentDocument.head.appendChild(base);
+        }
     }
 }
 

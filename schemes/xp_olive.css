@@ -38,7 +38,7 @@
     --menu-height: 19px;
     --palette-title-height: 17px;
     --ui-font: Tahoma, Arial, var(--cjk-fontlink);
-    --caption-font: bold 10pt/1.5 "Trebuchet MS", var(--ui-font);
+    --caption-font: bold 10pt/1 "Trebuchet MS", var(--ui-font);
     --menu-font: 11px/1 var(--ui-font);
     --message-font: 11px var(--ui-font);
     --status-font: 11px var(--ui-font);
