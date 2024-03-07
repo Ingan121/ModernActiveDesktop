@@ -60,7 +60,7 @@ for (const textbox of textboxes) {
             if (textbox.placeholder) {
                 extraMsg = ' (Leave empty to reset)';
             }
-            madPrompt("Enter value" + extraMsg, function (res) {
+            madPrompt(madGetString("UI_PROMPT_ENTER_VALUE") + extraMsg, function (res) {
                 if (res === null) return;
                 if (res === '') {
                     textbox.value = textbox.placeholder;

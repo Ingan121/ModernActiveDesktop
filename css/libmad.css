@@ -1,5 +1,13 @@
 ﻿@charset "utf-8";
 
+/*
+    libmad.css for ModernActiveDesktop
+    Made by Ingan121
+    Licensed under the MIT License
+*/
+
+/* Implements MadMenu styles, underline hiding, and some shared styles and variables */
+
 @import 'fonts.css';
 
 @keyframes appear {

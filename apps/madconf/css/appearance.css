@@ -50,13 +50,22 @@
     left: -2px;
 }
 
+#schemeSelector {
+    margin-top: 1px;
+}
+
+#schemeSelector:lang(ko) {
+    width: 187px;
+}
+
 #schemeSelectorGroup button {
     position: relative;
     top: -6px;
 }
 
-#schemeSelector {
-    margin-top: 1px;
+#schemeSelectorGroup button:lang(ko) {
+    min-width: 0;
+    padding: 0 5px;
 }
 
 #saveAsBtn {

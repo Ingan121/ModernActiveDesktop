@@ -315,7 +315,7 @@
 
 				input.addEventListener("click", function () {
 					if (madRunningMode === 1) {
-						madPrompt("Enter value", function (res) {
+						madPrompt(madGetString("UI_PROMPT_ENTER_VALUE"), function (res) {
 							if (res === null) return;
 							input.value = res;
 							handle_input(input);

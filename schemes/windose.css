@@ -35,6 +35,7 @@
     --flat-menus: mbcm;
     --menu-animation: fade;
     --menu-shadow: true;
+    --supports-win-shadow: true;
     --scrollbar-size: 16px;
     --menu-height: 18px;
     --palette-title-height: 15px;
@@ -63,7 +64,7 @@
 }
 
 .windowContainer[data-style="wnd"]:not(#JustHereToGiveItPriority) {
-    box-shadow: var(--title-text) -1px -1px inset, var(--title-text) 1px 1px inset !important;
+    box-shadow: var(--title-text) -1px -1px inset, var(--title-text) 1px 1px inset, 2px 2px #4D22CD50 !important;
 }
 
 .windowContainer[data-style="wnd"] .windowElement {
@@ -74,7 +75,20 @@
 #msgbox {
     box-shadow: var(--title-text) -1px -1px inset, var(--title-text) 1px 1px inset,
         var(--active-border) -3px -3px inset, var(--active-border) 3px 3px inset,
-        var(--title-text) -4px -4px inset, var(--title-text) 4px 4px inset;
+        var(--title-text) -4px -4px inset, var(--title-text) 4px 4px inset,
+        2px 2px #4D22CD50 !important;
+}
+
+#madconf-preview[data-no-win-shadow] #activeWindow {
+    box-shadow: var(--title-text) -1px -1px inset, var(--title-text) 1px 1px inset,
+        var(--active-border) -3px -3px inset, var(--active-border) 3px 3px inset,
+        var(--title-text) -4px -4px inset, var(--title-text) 4px 4px inset !important;
+}
+
+body[data-no-win-shadow] #msgbox:not([data-inactive]) {
+    box-shadow: var(--title-text) -1px -1px inset, var(--title-text) 1px 1px inset,
+        var(--active-border) -3px -3px inset, var(--active-border) 3px 3px inset,
+        var(--title-text) -4px -4px inset, var(--title-text) 4px 4px inset !important;
 }
 
 .windowContainer[data-style="wnd"][data-inactive],
@@ -82,12 +96,17 @@
     background-color: var(--inactive-border) !important;
 }
 
+.windowContainer[data-style="wnd"][data-inactive]:not(#JustHereToGiveItPriority),
+body[data-no-win-shadow] .windowContainer[data-style="wnd"]:not(#JustHereToGiveItPriority) {
+    box-shadow: var(--title-text) -1px -1px inset, var(--title-text) 1px 1px inset !important;
+}
+
 #madconf-preview #inactiveWindow,
 #msgbox[data-inactive] {
     border: none;
     box-shadow: var(--title-text) -1px -1px inset, var(--title-text) 1px 1px inset,
         var(--inactive-border) -3px -3px inset, var(--inactive-border) 3px 3px inset,
-        var(--title-text) -4px -4px inset, var(--title-text) 4px 4px inset;
+        var(--title-text) -4px -4px inset, var(--title-text) 4px 4px inset !important;
 }
 
 #madconf-preview .title-bar {
@@ -163,8 +182,13 @@
 
 /* For OS-GUI (JSPaint) */
 .os-window {
-    box-shadow: var(--title-text) -1px -1px inset, var(--title-text) 1px 1px inset !important;
+    box-shadow: var(--title-text) -1px -1px inset, var(--title-text) 1px 1px inset, 2px 2px #4D22CD50 !important;
     border: none !important;
+}
+
+body[data-no-win-shadow] .os-window,
+.os-window:not(.focused) {
+    box-shadow: var(--title-text) -1px -1px inset, var(--title-text) 1px 1px inset !important;
 }
 
 .window-titlebar {
@@ -176,7 +200,7 @@
     height: 18px !important;
 }
 
-.os-window:not(.focused) > .window-titlebar {
+.os-window:not(.focused) .window-titlebar {
     border-bottom: 2px solid var(--inactive-border) !important;
 }
 

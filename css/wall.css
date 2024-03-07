@@ -1,5 +1,13 @@
 ﻿@charset "utf-8";
 
+/*
+    libmad.css for ModernActiveDesktop
+    Made by Ingan121
+    Licensed under the MIT License
+*/
+
+/* This is the main MAD stylesheet */
+
 @import 'fonts.css';
 
 @keyframes appear {

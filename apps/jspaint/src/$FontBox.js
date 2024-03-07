@@ -76,7 +76,7 @@
 
 		$size.on("click", () => {
 			if (madRunningMode === 1) {
-				madPrompt("Enter value", function (res) {
+				madPrompt(madGetString("UI_PROMPT_ENTER_VALUE"), function (res) {
 					if (res === null) return;
 					$size.val(res);
 					$size.trigger("input");

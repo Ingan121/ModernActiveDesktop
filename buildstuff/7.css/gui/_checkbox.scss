@@ -19,7 +19,6 @@ input[type="checkbox"] {
 
   + label {
     font: var(--font);
-    display: inline-flex;
     align-items: center;
     position: relative;
     margin-left: var(--checkbox-total-width);
@@ -78,5 +77,5 @@ input[type="checkbox"] {
 }
 
 #madconf label[for="wpVideoMuteChkBox"] {
-  width: 90px;
+  min-width: 90px;
 }

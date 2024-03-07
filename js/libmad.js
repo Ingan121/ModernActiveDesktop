@@ -239,6 +239,7 @@
             }
             changeAeroGlass(localStorage.madesktopAeroNoGlass);
         }
+        changeWinShadow(localStorage.madesktopNoWinShadow);
     }
 
     function applyMargins() {
@@ -301,6 +302,14 @@
             delete document.body.dataset.noUnderline;
         } else {
             document.body.dataset.noUnderline = true;
+        }
+    }
+
+    function changeWinShadow(isNoShadow) {
+        if (isNoShadow) {
+            document.body.dataset.noWinShadow = true;
+        } else {
+            delete document.body.dataset.noWinShadow;
         }
     }
 

@@ -1,6 +1,4 @@
 {
-    "STYLESHEET": "#madconf #schemeSelectorGroup button { min-width: 0; padding: 0 6px; }",
-
     "UI_OK": "확인",
     "UI_CANCEL": "취소",
     "UI_APPLY": "적용(&A)",
@@ -32,6 +30,8 @@
     "UI_MSG_SYSPLUG_REQUIRED": "이 기능은 시스템 플러그인 연동이 필요합니다.",
     "UI_MSG_NO_SYSPLUG": "시스템 플러그인이 실행 중이 아닙니다. 시스템 플러그인이 설치되어 있는지 확인해주세요.",
     "UI_MSG_SYSPLUG_ERROR": "오류가 발생하였습니다! 시스템 플러그인 응답: ",
+    "UI_PROMPT_RUNJS": "실행할 JavaScript 코드 입력",
+    "UI_PROMPT_ENTER_VALUE": "값 입력",
 
 
     "MAD_WINDOW_MENUITEM_CONFIGURE": "구성(&C)",
@@ -129,8 +129,8 @@
     "MADCONF_MSG_LARGE_IMG_WE": "이미지 크기가 너무 커서 배경화면으로 설정할 수 없습니다. 더 작은 이미지를 사용하거나 Wallpaper Engine 속성 창에서 배경화면을 설정하세요.",
 
     "MADCONF_SCHEME_TITLE": "색 구성표(&S):",
-    "MADCONF_SCHEME_SAVE_AS": "다른 이름으로 저장",
-    "MADCONF_SCHEME_DELETE": "삭제",
+    "MADCONF_SCHEME_SAVE_AS": "다른 이름으로 저장(&V)",
+    "MADCONF_SCHEME_DELETE": "삭제(&D)",
     "MADCONF_ITEM_TITLE": "항목(&I):",
     "MADCONF_ITEM_SIZE_TITLE": "크기(&Z):",
     "MADCONF_COLOR_TITLE": "색(&L):",
@@ -214,7 +214,7 @@
     "MADCONF_CONFIRM_SCHEME_SAVE_CSS": "이 구성표를 저장하면 이 테마의 고유한 모양이 사라지고 색상과 창 크기 속성만 저장됩니다. 계속하시겠습니까?",
     "MADCONF_CONFIRM_SCHEME_SAVE_SYSTEM": "이 구성표를 저장하면 %n은 더 이상 시스템 구성표를 동적으로 가져오지 않습니다. 계속하시겠습니까?",
     "MADCONF_CONFIRM_SCHEME_OVERWRITE": "같은 이름의 구성표가 이미 있습니다. 덮어쓰시겠습니까?",
-    "MADCONF_PROMPT_SCHEME_SAVE": "색 구성표 이름 이름 입력",
+    "MADCONF_PROMPT_SCHEME_SAVE": "색 구성표 이름 입력",
     "MADCONF_PROMPT_CUSTOM_FONT": "올바른 CSS font-family 이름 입력",
     "MADCONF_PROMPT_FONT_SIZE": "글꼴 크기 입력 (슬래시로 구분된 줄 간격 입력 가능)",
 
@@ -227,6 +227,7 @@
     "MADCONF_FLAT_MENU_CM": "컨텍스트 메뉴",
     "MADCONF_FLAT_MENU_MBCM": "메뉴 모음 및 컨텍스트 메뉴",
     "MADCONF_CM_SHADOW": "메뉴 아래에 그림자 표시(&A)",
+    "MADCONF_WIN_SHADOW": "창 아래에 그림자 표시(&S)",
     "MADCONF_OUTLINE_MODE": "마우스로 끄는 동안 창 내용 표시(&W)",
     "MADCONF_NO_UNDERLINE": "키보드 탐색에 사용할 문자 숨기기(&H)",
     "MADCONF_AERO_GLASS": "Aero 투명 효과 사용(&T)",
@@ -237,7 +238,7 @@
     "MADCONF_DPI_CUSTOM": "사용자 정의",
 
     "MADCONF_SYSPLUG_INT_TITLE": "시스템 플러그인 연동",
-    "MADCONF_SYSPLUG_CHKBOX": "시스템 플러그인 사용",
+    "MADCONF_SYSPLUG_CHKBOX": "시스템 플러그인 연동 활성화",
     "MADCONF_SYSPLUG_CONNECTTEST": "연결 테스트",
     "MADCONF_SYSPLUG_GUIDE": "설치 가이드",
     "MADCONF_CONNECTTEST_INITIAL": "위의 버튼을 눌러 시스템 플러그인 연결 확인을 시작하세요.",
@@ -320,7 +321,7 @@
 
 
     "VISUALIZER_TITLE": "시각화",
-    "VISUALIZER_MENU_VIS": "시각화(&V)",
+    "VISUALIZER_MENU_VIS": "시각화(&S)",
     "VISUALIZER_MENU_OPT": "옵션(&O)",
 
     "VISUALIZER_PAUSED_ALERT": "업데이트가 중단되었습니다. 여기를 클릭하여 재개하세요.",
@@ -470,6 +471,7 @@
     "CLOCK_MENUITEM_SET_COLORS": "색 설정(&C)",
     "CLOCK_MENUITEM_SET_FONT": "글꼴 설정(&F)",
     "CLOCK_MENUITEM_GMT": "GMT(&G)",
+    "CLOCK_MENUITEM_24H": "24시간 표시(&2)",
     "CLOCK_MENUITEM_NO_TITLE": "제목 없음(&N)",
     "CLOCK_MENUITEM_SECONDS": "초(&S)",
     "CLOCK_MENUITEM_DATE": "날짜(&T)",

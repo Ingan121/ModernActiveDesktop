@@ -20,7 +20,7 @@ for (const tab of tabs) {
 for (const textbox of textboxes) {
     textbox.addEventListener("click", function () {
         if (madRunningMode === 1) {
-            madPrompt("Enter value", function (res) {
+            madPrompt(madGetString("UI_PROMPT_ENTER_VALUE"), function (res) {
                 if (res === null) return;
                 textbox.value = res;
                 textbox.dispatchEvent(new Event('change'));

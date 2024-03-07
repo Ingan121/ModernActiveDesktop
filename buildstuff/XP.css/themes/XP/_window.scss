@@ -384,6 +384,15 @@ body:not(#madChanView) .menu, .menus {
         height: 176px;
     }
 
+    #schemeSelector:lang(ko) {
+        width: 180px;
+    }
+
+    #schemeSelectorGroup button:lang(ko) {
+        min-width: 0;
+        padding: 0 4px;
+    }
+
     #itemSizeButtons {
         opacity: 0;
     }

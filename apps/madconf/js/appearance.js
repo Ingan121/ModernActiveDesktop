@@ -47,6 +47,7 @@ async function main() {
     const enableAnimationsChkBox = document.getElementById("enableAnimationsChkBox");
     const animationSelector = document.getElementById("animationSelector");
     const shadowChkBox = document.getElementById("shadowChkBox");
+    const winShadowChkBox = document.getElementById("winShadowChkBox");
     const outlineModeChkBox = document.getElementById("outlineModeChkBox");
     const underlineChkBox = document.getElementById("underlineChkBox");
     const transparencyChkBox = document.getElementById("transparencyChkBox");
@@ -209,6 +210,14 @@ async function main() {
             shadowChkBox.checked = true;
         } else {
             shadowChkBox.checked = false;
+        }
+
+        if (scheme["supports-win-shadow"] === "true") {
+            winShadowChkBox.disabled = false;
+            winShadowChkBox.checked = true;
+        } else {
+            winShadowChkBox.disabled = true;
+            winShadowChkBox.checked = false;
         }
 
         applyPreview();
@@ -585,6 +594,13 @@ async function main() {
         }
         parent.changeCmShadow(localStorage.madesktopCmShadow);
 
+        if (winShadowChkBox.checked) {
+            delete localStorage.madesktopNoWinShadow;
+        } else {
+            localStorage.madesktopNoWinShadow = true;
+        }
+        parent.changeWinShadow(localStorage.madesktopNoWinShadow);
+
         if (outlineModeChkBox.checked) {
             delete localStorage.madesktopOutlineMode;
         } else {
@@ -690,6 +706,15 @@ async function main() {
         schemeSelector.options[0].textContent = schemeName;
     }
 
+    if (getComputedStyle(parent.document.documentElement).getPropertyValue("--supports-win-shadow")) {
+        winShadowChkBox.disabled = false;
+        if (localStorage.madesktopNoWinShadow) {
+            winShadowChkBox.checked = false;
+        } else {
+            winShadowChkBox.checked = true;
+        }
+    }
+
     FontDetective.each(font => {
         const option = document.createElement("option");
         option.textContent = font.name;
@@ -770,6 +795,7 @@ async function main() {
                     preview.contentWindow.changeAeroColor(secondColorPickerColor.style.backgroundColor);
                     preview.contentWindow.changeAeroGlass(!transparencyChkBox.checked);
                 }
+                preview.contentWindow.changeWinShadow(!winShadowChkBox.checked);
             });
         } else {
             const schemeText = generateCssScheme(scheme);
@@ -998,7 +1024,7 @@ function generateCssScheme(scheme, keepEffects = false) {
     ];
     const shouldBeDeleted = [
         'extra-border-bottom',
-        'uses-classic-controls'
+        'supports-win-shadow'
     ];
     if (!keepEffects) {
         shouldBeDeleted.push('flat-menus', 'menu-animation', 'menu-shadow');

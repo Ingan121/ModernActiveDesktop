@@ -35,7 +35,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 
 		edit_textarea.addEventListener("click", function () {
 			if (madRunningMode === 1) {
-				madPrompt("Enter value", function (res) {
+				madPrompt(madGetString("UI_PROMPT_ENTER_VALUE"), function (res) {
 					if (res === null) return;
 					edit_textarea.value = res;
 					edit_textarea.dispatchEvent(new Event('input'));

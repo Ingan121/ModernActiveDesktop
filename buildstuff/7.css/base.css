@@ -35,6 +35,7 @@
     --flat-menus: cm;
     --menu-animation: fade;
     --menu-shadow: true;
+    --supports-win-shadow: true;
     --scrollbar-size: 17px;
     --menu-height: 19px;
     --palette-title-height: 22px;

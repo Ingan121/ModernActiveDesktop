@@ -22,6 +22,7 @@ const confLabel = document.getElementById('confLabel');
 
 let clockTitle = madGetString("CLOCK_TITLE")
 let dblClickTimer, dblClickPositon = null, isTitleHidden = false;
+let timeOptions = { timeStyle: 'medium' };
 
 if (madDeskMover.config.noFrames) {
     toggleTitle();
@@ -33,6 +34,8 @@ settingsMenuItems[0].addEventListener('click', () => { // Analog button
     delete localStorage.madesktopClockDigital;
     settingsMenuItems[0].classList.add('activeStyle');
     settingsMenuItems[1].classList.remove('activeStyle');
+    settingsMenuItems[4].classList.add('disabled');
+    settingsMenuItems[4].classList.remove('checkedItem');
     confLabel.locId = "CLOCK_MENUITEM_SET_COLORS";
     clockCanvas.style.display = 'block';
     digitalClock.style.display = 'none';
@@ -43,10 +46,15 @@ settingsMenuItems[1].addEventListener('click', () => { // Digital button
     localStorage.madesktopClockDigital = true;
     settingsMenuItems[1].classList.add('activeStyle');
     settingsMenuItems[0].classList.remove('activeStyle');
+    settingsMenuItems[4].classList.remove('disabled');
     confLabel.innerHTML = madGetString("CLOCK_MENUITEM_SET_FONT");
     clockCanvas.style.display = 'none';
     digitalClock.style.display = 'table';
     updateSize();
+
+    if (localStorage.madesktopClock24H) {
+        settingsMenuItems[4].classList.add('checkedItem');
+    }
 });
 
 settingsMenuItems[2].addEventListener('click', () => { // Set Font / Colors button
@@ -73,11 +81,27 @@ settingsMenuItems[3].addEventListener('click', function () { // GMT button
     drawClock();
 });
 
-settingsMenuItems[4].addEventListener('click', () => { // No Title button
+settingsMenuItems[4].addEventListener('click', function () { // 24-Hours button
+    if (!localStorage.madesktopClockDigital) {
+        return;
+    }
+
+    if (localStorage.madesktopClock24H) {
+        this.classList.remove('checkedItem');
+        delete localStorage.madesktopClock24H;
+    } else {
+        this.classList.add('checkedItem');
+        localStorage.madesktopClock24H = true;
+    }
+    updateClockOpts();
+    drawClock();
+});
+
+settingsMenuItems[5].addEventListener('click', () => { // No Title button
     toggleTitle();
 });
 
-settingsMenuItems[5].addEventListener('click', function () { // Seconds button
+settingsMenuItems[6].addEventListener('click', function () { // Seconds button
     if (localStorage.madesktopClockHideSeconds) {
         this.classList.add('checkedItem');
         delete localStorage.madesktopClockHideSeconds;
@@ -85,10 +109,11 @@ settingsMenuItems[5].addEventListener('click', function () { // Seconds button
         this.classList.remove('checkedItem');
         localStorage.madesktopClockHideSeconds = true;
     }
+    updateClockOpts();
     drawClock();
 });
 
-settingsMenuItems[6].addEventListener('click', function () { // Date button
+settingsMenuItems[7].addEventListener('click', function () { // Date button
     if (localStorage.madesktopClockHideDate) {
         this.classList.add('checkedItem');
         delete localStorage.madesktopClockHideDate;
@@ -99,16 +124,21 @@ settingsMenuItems[6].addEventListener('click', function () { // Date button
     drawClock();
 });
 
-settingsMenuItems[7].addEventListener('click', () => { // About Clock button
+settingsMenuItems[8].addEventListener('click', () => { // About Clock button
     madOpenConfig('about');
 });
 
 if (localStorage.madesktopClockDigital) {
     settingsMenuItems[0].classList.remove('activeStyle');
     settingsMenuItems[1].classList.add('activeStyle');
+    settingsMenuItems[4].classList.remove('disabled');
     confLabel.innerHTML = madGetString("CLOCK_MENUITEM_SET_FONT");
     clockCanvas.style.display = 'none';
     digitalClock.style.display = 'table';
+
+    if (localStorage.madesktopClock24H) {
+        settingsMenuItems[4].classList.add('checkedItem');
+    }
 }
 
 if (localStorage.madesktopClockGMT) {
@@ -116,11 +146,11 @@ if (localStorage.madesktopClockGMT) {
 }
 
 if (localStorage.madesktopClockHideSeconds) {
-    settingsMenuItems[5].classList.remove('checkedItem');
+    settingsMenuItems[6].classList.remove('checkedItem');
 }
 
 if (localStorage.madesktopClockHideDate) {
-    settingsMenuItems[6].classList.remove('checkedItem');
+    settingsMenuItems[7].classList.remove('checkedItem');
 }
 
 let colors = {
@@ -154,6 +184,7 @@ function updateSize() {
         if (localStorage.madesktopClockFont) {
             digitalClock.style.fontFamily = `"${localStorage.madesktopClockFont}"`;
         }
+        updateClockOpts();
     } else {
         if (mainArea.offsetHeight > mainArea.offsetWidth) {
             clockCanvas.style.height = 'auto';
@@ -170,6 +201,18 @@ function updateSize() {
         }
     }
     drawClock();
+}
+
+function updateClockOpts() {
+    timeOptions = {};
+    if (localStorage.madesktopClock24H) {
+        timeOptions.hour12 = false;
+    }
+    if (localStorage.madesktopClockHideSeconds) {
+        timeOptions.timeStyle = 'short';
+    } else {
+        timeOptions.timeStyle = 'medium';
+    }
 }
 
 function drawBackground() {
@@ -322,16 +365,11 @@ function drawClock() {
         time = new Date();
     }
     if (localStorage.madesktopClockDigital) {
-        const timestr = time.toLocaleTimeString();
-        if (localStorage.madesktopClockHideSeconds) {
-            digitalClockTime.textContent = timestr.slice(0, -6) + timestr.slice(-3);
-        } else {
-            digitalClockTime.textContent = timestr;
-        }
+        digitalClockTime.textContent = time.toLocaleTimeString(window.madLang, timeOptions);
         if (localStorage.madesktopClockHideDate) {
             digitalClockDate.textContent = "";
         } else {
-            digitalClockDate.textContent = time.toLocaleDateString();
+            digitalClockDate.textContent = time.toLocaleDateString(window.madLang);
         }
         document.title = clockTitle;
     } else {

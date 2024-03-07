@@ -96,6 +96,7 @@ if (localStorage.madesktopDebugLog) toggleDebugLog();
 changeFont(localStorage.madesktopNoPixelFonts);
 changeCmAnimation(localStorage.madesktopCmAnimation || "slide");
 changeCmShadow(localStorage.madesktopCmShadow);
+changeWinShadow(localStorage.madesktopNoWinShadow);
 changeMenuStyle(localStorage.madesktopMenuStyle);
 changeSoundScheme(localStorage.madesktopSoundScheme || "98");
 
@@ -613,6 +614,15 @@ function changeCmShadow(isShadow) {
         document.body.dataset.cmShadow = true;
     } else {
         delete document.body.dataset.cmShadow;
+    }
+}
+
+// Change window shadow
+function changeWinShadow(isNoShadow) {
+    if (isNoShadow) {
+        document.body.dataset.noWinShadow = true;
+    } else {
+        delete document.body.dataset.noWinShadow;
     }
 }
 

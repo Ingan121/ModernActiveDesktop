@@ -250,9 +250,9 @@
 		const $left_right_split = $(`<div class="left-right-split">`).appendTo($w.$main);
 		const $left = $(`<div class="left-side">`).appendTo($left_right_split);
 		const $right = $(`<div class="right-side">`).appendTo($left_right_split).hide();
-		$left.append(`<label for="basic-colors">${display_hotkey("&Basic colors:")}</label>`);
+		$left.append(`<label for="basic-colors">${madGetString("COLORPICKER_BASIC_COLORS")}</label>`);
 		const $basic_colors_grid = make_color_grid(basic_colors, "basic-colors").appendTo($left);
-		$left.append(`<label for="custom-colors">${display_hotkey("&Custom colors:")}</label>`);
+		$left.append(`<label for="custom-colors">${madGetString("COLORPICKER_CUSTOM_COLORS")}</label>`);
 		const custom_colors_dom_order = []; // (wanting) horizontal top to bottom
 		for (let list_index = 0; list_index < custom_colors.length; list_index++) {
 			const row = list_index % 2;
@@ -272,7 +272,7 @@
 		}
 
 		const $define_custom_colors_button = $(`<button class="define-custom-colors-button" type="button">`)
-			.html(display_hotkey("&Define Custom Colors >>"))
+			.html(madGetString("COLORPICKER_DEFINE_CUSTOM"))
 			.appendTo($left)
 			.on("click", (e) => {
 				// prevent the form from submitting
@@ -299,7 +299,7 @@
 		};
 		$(window).on("resize", maybe_reenable_button_for_mobile_navigation);
 
-		const $color_solid_label = $(`<label for="color-solid-canvas">${display_hotkey("Color|S&olid")}</label>`);
+		const $color_solid_label = $(`<label for="color-solid-canvas">${madGetString("COLORPICKER_COLOR_SOLID")}</label>`);
 		$color_solid_label.css({
 			position: "absolute",
 			left: 10,
@@ -463,7 +463,7 @@
 
 				input.addEventListener("click", function () {
 					if (madRunningMode === 1) {
-						madPrompt("Enter value", function (res) {
+						madPrompt(madGetString("UI_PROMPT_ENTER_VALUE"), function (res) {
 							if (res === null) return;
 							input.value = res;
 							handle_input(input);
@@ -620,7 +620,7 @@
 		$right.append(rainbow_canvas, luminosity_canvas, result_canvas, $color_solid_label, lum_arrow_canvas);
 
 		const $add_to_custom_colors_button = $(`<button class="add-to-custom-colors-button" type="button">`)
-			.html(display_hotkey("&Add To Custom Colors"))
+			.html(madGetString("COLORPICKER_ADD_TO_CUSTOM"))
 			.appendTo($right)
 			.on("click", (event) => {
 				// prevent the form from submitting

@@ -64,6 +64,14 @@ function changeAeroGlass(noGlass) {
     }
 }
 
+function changeWinShadow(isNoShadow) {
+    if (isNoShadow) {
+        document.body.dataset.noWinShadow = true;
+    } else {
+        delete document.body.dataset.noWinShadow;
+    }
+}
+
 // Toggle between "Pixelated MS Sans Serif" and just sans-serif
 function changeFont(isPixel) {
     if (isPixel) {
@@ -104,6 +112,7 @@ if (localStorage.madesktopAeroColor) {
     changeAeroColor(localStorage.madesktopAeroColor);
 }
 changeAeroGlass(localStorage.madesktopAeroNoGlass);
+changeWinShadow(localStorage.madesktopNoWinShadow);
 textarea.value = madGetString("MADCONF_PREVIEW_WINDOW_TEXT");
 
 new MutationObserver(function (mutations) {
