@@ -384,7 +384,7 @@ function drawClock() {
         if (localStorage.madesktopClockHideDate) {
             document.title = clockTitle;
         } else {
-            document.title = clockTitle + " - " + time.toLocaleDateString();
+            document.title = clockTitle + " - " + time.toLocaleDateString(window.madLang);
         }
     }
 }
