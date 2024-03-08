@@ -5,6 +5,7 @@
 * Started as a crappy Active Desktop clone, ModernActiveDesktop now features various useful apps that resemble the classic Windows components that will improve your desktop experience.
 * Primarily designed for Wallpaper Engine, but now it should work well on other modern browsers as well. Lively Wallpaper is also supported.
 <br><br>
+![Screenshot](docs/images/screenshot.webp)
 [Old Screenshot (circa 2.3)](docs/images/screenshot.png)
 <br><br>
 * [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2278898637)

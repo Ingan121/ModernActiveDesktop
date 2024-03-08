@@ -466,6 +466,15 @@
             window.addEventListener("message", (event) => {
                 if (event.data.type === "language-ready") {
                     this.label.textContent = this.options[this.selectedIndex].textContent;
+
+                    let maxWidth = 0;
+                    for (const option of this.options) {
+                        const width = getTextWidth(option.textContent.trim(), "11px " + getComputedStyle(document.documentElement).getPropertyValue("--ui-font"));
+                        if (width > maxWidth) {
+                            maxWidth = width;
+                        }
+                    }
+                    this.style.minWidth = maxWidth + 20 + scrollBarSize + "px";
                 }
             });
         }

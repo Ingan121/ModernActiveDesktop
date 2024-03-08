@@ -79,7 +79,7 @@
 				madPrompt(madGetString("UI_PROMPT_ENTER_VALUE"), function (res) {
 					if (res === null) return;
 					$size.val(res);
-					$size.trigger("input");
+					$size.trigger("change");
 				}, '', $size.val());
 			}
 		});

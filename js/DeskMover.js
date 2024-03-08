@@ -476,10 +476,8 @@ class DeskMover {
     }
 
     openContextMenu() {
-        this.contextMenuBg.style.removeProperty('--context-menu-left');
-        this.contextMenuBg.style.removeProperty('--context-menu-top');
-        this.confMenuBg.style.removeProperty('--context-menu-left');
-        this.confMenuBg.style.removeProperty('--context-menu-top');
+        this.contextMenuBg.style.left = '';
+        this.contextMenuBg.style.top = '';
 
         // Windows without icons aren't designed to look good in different sizes yet
         // So just hide the menus for now
@@ -530,10 +528,8 @@ class DeskMover {
 
     openContextMenuFromRightClick(event) {
         this.bringToTop();
-        this.contextMenuBg.style.setProperty('--context-menu-left', this.posInContainer.x + 'px');
-        this.contextMenuBg.style.setProperty('--context-menu-top', this.posInContainer.y + 'px');
-        this.confMenuBg.style.setProperty('--context-menu-left', this.posInContainer.x + 'px');
-        this.confMenuBg.style.setProperty('--context-menu-top', this.posInContainer.y + 'px');
+        this.contextMenuBg.style.left = this.posInContainer.x + 'px';
+        this.contextMenuBg.style.top = this.posInContainer.y + 'px';
 
         // Windows without icons aren't designed to look good in different sizes yet
         // So just hide the menus for now
@@ -619,6 +615,7 @@ class DeskMover {
         }
         this.contextMenuItems[0].dataset.active = true;
         this.confMenuBg.style.left = this.contextMenuBg.offsetLeft + this.contextMenuBg.offsetWidth - 6 + 'px';
+        this.confMenuBg.style.top = this.contextMenuBg.offsetTop + this.contextMenuItems[0].offsetTop + 'px';
         this.confMenuBg.style.display = "block";
         const width = this.calcMenuWidth("conf");
         this.confMenuBg.style.width = width + ")";

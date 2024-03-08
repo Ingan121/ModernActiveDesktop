@@ -431,6 +431,10 @@ body[data-cm-shadow] .contextMenuBg {
     transform: translateY(calc(-50% - 4px));
 }
 
+.windowMenuBg {
+    z-index: 2;
+}
+
 .windowContainer[data-style="wnd"] > .windowMenuBg {
     top: var(--context-menu-top);
     left: var(--context-menu-left);
@@ -438,6 +442,7 @@ body[data-cm-shadow] .contextMenuBg {
 
 .confMenuBg {
     left: 103px;
+    z-index: 3;
 }
 
 #mainMenuBg {

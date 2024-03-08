@@ -27,6 +27,10 @@
     a {
       color: var(--hot-tracking-color, blue);
     }
+
+    img {
+      max-width: 100%;
+    }
   </style>
 </head>
 
@@ -39,10 +43,16 @@
     const url = new URL(location.href);
     const src = url.searchParams.get('src');
 
-    if (url.searchParams.get('showbackbtn')) document.getElementById('backbtn').style.display = 'block';
+    if (url.searchParams.get('showbackbtn')) {
+      document.getElementById('backbtn').style.display = 'block';
+    }
 
     if (src) {
-      const xhr = new XMLHttpRequest(); // Fetch doesn't support file:// urls :(
+      if (src === "SysplugSetupGuide.md" && madRunningMode === 0 && !url.searchParams.get('noredirect')) {
+        location.href = "?src=SysplugSetupGuideForBrowsers.md";
+      }
+
+      const xhr = new XMLHttpRequest(); // Fetch didn't work with file:// urls in WE. It works now though.
       xhr.open("GET", src, true);
       xhr.send();
 

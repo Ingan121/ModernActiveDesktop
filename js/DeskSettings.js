@@ -253,8 +253,8 @@ mainMenuItems[1].addEventListener('click', () => { // Properties button
 function openMainMenu (event) {
     if (isContextMenuOpen) return;
     mainMenuBg.style.pointerEvents = "none";
-    mainMenuBg.style.left = event.clientX + "px";
-    mainMenuBg.style.top = event.clientY + "px";
+    mainMenuBg.style.left = event.clientX / window.scaleFactor + "px";
+    mainMenuBg.style.top = event.clientY / window.scaleFactor + "px";
     mainMenuBg.style.display = "block";
     const width0 = getTextWidth(mainMenuItems[0].textContent);
     const width1 = getTextWidth(mainMenuItems[1].textContent);
@@ -1016,15 +1016,20 @@ function openConfig(page) {
 }
 
 function openExternal(url, fullscreen, specs = "", temp = true, noExternal = false) {
-    let deskMover = null;
     if ((localStorage.madesktopLinkOpenMode || "1") !== "1" && temp && !specs && !url.startsWith("data:") && !noExternal) {
         openExternalExternally(url, fullscreen && !localStorage.madesktopChanViewNoAutoFullscrn);
-    } else {
-        if (specs) {
-            specs = "&" + specs.replaceAll(" ", "").replaceAll(",", "&");
-        }
-        deskMover = openWindow('apps/channelviewer/index.html?page=' + encodeURIComponent(url) + specs, temp, "1024px", "768px");
+        return null;
     }
+    // GitHub doesn't work well in ChannelViewer unless running in Wallpaper Engine
+    if (runningMode === BROWSER && url.includes("github.com/") && temp && !noExternal) {
+        openExternalExternally(url);
+        return null;
+    }
+
+    if (specs) {
+        specs = "&" + specs.replaceAll(" ", "").replaceAll(",", "&");
+    }
+    let deskMover = openWindow('apps/channelviewer/index.html?page=' + encodeURIComponent(url) + specs, temp, "1024px", "768px");
     if (deskMover && fullscreen && !localStorage.madesktopChanViewNoAutoFullscrn) {
         deskMover.windowElement.contentWindow.addEventListener("load", function () {
             deskMover.enterFullscreen(true);

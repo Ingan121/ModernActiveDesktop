@@ -468,7 +468,6 @@ async function main() {
             }
             fontSize.dataset.fullValue = res;
             fontSize.value = parseFloat(res.split("/")[0]);
-            console.log(fontSize.textContent)
             setFont();
         }, '', fontSize.dataset.fullValue);
     }, );

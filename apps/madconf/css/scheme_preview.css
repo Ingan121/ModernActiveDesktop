@@ -1,4 +1,4 @@
-@import 'common.css';
+@import '../../../css/fonts.css';
 
 body {
     background-color: var(--background);
@@ -100,9 +100,8 @@ button:focus {
 }
 
 .menuBtn {
-    padding: calc((var(--menu-height) - 16px) / 2) 5px 0 5px;
+    padding: calc((var(--menu-height) - 14px) / 2) 5px 0 5px;
     border: solid 1px transparent;
-    padding-top: 2px;
 }
 
 .disabled {
@@ -110,13 +109,13 @@ button:focus {
     text-shadow: 1px 1px 0 var(--button-hilight);
 }
 
-.menuBtn[data-active] {
+body:not([data-no-sunken-menus]) .menuBtn[data-active] {
     border-color: var(--button-shadow) var(--button-hilight) var(--button-hilight) var(--button-shadow) !important;
     margin-top: 1px;
     margin-left: -1px;
 }
 
-.menuBtn[data-active] > span {
+body:not([data-no-sunken-menus]) .menuBtn[data-active] > span {
     margin-top: 1px;
     margin-left: 2px;
     margin-right: -2px;
@@ -161,6 +160,7 @@ textarea {
     padding-top: 1px;
     padding-left: 4px;
     padding-bottom: 0;
+    margin-top: 2px;
     margin-bottom: 0;
     font: var(--message-font);
 }
