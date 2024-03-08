@@ -372,10 +372,11 @@ helpMenuItems[0].addEventListener('click', () => { // About Visualizer button
     madOpenConfig('about');
 });
 
-function mediaControl(action, title = lastMusic.title || '') {
+function mediaControl(action) {
     if (!localStorage.sysplugIntegration || !localStorage.madesktopVisMediaControls) {
         return;
     }
+    const title = lastMusic ? lastMusic.title : '';
     fetch(`http://localhost:3031/${action}`, { method: 'POST', body: title })
         .then(response => response.text())
         .then(responseText => {

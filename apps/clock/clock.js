@@ -61,7 +61,7 @@ settingsMenuItems[2].addEventListener('click', () => { // Set Font / Colors butt
     const left = parseInt(madDeskMover.config.xPos) + 20 + 'px';
     const top = parseInt(madDeskMover.config.yPos) + 50 + 'px';
     const options = {
-        left, top, width: '380px', height: '180px',
+        left, top, width: '380px', height: '173px',
         aot: true, unresizable: true, noIcon: true
     };
     const configWindow = madOpenWindow('apps/clock/config.html', true, options);
