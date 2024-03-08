@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Source Viewer</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../../css/98.css">
+</head>
+    <pre id="srcView">Loading...</pre>
+    <script>
+        const srcView = document.getElementById('srcView');
+        const url = new URL(location.href);
+        const src = url.searchParams.get('page');
+        document.title = src;
+
+        (async function () {
+            try {
+                const result = await parent.fetchProxy(src).then(r => r.text());
+                srcView.textContent = result;
+            } catch {
+                srcView.textContent = 'Failed to load ' + src;
+            }
+        })();
+    </script>
+</html>

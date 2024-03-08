@@ -161,7 +161,7 @@ viewMenuItems[5].addEventListener("click", function () { // Source button
     if (isCrossOrigin) {
         madAlert(madGetString("CV_MSG_NO_ADV"), null, "warning");
     } else {
-        madOpenExternal("data:text/plain," + encodeURIComponent(iframe.contentDocument.documentElement.outerHTML), false, "popup");
+        madOpenExternal("about:srcview?page=" + encodeURIComponent(iframe.contentDocument.location.href), false, "popup");
     }
 });
 
@@ -882,7 +882,8 @@ function go(url, noHistory, forceForceLoad = false) {
         didHistoryNav = false;
     }
     if (url.startsWith("about:") && !url.startsWith("about:blank")) {
-        url = cvBase + "aboutpages/" + url.split(":")[1] + ".html";
+        const urlObj = new URL(url);
+        url = cvBase + "aboutpages/" + urlObj.pathname + ".html" + urlObj.search + urlObj.hash;
     } else if (url.startsWith("channels-")) {
         url = madBase + url;
     } else if (!url.startsWith("http") && !url.startsWith("about") && !url.startsWith("chrome") && !url.startsWith("data") && !url.startsWith("file") && !url.startsWith("ws") && !url.startsWith("wss") && !url.startsWith("blob") && !url.startsWith("javascript")) {
