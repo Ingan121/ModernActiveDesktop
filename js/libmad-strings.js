@@ -371,6 +371,7 @@
         "INETCPL_USE_CURRENT": "Use &current",
         "INETCPL_USE_DEFAULT": "Use &default",
         "INETCPL_USE_BLANK": "Use &blank",
+        "INETCPL_USE_DEFAULT_PROXY": "Use &default",
 
         "INETCPL_MISC_TITLE": "Miscellaneous",
         "INETCPL_OPEN_WITH_TITLE": "Open pages in...",

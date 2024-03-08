@@ -313,6 +313,7 @@
     "INETCPL_USE_CURRENT": "현재 페이지(&C)",
     "INETCPL_USE_DEFAULT": "기본 페이지(&D)",
     "INETCPL_USE_BLANK": "빈 페이지(&B)",
+    "INETCPL_USE_DEFAULT_PROXY": "기본 프록시(&D)",
 
     "INETCPL_MISC_TITLE": "기타",
     "INETCPL_OPEN_WITH_TITLE": "페이지를 열 곳 선택:",
