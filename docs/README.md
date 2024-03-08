@@ -2,6 +2,8 @@
 * ModernActiveDesktop, also known as Windows 98 Desktop Experience, is a highly customizable re-creation of the classic Windows desktop.
 * Started as a crappy Active Desktop clone, ModernActiveDesktop now features various useful apps that resemble the classic Windows components that will improve your desktop experience.
 * Primarily designed for Wallpaper Engine, but now it should work well on other modern browsers as well. Lively Wallpaper is also supported.
+<br><br>
+![Screenshot](images/screenshotnew.png)
 
 ## Included Apps
 |Icon|Name|Description|
