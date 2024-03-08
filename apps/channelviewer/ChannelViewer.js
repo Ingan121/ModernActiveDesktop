@@ -161,7 +161,7 @@ viewMenuItems[5].addEventListener("click", function () { // Source button
     if (isCrossOrigin) {
         madAlert(madGetString("CV_MSG_NO_ADV"), null, "warning");
     } else {
-        madOpenExternal("about:srcview?page=" + encodeURIComponent(iframe.contentDocument.location.href), false, "popup");
+        madOpenExternal("about:srcview?page=" + encodeURIComponent(historyItems[historyIndex - 1][0]), false, "popup");
     }
 });
 
