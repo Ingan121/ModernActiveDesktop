@@ -71,7 +71,7 @@ let madBase = parent.location.href.split('/').slice(0, -1).join('/') + '/';
 if (parent === window) {
     madBase += '../../';
 }
-const cvBase = madBase + 'apps/channelviewer/';
+window.cvBase = madBase + 'apps/channelviewer/';
 
 let title = "";
 window.favorites = JSON.parse(localStorage.madesktopChanViewFavorites || "[[\"https://www.ingan121.com/\",\"Ingan121's Webpage\"],[\"https://github.com/Ingan121/ModernActiveDesktop\",\"ModernActiveDesktop GitHub\"]]");

@@ -9,10 +9,18 @@
     <script>
         const srcView = document.getElementById('srcView');
         const url = new URL(location.href);
-        const src = url.searchParams.get('page');
+        let src = url.searchParams.get('page');
+        if (src.startsWith("about:") && !src.startsWith("about:blank")) {
+            const urlObj = new URL(src);
+            src = parent.cvBase + 'aboutpages/' + urlObj.pathname + ".html" + urlObj.search + urlObj.hash;
+        }
         document.title = src;
 
         (async function () {
+            if (src === 'about:blank') {
+                srcView.textContent = '';
+                return;
+            }
             try {
                 const result = await parent.fetchProxy(src).then(r => r.text());
                 srcView.textContent = result;
