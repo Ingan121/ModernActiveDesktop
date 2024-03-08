@@ -228,19 +228,19 @@ noDisableChkBox.addEventListener('change', function () {
 });
 
 leftIconArea.addEventListener('change', function () {
-    config.leftIcon = this.value;
+    config.leftIcon = isNaN(this.value) ? this.value : this.value + 'px';
 });
 
 rightIconArea.addEventListener('change', function () {
-    config.rightIcon = this.value;
+    config.rightIcon = isNaN(this.value) ? this.value : this.value + 'px';
 });
 
 topIconArea.addEventListener('change', function () {
-    config.topIcon = this.value;
+    config.topIcon = isNaN(this.value) ? this.value : this.value + 'px';
 });
 
 bottomIconArea.addEventListener('change', function () {
-    config.bottomIcon = this.value;
+    config.bottomIcon = isNaN(this.value) ? this.value : this.value + 'px';
 });
 
 connectTestBtn.addEventListener('click', checkSysplug);
