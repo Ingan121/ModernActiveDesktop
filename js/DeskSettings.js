@@ -325,10 +325,10 @@ window.wallpaperPropertyListener = {
         if (properties.bgvideo) {
             if (properties.bgvideo.value) {
                 const path = "file:///" + properties.bgvideo.value;
-                bgVideoView.src = path;
                 localStorage.madesktopBgVideo = path;
                 if (!isStartup) {
                     changeBgType("video");
+                    bgVideoView.src = path;
                     document.body.style.backgroundImage = "none";
                     delete localStorage.madesktopBgImg;
                     localStorage.madesktopBgType = "video";
