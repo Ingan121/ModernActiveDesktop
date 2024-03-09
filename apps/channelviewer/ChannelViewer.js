@@ -1416,7 +1416,6 @@ window.addEventListener("message", async (event) => {
 
 madDeskMover.beforeClose = function () {
     loadToken = 0;
-    console.log(1212121212)
 };
 
 sidebarWindow.addEventListener('load', function () {

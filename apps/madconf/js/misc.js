@@ -92,7 +92,7 @@ dpiSlider.value = dpiSelector.selectedIndex;
 if (navigator.userAgent.includes("Firefox")) {
     dpiSelector.disabled = true;
     dpiSlider.disabled = true;
-    dpiLabel.textContent = madGetString("MADCONF_DPI_TITLE_FF_UNSUPPORTED");
+    dpiLabel.locId = "MADCONF_DPI_TITLE_FF_UNSUPPORTED";
 }
 
 if (isWin10) {
