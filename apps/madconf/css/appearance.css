@@ -73,6 +73,10 @@
     margin-right: 3px;
 }
 
+#saveAsBtn:lang(ko) {
+    max-width: 118px;
+}
+
 mad-select {
     width: 197px;
     margin-left: 4px;
