@@ -32,6 +32,7 @@
     "UI_MSG_SYSPLUG_ERROR": "오류가 발생하였습니다! 시스템 플러그인 응답: ",
     "UI_PROMPT_RUNJS": "실행할 JavaScript 코드 입력",
     "UI_PROMPT_ENTER_VALUE": "값 입력",
+    "UI_PROMPT_ENTER_VALUE_RESETTABLE": "값 입력 (빈칸으로 두면 초기화)",
 
 
     "MAD_WINDOW_MENUITEM_CONFIGURE": "구성(&C)",
@@ -465,6 +466,7 @@
     "CV_EXPLORER_BARS_MENUITEM_CHANNELS": "채널(&C)",
     "CV_EXPLORER_BARS_MENUITEM_NONE": "없음(&N)",
 
+    "CV_MSG_OPENTYPE_LOADING": "현재 이 페이지를 불러오는 중입니다. 페이지가 완전히 로드된 이후에 다시 확인하세요.",
     "CV_MSG_OPENTYPE_CROSSORIGIN": "이 페이지는 다른 출처에서 불러왔습니다. 고급 기능을 사용할 수 없습니다.",
     "CV_MSG_OPENTYPE_PROXIED": "이 페이지는 외부 프록시를 통해 불러왔습니다. 고급 기능은 사용할 수 있지만 페이지가 제대로 작동하지 않을 수 있습니다. 또한 여기에 비밀번호를 입력하지 마세요!",
     "CV_MSG_OPENTYPE_FORCELOADED": "이 페이지는 강제로 고급 기능을 사용할 수 있게 불러왔습니다. 페이지가 제대로 작동하지 않을 수 있습니다. (특히 복잡한 스크립트가 있는 경우)",

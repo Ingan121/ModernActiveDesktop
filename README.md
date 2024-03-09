@@ -6,7 +6,7 @@
 * Primarily designed for Wallpaper Engine, but now it should work well on other modern browsers as well. Lively Wallpaper is also supported.
 <br><br>
 ![Screenshot](docs/images/screenshotnew.png)
-[Video Screenshot](https://github.com/Ingan121/ModernActiveDesktop/raw/master/buildstuff/screenshot.webp)  
+[Video Screenshot](buildstuff/screenshotview.md)  
 [Old Screenshot (circa 2.3)](docs/images/screenshot.png)
 <br><br>
 * [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2278898637)

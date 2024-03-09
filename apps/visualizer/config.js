@@ -56,11 +56,8 @@ for (const colorPicker of colorPickers) {
 for (const textbox of textboxes) {
     textbox.addEventListener("click", function () {
         if (madRunningMode === 1) {
-            let extraMsg = '';
-            if (textbox.placeholder) {
-                extraMsg = ' (Leave empty to reset)';
-            }
-            madPrompt(madGetString("UI_PROMPT_ENTER_VALUE") + extraMsg, function (res) {
+            const msg = textbox.placeholder ? "UI_PROMPT_ENTER_VALUE_RESETTABLE" : "UI_PROMPT_ENTER_VALUE";
+            madPrompt(madGetString(msg), function (res) {
                 if (res === null) return;
                 if (res === '') {
                     textbox.value = textbox.placeholder;

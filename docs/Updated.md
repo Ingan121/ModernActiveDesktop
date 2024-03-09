@@ -42,6 +42,8 @@
 * Moving the mouse over the menu while playing the animation effect will cancel the animation
 * Updated dependencies (Electron, JSPaint)
 
+(2024/3/12)
+
 ## 3.1
 * Added a music visualizer
     * Currently supports WMP Bar-like visualizer and a simple album art visualizer
@@ -68,13 +70,19 @@
     * Fixed the circle mark in context menus being rendered as broken texts in some cases
 * Updated dependencies
 
+(2024/1/27)
+
 ### 3.1.1
 * Removed an unnecessary zip file that contained a full copy of itself duplicated
 * Fixed an error in environments other than Wallpaper Engine that happened by a visualizer-related code
 * Visual improvements to the Windose theme
 
+(2024/1/27)
+
 ### 3.1.2
 * Fixed a critical error occurring on the first start or after reset
+
+(2024/1/29)
 
 ## 3.0
 * Added a new 'Window' styling
@@ -106,11 +114,15 @@
 * Added devtools support in the system plugin ChannelViewer
     * Click the toolbar first then press F12
 
+(2024/1/13)
+
 ## 2.3
 * Added an option to disable scaling per window
 * Fixed some websites (e. g. YouTube embed) not displaying properly when scaled
 * Made the window configuration context menu look better
 * Updated dependencies
+
+(2023/7/21)
 
 ## 2.2
 * Added support for video and web backgrounds
@@ -127,12 +139,16 @@
 * Added advanced debugging features
 * Major code improvements
 
+(2023/2/7)
+
 ## 2.1
 * Added a scaling feature for high DPI displays
     * Configurable in the properties panel
 <br><img src="images/MADScale.webp" width="360px" height="384px" title="Scaling screenshot">
 * Added error handling
 * Code improvements
+
+(2023/1/25)
 
 ## 2.0
 * Added a system plugin for better usability
@@ -142,3 +158,7 @@
 * Support multiple color schemes
 * Support multiple Active Desktop item windows
 * Show a documentation window on first run
+
+(2022/2/22)
+
+See the <a href="https://steamcommunity.com/sharedfiles/filedetails/changelog/2278898637" target="_blank">Steam Workshop changelog</a> for more details about older changes

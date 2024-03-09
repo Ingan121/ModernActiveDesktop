@@ -24,10 +24,6 @@ let clockTitle = madGetString("CLOCK_TITLE")
 let dblClickTimer, dblClickPositon = null, isTitleHidden = false;
 let timeOptions = { timeStyle: 'medium' };
 
-if (madDeskMover.config.noFrames) {
-    toggleTitle();
-}
-
 madDeskMover.menu = new MadMenu(menuBar, ['settings']);
 
 settingsMenuItems[0].addEventListener('click', () => { // Analog button
@@ -161,6 +157,10 @@ let colors = {
     dkShadow: localStorage.madesktopClockDkShadowColor || "#000000",
     background: localStorage.madesktopClockBackgroundColor || getComputedStyle(document.documentElement).getPropertyValue('--button-face')
 };
+
+if (madDeskMover.config.noFrames) {
+    toggleTitle();
+}
 
 updateSize();
 

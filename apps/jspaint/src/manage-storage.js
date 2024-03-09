@@ -15,9 +15,9 @@
 		const { promise, $window } = showMessageBox({
 			title: "Storage Error",
 			messageHTML: `
-			<p>JS Paint stores images as you work on them so that if you close your browser or tab or reload the page your images are usually safe.</p>
+			<p>JS Paint normally keeps a local backup of images you edit.</p>
 			<p>However, it has run out of space to do so.</p>
-			<p>You can still save the current image with <b>File > Save</b>. You should save frequently, or free up enough space to keep the image safe.</p>
+			<p>You can still save the current image with <b>File > Save</b>. You should save frequently, or free up space for backups.</p>
 		`,
 			buttons: [
 				{ label: "Manage Storage", value: "manage", default: true },
@@ -55,7 +55,7 @@
 			const $img = $(E("img")).attr({ src: imgSrc }).addClass("thumbnail-img");
 			const $remove = $(E("button")).text("Remove").addClass("remove-button").attr("type", "button");
 			const href = `#${k.replace("image#", "local:")}`;
-			const $open_link = $(E("a")).attr({ href}).text(localize("Open"));
+			const $open_link = $(E("a")).attr({ href }).text(localize("Open"));
 			const $thumbnail_open_link = $(E("a")).attr({ href }).addClass("thumbnail-container");
 			$thumbnail_open_link.append($img);
 			$(E("td")).append($thumbnail_open_link).appendTo($tr);

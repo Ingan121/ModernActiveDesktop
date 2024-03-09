@@ -17,6 +17,8 @@
     span.BulletNumber { font-size: x-large; font-weight: bold; color: #66ccff }
     span.BulletText   { font-size: x-small; font-weight: bold; letter-spacing: -1pt; text-align:center}
 
+    #proxyAlert { display:none }
+
 </style>
 
 <body LINK=#FF0000 VLINK=#4E4E4E>
@@ -36,8 +38,11 @@
 		<ul>
 		<li> You clicked the <b>Stop</b> button before the page finished loading.
 		<BR>
-		<BR>
-		<li> The page might not be available at this time.
+    <BR>
+    <li> The page might not be available at this time.
+    <BR>
+    <BR>
+    <li id="proxyAlert"> The CORS proxy might not be available at this time. Try changing the proxy setting in the <a href="javascript:parent.openInetcpl(true)">Internet Options</a>.
 		</ul>
   </div>
 <BR>
@@ -67,6 +72,10 @@ function clickHandler() {
         targetElement.style.display = "none";
      }
   }
+}
+
+if (parent.madRunningMode !== 1) {
+  proxyAlert.style.display = "list-item";
 }
 
 document.onclick = clickHandler;

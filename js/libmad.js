@@ -423,20 +423,12 @@
         }
         
         connectedCallback() {
-            const scrollBarSize = parseInt(getComputedStyle(document.body).getPropertyValue("--scrollbar-size"));
             this.label = document.createElement("span");
             this.label.classList.add("label");
-            this.style.minWidth = 30 + scrollBarSize + "px";
-            let maxWidth = 0;
 
             for (const option of this.options) {
                 if (option.selected) {
                     this.selectedIndex = Array.from(this.options).indexOf(option);
-                }
-
-                const width = getTextWidth(option.textContent.trim(), "11px " + getComputedStyle(document.documentElement).getPropertyValue("--ui-font"));
-                if (width > maxWidth) {
-                    maxWidth = width;
                 }
 
                 new MutationObserver((mutations) => {
@@ -448,7 +440,6 @@
                     { characterData: false, attributes: false, childList: true, subtree: false }
                 )
             }
-            this.style.minWidth = maxWidth + 20 + scrollBarSize + "px";
 
             if (this.getAttribute('disabled') !== null) {
                 this.dataset.disabled = true;
@@ -466,17 +457,23 @@
             window.addEventListener("message", (event) => {
                 if (event.data.type === "language-ready") {
                     this.label.textContent = this.options[this.selectedIndex].textContent;
-
-                    let maxWidth = 0;
-                    for (const option of this.options) {
-                        const width = getTextWidth(option.textContent.trim(), "11px " + getComputedStyle(document.documentElement).getPropertyValue("--ui-font"));
-                        if (width > maxWidth) {
-                            maxWidth = width;
-                        }
-                    }
-                    this.style.minWidth = maxWidth + 20 + scrollBarSize + "px";
+                    this.adjustMinWidth();
                 }
             });
+
+            window.addEventListener("load", this.adjustMinWidth.bind(this));
+        }
+
+        adjustMinWidth() {
+            const scrollBarSize = parseInt(getComputedStyle(document.body).getPropertyValue("--scrollbar-size"));
+            let maxWidth = 0;
+            for (const option of this.options) {
+                const width = getTextWidth(option.textContent.trim(), "11px " + getComputedStyle(document.documentElement).getPropertyValue("--ui-font"));
+                if (width > maxWidth) {
+                    maxWidth = width;
+                }
+            }
+            this.style.minWidth = maxWidth + 20 + scrollBarSize + "px";
         }
     }
     customElements.define("mad-select", MadSelect);

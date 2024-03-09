@@ -1072,12 +1072,25 @@ function file_save(maybe_saved_callback = () => { }, update_from_saved = true) {
 		return file_save_as(maybe_saved_callback, update_from_saved);
 	}
 	write_image_file(main_canvas, file_format, async (blob) => {
-		await systemHooks.writeBlobToHandle(save_file_handle, blob);
-
-		if (update_from_saved) {
-			update_from_saved_file(blob);
+		// An error may be shown by `systemHooks.writeBlobToHandle`,
+		// or it may be unknown whether the save will succeed,
+		// so for now: true means definite success, false means failure or cancelation, and undefined means it's unknown.
+		const success = await systemHooks.writeBlobToHandle(save_file_handle, blob);
+		// When using a file download, where it's unknown whether the save will succeed,
+		// we don't want to mark the file as saved, as it would prevent the user from retrying the save.
+		// So only mark the file as saved if it's definite.
+		if (success === true) {
+			saved = true;
+			update_title();
 		}
-		maybe_saved_callback();
+		// However, we can still apply format-specific color reduction to the canvas,
+		// and call the "maybe saved" callback, which, as the name implies, is intended to handle the uncertainty.
+		if (success !== false) {
+			if (update_from_saved) {
+				update_from_saved_file(blob);
+			}
+			maybe_saved_callback();
+		}
 	});
 }
 
@@ -1115,6 +1128,13 @@ function are_you_sure(action, canceled, from_session_load) {
 	if (saved) {
 		action();
 	} else if (from_session_load) {
+		// @FIXME: this dialog is confusingly worded in the best case.
+		// It's intended for when the user edits the document while the initial document is loading,
+		// which is hard to do, at least for local sessions on my fast new computer.
+		// However it's also shown inappropriately if you edit the document and then either:
+		// - type a #load: URL into the address bar such as
+		//   http://127.0.0.1:1999/#load:https://i.imgur.com/M5zcPuk.jpeg
+		// - click an Open link in the Manage Storage dialog in the Electron app
 		showMessageBox({
 			message: localize("You've modified the document while an existing document was loading.\nSave the new document?", file_name),
 			buttons: [
@@ -1874,7 +1894,7 @@ function go_to_history_node(target_history_node, canceling, discard_document_sta
 }
 
 // Note: This function is part of the API.
-function undoable({ name, icon, use_loose_canvas_changes, soft }, callback) {
+function undoable({ name, icon, use_loose_canvas_changes, soft, assume_saved }, callback) {
 	if (!use_loose_canvas_changes) {
 		/* For performance (especially with two finger panning), I'm disabling this safety check that preserves certain document states in the history.
 		const current_image_data = main_ctx.getImageData(0, 0, main_canvas.width, main_canvas.height);
@@ -1885,8 +1905,10 @@ function undoable({ name, icon, use_loose_canvas_changes, soft }, callback) {
 		*/
 	}
 
-	saved = false;
-	update_title();
+	if (!assume_saved) { // flag is used for undoable file reloading on save, for reduction in color depth
+		saved = false;
+		update_title();
+	}
 
 	const before_callback_history_node = current_history_node;
 	callback && callback();
@@ -3743,6 +3765,7 @@ function update_from_saved_file(blob) {
 		undoable({
 			name: `${localize("Save As")} ${format ? format.name : info.file_format}`,
 			icon: get_help_folder_icon("p_save.png"),
+			assume_saved: true, // prevent setting saved to false
 		}, () => {
 			main_ctx.copy(info.image || info.image_data);
 		});
@@ -3784,7 +3807,10 @@ function sanity_check_blob(blob, okay_callback, magic_number_bytes, magic_wanted
 						// 	<p>${localize("Unexpected file format.")}</p>
 						// 	<p>${localize("An unsupported operation was attempted.")}</p>
 						// `,
-						message: "Your browser does not support writing images in this file format.",
+						message:
+							window.is_electron_app ?
+								"Writing images in this file format is not supported." :
+								"Your browser does not support writing images in this file format.",
 						iconID: "error",
 					});
 				}

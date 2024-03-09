@@ -448,10 +448,10 @@ class DeskMover {
         }
         if (this.numStr !== "") {
             this.windowContainer.style.display = "none";
-            this.windowContainer.innerHTML = "";
             if (this.beforeClose) {
                 this.beforeClose(localStorage, window);
             }
+            this.windowContainer.innerHTML = "";
             if (!this.temp) {
                 this.#clearConfig();
                 let openWindows = localStorage.madesktopOpenWindows.split(',');

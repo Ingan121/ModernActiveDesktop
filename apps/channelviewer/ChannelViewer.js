@@ -71,7 +71,7 @@ let madBase = parent.location.href.split('/').slice(0, -1).join('/') + '/';
 if (parent === window) {
     madBase += '../../';
 }
-window.cvBase = madBase + 'apps/channelviewer/';
+const cvBase = madBase + 'apps/channelviewer/';
 
 let title = "";
 window.favorites = JSON.parse(localStorage.madesktopChanViewFavorites || "[[\"https://www.ingan121.com/\",\"Ingan121's Webpage\"],[\"https://github.com/Ingan121/ModernActiveDesktop\",\"ModernActiveDesktop GitHub\"]]");
@@ -89,6 +89,7 @@ let loading = false;
 let favEditMode = false;
 let baseStylesheet = '';
 let themeStylesheet = '';
+let loadToken = 0; // Used for canceling forceLoad if the user navigates before it's done
 
 madDeskMover.menu = new MadMenu(menuBar, ['file', 'edit', 'view', 'go', 'favorites', 'help'], ['toolbars', 'explorerBar'], ['history']);
 
@@ -161,7 +162,7 @@ viewMenuItems[5].addEventListener("click", function () { // Source button
     if (isCrossOrigin) {
         madAlert(madGetString("CV_MSG_NO_ADV"), null, "warning");
     } else {
-        madOpenExternal("about:srcview?page=" + encodeURIComponent(historyItems[historyIndex - 1][0]), false, "popup");
+        madOpenExternal("about:srcview?page=" + encodeURIComponent(getCurrentUrl(true)), false, "popup");
     }
 });
 
@@ -181,14 +182,7 @@ viewMenuItems[7].addEventListener("click", function () { // Full Screen button
 });
 
 viewMenuItems[8].addEventListener("click", function () { // Internet Options button
-    const left = parseInt(madDeskMover.config.xPos) + 25 + 'px';
-    const top = parseInt(madDeskMover.config.yPos) + 50 + 'px';
-    const url = isCrossOrigin ? iframe.src : historyItems[historyIndex - 1][0];
-    const options = {
-        left, top, width: '400px', height: '371px',
-        aot: true, unresizable: true, noIcon: true
-    };
-    madOpenWindow('apps/inetcpl/general.html?currentPage=' + encodeURIComponent(url), true, options);
+    openInetcpl();
 });
 
 goMenuItems[0].addEventListener("click", function () { // Back button
@@ -243,12 +237,12 @@ favoritesMenuItems[0].addEventListener("click", function () { // Add to Favorite
         if (iconBlob) {
             const icon = await getDataUrl(iconBlob);
             if (icon.startsWith("data:image/")) {
-                favorites.push([historyItems[historyIndex - 1][0], name, icon]);
+                favorites.push([getCurrentUrl(), name, icon]);
             } else {
-                favorites.push([historyItems[historyIndex - 1][0], name]);
+                favorites.push([getCurrentUrl(), name]);
             }
         } else {
-            favorites.push([historyItems[historyIndex - 1][0], name]);
+            favorites.push([getCurrentUrl(), name]);
         }
         localStorage.madesktopChanViewFavorites = JSON.stringify(favorites);
         if (mainArea.classList.contains("sidebarOpen") && sidebarTitle.locId === "CV_SIDEBAR_FAVORITES") {
@@ -486,16 +480,15 @@ printButton.addEventListener("click", function () {
 });
 
 openButton.addEventListener("click", function () {
-    if (isCrossOrigin) {
-        parent.openExternalExternally(iframe.src, false, true);
-    } else {
-        parent.openExternalExternally(historyItems[historyIndex - 1][0], false, true);
-    }
+    parent.openExternalExternally(getCurrentUrl(true), false, true);
 });
 
 urlbar.addEventListener('click', function (event) {
+    // Urlbar icon click
     if (event.offsetX <= 24 * madScaleFactor) {
-        if (isCrossOrigin) {
+        if (loading) {
+            madAlert(madGetString("CV_MSG_OPENTYPE_LOADING"), null, "info");
+        } else if (isCrossOrigin) {
             madAlert(madGetString("CV_MSG_OPENTYPE_CROSSORIGIN"));
         } else if (iframe.contentDocument.head.dataset.forceLoaded) {
             if (loadedWithProxy) {
@@ -695,7 +688,7 @@ function hookIframeSize(iframe) {
     if (localStorage.madesktopLinkOpenMode !== "0" || madRunningMode !== 0) {
         iframe.contentWindow.open = function (url, name, specs) {
             if (!url.startsWith("http")) {
-                url = new URL(url, historyItems[historyIndex - 1][0]).href;
+                url = new URL(url, getCurrentUrl(true)).href;
             }
             const deskMover = madOpenExternal(url, false, specs);
             return deskMover.windowElement.contentDocument;
@@ -725,7 +718,7 @@ function hookIframeSize(iframe) {
         historyIndex++;
         let url = arguments[2];
         if (!url.startsWith("http")) {
-            url = new URL(url, historyItems[historyIndex - 1][0]).href;
+            url = new URL(url, getCurrentUrl(true)).href;
         }
         historyItems[historyIndex - 1] = [url];
         changeHistoryButtonStatus();
@@ -755,7 +748,7 @@ function hookIframeSize(iframe) {
         if (event.button === 0 && activeElement && activeElement.href && !activeElement.href.startsWith("javascript:")) {
             let url = activeElement.href;
             if (!url.startsWith("http")) {
-                url = new URL(url, historyItems[historyIndex - 1][0]).href;
+                url = new URL(url, getCurrentUrl(true)).href;
             }
             if (!url.startsWith("http")) { // non http/https links
                 return;
@@ -789,7 +782,7 @@ function hookIframeSize(iframe) {
         if (activeElement && activeElement.href && !activeElement.href.startsWith("javascript:")) {
             let url = activeElement.href;
             if (!url.startsWith("http")) {
-                url = new URL(url, historyItems[historyIndex - 1][0]).href;
+                url = new URL(url, getCurrentUrl(true)).href;
             }
             if (!url.startsWith("http")) { // non http/https links
                 return;
@@ -837,7 +830,7 @@ function hookIframeSize(iframe) {
                 url += '?' + new URLSearchParams(new FormData(iframe.contentDocument.activeElement.form))
             }
             if (!url.startsWith("http")) {
-                url = new URL(url, historyItems[historyIndex - 1][0]).href;
+                url = new URL(url, getCurrentUrl(true)).href;
             }
             document.title = url + " - ChannelViewer";
             if (madRunningMode !== 1 && !localStorage.madesktopChanViewNoForceLoad &&
@@ -881,16 +874,13 @@ function go(url, noHistory, forceForceLoad = false) {
     if (noHistory) {
         didHistoryNav = false;
     }
-    if (url.startsWith("about:") && !url.startsWith("about:blank")) {
-        const urlObj = new URL(url);
-        url = cvBase + "aboutpages/" + urlObj.pathname + ".html" + urlObj.search + urlObj.hash;
-    } else if (url.startsWith("channels-")) {
-        url = madBase + url;
-    } else if (!url.startsWith("http") && !url.startsWith("about") && !url.startsWith("chrome") && !url.startsWith("data") && !url.startsWith("file") && !url.startsWith("ws") && !url.startsWith("wss") && !url.startsWith("blob") && !url.startsWith("javascript")) {
+    url = expandUrl(url);
+    if (!url.startsWith("http") && !url.startsWith("about") && !url.startsWith("chrome") && !url.startsWith("data") && !url.startsWith("file") && !url.startsWith("ws") && !url.startsWith("wss") && !url.startsWith("blob") && !url.startsWith("javascript")) {
         url = "https://" + url;
     }
     urlbar.value = url;
     handleWeirdError();
+    loadToken = 0;
     if (forceForceLoad || (madRunningMode !== 1 && !localStorage.madesktopChanViewNoForceLoad &&
         !url.startsWith("about:blank") && !url.startsWith("data:") && new URL(url).origin !== location.origin))
     {
@@ -901,6 +891,21 @@ function go(url, noHistory, forceForceLoad = false) {
     }
     preCrashUrl = '';
     loadStart();
+}
+
+function expandUrl(url) {
+    if (url.startsWith("about:") && !url.startsWith("about:blank")) {
+        const urlObj = new URL(url);
+        url = cvBase + "aboutpages/" + urlObj.pathname + ".html" + urlObj.search + urlObj.hash;
+    } else if (url.startsWith("channels-")) {
+        url = madBase + url;
+    }
+    return url;
+}
+
+function getCurrentUrl(expand) {
+    const url = isCrossOrigin ? iframe.src : historyItems[historyIndex - 1][0];
+    return expand ? expandUrl(url) : url;
 }
 
 function appendHistoryItem(historyItem) {
@@ -1078,7 +1083,7 @@ async function getFavicon(asImage = false) {
         return null;
     }
     try {
-        const loc = historyItems[historyIndex - 1][0];
+        const loc = getCurrentUrl(true);
         const doc = iframe.contentDocument;
         const url = new URL(loc);
 
@@ -1141,6 +1146,20 @@ function openExternalExternally(url) {
     window.open(url, "_blank");
 }
 
+function openInetcpl(connectionPage = false) {
+    const left = parseInt(madDeskMover.config.xPos) + 25 + 'px';
+    const top = parseInt(madDeskMover.config.yPos) + 50 + 'px';
+    const options = {
+        left, top, width: '400px', height: '371px',
+        aot: true, unresizable: true, noIcon: true
+    };
+    let page = 'apps/inetcpl/general.html?currentPage=';
+    if (connectionPage && madRunningMode !== 1) {
+        page = 'apps/inetcpl/connection.html?currentPage=';
+    }
+    madOpenWindow(page + encodeURIComponent(getCurrentUrl()), true, options);
+}
+
 function loadStart() {
     if (loading) {
         return;
@@ -1170,11 +1189,20 @@ async function forceLoad(url) {
     if (url.match("https://www\.google\.co.*/url\\?q=.*")) {
         url = new URL(url).searchParams.get("q");
     }
+    let loadTokenPrivate = Math.random();
+    loadToken = loadTokenPrivate;
     let data = await fetchProxy(url).then(res => res.text()).catch(e => {
-        iframe.removeAttribute("srcdoc");
-        madAlert(madGetString("CV_MSG_LOAD_ERROR", url), null, "error");
-        go("about:NavigationCanceled", true);
+        // Check if window is not closed
+        if (loadToken !== 0) {
+            iframe.removeAttribute("srcdoc");
+            madAlert(madGetString("CV_MSG_LOAD_ERROR", url), null, "error");
+            go("about:NavigationCanceled");
+        }
     });
+    if (loadToken !== loadTokenPrivate) {
+        log("ForceLoad canceled", "log", "ChannelViewer");
+        return;
+    }
 
     if (data) {
         let replacedString = `<head$1 data-force-loaded="true">
@@ -1243,7 +1271,7 @@ function delayedSave() {
     }
     clearTimeout(saveTimer);
     saveTimer = setTimeout(() => {
-        const url = isCrossOrigin ? iframe.src : historyItems[historyIndex - 1][0];
+        const url = getCurrentUrl();
         const cvUrl = "apps/channelviewer/index.html?page=" + encodeURIComponent(preCrashUrl || url);
         madDeskMover.config.src = cvUrl;
     }, 10000);
@@ -1319,6 +1347,7 @@ function injectStyle() {
     }
 }
 
+// Main logic
 function init() {
     const url = new URL(location.href);
     let page = url.searchParams.get("page");
@@ -1357,20 +1386,6 @@ function init() {
     return { page, doForceLoad };
 }
 
-window.addEventListener("message", async (event) => {
-    switch (event.data.type) {
-        case "scheme-updated":
-            await fetchStyle();
-            injectStyle();
-            if (mainArea.classList.contains("sidebarOpen")) {
-                sidebarWindow.contentDocument.getElementById("scheme").href = schemeElement.href;
-            }
-            break;
-        case "inet-option-changed":
-            updateSandboxFlags();
-    }
-});
-
 window.addEventListener('load', async function () {
     let { page, doForceLoad } = init();
     document.title = page ? page + " - ChannelViewer" : "ChannelViewer";
@@ -1385,6 +1400,25 @@ window.addEventListener('load', async function () {
     }
 });
 
+window.addEventListener("message", async (event) => {
+    switch (event.data.type) {
+        case "scheme-updated":
+            await fetchStyle();
+            injectStyle();
+            if (mainArea.classList.contains("sidebarOpen")) {
+                sidebarWindow.contentDocument.getElementById("scheme").href = schemeElement.href;
+            }
+            break;
+        case "inet-option-changed":
+            updateSandboxFlags();
+    }
+});
+
+madDeskMover.beforeClose = function () {
+    loadToken = 0;
+    console.log(1212121212)
+};
+
 sidebarWindow.addEventListener('load', function () {
     sidebarWindow.contentDocument.body.style.zoom = madScaleFactor;
     const sidebarSchemeElement = sidebarWindow.contentDocument.getElementById("scheme");
@@ -1393,6 +1427,7 @@ sidebarWindow.addEventListener('load', function () {
     }
 });
 
+// Sidebar resizing
 {
     let offset = 0, isDown = false;
 
@@ -1427,6 +1462,7 @@ sidebarWindow.addEventListener('load', function () {
     }, true);
 }
 
+// Toolbar reordering
 {
     let downGrabber = -1;
     for (const grabber of grabbers) {
@@ -1473,6 +1509,7 @@ sidebarWindow.addEventListener('load', function () {
     });
 }
 
+// iframe load event
 iframe.addEventListener('load', function () {
     if (!iframe.contentDocument) {
         isCrossOrigin = true;
@@ -1515,7 +1552,7 @@ iframe.addEventListener('load', function () {
     } else {
         urlbar.style.backgroundImage = '';
     }
-    if (didHistoryNav) {
+    if (didHistoryNav || !didFirstLoad) {
         historyLength = historyIndex + 1;
         historyIndex++;
     }
@@ -1539,6 +1576,7 @@ iframe.addEventListener('load', function () {
     } else {
         delete sslIndicator.dataset.secure;
     }
+    loadToken = 0;
     historyItems[historyIndex - 1] = [urlbar.value, title];
     historyItems = historyItems.slice(0, historyLength);
     hookIframeSize(this);

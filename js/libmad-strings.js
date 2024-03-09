@@ -51,6 +51,7 @@
         "UI_MSG_SYSPLUG_ERROR": "An error occured!<br>System plugin response: ",
         "UI_PROMPT_RUNJS": "Enter JavaScript code to run.",
         "UI_PROMPT_ENTER_VALUE": "Enter value",
+        "UI_PROMPT_ENTER_VALUE_RESETTABLE": "Enter value (leave empty to reset)",
         // #endregion
         // #endregion
 
@@ -536,6 +537,7 @@
         // #endregion
 
         // #region ChannelViewer messages
+        "CV_MSG_OPENTYPE_LOADING": "This page is currently loading. Please check back after the page has finished loading.",
         "CV_MSG_OPENTYPE_CROSSORIGIN": "This page is from a different origin. Advanced features are not available for this page.",
         "CV_MSG_OPENTYPE_PROXIED": "This page was loaded with an external proxy. Advanced features are available, but the page may not work properly. Also, do not enter your passwords here!",
         "CV_MSG_OPENTYPE_FORCELOADED": "This page was forcefully loaded with advanced features. The page may not work properly, especially if it has complex scripts.",
