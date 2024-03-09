@@ -392,7 +392,7 @@
         "INETCPL_CORS_PROXY_DESC": "You can change which proxy to use for fetching resources.",
 
         "INETCPL_FORCELOAD_CHKBOX": "Load all pages with advanced features",
-        "INETCPL_FORCELOAD_DESC": "<li>%c will try to load all pages with a CORS proxy.</li><li>Advanced features will be enabled for all Web pages, including those from another origin.</li><li>Web pages that doesn't allow embedding normally will also be forcefully loaded.</li><li>Do note that some pages might not function correctly, especially those with complex scripts.</li>",
+        "INETCPL_FORCELOAD_DESC": "<li>%c will try to load all pages with a proxy.</li><li>Advanced features will be enabled for all Web pages, including those from another origin.</li><li>Web pages that doesn't allow embedding normally will also be forcefully loaded.</li><li>Do note that some pages might not function correctly, especially those with complex scripts.</li>",
         // #endregion
 
 
