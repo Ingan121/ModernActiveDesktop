@@ -808,7 +808,7 @@ function hookIframeSize(iframe) {
         }
         if (activeElement.matches("input[type='text'], input[type='search'], input[type='url'], input[type='tel'], input[type='email'], input[type='password'], textarea")) {
             if (madRunningMode === 1) {
-                madPrompt(madGetString("UI_ENTER_VALUE"), function (res) {
+                madPrompt(madGetString("UI_PROMPT_ENTER_VALUE"), function (res) {
                     if (res === null) return;
                     activeElement.value = res;
                     activeElement.dispatchEvent(new Event('input', { bubbles: true }));
