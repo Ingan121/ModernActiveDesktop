@@ -393,8 +393,23 @@ body:not(#madChanView) .menu, .menus {
         padding: 0 4px;
     }
 
+    #itemSize {
+        background-image: svg-load("./icon/spin-button.svg");
+        background-position: right;
+        background-repeat: no-repeat;
+        padding-right: 20px;
+    }
+
+    #itemSize:disabled {
+        background-image: svg-load("./icon/spin-button-disabled.svg");
+    }
+
     #itemSizeButtons {
         opacity: 0;
+        * {
+            width: 18px;
+            left: -20px;
+        }
     }
 
     #textColorWrap {
@@ -406,17 +421,6 @@ body:not(#madChanView) .menu, .menus {
         left: 1px;
         margin-top: 17px;
         min-height: 23px;
-    }
-
-    #itemSize {
-        background-image: svg-load("./icon/spin-button.svg");
-        background-position: right;
-        background-repeat: no-repeat;
-        padding-right: 20px;
-    }
-
-    #itemSize:disabled {
-        background-image: svg-load("./icon/spin-button-disabled.svg");
     }
 
     .window-body {
