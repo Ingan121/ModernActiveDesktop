@@ -1392,6 +1392,9 @@ window.addEventListener('load', async function () {
     let { page, doForceLoad } = init();
     document.title = page ? page + " - ChannelViewer" : "ChannelViewer";
     urlbar.value = page;
+    if (madDeskMover.isFullscreen) {
+        fullscreenButton.dataset.enabled = true;
+    }
     await fetchStyle();
 
     if (localStorage.madesktopFailCount > 2) {
