@@ -856,7 +856,7 @@ function hookIframeSize(iframe) {
         }
     });
     iframe.addEventListener('pointerleave', () => {
-        if (statusText.textContent !== madGetString("CV_STATUS_DONE") && statusText.textContent !== pageSetStatusText) {
+        if (!loading && statusText.textContent !== madGetString("CV_STATUS_DONE") && statusText.textContent !== pageSetStatusText) {
             statusText.textContent = pageSetStatusText;
         }
     });
