@@ -1139,7 +1139,9 @@ function hookIframeSize(iframe, num) {
     if (localStorage.madesktopLinkOpenMode !== "0" || runningMode !== BROWSER) {
         iframe.contentWindow.open = function (url, name, specs) {
             const deskMover = openExternal(url, false, specs);
-            return deskMover.windowElement.contentWindow;
+            if (deskMover) {
+                return deskMover.windowElement.contentWindow;
+            }
         }
     }
 
