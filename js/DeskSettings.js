@@ -1512,6 +1512,9 @@ function hideDialog() {
     if (localStorage.madesktopColorScheme === "7css4mad" && !localStorage.madesktopNoWinAnim) {
         msgbox.style.animation = "0.2s aeroWinClose linear";
         msgbox.addEventListener('animationend', function () {
+            if (msgbox.style.animationName !== "aeroWinClose") {
+                return;
+            }
             msgbox.style.animation = "";
             msgboxBg.style.display = "none";
         }, { once: true });
