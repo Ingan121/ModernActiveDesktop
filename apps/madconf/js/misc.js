@@ -30,7 +30,7 @@ const resetBtn = document.getElementById('resetBtn');
 const isWin10 = navigator.userAgent.includes('Windows NT 10.0');
 
 let config = {
-    dpi: parent.scaleFactor,
+    dpi: parent.scaleFactor.toString(),
     sysplug: localStorage.sysplugIntegration,
     startSound: !localStorage.madesktopStartSndMuted,
     alertSound: !localStorage.madesktopAlertSndMuted,
