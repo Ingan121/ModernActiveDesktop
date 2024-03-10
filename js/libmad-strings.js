@@ -123,6 +123,7 @@
         "COLORPICKER_RED": "&Red:",
         "COLORPICKER_GREEN": "&Green:",
         "COLORPICKER_BLUE": "&Blue:",
+        "COLORPICKER_PROMPT_CSS_COLOR": "Enter CSS color",
         // #endregion
 
 

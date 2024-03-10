@@ -176,7 +176,7 @@
 		});
 
 		$(result_canvas).on("click", () => {
-			madPrompt("Enter CSS color", function (res) {
+			madPrompt(madGetString("COLORPICKER_PROMPT_CSS_COLOR"), function (res) {
 				if (res === null) return;
 				set_color(res);
 				update_inputs("hslrgb");

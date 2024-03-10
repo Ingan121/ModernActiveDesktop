@@ -97,6 +97,7 @@
     "COLORPICKER_RED": "빨강(&R):",
     "COLORPICKER_GREEN": "녹색(&G):",
     "COLORPICKER_BLUE": "파랑(&B):",
+    "COLORPICKER_PROMPT_CSS_COLOR": "CSS 색상 입력",
 
 
     "MADCONF_TITLE": "%n 등록 정보",
