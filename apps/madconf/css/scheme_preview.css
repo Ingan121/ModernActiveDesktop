@@ -4,6 +4,7 @@ body {
     background-color: var(--background);
     margin: 0;
     overflow: hidden;
+    user-select: none;
 }
 
 /* Suppress the :active and :focus style */
@@ -133,6 +134,10 @@ textarea {
     padding-left: 5px;
     overflow-y: scroll;
     cursor: default;
+}
+
+textarea::selection {
+    background-color: transparent;
 }
 
 ::-webkit-scrollbar-track {

@@ -216,7 +216,7 @@
     "MADCONF_ITEM_INACTIVE_TITLE": "비활성 제목 표시줄",
     "MADCONF_ITEM_INACTIVE_BORDER": "비활성 창틀",
     "MADCONF_ITEM_MENU": "메뉴",
-    "MADCONF_ITEM_MENU_BAR": "메뉴 바 (플랫)",
+    "MADCONF_ITEM_MENU_BAR": "평평한 메뉴",
     "MADCONF_ITEM_MESSAGE_BOX": "메시지 상자",
     "MADCONF_ITEM_PALETTE_TITLE": "색상표 제목",
     "MADCONF_ITEM_SCROLLBAR": "스크롤 막대",
