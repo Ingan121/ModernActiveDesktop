@@ -449,8 +449,11 @@ body[data-cm-shadow] .contextMenuBg {
     z-index: 2;
 }
 
+.windowContainer[data-style="nonad"] > .windowMenuBg {
+    left: calc(2px + var(--extra-border-size));
+}
+
 .windowContainer[data-style="wnd"] > .windowMenuBg {
-    top: var(--context-menu-top);
     left: var(--context-menu-left);
 }
 
