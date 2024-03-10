@@ -409,9 +409,14 @@ body:not(#madChanView) .menu, .menus {
     }
 
     #itemSize {
-        background-image: svg-load("./icon/spin-button-disabled.svg");
+        background-image: svg-load("./icon/spin-button.svg");
         background-position: right;
         background-repeat: no-repeat;
+        padding-right: 20px;
+    }
+
+    #itemSize:disabled {
+        background-image: svg-load("./icon/spin-button-disabled.svg");
     }
 
     .window-body {
