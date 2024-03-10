@@ -691,7 +691,9 @@ function hookIframeSize(iframe) {
                 url = new URL(url, getCurrentUrl(true)).href;
             }
             const deskMover = madOpenExternal(url, false, specs);
-            return deskMover.windowElement.contentDocument;
+            if (deskMover) {
+                return deskMover.windowElement.contentWindow;
+            }
         }
     }
 
