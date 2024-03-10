@@ -875,7 +875,7 @@ function go(url, noHistory, forceForceLoad = false) {
         didHistoryNav = false;
     }
     url = expandUrl(url);
-    if (!url.startsWith("http") && !url.startsWith("about") && !url.startsWith("chrome") && !url.startsWith("data") && !url.startsWith("file") && !url.startsWith("ws") && !url.startsWith("wss") && !url.startsWith("blob") && !url.startsWith("javascript")) {
+    if (!url.startsWith("http") && !url.startsWith("about") && !url.startsWith("chrome") && !url.startsWith("data") && !url.startsWith("file") && !url.startsWith("ws") && !url.startsWith("wss") && !url.startsWith("blob") && !url.startsWith("javascript") && !url.startsWith("localfolder")) {
         url = "https://" + url;
     }
     urlbar.value = url;
@@ -1354,7 +1354,7 @@ function init() {
     if (!page) {
         return { page: null, doForceLoad: false };
     }
-    if (!page.startsWith('http') && !page.startsWith('about') && !page.startsWith('chrome') && !page.startsWith('data') && !page.startsWith('file') && !page.startsWith('ws') && !page.startsWith('wss') && !page.startsWith('blob') && !page.startsWith('javascript')) {
+    if (!page.startsWith('http') && !page.startsWith('about') && !page.startsWith('chrome') && !page.startsWith('data') && !page.startsWith('file') && !page.startsWith('ws') && !page.startsWith('wss') && !page.startsWith('blob') && !page.startsWith('javascript') && !page.startsWith('localfolder')) {
         page = madBase + page;
     }
     // Parse window.open third argument converted to query string (in DeskSettings.js:openExternal)
@@ -1570,7 +1570,7 @@ iframe.addEventListener('load', function () {
         statusZone.style.backgroundImage = "url(images/zone_local.png)";
         statusZoneText.locId = "CV_ZONE_LOCAL";
     }
-    if (urlbar.value.startsWith("https://") && !loadedWithProxy) {
+    if (urlbar.value.startsWith("https://") && (!loadedWithProxy || !iframe.contentDocument.head.dataset.forceLoaded)) {
         sslIndicator.dataset.secure = true;
     } else {
         delete sslIndicator.dataset.secure;

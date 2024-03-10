@@ -400,6 +400,7 @@ function onRequest(req, res) {
   console.log('serve: ' + req.url);
   const cors = args.cors || 'https://www.ingan121.com';
   res.setHeader('Access-Control-Allow-Origin', cors);
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Use-ChannelViewer, X-Fullscreen, X-Format-Name, X-Format-Extension');
 
   if (req.headers.origin && req.headers.origin !== 'null') {
     // Allow CORS for localhost and Lively Wallpaper

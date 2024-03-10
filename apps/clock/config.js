@@ -42,9 +42,7 @@ for (const colorPicker of colorPickers) {
     } else {
         colorPicker.addEventListener("click", function () {
             openColorPickerColor = colorPickerColor;
-            madOpenMiniColorPicker(this, this.querySelector(".colorPicker-color").style.backgroundColor, function (color) {
-                changeColor(color);
-            });
+            madOpenMiniColorPicker(this, this.querySelector(".colorPicker-color").style.backgroundColor, changeColor, colorPicker.id !== "backgroundColorPicker");
         });
     }
 }

@@ -148,6 +148,11 @@ body[data-no-underline] {
     --extra-border-size: 0px;
 }
 
+.windowContainer[data-style="nonad"][data-unresizable],
+.windowContainer[data-style="nonad"][data-unresizable] .contextMenuBg {
+    --extra-border-size: 1px;
+}
+
 .windowContainer[data-style="wnd"]:not([data-unresizable]) {
     box-shadow: var(--border-window-outer), var(--border-window-inner),
         var(--active-border) var(--border-inset-minus) var(--border-inset-minus) inset,
@@ -198,6 +203,11 @@ body[data-no-underline] {
     border: solid 2px transparent;
     border-bottom-width: 4px;
     background-color: transparent;
+}
+
+.windowContainer[data-style="nonad"] > .windowFrame {
+    top: calc(22px + var(--extra-border-size));
+    left: calc(var(--extra-border-size) - 1px);
 }
 
 .windowContainer[data-style="wnd"] > .windowFrame {
@@ -264,6 +274,10 @@ body[data-no-underline] {
     left: calc(3px + var(--extra-border-size));
     margin-left: 1px;
     display: none;
+}
+
+.windowContainer[data-style="nonad"]:not([data-unresizable]) > .windowTitlebar {
+    margin: calc(var(--extra-border-size) - 1px);
 }
 
 .windowContainer[data-style="wnd"]:not([data-unresizable]) > .title-bar {
@@ -667,6 +681,7 @@ body[data-cm-shadow] .contextMenuBg {
 
 #debug > * {
     background-color: var(--button-face);
+    line-height: 0;
 }
 
 #debugLabel {

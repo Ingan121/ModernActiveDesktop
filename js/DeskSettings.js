@@ -31,7 +31,6 @@ const simulatedModeLabel = document.getElementById("simmode");
 const debugMenu = document.getElementById("debug");
 const jsRunBtn = document.getElementById("jsRunBtn");
 const debugLogBtn = document.getElementById("debugLogBtn");
-const toggleModeBtn = document.getElementById("toggleModeBtn");
 
 const soundScheme = {};
 
@@ -1719,7 +1718,7 @@ function deactivateDebugMode() {
 
 function toggleDebugLog() {
     debugLog = !debugLog;
-    debugLogBtn.textContent = debugLog ? "Disable debug logging" : "Enable debug logging";
+    debugLogBtn.locId = debugLog ? "MAD_DEBUG_DISABLE_LOGGING" : "MAD_DEBUG_ENABLE_LOGGING";
     if (debugLog) {
         localStorage.madesktopDebugLog = true;
     } else {

@@ -46,6 +46,7 @@
 ## Todo
 * ChannelViewer
     * Hook fetch / XHR with fetchProxy to get AJAX sites working when force-loaded
+* WindowMetrics (`extra-border-size`) support for Active Desktop style DeskMovers
 * More themes to add
     * Windows 3.x
         * I think it would be pretty easy, just give it flat title bars and buttons with border-radius

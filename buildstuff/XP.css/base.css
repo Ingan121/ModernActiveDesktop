@@ -46,7 +46,7 @@
     --status-font: 11px var(--ui-font);
     --sm-caption-font: bold 11px/1 var(--ui-font);
 }
-.window {
+.window[data-style="wnd"] {
     --extra-title-height: 4px !important;
     --extra-border-size: 0px !important;
 }

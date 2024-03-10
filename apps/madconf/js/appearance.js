@@ -418,6 +418,9 @@ async function main() {
     });
 
     itemSize.addEventListener("change", function () {
+        if (!itemSize.validity.valid) {
+            itemSize.value = 1;
+        }
         appendModified();
         const option = selector.value;
         if (itemMappings[option].itemSize) {
@@ -441,11 +444,12 @@ async function main() {
     });
 
     for (const colorPicker of colorPickers) {
+        const ditheredItems = ["active-border", "app-workspace", "background", "inactive-border", "info-window"];
         colorPicker.addEventListener("click", function () {
             openColorPicker = colorPicker;
-            madOpenMiniColorPicker(this, this.querySelector(".colorPicker-color").style.backgroundColor, function (color) {
-                changeColor(color);
-            });
+            const currentColor = getComputedStyle(this.querySelector(".colorPicker-color")).backgroundColor;
+            const dithered = ditheredItems.includes(selector.value) && colorPicker.id === "firstColor";
+            madOpenMiniColorPicker(this, currentColor, changeColor, !dithered);
         });
     }
 

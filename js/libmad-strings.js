@@ -83,6 +83,17 @@
         "MAD_PROMPT_ENTER_URL": "Enter URL (leave empty to reset)",
         "MAD_PROMPT_ENTER_TITLE": "Enter title (leave empty to reset)",
         "MAD_MSG_LINK_COPY_PROMPT": "Paste this URL in the browser's address bar. Click OK to copy.",
+
+        "MAD_DEBUG_DEBUG_MODE": "Debug mode",
+        "MAD_DEBUG_INIT_NOT_COMPLETE": "Initialization not complete",
+        "MAD_DEBUG_RESET_CONFIG": "Reset config",
+        "MAD_DEBUG_REFRESH": "Refresh",
+        "MAD_DEBUG_RUNJS": "Run JavaScript code",
+        "MAD_DEBUG_SHOW_ERRORS": "Show errors",
+        "MAD_DEBUG_ENABLE_LOGGING": "Enable debug logging",
+        "MAD_DEBUG_DISABLE_LOGGING": "Disable debug logging",
+        "MAD_DEBUG_SIMULATE": "Simulate other environment",
+        "MAD_DEBUG_DEACTIVATE": "Deactivate debug mode",
         // #endregion
 
 
@@ -104,6 +115,7 @@
         "COLORPICKER_CUSTOM_COLORS": "&Custom Colors",
         "COLORPICKER_DEFINE_CUSTOM": "&Define Custom Colors >>",
         "COLORPICKER_ADD_TO_CUSTOM": "&Add to Custom Colors",
+        "COLORPICKER_COLOR": "Color",
         "COLORPICKER_COLOR_SOLID": "Color|S&olid",
         "COLORPICKER_HUE": "Hu&e:",
         "COLORPICKER_SAT": "&Sat:",

@@ -16,7 +16,7 @@
 	];
 
 	// Repurposable color picker modeled after the Windows system color picker
-	function choose_color(initial_color, expand, callback) {
+	function choose_color(initial_color, expand, callback, no_dithering) {
 		const $w = new $DialogWindow();
 		$w.addClass("edit-colors-window");
 
@@ -151,7 +151,13 @@
 				madResizeTo(447, 298);
 			});
 
-		const $color_solid_label = $(`<label for="color-solid-canvas">${madGetString("COLORPICKER_COLOR_SOLID")}</label>`);
+		// Apparently Windows color picker showed dithered color on the left and solid color on the right when running in a low color depth.
+		// And most scheme color items don't support dithering, so the whole square shows a solid color, and the label is just "Color".
+		// When running with higher colors, dithering will not occur and only the label will be different when editing such items.
+		// Since dithering is not going to be implemented, (who uses 256 colors this day? its gone on most OSes too)
+		// I'll only implement the label difference.
+		const color_solid_label_locid = no_dithering ? "COLORPICKER_COLOR" : "COLORPICKER_COLOR_SOLID";
+		const $color_solid_label = $(`<label for="color-solid-canvas">${madGetString(color_solid_label_locid)}</label>`);
 		$color_solid_label.css({
 			position: "absolute",
 			left: 10,

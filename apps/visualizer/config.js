@@ -47,9 +47,7 @@ let openColorPickerColor = null;
 for (const colorPicker of colorPickers) {
     colorPicker.addEventListener("click", function () {
         openColorPickerColor = this.querySelector(".colorPicker-color");
-        madOpenMiniColorPicker(this, this.querySelector(".colorPicker-color").style.backgroundColor, function (color) {
-            changeColor(color);
-        });
+        madOpenMiniColorPicker(this, this.querySelector(".colorPicker-color").style.backgroundColor, changeColor, colorPicker.id !== "bgColorPicker");
     });
 }
 

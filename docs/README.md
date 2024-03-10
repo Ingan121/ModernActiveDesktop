@@ -39,6 +39,7 @@
 ## Todo
 * ChannelViewer
     * Hook fetch / XHR with fetchProxy to get AJAX sites working when force-loaded
+* WindowMetrics (`extra-border-size`) support for Active Desktop style DeskMovers
 * More themes to add
     * Windows 3.x
         * I think it would be pretty easy, just give it flat title bars and buttons with border-radius
@@ -104,5 +105,5 @@
 Please see [here](?src=Updated.md&showbackbtn=1) for the previous changes
 
 Copyright (c) 2024 Ingan121  
-[https://github.com/Ingan121/ModernActiveDesktop](javascript:madOpenExternal('https://github.com/Ingan121/ModernActiveDesktop'))  
+<a href="https://github.com/Ingan121/ModernActiveDesktop" target="_blank">https://github.com/Ingan121/ModernActiveDesktop</a>  
 [Licensed under the MIT license](?src=../license.txt&showbackbtn=1)

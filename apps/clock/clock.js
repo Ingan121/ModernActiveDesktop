@@ -20,6 +20,10 @@ const settingsMenu = document.getElementById('settingsMenu');
 const settingsMenuItems = settingsMenu.querySelectorAll('.contextMenuItem');
 const confLabel = document.getElementById('confLabel');
 
+// Define which angles to invert the highlight and shadow colors
+const invertBegin = (Math.PI / 6) * 4.5 - Math.PI / 2;
+const invertEnd = (Math.PI / 6) * 11 - Math.PI / 2;
+
 let clockTitle = madGetString("CLOCK_TITLE")
 let dblClickTimer, dblClickPositon = null, isTitleHidden = false;
 let timeOptions = { timeStyle: 'medium' };
@@ -291,14 +295,15 @@ function drawHourHand(time) {
     clockCtx.moveTo(endPoint[0], endPoint[1]);
     clockCtx.lineTo(narrowSide2[0], narrowSide2[1]);
     clockCtx.lineTo(startPoint[0], startPoint[1]);
-    clockCtx.strokeStyle = angle > 1.5 ? colors.hilight : colors.shadow;
+    const inverted = angle > invertBegin && angle < invertEnd;
+    clockCtx.strokeStyle = inverted ? colors.hilight : colors.shadow;
     clockCtx.lineWidth = 2;
     clockCtx.stroke();
     clockCtx.beginPath();
     clockCtx.moveTo(startPoint[0], startPoint[1]);
     clockCtx.lineTo(narrowSide1[0], narrowSide1[1]);
     clockCtx.lineTo(endPoint[0], endPoint[1]);
-    clockCtx.strokeStyle = angle > 1.5 ? colors.shadow : colors.hilight;
+    clockCtx.strokeStyle = inverted ? colors.shadow : colors.hilight;
     clockCtx.lineWidth = 2;
     clockCtx.stroke();
 }
@@ -327,14 +332,15 @@ function drawMinuteHand(time) {
     clockCtx.moveTo(endPoint[0], endPoint[1]);
     clockCtx.lineTo(narrowSide2[0], narrowSide2[1]);
     clockCtx.lineTo(startPoint[0], startPoint[1]);
-    clockCtx.strokeStyle = angle > 1.5 ? colors.hilight : colors.shadow;
+    const inverted = angle > invertBegin && angle < invertEnd;
+    clockCtx.strokeStyle = inverted ? colors.hilight : colors.shadow;
     clockCtx.lineWidth = 2;
     clockCtx.stroke();
     clockCtx.beginPath();
     clockCtx.moveTo(startPoint[0], startPoint[1]);
     clockCtx.lineTo(narrowSide1[0], narrowSide1[1]);
     clockCtx.lineTo(endPoint[0], endPoint[1]);
-    clockCtx.strokeStyle = angle > 1.5 ? colors.shadow : colors.hilight;
+    clockCtx.strokeStyle = inverted ? colors.shadow : colors.hilight;
     clockCtx.lineWidth = 2;
     clockCtx.stroke();
 }

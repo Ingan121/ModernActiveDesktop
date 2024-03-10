@@ -17,6 +17,7 @@ body {
 
 label {
     color: var(--window-text);
+    white-space: nowrap;
 }
 
 .edit-colors-window .left-side label {
