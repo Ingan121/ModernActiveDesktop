@@ -150,7 +150,7 @@ body[data-no-underline] {
 
 .windowContainer[data-style="nonad"][data-unresizable],
 .windowContainer[data-style="nonad"][data-unresizable] .contextMenuBg {
-    --extra-border-size: 1px;
+    --extra-border-size: 1px !important;
 }
 
 .windowContainer[data-style="wnd"]:not([data-unresizable]) {
