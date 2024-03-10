@@ -80,6 +80,7 @@
 mad-select {
     width: 197px;
     margin-left: 4px;
+    min-width: 0 !important;
 }
 
 #schemeEditorGroup {
@@ -104,7 +105,7 @@ input[type="number"] {
     width: 57px;
     height: 21px;
     margin-left: -1px;
-    -moz-appearance: textfield;
+    -moz-appearance: textfield !important;
 }
 
 input[type=number]::-webkit-inner-spin-button, 

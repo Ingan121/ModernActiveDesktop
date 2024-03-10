@@ -607,6 +607,9 @@ mad-select .label {
   left: 3px;
   line-height: 14px;
   text-shadow: none !important;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 mad-select:before {
