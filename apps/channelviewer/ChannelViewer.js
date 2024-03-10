@@ -1108,8 +1108,13 @@ async function getFavicon(asImage = false) {
             if (!response.ok) {
                 log('Favicon not found, using a generic icon', 'log', 'ChannelViewer - getFavicon');
                 path = null;
-            } else if (asImage) {
-                return response.blob();
+            } else if (response.headers.get("content-type").startsWith("image")) {
+                if (asImage) {
+                    return response.blob();
+                }
+            } else {
+                log('Favicon is not an image, using a generic icon', 'log', 'ChannelViewer - getFavicon');
+                path = null;
             }
         });
         if (result) {
@@ -1545,17 +1550,6 @@ iframe.addEventListener('load', function () {
     isCrossOrigin = false;
     this.contentDocument.body.style.zoom = madScaleFactor;
     updateTitle();
-    if (localStorage.madesktopChanViewShowFavicon) {
-        getFavicon().then(favicon => {
-            if (favicon) {
-                urlbar.style.backgroundImage = `url(${favicon})`;
-            } else {
-                urlbar.style.backgroundImage = '';
-            }
-        });
-    } else {
-        urlbar.style.backgroundImage = '';
-    }
     if (didHistoryNav || !didFirstLoad) {
         historyLength = historyIndex + 1;
         historyIndex++;
@@ -1583,6 +1577,17 @@ iframe.addEventListener('load', function () {
     loadToken = 0;
     historyItems[historyIndex - 1] = [urlbar.value, title];
     historyItems = historyItems.slice(0, historyLength);
+    if (localStorage.madesktopChanViewShowFavicon) {
+        getFavicon().then(favicon => {
+            if (favicon) {
+                urlbar.style.backgroundImage = `url(${favicon})`;
+            } else {
+                urlbar.style.backgroundImage = '';
+            }
+        });
+    } else {
+        urlbar.style.backgroundImage = '';
+    }
     hookIframeSize(this);
     changeHistoryButtonStatus();
     injectStyle();
