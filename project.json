@@ -1,6 +1,6 @@
 {
 	"contentrating" : "Everyone",
-	"description" : "Wallpaper for imitating the Windows 98 desktop experience\n\nThis wallpaper includes Windows 98's Channel Bar, the startup sound, a music visualizer, and various apps like paint and solitaire.\n\nSome channel items won't show properly because of the limitations of the iframe security restrictions.\n\nRight click this wallpaper and click 'Open in Explorer' to view the source code and the license (MIT.)\n\nVisit https://winclassic.boards.net to learn how to get the classic theme on Windows 8+ or Windows 7 with Aero enabled.\n\nSource code: https://github.com/Ingan121/ModernActiveDesktop",
+	"description" : "Wallpaper for imitating the Windows 98 desktop experience\n\nThis wallpaper includes Windows 98's Channel Bar, the startup sound, a music visualizer, a web browser, and various apps like paint, solitaire, clock, and calculator.\n\nSome web pages won't behave correctly because of the iframe security restrictions.\n\nRight click this wallpaper and click 'Open in Explorer' to view the source code and the license (MIT.)\n\nVisit https://winclassic.boards.net to learn how to get the classic theme on Windows 8+ or Windows 7 with Aero enabled.\n\nSource code: https://github.com/Ingan121/ModernActiveDesktop",
 	"file" : "index.html",
 	"general" : 
 	{
@@ -67,7 +67,7 @@
 	"tags" : [ "Retro" ],
 	"title" : "Windows 98 Desktop Experience",
 	"type" : "web",
-	"version" : 15,
+	"version" : 16,
 	"visibility" : "public",
 	"workshopid" : "2278898637",
 	"workshopurl" : "steam://url/CommunityFilePage/2278898637"
