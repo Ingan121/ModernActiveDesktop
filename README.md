@@ -46,6 +46,7 @@
 ## Todo
 * ChannelViewer
     * Hook fetch / XHR with fetchProxy to get AJAX sites working when force-loaded
+    * Also deal with the origin header - Google, YT, etc. checks for it and returns 403. This also affects Wallpaper Engine or other environments with the same origin policy disabled.
 * WindowMetrics (`extra-border-size`) support for Active Desktop style DeskMovers
 * More themes to add
     * Windows 3.x

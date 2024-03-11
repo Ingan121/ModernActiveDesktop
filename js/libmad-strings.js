@@ -752,7 +752,7 @@
             return processString(fallbackStrings[locId], extraString);
         } else {
             console.error(`No string found for locId ${locId}`);
-            return null;
+            return locId;
         }
     }
     window.madGetString = getString;
