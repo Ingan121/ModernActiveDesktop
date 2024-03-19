@@ -78,7 +78,7 @@ const optMenuItems = document.querySelectorAll('#optMenu .contextMenuItem');
 const helpMenuItems = document.querySelectorAll('#helpMenu .contextMenuItem');
 
 const isWin10 = navigator.userAgent.includes('Windows NT 10.0');
-const NO_MEDINT_MSG = isWin10 ? "NO_MEDINT_MSG" : "MEDINT_UNAVAILABLE_MSG";
+const NO_MEDINT_MSG = isWin10 ? "VISUALIZER_NO_MEDINT_MSG" : "VISUALIZER_MEDINT_UNSUPPORTED_MSG";
 
 let mouseOverMenu = false;
 let mediaIntegrationAvailable = isWin10;
