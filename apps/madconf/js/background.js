@@ -127,7 +127,7 @@ imgModeSelector.addEventListener('change', function () {
 imgModeSelector.value = localStorage.madesktopBgImgMode || 'center';
 
 wpEnterUrlBtn.addEventListener('click', function () {
-    madPrompt('Enter URL of a web wallpaper', function (res) {
+    madPrompt(madGetString('MADCONF_MSG_ENTER_URL'), function (res) {
         if (res === null) return;
         preview.contentWindow.changeBgType('web');
         preview.contentWindow.bgHtmlView.src = res;

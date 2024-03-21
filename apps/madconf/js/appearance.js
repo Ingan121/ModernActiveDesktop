@@ -510,7 +510,11 @@ async function main() {
     });
 
     animationSelector.addEventListener("change", function () {
-        scheme["menu-animation"] = animationSelector.value;
+        if (enableAnimationsChkBox.checked) {
+            scheme["menu-animation"] = animationSelector.value;
+        } else {
+            scheme["menu-animation"] = "none";
+        }
     });
 
     flatMenuChkBox.addEventListener("change", function () {
@@ -522,7 +526,11 @@ async function main() {
     });
 
     flatMenuSelector.addEventListener("change", function () {
-        scheme["flat-menus"] = flatMenuSelector.value;
+        if (flatMenuChkBox.checked) {
+            scheme["flat-menus"] = flatMenuSelector.value;
+        } else {
+            scheme["flat-menus"] = "none";
+        }
     });
 
     shadowChkBox.addEventListener("change", function () {
@@ -670,8 +678,12 @@ async function main() {
     if (localStorage.madesktopCmAnimation === "none") {
         enableAnimationsChkBox.checked = false;
         animationSelector.disabled = true;
+        scheme["menu-animation"] = "none";
     } else if (localStorage.madesktopCmAnimation === "fade") {
         animationSelector.selectedIndex = 1;
+        scheme["menu-animation"] = "fade";
+    } else {
+        scheme["menu-animation"] = "slide";
     }
 
     if (localStorage.madesktopMenuStyle) {
@@ -687,10 +699,14 @@ async function main() {
             case "mbcm":
                 flatMenuSelector.selectedIndex = 2;
         }
+        scheme["flat-menus"] = localStorage.madesktopMenuStyle;
+    } else {
+        scheme["flat-menus"] = "none";
     }
 
     if (localStorage.madesktopCmShadow) {
         shadowChkBox.checked = true;
+        scheme["menu-shadow"] = "true";
     }
 
     if (localStorage.madesktopOutlineMode) {

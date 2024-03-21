@@ -61,6 +61,7 @@
     "MAD_PROMPT_ENTER_URL": "URL 입력 (빈칸으로 두면 초기화)",
     "MAD_PROMPT_ENTER_TITLE": "창 제목 입력 (빈칸으로 두면 초기화)",
     "MAD_MSG_LINK_COPY_PROMPT": "다음 URL을 브라우저 주소 표시줄에 붙여넣으세요. 복사하려면 확인을 클릭하세요.",
+    "MAD_MSG_SYSPLUG_UPDATED": "시스템 플러그인이 업데이트되어 다시 설치해야 합니다. 설치 가이드를 따라 업데이트하세요.",
 
     "MAD_DEBUG_DEBUG_MODE": "디버그 모드",
     "MAD_DEBUG_INIT_NOT_COMPLETE": "시작이 완료되지 않음",
@@ -138,6 +139,7 @@
     "MADCONF_DEFAULTWP_AURORA": "오로라",
     "MADCONF_DEFAULTWP_HARMONY": "하모니",
 
+    "MADCONF_MSG_ENTER_URL": "웹 배경화면 URL 입력",
     "MADCONF_MSG_VIDEOWP": "Wallpaper Engine 속성 창에서 동영상 배경을 설정하세요.",
     "MADCONF_MSG_LARGE_IMG": "이미지 크기가 너무 커서 배경화면으로 설정할 수 없습니다. 더 작은 이미지를 사용하세요.",
     "MADCONF_MSG_LARGE_IMG_WE": "이미지 크기가 너무 커서 배경화면으로 설정할 수 없습니다. 더 작은 이미지를 사용하거나 Wallpaper Engine 속성 창에서 배경화면을 설정하세요.",
@@ -543,5 +545,8 @@
     "WELCOME_WHATS_NEW_CONTENT": "%n 3.2에는 새로운 기능과 개선 사항을 많이 추가되었습니다.<br><br>* 새로운 앱: 시계, 계산기<br>* 완전히 새로운 ChannelViewer<br>* 설정 가능한 옵션 추가 - 창 크기, 글꼴, Aero 테마 등<br><br>자세한 정보를 보려면 클릭하세요.",
     "WELCOME_CUSTOMIZE_DESKTOP_CONTENT": "바탕 화면을 꾸미고 싶나요? %n은 여러분의 바탕 화면을 더욱 멋지게 꾸밀 수 있도록 도와줍니다.<br><br>배경화면과 색 구성표 등을 설정할 수 있습니다.<br><br>클릭하여 설정 창을 여세요.",
     "WELCOME_SETUP_SYSPLUG_CONTENT": "시스템 플러그인을 설치하면 %n이 여러분의 컴퓨터와 더욱 잘 연동됩니다.<br><br>시스템 플러그인을 설치하면 더 많은 기능을 사용할 수 있습니다.<br><br>클릭하여 설치 가이드를 보세요.",
-    "WELCOME_GET_SUPPORT_CONTENT": "%n은 오픈 소스 프로젝트이며, 커뮤니티에서 도움을 받을 수 있습니다.<br><br>문제가 있으면 GitHub 이슈 페이지에 보고할 수 있습니다.<br>또한 프로젝트에 기여할 수도 있습니다.<br><br>클릭하여 GitHub 저장소를 여세요."
+    "WELCOME_GET_SUPPORT_CONTENT": "%n은 오픈 소스 프로젝트이며, 커뮤니티에서 도움을 받을 수 있습니다.<br><br>문제가 있으면 GitHub 이슈 페이지에 보고할 수 있습니다.<br>또한 프로젝트에 기여할 수도 있습니다.<br><br>클릭하여 GitHub 저장소를 여세요.",
+
+
+    "JSPAINT_SAVE_SYSPLUG_REQUIRED": "죄송합니다. 이 기능을 사용하려면 시스템 플러그인 연동을 활성화해야 합니다."
 }

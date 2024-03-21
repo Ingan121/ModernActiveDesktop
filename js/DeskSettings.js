@@ -191,7 +191,7 @@ if (localStorage.madesktopLastVer) {
 
     if (localStorage.madesktopLastVer !== "3.2.0" && localStorage.sysplugIntegration) { // Update from 3.2.0 and below
         // Not really localizable
-        madAlert("System plugin has been updated, and it needs a reinstall. Please update it with the setup guide.", function () {
+        madAlert("locid:MAD_MSG_SYSPLUG_UPDATED", function () {
             openWindow("SysplugSetupGuide.md", true);
         });
         delete localStorage.sysplugIntegration;
@@ -486,8 +486,7 @@ function announce(type) {
             const iframe = windowContainers[i].getElementsByClassName("windowElement")[0];
             iframe.contentWindow.postMessage({ type }, "*");
         } catch {
-            // attempting to do this on destroyed deskitems
-            // or page did not load yet
+            // page did not load yet
         }
     }
 }
@@ -1333,6 +1332,9 @@ async function madAlert(msg, callback, icon = "info") {
     return new Promise(resolve => {
         playSound(icon);
 
+        if (msg.startsWith("locid:")) {
+            msg = `<mad-string data-locid="${msg.slice(6)}"></mad-string>`;
+        }
         msgboxMessage.innerHTML = msg;
         msgboxIcon.style.display = "block";
         msgboxIcon.src = `images/${icon}.png`;

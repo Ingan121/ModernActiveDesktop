@@ -83,6 +83,7 @@
         "MAD_PROMPT_ENTER_URL": "Enter URL (leave empty to reset)",
         "MAD_PROMPT_ENTER_TITLE": "Enter title (leave empty to reset)",
         "MAD_MSG_LINK_COPY_PROMPT": "Paste this URL in the browser's address bar. Click OK to copy.",
+        "MAD_MSG_SYSPLUG_UPDATED": "System plugin has been updated, and it needs a reinstall. Please update it with the setup guide.",
 
         "MAD_DEBUG_DEBUG_MODE": "Debug mode",
         "MAD_DEBUG_INIT_NOT_COMPLETE": "Initialization not complete",
@@ -169,6 +170,7 @@
         // #endregion
 
         // #region JS strings
+        "MADCONF_MSG_ENTER_URL": "Enter URL of a web wallpaper",
         "MADCONF_MSG_VIDEOWP": "Please use the Wallpaper Engine properties panel to configure a video wallpaper.",
         "MADCONF_MSG_LARGE_IMG": "Failed to set the image as wallpaper due to the large size of the image. Please use a smaller image.",
         "MADCONF_MSG_LARGE_IMG_WE": "Failed to set the image as wallpaper due to the large size of the image. Please use a smaller image or use the Wallpaper Engine properties panel to configure the wallpaper.",
@@ -623,7 +625,12 @@
         "WELCOME_WHATS_NEW_CONTENT": "%n 3.2 brings a lot of new features and improvements to your experience, including:<br><br>* New apps: Clock and Calculator<br>* All-new ChannelViewer<br>* More customizable options - window metrics, fonts, Aero theme, and more<br><br>Click for more information.",
         "WELCOME_CUSTOMIZE_DESKTOP_CONTENT": "%n provides a variety of options to customize your experience.<br><br>You can change the color scheme, the wallpaper, and more.<br><br>Click to configure %n.",
         "WELCOME_SETUP_SYSPLUG_CONTENT": "For better usability, it is highly recommended to install the system plugin.<br><br>It allows a better integration between your system and the wallpaper, such as opening a new browser window from the wallpaper.<br><br>Click for more information, including the setup instructions.",
-        "WELCOME_GET_SUPPORT_CONTENT": "%n is an open-source project, and you can get help from the community.<br><br>If you have any problems, you can report them on the GitHub issues page.<br>You can also contribute to the project by submitting a pull request.<br><br>Click to open the GitHub repository."
+        "WELCOME_GET_SUPPORT_CONTENT": "%n is an open-source project, and you can get help from the community.<br><br>If you have any problems, you can report them on the GitHub issues page.<br>You can also contribute to the project by submitting a pull request.<br><br>Click to open the GitHub repository.",
+        // #endregion
+
+
+        // #region MAD specific JSPaint strings
+        "JSPAINT_SAVE_SYSPLUG_REQUIRED": "Sorry, you must enable the system plugin integration in the ModernActiveDesktop properties to use this feature."
         // #endregion
     }
     window.madStrings = top.madStrings || fallbackStrings;

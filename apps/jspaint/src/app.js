@@ -176,7 +176,7 @@ window.systemHookDefaults = {
 					}
 				}
 			} else {
-				show_error_message("Sorry, you must enable the system plugin integration in the ModernActiveDesktop properties to use this feature.");
+				show_error_message(madGetString("JSPAINT_SAVE_SYSPLUG_REQUIRED"));
 			}
 		}
 		// Note: showSaveFilePicker currently doesn't support suggesting a filename,

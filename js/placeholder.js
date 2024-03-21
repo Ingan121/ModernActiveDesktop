@@ -8,6 +8,8 @@ if (madRunningMode === 0) {
     document.getElementById("visIcon").style.display = "none";
 }
 
+madSetResizeArea(false);
+
 function openApp(app) {
     switch(app) {
         case "channelbar":

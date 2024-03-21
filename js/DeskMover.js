@@ -857,19 +857,15 @@ class DeskMover {
         this.dropdownBg.style.width = width + "px";
         this.dropdown.style.width = this.dropdownBg.style.width;
 
-        this.dropdown.children[0].style.display = "block";
-        const itemHeight = this.dropdown.children[0].getBoundingClientRect().height;
-        this.dropdown.children[0].style.display = "";
-        if (optionCnt >= 25) {
-            this.dropdownBg.style.height = itemHeight * 25 + "px";
-        } else {
-            this.dropdown.style.height = "auto";
-            this.dropdownBg.style.height = this.dropdown.scrollHeight + "px";
+        let height = 0;
+        for (let i = 1; i <= Math.min(optionCnt, 25); i++) {
+            height += this.dropdown.children[i].getBoundingClientRect().height;
         }
+        this.dropdownBg.style.height = height + "px";
         this.dropdown.style.height = this.dropdownBg.style.height;
 
         if (selectedIndex > 12) {
-            this.dropdown.scrollTop = (selectedIndex - 12) * itemHeight;
+            this.dropdown.scrollTop = (selectedIndex - 12) * this.dropdown.children[1].getBoundingClientRect().height;
         } else {
             this.dropdown.scrollTop = 0;
         }
