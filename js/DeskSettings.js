@@ -1159,6 +1159,10 @@ function hookIframeSize(iframe, num) {
     );
 
     iframe.contentDocument.addEventListener('click', (event) => {
+        if (!iframe.contentDocument) {
+            // Window was closed (Firefox specific, doesn't happen in Chromium)
+            return;
+        }
         const hoverElement = iframe.contentDocument.elementFromPoint(event.clientX, event.clientY);
         if (iframe.contentDocument.activeElement && iframe.contentDocument.activeElement.href &&
             (iframe.contentDocument.activeElement.target === "_blank" && hoverElement === iframe.contentDocument.activeElement) ||
