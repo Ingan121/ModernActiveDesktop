@@ -630,7 +630,12 @@
 
 
         // #region MAD specific JSPaint strings
-        "JSPAINT_SAVE_SYSPLUG_REQUIRED": "Sorry, you must enable the system plugin integration in the ModernActiveDesktop properties to use this feature."
+        "JSPAINT_SAVE_SYSPLUG_REQUIRED": "Sorry, you must enable the system plugin integration in the ModernActiveDesktop properties to use this feature.",
+        // #endregion
+
+
+        // #region Channel bar strings
+        "CB_TITLE": "Channel Bar"
         // #endregion
     }
     window.madStrings = top.madStrings || fallbackStrings;

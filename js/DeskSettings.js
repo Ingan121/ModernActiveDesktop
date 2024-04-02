@@ -190,7 +190,6 @@ if (localStorage.madesktopLastVer) {
     }
 
     if (localStorage.madesktopLastVer !== "3.2.0" && localStorage.sysplugIntegration) { // Update from 3.2.0 and below
-        // Not really localizable
         madAlert("locid:MAD_MSG_SYSPLUG_UPDATED", function () {
             openWindow("SysplugSetupGuide.md", true);
         });
@@ -1815,6 +1814,7 @@ if (runningMode === WE) {
     }
     startup();
     if (location.href.startsWith("file:///") && runningMode === BROWSER) {
+        // Not really localizable cuz AJAX fails when running as a local file due to CORS
         madAlert("You are running ModernActiveDesktop as a local file. Please use a web server to host it for full functionality.", null, "warning");
     }
 }

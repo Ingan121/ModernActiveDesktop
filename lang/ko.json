@@ -43,7 +43,7 @@
     "MAD_CONF_MENUITEM_AD": "액티브 데스크톱(&A)",
     "MAD_CONF_MENUITEM_NONAD": "비 액티브 데스크톱 채널 바(&N)",
     "MAD_CONF_MENUITEM_WND": "창(&W)",
-    "MAD_CONF_MENUITEM_SCALE": "창 내용 크기 조정(&S)",
+    "MAD_CONF_MENUITEM_SCALE": "창 내용에 배율 적용(&S)",
     "MAD_CONF_MENUITEM_AOT": "항상 위(&A)",
     "MAD_CONF_MENUITEM_RESIZABLE": "크기 조정 가능(&S)",
     "MAD_CONF_MENUITEM_CHANGE_URL": "URL 변경(&C)",
@@ -548,5 +548,8 @@
     "WELCOME_GET_SUPPORT_CONTENT": "%n은 오픈 소스 프로젝트이며, 커뮤니티에서 도움을 받을 수 있습니다.<br><br>문제가 있으면 GitHub 이슈 페이지에 보고할 수 있습니다.<br>또한 프로젝트에 기여할 수도 있습니다.<br><br>클릭하여 GitHub 저장소를 여세요.",
 
 
-    "JSPAINT_SAVE_SYSPLUG_REQUIRED": "죄송합니다. 이 기능을 사용하려면 시스템 플러그인 연동을 활성화해야 합니다."
+    "JSPAINT_SAVE_SYSPLUG_REQUIRED": "죄송합니다. 이 기능을 사용하려면 시스템 플러그인 연동을 활성화해야 합니다.",
+
+
+    "CB_TITLE": "채널 바"
 }
