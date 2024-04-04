@@ -379,8 +379,9 @@ class DeskMover {
                 // Assign default values
                 this.changeWndStyle(style || "wnd");
 
-                if (localStorage.madesktopColorScheme === "7css4mad" && !localStorage.madesktopNoWinAnim && this.config.style === "wnd" && !reinit) {
-                    this.windowContainer.style.animation = "0.22s aeroWinOpen linear";
+                const winOpenAnim = getComputedStyle(this.windowContainer).getPropertyValue('--win-open-anim');
+                if (winOpenAnim && !localStorage.madesktopNoWinAnim && this.config.style === "wnd" && !reinit) {
+                    this.windowContainer.style.animation = `0.22s ${winOpenAnim} linear`;
                     this.windowContainer.addEventListener("animationend", () => {
                         this.windowContainer.style.animation = "";
                     }, {once: true});
@@ -446,8 +447,9 @@ class DeskMover {
     }
 
     async closeWindow() {
-        if (localStorage.madesktopColorScheme === "7css4mad" && !localStorage.madesktopNoWinAnim && this.config.style === "wnd") {
-            this.windowContainer.style.animation = "0.2s aeroWinClose linear";
+        const winCloseAnim = getComputedStyle(this.windowContainer).getPropertyValue('--win-close-anim');
+        if (winCloseAnim && !localStorage.madesktopNoWinAnim && this.config.style === "wnd") {
+            this.windowContainer.style.animation = `0.2s ${winCloseAnim} linear`;
             await waitForAnim(this.windowContainer);
         }
         if (this.numStr !== "") {

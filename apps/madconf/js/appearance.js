@@ -220,6 +220,14 @@ async function main() {
             winShadowChkBox.checked = false;
         }
 
+        if (scheme["win-open-anim"] && scheme["win-close-anim"]) {
+            animChkBox.disabled = false;
+            animChkBox.checked = true;
+        } else {
+            animChkBox.disabled = true;
+            animChkBox.checked = false;
+        }
+
         applyPreview();
         selector.dispatchEvent(new Event("change"));
         if (schemeSelector.value === "7css4mad") {
@@ -228,13 +236,9 @@ async function main() {
             secondColorPickerColor.style.backgroundColor = "#4580c4";
             transparencyChkBox.disabled = false;
             transparencyChkBox.checked = true;
-            animChkBox.disabled = false;
-            animChkBox.checked = true;
         } else {
             transparencyChkBox.disabled = true;
             transparencyChkBox.checked = false;
-            animChkBox.disabled = true;
-            animChkBox.checked = false;
         }
     });
 
@@ -625,20 +629,15 @@ async function main() {
         }
         parent.changeUnderline(!localStorage.madesktopHideUnderline);
 
-        if (schemeSelector.value === "7css4mad") {
-            if (transparencyChkBox.checked) {
-                delete localStorage.madesktopAeroNoGlass;
-            } else {
-                localStorage.madesktopAeroNoGlass = true;
-            }
-            if (animChkBox.checked) {
-                delete localStorage.madesktopNoWinAnim;
-            } else {
-                localStorage.madesktopNoWinAnim = true;
-            }
-        } else {
+        if (transparencyChkBox.checked) {
             delete localStorage.madesktopAeroNoGlass;
+        } else {
+            localStorage.madesktopAeroNoGlass = true;
+        }
+        if (animChkBox.checked) {
             delete localStorage.madesktopNoWinAnim;
+        } else {
+            localStorage.madesktopNoWinAnim = true;
         }
         parent.changeAeroGlass(localStorage.madesktopAeroNoGlass);
         parent.changeWinAnim(localStorage.madesktopNoWinAnim);

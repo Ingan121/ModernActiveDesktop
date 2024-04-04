@@ -189,7 +189,7 @@ if (localStorage.madesktopLastVer) {
         startup();
     }
 
-    if (localStorage.madesktopLastVer !== "3.2.0" && localStorage.sysplugIntegration) { // Update from 3.2.0 and below
+    if (localStorage.madesktopLastVer !== "3.2.1" && localStorage.sysplugIntegration) { // Update from 3.2.0 and below
         madAlert("locid:MAD_MSG_SYSPLUG_UPDATED", function () {
             openWindow("SysplugSetupGuide.md", true);
         });
@@ -204,7 +204,7 @@ if (localStorage.madesktopLastVer) {
         localStorage.madesktopChanViewBottomMargin = "0";
     }
 }
-localStorage.madesktopLastVer = "3.2.0";
+localStorage.madesktopLastVer = "3.2.1";
 
 if (localStorage.madesktopItemVisible === "false") {
     windowContainers[0].style.display = "none";
@@ -1497,8 +1497,9 @@ function showDialog() {
         msgboxLoopCount = 0;
     }, 5000);
 
-    if (localStorage.madesktopColorScheme === "7css4mad" && !localStorage.madesktopNoWinAnim) {
-        msgbox.style.animation = "0.22s aeroWinOpen linear";
+    const winOpenAnim = getComputedStyle(msgbox).getPropertyValue('--win-open-anim');
+    if (winOpenAnim && !localStorage.madesktopNoWinAnim) {
+        msgbox.style.animation = `0.22s ${winOpenAnim} linear`;
         msgbox.addEventListener('animationend', function () {
             msgbox.style.animation = "";
         }, { once: true });
@@ -1514,10 +1515,11 @@ function showDialog() {
 }
 
 function hideDialog() {
-    if (localStorage.madesktopColorScheme === "7css4mad" && !localStorage.madesktopNoWinAnim) {
-        msgbox.style.animation = "0.2s aeroWinClose linear";
+    const winCloseAnim = getComputedStyle(msgbox).getPropertyValue('--win-close-anim');
+    if (winCloseAnim && !localStorage.madesktopNoWinAnim) {
+        msgbox.style.animation = `0.2s ${winCloseAnim} linear`;
         msgbox.addEventListener('animationend', function () {
-            if (msgbox.style.animationName !== "aeroWinClose") {
+            if (msgbox.style.animationName !== winCloseAnim.trim()) {
                 return;
             }
             msgbox.style.animation = "";

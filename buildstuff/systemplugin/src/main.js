@@ -25,16 +25,27 @@ if (args.help) {
   console.log("--port: Port to listen on (default: 3031)");
   console.log("--listen: IP address to listen on (default: 127.0.0.1)");
   console.log("--cors: CORS origin to allow (default: https://www.ingan121.com)");
+  console.log("--metrics: Get window metrics (border size, title height), for internal use only")
   console.log("--help: Show this help message\n");
   console.log("Warning: Using --cors=* or --listen=0.0.0.0 is considered insecure. Please only use these options for testing.\n");
   process.exit();
 }
 
-const gotTheLock = app.requestSingleInstanceLock();
+const gotTheLock = !!args.metrics || app.requestSingleInstanceLock();
 let tray = null;
 let mainWindow = null;
 let cvNumber = 0;
 let mcc = null;
+
+const metrics = {
+  // Windows 10 default metrics
+  borderSize: 8,
+  titleHeight: 22
+};
+
+if (!args.metrics) {
+  getMetrics();
+}
 
 const configPath = app.getPath('userData') + '/config.json';
 const tempFilePath = app.getPath('temp') + '/madsp-uploaded.dat';
@@ -42,19 +53,6 @@ const tempFilePath = app.getPath('temp') + '/madsp-uploaded.dat';
 if (!fs.existsSync(configPath)) { // Setup initial config
   fs.writeFileSync(configPath, '{"theme":"98"}');
 }
-
-const config = new Proxy({}, {
-  get(target, key) {
-    target = JSON.parse(fs.readFileSync(configPath));
-    return target[key];
-  },
-  set(target, key, value) {
-    target = JSON.parse(fs.readFileSync(configPath));
-    target[key] = value;
-    fs.writeFileSync(configPath, JSON.stringify(target));
-    return true;
-  }
-});
 
 function createWindow () {
   // Create the browser window.
@@ -72,7 +70,18 @@ function createWindow () {
     resizable: true,
     show: false
   });
-  
+
+  // Remove the menu bar
+  mainWindow.removeMenu();
+
+  if (args.metrics) {
+    const borderSize = (mainWindow.getSize()[0] - mainWindow.getContentSize()[0]) / 2;
+    const titleHeight = mainWindow.getSize()[1] - mainWindow.getContentSize()[1] - borderSize * 2 - 1;
+    console.log(borderSize, titleHeight);
+    app.quit();
+    return;
+  }
+
   if (args.cors === "*") {
     showErrorMsg(mainWindow, "WARNING: You're running ModernActiveDesktop System Plugin with a wildcard CORS option. This is considered insecure, as any webpage can access your system with this plugin. Please only use this option for testing.", "warning");
   }
@@ -83,9 +92,6 @@ function createWindow () {
   // and load the index.html of the app.
   mainWindow.loadURL(path.join(__dirname, 'index.html') + '?configPath=' + configPath);
 
-  // Remove the menu bar
-  mainWindow.removeMenu();
-  
   // Handle ChannelViewer creation
   mainWindow.webContents.on('did-create-window', processNewWindow);
 
@@ -120,12 +126,11 @@ function createWindow () {
   });
 
   systemPreferences.on('accent-color-changed', () => {
-    generateCssScheme();
     mainWindow.webContents.reload();
   });
 
   systemPreferences.on('color-changed', () => {
-    generateCssScheme();
+    getMetrics();
     mainWindow.webContents.reload();
   });
 }
@@ -146,6 +151,7 @@ if (!gotTheLock) {
   // Some APIs can only be used after this event occurs.
   app.on('ready', function () {
     createWindow();
+    if (args.metrics) return;
 
     tray = new Tray(path.join(__dirname, 'icon.ico'));
     const contextMenu = Menu.buildFromTemplate([
@@ -158,7 +164,7 @@ if (!gotTheLock) {
       // On macOS it's common to re-create a window in the app when the
       // dock icon is clicked and there are no other windows open.
       if (BrowserWindow.getAllWindows().length === 0) createWindow();
-    })
+    });
   })
 }
 
@@ -304,14 +310,25 @@ function showErrorMsg(win, msg, type) {
   dialog.showMessageBox(win, options);
 }
 
+function getMetrics() {
+  if (process.platform === 'win32') {
+    // DPI unaware mode is required to get the correct window metrics (as MAD operates in virtual pixels)
+    // Electron / Chromium also operates in virtual pixels, but its pretty inaccurate regarding window sizes
+    process.env.__COMPAT_LAYER = "DPIUNAWARE";
+    const result = execSync(`"${process.execPath}" "${__filename}" --metrics`).toString();
+    process.env.__COMPAT_LAYER = undefined;
+    const [ borderSize, titleHeight ] = result.split(' ').map(Number);
+    console.log({ borderSize, titleHeight });
+    metrics.borderSize = borderSize;
+    metrics.titleHeight = titleHeight;
+  }
+}
+
 function generateCssScheme() {
   const accent = '#' + systemPreferences.getAccentColor();
 
   let schemeStyle = '';
   if (process.platform === 'win32') {
-    const borderSize = (mainWindow.getSize()[0] - mainWindow.getContentSize()[0]) / 2;
-    const titleHeight = mainWindow.getSize()[1] - mainWindow.getContentSize()[1] - borderSize * 2;
-    console.log({ borderSize, titleHeight });
     schemeStyle = 
       `:root {
         --active-border: ${systemPreferences.getColor('active-border')};
@@ -350,8 +367,8 @@ function generateCssScheme() {
         --ui-font: "Segoe UI", "SegoeUI", "Noto Sans", sans-serif;
       }
       .window {
-        --extra-border-size: ${borderSize - 3}px;
-        --extra-title-height: ${titleHeight - 18}px;
+        --extra-border-size: ${metrics.borderSize - 3}px;
+        --extra-title-height: ${metrics.titleHeight - 20}px;
       }`;
   } else {
     schemeStyle = 
@@ -394,7 +411,9 @@ function shadeColor(color, percent) {
   return "#"+RR+GG+BB;
 }
 
-http.createServer(onRequest).listen(args.port || 3031, args.listen || '127.0.0.1');
+if (!args.metrics) {
+  http.createServer(onRequest).listen(args.port || 3031, args.listen || '127.0.0.1');
+}
 
 function onRequest(req, res) {
   console.log('serve: ' + req.url);

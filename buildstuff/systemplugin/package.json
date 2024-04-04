@@ -1,6 +1,6 @@
 {
   "name": "madsysplug",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "description": "ModernActiveDesktop System Plugin",
   "main": "src/main.js",
   "scripts": {
@@ -21,7 +21,7 @@
   "author": "Ingan121",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^29.1.1",
+    "electron": "^29.2.0",
     "electron-builder": "^24.9.1",
     "webpack": ">=5.76.0",
     "webpack-cli": ">=4.6.0"
