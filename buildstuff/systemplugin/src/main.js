@@ -43,10 +43,6 @@ const metrics = {
   titleHeight: 22
 };
 
-if (!args.metrics) {
-  getMetrics();
-}
-
 const configPath = app.getPath('userData') + '/config.json';
 const tempFilePath = app.getPath('temp') + '/madsp-uploaded.dat';
 
@@ -88,7 +84,7 @@ function createWindow () {
   if (args.listen === "0.0.0.0") {
     showErrorMsg(mainWindow, "WARNING: You're running ModernActiveDesktop System Plugin with a listen option to allow any remote access. This is considered insecure, as anyone on your network can access your system with this plugin. NEVER USE THIS OPTION if your device is connected directly to internet (i.e. you aren't using a router.)", "warning");
   }
-  
+
   // and load the index.html of the app.
   mainWindow.loadURL(path.join(__dirname, 'index.html') + '?configPath=' + configPath);
 
@@ -151,7 +147,12 @@ if (!gotTheLock) {
   // Some APIs can only be used after this event occurs.
   app.on('ready', function () {
     createWindow();
-    if (args.metrics) return;
+
+    if (!args.metrics) {
+      getMetrics();
+    } else {
+      return;
+    }
 
     tray = new Tray(path.join(__dirname, 'icon.ico'));
     const contextMenu = Menu.buildFromTemplate([
@@ -312,7 +313,7 @@ function showErrorMsg(win, msg, type) {
 
 function getMetrics() {
   if (process.platform === 'win32') {
-    // DPI unaware mode is required to get the correct window metrics (as MAD operates in virtual pixels)
+    // DPI unaware mode is required to get the correct window metrics in 100% DPI (as MAD operates in virtual pixels)
     // Electron / Chromium also operates in virtual pixels, but its pretty inaccurate regarding window sizes
     process.env.__COMPAT_LAYER = "DPIUNAWARE";
     const result = execSync(`"${process.execPath}" "${__filename}" --metrics`).toString();

@@ -1207,7 +1207,7 @@ async function forceLoad(url) {
         }
     });
     if (loadToken !== loadTokenPrivate) {
-        log("ForceLoad canceled", "log", "ChannelViewer");
+        log(`ForceLoad canceled (token mismatch: ${loadToken}, ${loadTokenPrivate})`, "log", "ChannelViewer");
         return;
     }
 
@@ -1533,7 +1533,6 @@ iframe.addEventListener('load', function () {
 
     if (madRunningMode === 1) {
         if (iframe.contentWindow.location.href === "chrome-error://chromewebdata/") {
-            iframe.contentWindow.location.replace("about:srcdoc");
             if (urlbar.value.startsWith("https://www.google.co") && !urlbar.value.includes("igu=1")) {
                 const queryStart = new URL(urlbar.value).search ? "&" : "?";
                 go(urlbar.value + queryStart + "igu=1", true);

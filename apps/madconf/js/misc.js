@@ -228,20 +228,30 @@ noDisableChkBox.addEventListener('change', function () {
 });
 
 leftIconArea.addEventListener('change', function () {
-    config.leftIcon = (isNaN(this.value) || this.value === '0') ? this.value : this.value + 'px';
+    config.leftIcon = parseMarginInput(this.value);
 });
 
 rightIconArea.addEventListener('change', function () {
-    config.rightIcon = (isNaN(this.value) || this.value === '0') ? this.value : this.value + 'px';
+    config.rightIcon = parseMarginInput(this.value);
 });
 
 topIconArea.addEventListener('change', function () {
-    config.topIcon = (isNaN(this.value) || this.value === '0') ? this.value : this.value + 'px';
+    config.topIcon = parseMarginInput(this.value);
 });
 
 bottomIconArea.addEventListener('change', function () {
-    config.bottomIcon = (isNaN(this.value) || this.value === '0') ? this.value : this.value + 'px';
+    config.bottomIcon = parseMarginInput(this.value);
 });
+
+function parseMarginInput(input) {
+    if (isNaN(input) || input === '0') {
+        return input;
+    } else if (input === '') {
+        return '0';
+    } else {
+        return input + 'px';
+    }
+}
 
 connectTestBtn.addEventListener('click', checkSysplug);
 

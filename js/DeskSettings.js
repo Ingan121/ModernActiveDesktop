@@ -1104,6 +1104,15 @@ function updateIframeScale() {
                 iframe.contentDocument.body.style.zoom = scaleFactor;
                 iframe.contentWindow.dispatchEvent(new Event("resize"));
             }
+            if (deskMovers[i].isFullscreen) {
+                if (deskMovers[i].isFullscreenWithMargins) {
+                    deskMovers[i].windowElement.style.width = window.vWidth - parseInt(localStorage.madesktopChanViewLeftMargin || "75px") - parseInt(localStorage.madesktopChanViewRightMargin || "0") + "px";
+                    deskMovers[i].windowElement.style.height = window.vHeight - parseInt(localStorage.madesktopChanViewTopMargin || "0") - parseInt(localStorage.madesktopChanViewBottomMargin || "48px") + "px";
+                } else {
+                    deskMovers[i].windowElement.style.width = window.vWidth + "px";
+                    deskMovers[i].windowElement.style.height = window.vHeight + "px";
+                }
+            }
         } catch {
             // page did not load yet
             // it works on external webpages thanks to the new WE iframe policy
