@@ -74,9 +74,12 @@ label[for="dimAlbumArtChkBox"] {
 
 #visConfArea {
     width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
 }
 
 #barWidthInput,
+#decSpeedInput,
 #primaryScaleInput,
 #diffScaleInput {
     width: 40px;
@@ -94,11 +97,8 @@ input[type=number]::-webkit-outer-spin-button {
     margin: 0; 
 }
 
-#diffScaleLabel {
-    margin-left: 30px;
-}
-
 #barWidthInput,
+#decSpeedInput,
 #diffScaleInput {
     margin-left: 5px;
 }

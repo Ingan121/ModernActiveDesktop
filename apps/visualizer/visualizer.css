@@ -18,7 +18,8 @@ html, body {
     height: 100%;
     position: relative;
     padding: 1px;
-    box-shadow: var(--button-hilight) -1px -1px inset, var(--button-shadow) 1px 1px inset
+    box-shadow: var(--button-hilight) -1px -1px inset, var(--button-shadow) 1px 1px inset;
+    --main-area-margin: 2px;
 }
 
 #albumArt {
@@ -26,8 +27,8 @@ html, body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    max-width: calc(100% - 2px);
-    max-height: calc(100% - 2px);
+    max-width: calc(100% - var(--main-area-margin));
+    max-height: calc(100% - var(--main-area-margin));
     min-height: 35%;
     object-fit: contain;
     z-index: 0;
@@ -35,8 +36,8 @@ html, body {
 
 canvas {
     position: absolute;
-    width: calc(100% - 2px);
-    height: calc(100% - 2px);
+    width: calc(100% - var(--main-area-margin));
+    height: calc(100% - var(--main-area-margin));
 }
 
 #top {

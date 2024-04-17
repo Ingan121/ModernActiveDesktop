@@ -20,7 +20,9 @@
                 <input id="radCustom" type="radio" name="color" value="custom">
                 <label for="radCustom"><mad-string data-locid="UI_CUSTOM">Custom</mad-string></label><br>
                 <input id="followAlbumArtChkBox" type="checkbox" name="followAlbumArt">
-                <label for="followAlbumArtChkBox"><mad-string data-locid="VISCONF_COLOR_FOLLOW_ALBUM_ART">Follow album art colors if available</mad-string></label>
+                <label for="followAlbumArtChkBox"><mad-string data-locid="VISCONF_COLOR_FOLLOW_ALBUM_ART">Follow album art colors if available</mad-string></label><br>
+                <input id="showClientEdgeChkBox" type="checkbox" name="showClientEdge" checked>
+                <label for="showClientEdgeChkBox"><mad-string data-locid="VISCONF_SHOW_CLIENT_EDGE">Show client edges around the visualization area</mad-string></label>
             </form>
         </fieldset>
         <fieldset>
@@ -67,14 +69,23 @@
         <fieldset>
             <legend><mad-string data-locid="VISCONF_VIS_TITLE">Visualization</mad-string></legend>
             <div id="visConfArea">
-                <input id="fixedBarsChkBox" type="checkbox">
-                <label for="fixedBarsChkBox"><mad-string data-locid="VISCONF_BAR_WIDTH">Fixed bar width:</mad-string></label>
-                <input id="barWidthInput" type="number" name="barWidth" value="6" step="1" placeholder="6" disabled>
-                <br>
-                <span id="primaryScaleLabel"><mad-string data-locid="VISCONF_PRIMARY_SCALE">Primary scale:</mad-string></span>
-                <input id="primaryScaleInput" type="number" name="primaryScale" value="1.0" max="1.0" step="0.01" placeholder="1.0">
-                <span id="diffScaleLabel"><mad-string data-locid="VISCONF_DIFF_SCALE">Difference scale:</mad-string></span>
-                <input id="diffScaleInput" type="number" name="diffScale" value="0.07" max="1.0" step="0.001" placeholder="0.07">
+                <div>
+                    <input id="fixedBarsChkBox" type="checkbox">
+                    <label for="fixedBarsChkBox"><mad-string data-locid="VISCONF_BAR_WIDTH">Fixed bar width:</mad-string></label>
+                    <input id="barWidthInput" type="number" name="barWidth" value="6" step="1" placeholder="6" disabled>
+                </div>
+                <div>
+                    <span id="decSpeedLabel"><mad-string data-locid="VISCONF_DEC_SPEED">Decrement speed:</mad-string></span>
+                    <input id="decSpeedInput" type="number" name="decSpeed" value="3" placeholder="3">
+                </div>
+                <div>
+                    <span id="primaryScaleLabel"><mad-string data-locid="VISCONF_PRIMARY_SCALE">Primary scale:</mad-string></span>
+                    <input id="primaryScaleInput" type="number" name="primaryScale" value="1.0" max="1.0" step="0.01" placeholder="1.0">
+                </div>
+                <div>
+                    <span id="diffScaleLabel"><mad-string data-locid="VISCONF_DIFF_SCALE">Difference scale:</mad-string></span>
+                    <input id="diffScaleInput" type="number" name="diffScale" value="0.07" max="1.0" step="0.001" placeholder="0.07">
+                </div>
             </div>
             <p id="diffScaleInfo">
                 <mad-string data-locid="VISCONF_SCALE_INFO">

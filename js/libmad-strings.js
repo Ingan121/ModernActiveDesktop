@@ -71,7 +71,7 @@
         "MAD_CONF_MENUITEM_CHANGE_URL": "&Change URL",
         "MAD_CONF_MENUITEM_CHANGE_TITLE": "Change &title",
         "MAD_CONF_MENUITEM_NEW_WINDOW": "&New window",
-        "MAD_CONF_MENUITEM_RELOAD_WALLPAPER": "&Reload wallpaper",
+        "MAD_CONF_MENUITEM_RELOAD_WALLPAPER": "&Reload %n",
 
         "MAD_MAIN_MENUITEM_NEW": "&New",
 
@@ -417,7 +417,7 @@
         "VISUALIZER_MENU_OPT": "&Options",
 
         "VISUALIZER_PAUSED_ALERT": "Update has been paused. Click here to resume.",
-        "VISUALIZER_EXTRA_ALERT": "Having problems? Please try the following:<ul><li>1. Make sure 'Audio recording' is enabled in the Wallpaper Engine properties panel.</li><li>2. Try <a href=\"javascript:top.location.reload()\">reloading the wallpaper</a>.</li><li>3. Try restarting Wallpaper Engine.</li></ul>",
+        "VISUALIZER_EXTRA_ALERT": "Having problems? Please try the following:<ul><li>1. Make sure 'Audio recording' is enabled in the Wallpaper Engine properties panel.</li><li>2. Try <a href=\"javascript:top.location.reload()\">reloading %n</a>.</li><li>3. Try restarting Wallpaper Engine.</li></ul>",
 
         "VISUALIZER_INFO_TITLE": "Title",
         "VISUALIZER_INFO_SUBTITLE": "Subtitle",
@@ -454,6 +454,7 @@
         "VISCONF_COLOR_TITLE": "Colors",
         "VISCONF_COLOR_FOLLOW_SCHEME": "Follow color scheme",
         "VISCONF_COLOR_FOLLOW_ALBUM_ART": "Follow album art colors if available",
+        "VISCONF_SHOW_CLIENT_EDGE": "Show borders around the visualization area",
 
         "VISCONF_CUSTOM_COLOR_TITLE": "Custom colors",
         "VISCONF_CUSTOM_COLOR_BG": "Background:",
@@ -471,6 +472,7 @@
 
         "VISCONF_VIS_TITLE": "Visualization",
         "VISCONF_BAR_WIDTH": "Fixed bar width:",
+        "VISCONF_DEC_SPEED": "Decrement speed:",
         "VISCONF_PRIMARY_SCALE": "Primary scale:",
         "VISCONF_DIFF_SCALE": "Difference scale:",
         "VISCONF_SCALE_INFO": "* Adjust the scale values if you think the bars reach the top too fast.<br>* Pre-3.2 difference scale was 0.15.",
@@ -796,7 +798,7 @@
             } else if (fallbackStrings[this.locId]) {
                 this.innerHTML = processString(fallbackStrings[this.locId]);
             } else {
-                throw new Error(`No string found for locId ${this.locId}`);
+                console.error(`No string found for locId ${this.locId}`);
             }
         }
     }

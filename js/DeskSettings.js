@@ -4,6 +4,7 @@
 
 'use strict';
 
+// #region Constants and variables
 let windowContainers = document.getElementsByClassName("windowContainer");
 const windowOutline = document.getElementById("windowOutline");
 const bgHtmlContainer = document.getElementById("bgHtmlContainer");
@@ -64,7 +65,9 @@ let msgboxLoopDetector = null;
 let msgboxLoopCount = 0;
 
 let debugLog = false;
+// #endregion
 
+// #region Initialization
 if (parent !== window) {
     // Running MAD inside MAD will cause unexpected behavior
     throw new Error("Refusing to load inside an iframe");
@@ -209,7 +212,9 @@ localStorage.madesktopLastVer = "3.2.1";
 if (localStorage.madesktopItemVisible === "false") {
     windowContainers[0].style.display = "none";
 }
+// #endregion
 
+// #region Event listeners
 // Change the scale on load
 bgHtmlView.addEventListener('load', function () {
     this.contentDocument.body.style.zoom = scaleFactor;
@@ -217,7 +222,7 @@ bgHtmlView.addEventListener('load', function () {
     bgHtmlView.contentDocument.addEventListener("contextmenu", openMainMenu, false);
 });
 
-// Main context menu things (only for browser uses)
+// #region Main context menu things (only for browser use)
 window.addEventListener('contextmenu', openMainMenu, false);
 
 for (const elem of mainMenuItems) {
@@ -275,6 +280,7 @@ function closeMainMenu() {
     openedMenu = null;
     document.removeEventListener("keydown", menuNavigationHandler);
 }
+// #endregion
 
 msgboxBg.addEventListener('click', flashDialog);
 
@@ -400,7 +406,9 @@ function livelyCurrentTrack(data) {
         }
     }
 }
+// #endregion
 
+// #region Functions
 function changeBgType(type) {
     switch(type) {
         case 'image':
@@ -1799,7 +1807,9 @@ function showWelcome() {
     };
     openWindow("apps/welcome/index.html", true, options);
 }
+// #endregion
 
+// #region Final initialization
 document.getElementById("location").textContent = location.href;
 if (runningMode === WE) {
     runningModeLabel.textContent = "Wallpaper Engine";
@@ -1863,3 +1873,4 @@ localStorage.madesktopFailCount = ++localStorage.madesktopFailCount || 1;
 setTimeout(function () {
     delete localStorage.madesktopFailCount;
 }, 10000);
+// #endregion

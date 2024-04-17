@@ -4,6 +4,7 @@
 
 'use strict';
 
+// #region Pre-launch checks
 if (parent === window) {
     alert("This page is not meant to be opened directly. Please open it from ModernActiveDesktop.");
 } else if (!frameElement) {
@@ -27,7 +28,9 @@ if (parent === window) {
     parent.visDeskMover = madDeskMover;
     madDeskMover.isVisualizer = true;
 }
+// #endregion
 
+// #region Constants and variables
 const log = top.log;
 
 const schemeElement = document.getElementById("scheme");
@@ -87,7 +90,9 @@ let lastAlbumArt = null;
 let lastMusic = null;
 let schemeBarColor = null;
 let schemeTopColor = null;
+// #endregion
 
+// #region Event listeners
 playIcon.addEventListener('click', () => {
     if (!playIcon.dataset.active) {
         mediaControl('playpause');
@@ -114,6 +119,40 @@ nextIcon.addEventListener('click', () => {
     mediaControl('next');
 });
 
+window.addEventListener('load', updateSchemeColor);
+
+window.addEventListener("message", (event) => {
+    switch (event.data.type) {
+        case "scheme-updated":
+            if (schemeElement.href.startsWith('file:///') &&
+                localStorage.madesktopVisUseSchemeColors &&
+                (!lastAlbumArt || !localStorage.madesktopVisFollowAlbumArt))
+            {
+                location.reload();
+            } else {
+                updateSchemeColor();
+            }
+            break;
+        case "sysplug-option-changed":
+            if (localStorage.sysplugIntegration && isWin10) {
+                viewMenuItems[4].classList.remove('disabled');
+            } else {
+                viewMenuItems[4].classList.add('disabled');
+                if (localStorage.madesktopVisMediaControls) {
+                    delete localStorage.madesktopVisMediaControls;
+                    viewMenuItems[4].classList.remove('checkedItem');
+                    delete statusArea.dataset.controllable;
+                }
+            }
+        case "language-ready":
+            if (lastMusic === null) {
+                document.title = madGetString("VISUALIZER_TITLE");
+            }
+    }
+});
+// #endregion
+
+// #region Initialization
 if (localStorage.madesktopVisMenuAutohide) {
     viewMenuItems[0].classList.add('checkedItem');
     mainArea.style.marginTop = '0';
@@ -162,7 +201,9 @@ if (localStorage.madesktopVisOnlyAlbumArt) {
     visMenuItems[0].classList.add('activeStyle');
     visMenuItems[1].classList.remove('activeStyle');
 }
+// #endregion
 
+// #region Menu bar
 madDeskMover.menu = new MadMenu(menuBar, ['vis', 'view', 'opt', 'help']);
 
 visMenuItems[0].addEventListener('click', () => { // Album Art button
@@ -174,8 +215,8 @@ visMenuItems[0].addEventListener('click', () => { // Album Art button
     localStorage.madesktopVisOnlyAlbumArt = true;
     visMenuItems[0].classList.add('activeStyle');
     visMenuItems[1].classList.remove('activeStyle');
-    visBar.style.display = 'none';
-    visTop.style.display = 'none';
+    visBar.style.opacity = '0';
+    visTop.style.opacity = '0';
     albumArt.style.opacity = '1';
     localStorage.madesktopVisShowAlbumArt = true;
     delete localStorage.madesktopVisDimAlbumArt;
@@ -186,8 +227,8 @@ visMenuItems[1].addEventListener('click', () => { // WMP Bars button
     delete localStorage.madesktopVisOnlyAlbumArt;
     visMenuItems[0].classList.remove('activeStyle');
     visMenuItems[1].classList.add('activeStyle');
-    visBar.style.display = 'block';
-    visTop.style.display = 'block';
+    visBar.style.opacity = '1';
+    visTop.style.opacity = '1';
     configChanged();
 });
 
@@ -222,7 +263,6 @@ viewMenuItems[1].addEventListener('click', () => { // Fullscreen button
     }
     updateSize();
 });
-
 
 viewMenuItems[2].addEventListener('click', () => { // Information button
     if (!mediaIntegrationAvailable) {
@@ -362,16 +402,15 @@ optMenuItems[0].addEventListener('click', () => { // Configure Visualization but
         left, top, width: '400px', height: '451px',
         aot: true, unresizable: true, noIcon: true
     }
-    const configWindow = madOpenWindow('apps/visualizer/config.html', true, options);
-    configWindow.windowElement.addEventListener('load', () => {
-        configWindow.windowElement.contentWindow.targetDeskMover = madDeskMover;
-    });
+    madOpenWindow('apps/visualizer/config.html', true, options);
 });
 
 helpMenuItems[0].addEventListener('click', () => { // About Visualizer button
     madOpenConfig('about');
 });
+// #endregion
 
+// #region Functions
 function mediaControl(action) {
     if (!localStorage.sysplugIntegration || !localStorage.madesktopVisMediaControls) {
         return;
@@ -568,6 +607,14 @@ function wallpaperMediaThumbnailListener(event) {
 }
 
 function configChanged() {
+    if (localStorage.madesktopVisNoClientEdge) {
+        mainArea.style.boxShadow = 'none';
+        mainArea.style.setProperty('--main-area-margin', '0px');
+    } else {
+        mainArea.style.boxShadow = '';
+        mainArea.style.setProperty('--main-area-margin', '2px');
+    }
+
     if (localStorage.madesktopVisShowAlbumArt && lastAlbumArt) {
         albumArt.src = lastAlbumArt.thumbnail;
     } else {
@@ -590,38 +637,6 @@ function configChanged() {
     updateVisConfig();
 }
 
-window.addEventListener('load', updateSchemeColor);
-
-window.addEventListener("message", (event) => {
-    switch (event.data.type) {
-        case "scheme-updated":
-            if (schemeElement.href.startsWith('file:///') &&
-                localStorage.madesktopVisUseSchemeColors &&
-                (!lastAlbumArt || !localStorage.madesktopVisFollowAlbumArt))
-            {
-                location.reload();
-            } else {
-                updateSchemeColor();
-            }
-            break;
-        case "sysplug-option-changed":
-            if (localStorage.sysplugIntegration && isWin10) {
-                viewMenuItems[4].classList.remove('disabled');
-            } else {
-                viewMenuItems[4].classList.add('disabled');
-                if (localStorage.madesktopVisMediaControls) {
-                    delete localStorage.madesktopVisMediaControls;
-                    viewMenuItems[4].classList.remove('checkedItem');
-                    delete statusArea.dataset.controllable;
-                }
-            }
-        case "language-ready":
-            if (lastMusic === null) {
-                document.title = madGetString("VISUALIZER_TITLE");
-            }
-    }
-});
-
 function updateSchemeColor() {
     schemeBarColor = getComputedStyle(document.documentElement).getPropertyValue('--hilight');
     schemeTopColor = getComputedStyle(document.documentElement).getPropertyValue('--button-text');
@@ -643,3 +658,4 @@ function setupMediaListeners() {
         window.wallpaperRegisterMediaThumbnailListener(wallpaperMediaThumbnailListener);
     }
 }
+// #endregion

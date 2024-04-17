@@ -10,6 +10,7 @@ const defaultRadBtn = document.getElementById('radDefault');
 const schemeRadBtn = document.getElementById('radScheme');
 const customRadBtn = document.getElementById('radCustom');
 const followAlbumArtChkBox = document.getElementById('followAlbumArtChkBox');
+const showClientEdgeChkBox = document.getElementById('showClientEdgeChkBox');
 
 const customColors = document.getElementById("customColors");
 const colorPickers = document.querySelectorAll(".colorPicker");
@@ -31,6 +32,8 @@ const combineRadBtn = document.getElementById("radCombine");
 
 const fixedBarsChkBox = document.getElementById("fixedBarsChkBox");
 const barWidthInput = document.getElementById("barWidthInput");
+const decSpeedLabel = document.getElementById("decSpeedLabel");
+const decSpeedInput = document.getElementById("decSpeedInput");
 
 const primaryScaleLabel = document.getElementById("primaryScaleLabel");
 const primaryScaleInput = document.getElementById("primaryScaleInput");
@@ -138,6 +141,12 @@ window.apply = function () {
     } else {
         delete localStorage.madesktopVisFollowAlbumArt;
     }
+    if (showClientEdgeChkBox.checked) {
+        delete localStorage.madesktopVisNoClientEdge;
+    } else {
+        localStorage.madesktopVisNoClientEdge = true;
+    }
+
     if (albumArtChkBox.checked) {
         localStorage.madesktopVisShowAlbumArt = true;
     } else {
@@ -163,9 +172,10 @@ window.apply = function () {
         delete localStorage.madesktopVisBarWidth;
     }
 
+    localStorage.madesktopVisDecSpeed = decSpeedInput.value;
     localStorage.madesktopVisPrimaryScale = primaryScaleInput.value;
     localStorage.madesktopVisDiffScale = diffScaleInput.value;
-    window.targetDeskMover.windowElement.contentWindow.configChanged();
+    top.visDeskMover.windowElement.contentWindow.configChanged();
 }
 
 okBtn.addEventListener("click", () => {
@@ -197,12 +207,13 @@ if (localStorage.madesktopVisUseSchemeColors) {
 if (localStorage.madesktopVisFollowAlbumArt) {
     followAlbumArtChkBox.checked = true;
 }
-
+if (localStorage.madesktopVisNoClientEdge) {
+    showClientEdgeChkBox.checked = false;
+}
 if (localStorage.madesktopVisShowAlbumArt) {
     albumArtChkBox.checked = true;
     dimAlbumArtChkBox.disabled = false;
 }
-
 if (localStorage.madesktopVisDimAlbumArt) {
     dimAlbumArtChkBox.checked = true;
 }
@@ -226,11 +237,12 @@ if (localStorage.madesktopVisBarWidth) {
     barWidthInput.value = localStorage.madesktopVisBarWidth;
     barWidthInput.disabled = false;
 }
-
+if (localStorage.madesktopVisDecSpeed) {
+    decSpeedInput.value = localStorage.madesktopVisDecSpeed;
+}
 if (localStorage.madesktopVisPrimaryScale) {
     primaryScaleInput.value = localStorage.madesktopVisPrimaryScale;
 }
-
 if (localStorage.madesktopVisDiffScale) {
     diffScaleInput.value = localStorage.madesktopVisDiffScale;
 }
@@ -247,6 +259,8 @@ if (localStorage.madesktopVisOnlyAlbumArt) {
     combineRadBtn.disabled = true;
     fixedBarsChkBox.disabled = true;
     barWidthInput.disabled = true;
+    decSpeedLabel.classList.add("disabled");
+    decSpeedInput.disabled = true;
     primaryScaleLabel.classList.add("disabled");
     primaryScaleInput.disabled = true;
     diffScaleLabel.classList.add("disabled");

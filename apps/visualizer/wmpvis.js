@@ -20,6 +20,7 @@ let visConfig = {
     desktopVisOnlyAlbumArt: localStorage.madesktopVisOnlyAlbumArt,
     barWidth: parseInt(localStorage.madesktopVisBarWidth),
     channelSeparation: parseInt(localStorage.madesktopVisChannelSeparation) || 2, // 1 = no processing (pre-3.2 behavior), 2 = reverse right, 3 = combine
+    decSpeed: parseFloat(localStorage.madesktopVisDecSpeed || 3),
     primaryScale: parseFloat(localStorage.madesktopVisPrimaryScale || 1.0),
     diffScale: parseFloat(localStorage.madesktopVisDiffScale || 0.07) // idk what to call this lol, pre-3.2 value was 0.15
 };
@@ -46,7 +47,7 @@ function wallpaperAudioListener(audioArray) {
 
     // Optimization
     if (idle) {
-        if (audioArray[Math.round(Math.random() * arraySize)] <= 0.0001) {
+        if (audioArray[Math.round(Math.random() * (arraySize - 1))] <= 0.0001) {
             return;
         }
         idle = false;
@@ -93,13 +94,16 @@ function wallpaperAudioListener(audioArray) {
     }
     let allZero = true;
     for (var i = 0; i < audioArray.length; ++i) {
+        if (i === 64 && visConfig.channelSeparation === 3) {
+            break;
+        }
         // Create an audio bar with its hight depending on the audio volume level of the current frequency
         const height = Math.round(visBar.height * Math.min(audioArray[i], 1) * visConfig.primaryScale);
         if (height > lastBar[i]) {
             lastBar[i] = height;
             visBarCtx.fillRect(leftMargin + barWidth * i, visBar.height - height, barWidth - gap, height);
         } else {
-            lastBar[i] -= 3;
+            lastBar[i] -= visConfig.decSpeed;
             const diff = audioArray[i] - lastAud[i];
             if (diff > 0.1) {
                 lastBar[i] += Math.round(visBar.height * diff * visConfig.diffScale);
@@ -118,18 +122,18 @@ function wallpaperAudioListener(audioArray) {
         } else if (lastTop[i] < visTop.height - 1) {
             visTopCtx.clearRect(leftMargin + barWidth * i, 0, barWidth - gap, visTop.height);
             if (topSpeed[i] > 38) {
-                lastTop[i] += 5;
+                lastTop[i] += 5 * Math.round(visConfig.decSpeed / 3);
             } else if (topSpeed[i] > 26) {
-                lastTop[i] += 4;
+                lastTop[i] += 4 * Math.round(visConfig.decSpeed / 3);
                 topSpeed[i] += 1;
             } else if (topSpeed[i] > 18) {
-                lastTop[i] += 3;
+                lastTop[i] += 3 * Math.round(visConfig.decSpeed / 3);
                 topSpeed[i] += 1;
             } else if (topSpeed[i] > 10) {
-                lastTop[i] += 2;
+                lastTop[i] += 2 * Math.round(visConfig.decSpeed / 3);
                 topSpeed[i] += 1;
             } else {
-                topSpeed[i] += 1;
+                topSpeed[i] += 1 + Math.round(visConfig.decSpeed / 3);
             }
             visTopCtx.fillRect(leftMargin + barWidth * i, lastTop[i], barWidth - gap, 1);
             allZero = false;
@@ -160,6 +164,7 @@ function updateVisConfig() {
         desktopVisOnlyAlbumArt: localStorage.madesktopVisOnlyAlbumArt,
         barWidth: parseInt(localStorage.madesktopVisBarWidth),
         channelSeparation: parseInt(localStorage.madesktopVisChannelSeparation) || 2,
+        decSpeed: parseFloat(localStorage.madesktopVisDecSpeed || 3),
         primaryScale: parseFloat(localStorage.madesktopVisPrimaryScale || 1.0),
         diffScale: parseFloat(localStorage.madesktopVisDiffScale || 0.07)
     };

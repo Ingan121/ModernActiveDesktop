@@ -11,6 +11,7 @@ class MadMenu {
         this.submenus = submenus;
         this.openedMenu = null;
         this.mouseOverMenu = false;
+        this.mouseOverSubmenu = false;
         this.handlingKeyEvent = false;
         this.boundMenuNavigationHandler = this.menuNavigationHandler.bind(this);
         this.submenuOpenTimer = null;
@@ -41,19 +42,25 @@ class MadMenu {
                             this.openMenu(elem.dataset.submenu);
                         }, 300);
                     } else if (this.menuHierarchy[menuName].length > 0) {
-                        this.delayedCloseMenu(this.menuHierarchy[menuName][0], true);
+                        this.delayedCloseMenu(this.menuHierarchy[menuName][0]);
                     }
                 });
                 elem.addEventListener('pointerleave', () => {
-                    delete elem.dataset.active;
-                    clearTimeout(this.submenuOpenTimer);
-                    if (elem.dataset.submenu) {
-                        this.delayedCloseMenu(elem.dataset.submenu, true);
+                    if (!this.mouseOverSubmenu) {
+                        delete elem.dataset.active;
+                        clearTimeout(this.submenuOpenTimer);
+                        if (elem.dataset.submenu) {
+                            this.delayedCloseMenu(elem.dataset.submenu);
+                        }
                     }
                 });
                 elem.addEventListener('click', () => {
                     if (elem.dataset.submenu) {
-                        this.openMenu(elem.dataset.submenu);
+                        if (this.openedMenu.id !== elem.dataset.submenu + 'MenuBg') {
+                            this.openMenu(elem.dataset.submenu);
+                        } else {
+                            document.getElementById(elem.dataset.submenu + 'MenuBg').focus();
+                        }
                     } else if (!elem.dataset.noClose) {
                         this.closeMenu(menuName);
                     }
@@ -115,7 +122,7 @@ class MadMenu {
                 });
                 elem.addEventListener('click', () => {
                     this.shouldNotCloseSubmenu = false;
-                    this.closeMenu(submenu, true);
+                    this.closeMenu(submenu);
                     this.closeMenu(menuBg.dataset.submenuOf);
                     delete this.menuBar.dataset.active;
                 });
@@ -123,6 +130,7 @@ class MadMenu {
 
             menuBg.addEventListener('pointerover', () => {
                 this.mouseOverMenu = true;
+                this.mouseOverSubmenu = true;
                 this.shouldNotCloseSubmenu = true;
                 clearTimeout(this.submenuCloseTimer);
                 parentMenuItem.dataset.active = true;
@@ -130,6 +138,7 @@ class MadMenu {
 
             menuBg.addEventListener('pointerleave', () => {
                 this.mouseOverMenu = false;
+                this.mouseOverSubmenu = false;
                 this.shouldNotCloseSubmenu = false;
             });
 
@@ -139,8 +148,13 @@ class MadMenu {
                 }
                 this.shouldNotCloseSubmenu = false;
                 const standalone = !!menuBg.dataset.openStandalone;
-                this.closeMenu(submenu, true);
+                // Prevent closing the submenu when clicking the same menu item in the parent menu
                 if (event.relatedTarget && event.relatedTarget.id && event.relatedTarget.id === parentMenuBg.id) {
+                    return;
+                }
+                this.closeMenu(submenu);
+                // Prevent closing the parent menu when opening another submenu
+                if (event.relatedTarget && event.relatedTarget.id && event.relatedTarget.dataset.submenuOf === menuBg.dataset.submenuOf) {
                     return;
                 }
                 if (!standalone) {
@@ -185,6 +199,14 @@ class MadMenu {
             menuBg.dataset.openStandalone = true;
         } else {
             if (isSubmenu) {
+                // Close other submenus of the same parent menu
+                if (this.menuHierarchy[menuBg.dataset.submenuOf].length > 1) {
+                    for (const submenu of this.menuHierarchy[menuBg.dataset.submenuOf]) {
+                        if (submenu !== menuName) {
+                            this.closeMenu(submenu);
+                        }
+                    }
+                }
                 parentMenuBg = document.getElementById(menuBg.dataset.submenuOf + 'MenuBg');
                 if (parentMenuBg.style.display === 'none') {
                     return;
@@ -260,7 +282,7 @@ class MadMenu {
         this.openedMenu = menuBg;
         document.addEventListener('keydown', this.boundMenuNavigationHandler);
     }
-    
+
     closeMenu(menuName) {
         const menuBg = document.getElementById(menuName + 'MenuBg');
         const standalone = !!menuBg.dataset.openStandalone;
@@ -307,16 +329,13 @@ class MadMenu {
             this.openedMenu = null;
             document.removeEventListener('keydown', this.boundMenuNavigationHandler);
         }
-        //console.log(menuName + ': ' + new Error().stack);
+        console.log(menuName + ': ' + new Error().stack);
     }
 
-    delayedCloseMenu(menuName, isSubmenu = false, delay) {
-        if (typeof delay !== "number") {
-            delay = 300;
-        }
+    delayedCloseMenu(menuName) {
         this.submenuCloseTimer = setTimeout(() => {
-            this.closeMenu(menuName, isSubmenu);
-        }, delay);
+            this.closeMenu(menuName);
+        }, 300);
     }
 
     menuNavigationHandler(event) {
@@ -395,7 +414,7 @@ class MadMenu {
                 let nextMenu;
                 if (this.openedMenu.dataset.submenuOf) {
                     nextMenu = this.menuOrder[(this.menuOrder.indexOf(this.openedMenu.dataset.submenuOf) + 1) % this.menuOrder.length];
-                    this.closeMenu(this.openedMenu.id.slice(0, -6), true);
+                    this.closeMenu(this.openedMenu.id.slice(0, -6));
                 } else {
                     nextMenu = this.menuOrder[(this.menuOrder.indexOf(this.openedMenu.id.slice(0, -6)) + 1) % this.menuOrder.length];
                     this.closeMenu(this.openedMenu.id.slice(0, -6));
@@ -461,3 +480,4 @@ class MadMenu {
         return height;
     }
 }
+window.MadMenu = MadMenu;
