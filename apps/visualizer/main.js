@@ -399,7 +399,7 @@ optMenuItems[0].addEventListener('click', () => { // Configure Visualization but
     const left = parseInt(madDeskMover.config.xPos) + 25 + 'px';
     const top = parseInt(madDeskMover.config.yPos) + 50 + 'px';
     const options = {
-        left, top, width: '400px', height: '451px',
+        left, top, width: '400px', height: '467px',
         aot: true, unresizable: true, noIcon: true
     }
     madOpenWindow('apps/visualizer/config.html', true, options);
