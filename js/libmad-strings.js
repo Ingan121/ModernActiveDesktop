@@ -67,10 +67,10 @@
         "MAD_CONF_MENUITEM_WND": "&Window",
         "MAD_CONF_MENUITEM_SCALE": "&Scale contents",
         "MAD_CONF_MENUITEM_AOT": "A&lways on top",
-        "MAD_CONF_MENUITEM_RESIZABLE": "Re&sizable",
+        "MAD_CONF_MENUITEM_RESIZABLE": "Res&izable",
         "MAD_CONF_MENUITEM_CHANGE_URL": "&Change URL",
         "MAD_CONF_MENUITEM_CHANGE_TITLE": "Change &title",
-        "MAD_CONF_MENUITEM_NEW_WINDOW": "&New window",
+        "MAD_CONF_MENUITEM_NEW_WINDOW": "N&ew window",
         "MAD_CONF_MENUITEM_RELOAD_WALLPAPER": "&Reload %n",
 
         "MAD_MAIN_MENUITEM_NEW": "&New",
@@ -400,8 +400,8 @@
         "INETCPL_CHKBOX_FAVICON": "Show &favicon in the address bar",
         "INETCPL_CHKBOX_SOUND": "Play system &sounds",
         "INETCPL_CHKBOX_JS": "Enable &JavaScript",
-        "INETCPL_CHKBOX_CHAN_FULLSCREEN": "Launch Channels in &full screen window",
-        "INETCPL_CHKBOX_INJECT_CSS": "Enable &classic styling",
+        "INETCPL_CHKBOX_CHAN_FULLSCREEN": "Launch Channels in f&ull screen window",
+        "INETCPL_CHKBOX_INJECT_CSS": "Enable c&lassic styling",
 
         "INETCPL_CORS_PROXY_TITLE": "CORS proxy",
         "INETCPL_CORS_PROXY_DESC": "You can change which proxy to use for fetching resources.",

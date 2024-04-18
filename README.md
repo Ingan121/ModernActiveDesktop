@@ -130,8 +130,9 @@
     * Fixed right channel being visible when channel separation is set to 3 and fixed bar width is enabled
     * Fixed visualization not showing right after switching from Album Art to WMP Bars
     * Fixed erroneously getting out of idle power-saving state on random occasions
+* Added access keys for some elements with an underline
 
-(2024/4/18)
+(2024/4/19)
 
 ### Previous changelog
 Please see [here](docs/Updated.md) for the previous changes

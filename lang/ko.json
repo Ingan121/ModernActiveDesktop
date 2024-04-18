@@ -23,8 +23,7 @@
     "UI_MENU_EDIT": "편집(&E)",
     "UI_MENU_VIEW": "보기(&V)",
     "UI_MENU_HELP": "도움말(&H)",
-    "UI_MENUITEM_NEW_WINDOW": "새 창(&N)",
-    "UI_MENUITEM_PROPERTIES": "등록 정보(&R)",
+    "UI_MENUITEM_PROPERTIES": "등록 정보(&P)",
     "UI_MENUITEM_FULL_SCREEN": "전체 화면(&F)",
 
     "UI_MSG_SYSPLUG_REQUIRED": "이 기능은 시스템 플러그인 연동이 필요합니다.",
@@ -35,7 +34,7 @@
     "UI_PROMPT_ENTER_VALUE_RESETTABLE": "값 입력 (빈칸으로 두면 초기화)",
 
 
-    "MAD_WINDOW_MENUITEM_CONFIGURE": "구성(&C)",
+    "MAD_WINDOW_MENUITEM_CONFIGURE": "구성(&O)",
     "MAD_WINDOW_MENUITEM_DEBUG": "디버그(&D)",
     "MAD_WINDOW_MENUITEM_RESET": "초기화(&E)",
     "MAD_WINDOW_MENUITEM_RELOAD": "다시 로드(&R)",
@@ -45,10 +44,10 @@
     "MAD_CONF_MENUITEM_WND": "창(&W)",
     "MAD_CONF_MENUITEM_SCALE": "창 내용에 배율 적용(&S)",
     "MAD_CONF_MENUITEM_AOT": "항상 위(&A)",
-    "MAD_CONF_MENUITEM_RESIZABLE": "크기 조정 가능(&S)",
+    "MAD_CONF_MENUITEM_RESIZABLE": "크기 조정 가능(&I)",
     "MAD_CONF_MENUITEM_CHANGE_URL": "URL 변경(&C)",
     "MAD_CONF_MENUITEM_CHANGE_TITLE": "제목 변경(&T)",
-    "MAD_CONF_MENUITEM_NEW_WINDOW": "새 창(&N)",
+    "MAD_CONF_MENUITEM_NEW_WINDOW": "새 창(&E)",
     "MAD_CONF_MENUITEM_RELOAD_WALLPAPER": "%n 다시 로드(&R)",
 
     "MAD_MAIN_MENUITEM_NEW": "새 창(&N)",
@@ -342,8 +341,8 @@
     "INETCPL_CHKBOX_FAVICON": "주소 표시줄에 웹 사이트 아이콘 표시(&F)",
     "INETCPL_CHKBOX_SOUND": "시스템 사운드 재생(&S)",
     "INETCPL_CHKBOX_JS": "JavaScript 활성화(&J)",
-    "INETCPL_CHKBOX_CHAN_FULLSCREEN": "채널을 전체 화면으로 열기(&C)",
-    "INETCPL_CHKBOX_INJECT_CSS": "고전 스타일 적용(&C)",
+    "INETCPL_CHKBOX_CHAN_FULLSCREEN": "채널을 전체 화면으로 열기(&U)",
+    "INETCPL_CHKBOX_INJECT_CSS": "고전 스타일 적용(&L)",
 
     "INETCPL_CORS_PROXY_TITLE": "CORS 프록시",
     "INETCPL_CORS_PROXY_DESC": "리소스를 가져오는 데 사용할 프록시를 변경할 수 있습니다.",

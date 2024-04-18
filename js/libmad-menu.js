@@ -12,6 +12,7 @@ class MadMenu {
         this.openedMenu = null;
         this.mouseOverMenu = false;
         this.mouseOverSubmenu = false;
+        this.handlingPointerEvent = false;
         this.handlingKeyEvent = false;
         this.boundMenuNavigationHandler = this.menuNavigationHandler.bind(this);
         this.submenuOpenTimer = null;
@@ -68,6 +69,7 @@ class MadMenu {
             }
 
             menuBtn.addEventListener('pointerdown', (event) => {
+                this.handlingPointerEvent = true;
                 if (menuBtn.dataset.active) {
                     this.mouseOverMenu = false;
                     this.closeMenu(menuName);
@@ -105,6 +107,17 @@ class MadMenu {
 
             menuBtn.addEventListener('pointerleave', () => {
                 this.mouseOverMenu = false;
+            });
+
+            // AccessKey handling
+            menuBtn.accessKey = menuBtn.querySelector('u').textContent.toLowerCase();
+            menuBtn.addEventListener('click', () => {
+                // Limit the event to non-pointer events (accessKey)
+                // Pointer events are handled by the pointerdown event listener
+                if (!this.handlingPointerEvent && !menuBtn.dataset.active) {
+                    this.openMenu(menuName);
+                }
+                this.handlingPointerEvent = false;
             });
         }
 
