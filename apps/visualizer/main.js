@@ -635,6 +635,7 @@ function configChanged() {
         albumArt.style.opacity = '1';
     }
     updateVisConfig();
+    updateSize();
 }
 
 function updateSchemeColor() {
