@@ -62,7 +62,7 @@
 * Visualizer improvements
     * Added an option to hide the borders around the visualization area
     * Added an option to adjust the decrement speed
-    * Fixed right channel being visible when channel separation is set to 3 and fixed bar width is enabled
+    * Fixed right channel being visible when channel separation is set to 'Combine left and right channels' and fixed bar width is enabled
     * Fixed visualization not showing right after switching from Album Art to WMP Bars
     * Fixed erroneously getting out of idle power-saving state on random occasions
 * Added access keys for some elements with an underline

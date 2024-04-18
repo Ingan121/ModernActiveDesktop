@@ -4,6 +4,25 @@
 	"file" : "index.html",
 	"general" : 
 	{
+		"localization" : 
+		{
+			"en-us" : 
+			{
+				"ui_additem" : "Open a new window",
+				"ui_bgcolor" : "Background color",
+				"ui_bgimg" : "BG image",
+				"ui_bgvideo" : "BG video",
+				"ui_openproperties" : "Show more options"
+			},
+			"ko-kr" : 
+			{
+				"ui_additem" : "새 창 열기",
+				"ui_bgcolor" : "배경 색상",
+				"ui_bgimg" : "배경 이미지",
+				"ui_bgvideo" : "배경 비디오",
+				"ui_openproperties" : "더 많은 옵션 표시"
+			}
+		},
 		"properties" : 
 		{
 			"additem" : 
@@ -59,25 +78,6 @@
 				"value" : "0 0.5019607843137255 0.5019607843137255"
 			}
 		},
-		"localization":
-		{
-			"en-us":
-			{
-				"ui_additem": "Open a new window",
-				"ui_bgcolor": "Background color",
-				"ui_bgimg": "BG image",
-				"ui_bgvideo": "BG video",
-				"ui_openproperties": "Show more options"
-			},
-			"ko-kr":
-			{
-				"ui_additem": "새 창 열기",
-				"ui_bgcolor": "배경 색상",
-				"ui_bgimg": "배경 이미지",
-				"ui_bgvideo": "배경 비디오",
-				"ui_openproperties": "더 많은 옵션 표시"
-			}
-		},
 		"supportsaudioprocessing" : true
 	},
 	"preview" : "preview.gif",
@@ -86,7 +86,7 @@
 	"tags" : [ "Retro" ],
 	"title" : "Windows 98 Desktop Experience",
 	"type" : "Web",
-	"version" : 18,
+	"version" : 19,
 	"visibility" : "public",
 	"workshopid" : "2278898637",
 	"workshopurl" : "steam://url/CommunityFilePage/2278898637"

@@ -707,7 +707,6 @@
                 window.madLang = lang;
                 document.documentElement.lang = lang;
                 readyAll();
-                updateTitle();
             }
         });
     }
