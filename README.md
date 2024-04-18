@@ -109,6 +109,30 @@
 * Moving the mouse over the menu while playing the animation effect will cancel the animation
 * Updated dependencies (Electron, JSPaint)
 
+## Hotfixes
+* Corrected the version string
+* Fix the XP theme looking broken in some places
+
+## 3.2.1
+* Fixed several bugs
+    * Placeholder message being shown instead of a proper error message when trying to enable media integration features without having it enabled in Wallpaper Engine settings
+    * Effect options not saving well when changing the appearance options
+    * Short dropdown lists showing scroll bars when the display scaling is set to higher than 100%
+    * Bottom-right resize area of some pages not disappearing when resetting the window or navigating to another page
+* Improved the system window metrics retrieval to get more accurate metrics when the system DPI is higher than 100%
+* Improved the fullscreen window handling
+* Improved menu behavior regarding submenus
+* ChannelViewer: Fixed the link navigation not working well on certain pages
+* Empty margin input fields will now be treated as 0
+* Visualizer improvements
+    * Added an option to hide the borders around the visualization area
+    * Added an option to adjust the decrement speed
+    * Fixed right channel being visible when channel separation is set to 3 and fixed bar width is enabled
+    * Fixed visualization not showing right after switching from Album Art to WMP Bars
+    * Fixed erroneously getting out of idle power-saving state on random occasions
+
+(2024/4/18)
+
 ### Previous changelog
 Please see [here](docs/Updated.md) for the previous changes
 

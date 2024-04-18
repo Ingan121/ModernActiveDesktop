@@ -94,7 +94,12 @@ class MadMenu {
             menuBtn.addEventListener('pointerover', () => {
                 if (this.menuBar.dataset.active && !this.handlingKeyEvent) {
                     this.mouseOverMenu = true;
-                    this.openMenu(menuName);
+                    // openedMenu can be null when the cursor is rapidly moving over the menu buttons
+                    if (!this.openedMenu || (this.openedMenu.id !== menuName + 'MenuBg' &&
+                        !this.menuHierarchy[menuName].includes(this.openedMenu.id.slice(0, -6))))
+                    {
+                        this.openMenu(menuName);
+                    }
                 }
             });
 
@@ -214,6 +219,12 @@ class MadMenu {
                 let parentMenuItemIndex = Array.from(parentMenuBg.querySelectorAll('.contextMenuItem')).findIndex((elem) => elem.dataset.submenu === menuName);
                 parentMenuItem = parentMenuBg.querySelectorAll('.contextMenuItem')[parentMenuItemIndex];
             } else {
+                // Make sure other menus are closed
+                for (const menu of this.menuOrder) {
+                    if (menu !== menuName && document.getElementById(menu + 'MenuBg').style.display === 'block') {
+                        this.closeMenu(menu);
+                    }
+                }
                 menuBtn = document.getElementById(menuName + 'MenuBtn');
             }
             delete menuBg.dataset.openStandalone;
@@ -329,7 +340,7 @@ class MadMenu {
             this.openedMenu = null;
             document.removeEventListener('keydown', this.boundMenuNavigationHandler);
         }
-        console.log(menuName + ': ' + new Error().stack);
+        //console.log(menuName + ': ' + new Error().stack);
     }
 
     delayedCloseMenu(menuName) {

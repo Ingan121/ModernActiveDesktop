@@ -1505,6 +1505,7 @@
                     // required for some cases like an invalid URL being entered
                     this.windowElement.contentWindow.document.write();
                 }
+                this.setResizeArea(false);
                 this.firstLoadSuccess = false;
                 this.windowElement.src = url;
                 this.config.src = url;
