@@ -720,3 +720,8 @@ img[src="images/info-32x32-8bpp.png"] {
 img[src="images/question-32x32-8bpp.png"] {
     content: url("../images/xp_question.png");
 }
+
+body::after { /* preload images */
+    position: absolute; width: 0; height: 0; overflow: hidden; z-index: -1; 
+    content: url('../images/xp_error.png') url('../images/xp_info.png') url('../images/xp_question.png') url('../images/xp_warning.png');
+}

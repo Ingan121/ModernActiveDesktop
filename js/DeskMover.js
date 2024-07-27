@@ -1510,7 +1510,7 @@
                 this.windowElement.src = url;
                 this.config.src = url;
 
-                if (!url.startsWith("apps/visualizer/")) {
+                if (this.isVisualizer && !url.startsWith("apps/visualizer/")) {
                     this.#clearConfig(true);
                     this.isVisualizer = false;
                     window.visDeskMover = null;

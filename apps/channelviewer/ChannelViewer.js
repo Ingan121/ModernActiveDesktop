@@ -741,7 +741,7 @@ function hookIframeSize(iframe) {
         // Will fail if the page doesn't have a title element
     }
 
-    iframe.contentDocument.addEventListener('pointerdown', ensuerBaseUrl);
+    iframe.contentDocument.addEventListener('pointerdown', ensureBaseUrl);
 
     // Do this on pointerup instead of click, as click doesn't work with Google Search links
     // Probably because it uses something like event.stopPropagation()?
@@ -1299,7 +1299,7 @@ async function fetchStyle() {
 }
 
 // Some single page sites (e.g. GitHub) delete the base tag on navigation
-function ensuerBaseUrl() {
+function ensureBaseUrl() {
     if (!isCrossOrigin && iframe.contentDocument.head.dataset.forceLoaded) {
         if (iframe.contentDocument.baseURI !== iframe.contentDocument.location.href) {
             const base = iframe.contentDocument.createElement("base");

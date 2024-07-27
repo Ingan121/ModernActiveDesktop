@@ -582,6 +582,11 @@ body[data-cm-shadow] .contextMenuBg {
     image-rendering: pixelated;
 }
 
+body::after { /* preload images */
+    position: absolute; width: 0; height: 0; overflow: hidden; z-index: -1; 
+    content: url('../images/error.png') url('../images/question.png') url('../images/warning.png');
+}
+
 #msgbox-input {
     width: 100%;
     margin-bottom: 10px;

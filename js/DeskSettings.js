@@ -185,14 +185,15 @@ if (localStorage.madesktopLastVer) {
         delete localStorage.madesktopCheckedConfigs;
         openWindow("placeholder.html");
 
-        if (localStorage.madesktopColorScheme === "xpcss4mad") {
+        if (localStorage.madesktopColorScheme === "xpcss4mad" && localStorage.madesktopLastVer.startsWith("3.0")) {
+            // 3.0 didn't have the menu style option but the XP theme had a hardcoded menu style
             localStorage.madesktopMenuStyle = "mbcm";
             changeMenuStyle(localStorage.madesktopMenuStyle);
         }
         startup();
     }
 
-    if (localStorage.madesktopLastVer !== "3.2.1" && localStorage.sysplugIntegration) { // Update from 3.2.0 and below
+    if (localStorage.madesktopLastVer !== "3.2.2" && localStorage.sysplugIntegration) { // Update from 3.2.1 and below
         madAlert("locid:MAD_MSG_SYSPLUG_UPDATED", function () {
             openWindow("SysplugSetupGuide.md", true);
         });
@@ -207,7 +208,7 @@ if (localStorage.madesktopLastVer) {
         localStorage.madesktopChanViewBottomMargin = "0";
     }
 }
-localStorage.madesktopLastVer = "3.2.1";
+localStorage.madesktopLastVer = "3.2.2";
 
 if (localStorage.madesktopItemVisible === "false") {
     windowContainers[0].style.display = "none";
