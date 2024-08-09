@@ -1,6 +1,7 @@
 // main.js for ModernActiveDesktop System Plugin
 // Made by Ingan121
 // Licensed under the MIT License
+// SPDX-License-Identifier: MIT
 
 'use strict';
 
@@ -34,8 +35,10 @@ if (args.help) {
 const gotTheLock = !!args.metrics || app.requestSingleInstanceLock();
 let tray = null;
 let mainWindow = null;
+let inputPanel = null;
 let cvNumber = 0;
 let mcc = null;
+let pendingRes = null;
 
 const metrics = {
   // Windows 10 default metrics
@@ -43,12 +46,7 @@ const metrics = {
   titleHeight: 22
 };
 
-const configPath = app.getPath('userData') + '/config.json';
 const tempFilePath = app.getPath('temp') + '/madsp-uploaded.dat';
-
-if (!fs.existsSync(configPath)) { // Setup initial config
-  fs.writeFileSync(configPath, '{"theme":"98"}');
-}
 
 function createWindow () {
   // Create the browser window.
@@ -86,7 +84,7 @@ function createWindow () {
   }
 
   // and load the index.html of the app.
-  mainWindow.loadURL(path.join(__dirname, 'index.html') + '?configPath=' + configPath);
+  mainWindow.loadURL(path.join(__dirname, 'index.html'));
 
   // Handle ChannelViewer creation
   mainWindow.webContents.on('did-create-window', processNewWindow);
@@ -549,6 +547,48 @@ function onRequest(req, res) {
         res.end('OK');
       }
       break;
+    
+    case '/begininput':
+      cleanInputPanel();
+      inputPanel = openInputPanel();
+      inputPanel.webContents.on('did-finish-load', () => {
+        inputPanel.show();
+        res.end('OK');
+      });
+      break;
+    
+    case '/getinput':
+      if (!inputPanel || inputPanel.isDestroyed()) {
+        res.writeHead(500);
+        res.end('Open /begininput first', 'utf-8');
+        return;
+      }
+
+      // long polling
+      res.writeHead(200, {'Content-Type':'text/event-stream'});
+      ipcMain.once('input', (event, message) => {
+        pendingRes = null;
+        res.end(`data: ${message}\n\n`);
+      });
+      pendingRes = res;
+      break;
+
+    case '/focusinput':
+      if (!inputPanel || inputPanel.isDestroyed()) {
+        res.writeHead(500);
+        res.end('Open /begininput first', 'utf-8');
+        return;
+      }
+      inputPanel.minimize();
+      inputPanel.restore();
+      inputPanel.focus();
+      res.end('OK');
+      break;
+
+    case '/endinput':
+      cleanInputPanel();
+      res.end('OK');
+      break
 
     case '/connecttest':
       res.writeHead(200, {'Content-Type':'text/html'});
@@ -577,6 +617,10 @@ function onRequest(req, res) {
       <a href="/stop">/stop</a><br>
       <a href="/prev">/prev</a><br>
       <a href="/next">/next</a><br>
+      <a href="/begininput">/begininput</a><br>
+      <a href="/getinput">/getinput</a><br>
+      <a href="/focusinput">/focusinput</a><br>
+      <a href="/endinput">/endinput</a><br>
       <a href="/connecttest">/connecttest</a><br>
       <a href="/debugger">/debugger</a></p>`)
       break;
@@ -634,4 +678,51 @@ function runMccCmd(command, title = "") {
     initMcc();
   }
   mcc.stdin.write(args + "\n");
+}
+
+function openInputPanel() {
+  const inputPanel = new BrowserWindow({
+    width: 640,
+    height: 240,
+    x: -1000,
+    y: -1000,
+    icon: process.platform === 'win32' ? path.join(__dirname, 'icon.ico') : null,
+    webPreferences: {
+      preload: path.join(__dirname, 'inputpanel.js'),
+    },
+    show: false,
+    frame: false,
+    skipTaskbar: true,
+  });
+
+  inputPanel.removeMenu();
+  inputPanel.loadURL('about:blank');
+  inputPanel.setTitle('ModernActiveDesktop System Plugin Input Panel');
+
+  inputPanel.on('show', () => {
+    // Ensure the window is focused when opened
+    inputPanel.minimize();
+    inputPanel.restore();
+    inputPanel.focus();
+  });
+
+  inputPanel.on('close', () => {
+    if (pendingRes) {
+      pendingRes.end('data: Escape\n\n');
+      pendingRes = null;
+    }
+  });
+
+  return inputPanel;
+}
+
+function cleanInputPanel() {
+  if (inputPanel && !inputPanel.isDestroyed()) {
+    inputPanel.close();
+    inputPanel = null;
+    if (pendingRes) {
+      pendingRes.end('data: Escape\n\n');
+      pendingRes = null;
+    }
+  }
 }

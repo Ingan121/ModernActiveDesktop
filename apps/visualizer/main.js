@@ -1,6 +1,7 @@
 // main.js for ModernActiveDesktop Visualizer
 // Made by Ingan121
 // Licensed under the MIT License
+// SPDX-License-Identifier: MIT
 
 'use strict';
 
@@ -411,23 +412,20 @@ helpMenuItems[0].addEventListener('click', () => { // About Visualizer button
 // #endregion
 
 // #region Functions
-function mediaControl(action) {
+async function mediaControl(action) {
     if (!localStorage.sysplugIntegration || !localStorage.madesktopVisMediaControls) {
         return;
     }
     const title = lastMusic ? lastMusic.title : '';
-    fetch(`http://localhost:3031/${action}`, { method: 'POST', body: title })
-        .then(response => response.text())
-        .then(responseText => {
-            if (responseText !== 'OK') {
-                madAlert(madGetString("VISUALIZER_MEDIA_CONTROL_ERROR") + '<br>' + responseText);
-            }
-        })
-        .catch(error => {
-            madAlert(madGetString("UI_MSG_NO_SYSPLUG"), function () {
-                madOpenWindow('SysplugSetupGuide.md', true);
-            }, "warning");
-        });
+    try {
+        const response = await madSysPlug.mediaControl(action, title);
+        if (response !== 'OK') {
+            madAlert(madGetString("VISUALIZER_MEDIA_CONTROL_ERROR") + '<br>' + response, null, 'error');
+        }
+    } catch (error) {
+        await madAlert(madGetString("UI_MSG_NO_SYSPLUG"), null, 'warning');
+        madOpenWindow('SysplugSetupGuide.md', true);
+    }
 }
 
 function wallpaperMediaStatusListener(event) {

@@ -3,7 +3,7 @@
 <head>
     <title>ModernActiveDesktop System Plugin</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="style.98.css">
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="98.css">
 </head>
 <body style="background-color: var(--button-face); color: var(--button-text); font-size: 16px;">
@@ -14,31 +14,8 @@
             <input id="url" class="form-control" type="text" onkeyup="if (event.key == 'Enter') openPage()" style="width: 400px;">
             <button class="btn btn-primary" onclick="openPage()">Open</button>
         </div>
-        <form style="margin-top: 3px;">
-            Theme:
-            <input id="98rad" type="radio" name="radgroup" value="98" onclick="config.theme = this.value" checked><label class="block" for="98rad">WinClassic</label>
-            <input id="bsrad" type="radio" name="radgroup" value="bootstrap" onclick="config.theme = this.value"><label class="block" for="bsrad">Bootstrap (but why?)</label>
-        </form>
     </div>
     <script>
-    const fs = require('fs');
-    
-    const configPath = new URL(location.href).searchParams.get('configPath');
-    const config = new Proxy({}, {
-      get(target, key) {
-        target = JSON.parse(fs.readFileSync(configPath));
-        return target[key];
-      },
-      set(target, key, value) {
-        target = JSON.parse(fs.readFileSync(configPath));
-        target[key] = value;
-        fs.writeFileSync(configPath, JSON.stringify(target));
-        return true;
-      }
-    });
-
-    document.getElementById('bsrad').checked = config.theme === 'bootstrap';
-
     document.onkeydown = function (e) {
         if (e.code == 'F5') {
             location.reload(true);
@@ -46,12 +23,8 @@
     }
 
     function openPage(url = document.getElementById('url').value, fullscreen) {
-        const cvUrl = 'ChannelViewer' + (config.theme == '98' ? '.98' : '') + '.html?page=' + url + '&configPath=' + configPath + (fullscreen ? '&fullscreen=1' : '');
+        const cvUrl = 'ChannelViewer.html?page=' + url + (fullscreen ? '&fullscreen=1' : '');
         window.open(cvUrl, '_blank', 'width=1280,height=720,nodeIntegration=no,contextIsolation=yes');
-    }
-
-    function switchTheme(theme) {
-        config.theme = theme;
     }
     </script>
 </body>

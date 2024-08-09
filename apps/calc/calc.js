@@ -1,6 +1,7 @@
 // calc.js for ModernActiveDesktop Calculator
 // Made by Ingan121
 // Licensed under the MIT License
+// SPDX-License-Identifier: MIT
 
 'use strict';
 

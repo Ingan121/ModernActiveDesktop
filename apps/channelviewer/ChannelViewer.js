@@ -1,6 +1,7 @@
 // ChannelViewer.js for ModernActiveDesktop ChannelViewer
 // Made by Ingan121
 // Licensed under the MIT License
+// SPDX-License-Identifier: MIT
 
 'use strict';
 
@@ -684,7 +685,7 @@ function hookIframeSize(iframe) {
         }
     });
 
-    // Also hook window.open as this doesn't work in WE
+    // Also hook window.open as this doesn't work in WPE
     if (localStorage.madesktopLinkOpenMode !== "0" || madRunningMode !== 0) {
         iframe.contentWindow.open = function (url, name, specs) {
             if (!url.startsWith("http")) {

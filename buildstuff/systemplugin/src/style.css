@@ -3,12 +3,18 @@ html,body {
     user-select: none;
     margin: 0;
     overflow: hidden;
-    background-color: white;
+    background-color: var(--window);
+    color: var(--window-text);
+}
+
+* {
+    font-family: "Gulim"
 }
 
 #windowBtnContainer {
     width: 55px;
     height: 26px;
+    background-color: black;
     margin-left: 5px;
     display: none;
 }
@@ -26,47 +32,105 @@ html,body {
 }
 
 .windowBtn > p {
+    color: var(--button-shadow);
     font-size: 12px;
     text-align: center;
     margin-top: -3px;
 }
 
-.windowBtn:hover > p {
-    color: var(--accent);
+.windowBtn:hover {
+    border-top: solid 1px var(--button-hilight);
+    border-left: solid 1px var(--button-highlight);
+    border-bottom: solid 1px var(--button-shadow);
+    border-right: solid 1px var(--button-shadow);
 }
 
-.windowBtn:hover:active > p {
-    color: var(--accent-dark);
+.windowBtn:hover:active {
+    border-bottom: solid 1px var(--button-highlight);
+    border-right: solid 1px var(--button-highlight);
+    border-top: solid 1px var(--button-shadow);
+    border-left: solid 1px var(--button-shadow);
 }
 
 .toolbarButton {
-    height: 26px;
+    height: 24px;
     float: left;
-    margin: 0;
-    padding: 0;
-    margin-left: 3px;
+    margin-left: 2px;
     margin-right: 3px;
+    border: solid 1px transparent;
 }
 
 .toolbarButtonImage {
-    font-size: 15px;
     margin-top: 2px;
     margin-bottom: 2px;
-    margin-left: 5px;
-    margin-right: 5px;
-    padding: 0;
+    margin-left: 7px;
+    margin-right: 7px;
 }
 
-.toolbarButton:hover:not([data-disabled='true']) > i {
-    color: var(--accent);
+.toolbarButton:hover:not([data-disabled='true']) {
+    border-top: solid 1px var(--button-highlight);
+    border-left: solid 1px var(--button-highlight);
+    border-bottom: solid 1px var(--button-shadow);
+    border-right: solid 1px var(--button-shadow);
 }
 
-.toolbarButton:hover:active:not([data-disabled='true']) > i {
-    color: var(--accent-dark);
+.toolbarButton:hover:active:not([data-disabled='true']) {
+    border-bottom: solid 1px var(--button-highlight);
+    border-right: solid 1px var(--button-highlight);
+    border-top: solid 1px var(--button-shadow);
+    border-left: solid 1px var(--button-shadow);
 }
 
-.toolbarButton[data-disabled='true'] > i {
-    color: lightgray;
+#back-button:hover:not([data-disabled='true']) .toolbarButtonImage {
+    content: url('images/Back_hover.png');
+}
+
+#back-button[data-disabled='true'] .toolbarButtonImage {
+    content: url('images/Back_disabled.png');
+}
+
+#forward-button:hover:not([data-disabled='true']) .toolbarButtonImage {
+    content: url('images/Forward_hover.png');
+}
+
+#forward-button[data-disabled='true'] .toolbarButtonImage {
+    content: url('images/Forward_disabled.png');
+}
+
+#refresh-stop-button[data-status='refresh'] .toolbarButtonImage {
+    content: url('images/Refresh.png');
+}
+
+#refresh-stop-button[data-status='refresh']:hover .toolbarButtonImage {
+    content: url('images/Refresh_hover.png');
+}
+
+#refresh-stop-button[data-status='stop'] .toolbarButtonImage {
+    content: url('images/Stop.png');
+}
+
+#refresh-stop-button[data-status='stop']:hover .toolbarButtonImage {
+    content: url('images/Stop_hover.png');
+}
+
+body::after { /* preload images */
+    position: absolute; width: 0; height: 0; overflow: hidden; z-index: -1; 
+    content: url('images/Back_hover.png') url('images/Forward_hover.png') url('images/Refresh.png') url('images/Refresh_hover.png') url('images/Stop_hover.png');
+}
+
+.grabber {
+    width: 1px;
+    height: 20px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    margin-left: 2px;
+    margin-right: 2px;
+    border-top: solid 1px var(--button-highlight);
+    border-left: solid 1px var(--button-highlight);
+    border-bottom: solid 1px var(--button-shadow);
+    border-right: solid 1px var(--button-shadow);
+    float: left;
+    cursor: e-resize;
 }
 
 #container {
@@ -79,19 +143,23 @@ html,body {
 #toolbar {
     height: 26px;
     display: flex;
-    background-color: white;
+    background-color: var(--button-face);
 }
 
 #progress-bar {
-    display: none;
     width: 300px;
-    margin-top: 5px;
+    margin-top: 0;
     margin-left: 0;
     margin-right: 10px;
 }
 
-:fullscreen #progress-bar {
-    margin-right: 0;
+#progress-bar-label {
+    margin: 6px;
+    margin-left: 0;
+}
+
+#progress-bar[style*='display: none'] ~ #progress-bar-label {
+    display: none;
 }
 
 .rightalign {
@@ -101,41 +169,15 @@ html,body {
 
 #urlbar {
     width: 500px !important;
-    margin-top: -1px;
+    margin-top: 2px;
     margin-left: 3px;
-    border: none;
 }
 
-#urlbar:focus {
-    outline: none;
-    margin-top: 0;
-    border-bottom: solid 1px var(--accent);
+label {
+    font-size: 15px !important;
 }
 
 ::selection {
-    color: white;
-    background-color: var(--accent);
-}
-
-@media (prefers-color-scheme: dark) {
-  body {
-    background-color: black;
-    color: white;
-  }
-  
-  #toolbar {
-    background-color: black;
-  }
-
-  .windowBtn > p {
-    color: lightgray;
-  }
-  
-  .toolbarButton > i {
-    color: lightgray;
-  }
-  
-  .toolbarButton[data-disabled='true'] > i {
-    color: dimgray;
-  }
+    color: var(--hilight-text);
+    background-color: var(--hilight);
 }

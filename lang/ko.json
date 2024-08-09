@@ -60,6 +60,7 @@
     "MAD_PROMPT_ENTER_URL": "URL 입력 (빈칸으로 두면 초기화)",
     "MAD_PROMPT_ENTER_TITLE": "창 제목 입력 (빈칸으로 두면 초기화)",
     "MAD_MSG_LINK_COPY_PROMPT": "다음 URL을 브라우저 주소 표시줄에 붙여넣으세요. 복사하려면 확인을 클릭하세요.",
+    "MAD_MSG_LINK_COPIED": "URL이 클립보드에 복사되었습니다. 복사된 URL을 브라우저 주소 표시줄에 붙여넣으세요.",
     "MAD_MSG_SYSPLUG_UPDATED": "시스템 플러그인이 업데이트되어 다시 설치해야 합니다. 설치 가이드를 따라 업데이트하세요.",
 
     "MAD_DEBUG_DEBUG_MODE": "디버그 모드",

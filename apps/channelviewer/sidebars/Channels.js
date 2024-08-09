@@ -1,6 +1,7 @@
 // Channels.js for ModernActiveDesktop ChannelViewer
 // Made by Ingan121
 // Licensed under the MIT License
+// SPDX-License-Identifier: MIT
 
 'use strict';
 

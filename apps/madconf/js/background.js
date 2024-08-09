@@ -1,6 +1,7 @@
 // background.js for ModernActiveDesktop Configurator
 // Made by Ingan121
 // Licensed under the MIT License
+// SPDX-License-Identifier: MIT
 
 'use strict';
 
@@ -293,7 +294,7 @@ window.apply = function () {
 
 function loadBgImgConf() {
     if (localStorage.madesktopBgImg) {
-        if (localStorage.madesktopBgImg.startsWith("file:///") || // Set in WE
+        if (localStorage.madesktopBgImg.startsWith("file:///") || // Set in WPE
             localStorage.madesktopBgImg.startsWith("wallpapers/")) // Built-in wallpapers set in madconf
         {
             return "url('" + localStorage.madesktopBgImg + "')";

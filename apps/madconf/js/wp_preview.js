@@ -1,6 +1,7 @@
 // wp_preview.js for ModernActiveDesktop Configurator
 // Made by Ingan121
 // Licensed under the MIT License
+// SPDX-License-Identifier: MIT
 
 'use strict';
 
@@ -63,7 +64,7 @@ function changeBgType(type) {
 
 function loadBgImgConf() {
     if (localStorage.madesktopBgImg) {
-        if (localStorage.madesktopBgImg.startsWith("file:///")) { // Set in WE
+        if (localStorage.madesktopBgImg.startsWith("file:///")) { // Set in WPE
             document.body.style.backgroundImage = "url('" + localStorage.madesktopBgImg + "')";
         } else if (localStorage.madesktopBgImg.startsWith("wallpapers/")) { // Built-in wallpapers set in madconf
             document.body.style.backgroundImage = "url('../../" + localStorage.madesktopBgImg + "')";

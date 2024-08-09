@@ -1,6 +1,7 @@
 // welcome.js for ModernActiveDesktop
 // Made by Ingan121
 // Licensed under the MIT License
+// SPDX-License-Identifier: MIT
 
 'use strict';
 
@@ -142,19 +143,12 @@ function switchItemTitleDisplay() {
     }
 }
 
-function checkSysplug() {
-    fetch("http://localhost:3031/connecttest")
-        .then(response => response.text())
-        .then(responseText => {
-            if (responseText === localStorage.madesktopLastVer) {
-                checkmarks[2].style.display = "block";
-            } else {
-                checkmarks[2].style.display = "none";
-            }
-        })
-        .catch(error => {
-            checkmarks[2].style.display = "none";
-        });
+async function checkSysplug() {
+    if (await madSysPlug.checkConnectivity() === 1) {
+        checkmarks[2].style.display = "block";
+    } else {
+        checkmarks[2].style.display = "none";
+    }
 }
 
 closeBtn.focus();

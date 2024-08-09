@@ -1,27 +1,11 @@
 // preload.js for ModernActiveDesktop System Plugin
 // Made by Ingan121
 // Licensed under the MIT License
+// SPDX-License-Identifier: MIT
 
 'use strict';
 
 const { ipcRenderer, contextBridge } = require('electron');
-const fs = require('fs');
-
-let configPath = new URL(location.href).searchParams.get('configPath');
-const config = new Proxy({}, {
-  get(target, key) {
-    target = JSON.parse(fs.readFileSync(configPath));
-    return target[key];
-  },
-  set(target, key, value) {
-    target = JSON.parse(fs.readFileSync(configPath));
-    target[key] = value;
-    fs.writeFileSync(configPath, JSON.stringify(target));
-    return true;
-  }
-});
-
-const is98Theme = config.theme === "98";
 
 process.once('loaded', () => {
   window.addEventListener('message', event => {
@@ -45,7 +29,7 @@ ipcRenderer.on("cvNumber", (event, cvNumber) => {
     console.log("dlProgress: " + progress); // Progress in fraction, between 0 and 1
     const progressBar = document.getElementById("progress-bar-inside");
     progressBar.style.width = progress + "%";
-    const progressBarLabel = is98Theme ? document.getElementById("progress-bar-label"): progressBar;
+    const progressBarLabel = document.getElementById("progress-bar-label");
     progressBarLabel.textContent = progress + "%";
   });
   
@@ -58,14 +42,12 @@ ipcRenderer.on("cvNumber", (event, cvNumber) => {
     console.log("loadStart");
     const refStopBtn = document.getElementById("refresh-stop-button");
     refStopBtn.dataset.status = "stop";
-    if (!is98Theme) refStopBtn.getElementsByClassName("toolbarButtonImage")[0].classList.replace("bi-arrow-clockwise", "bi-x-circle");
   });
   
   ipcRenderer.on("loadComplete" + cvNumber, (event) => {
     console.log("loadComplete");
     const refStopBtn = document.getElementById("refresh-stop-button");
     refStopBtn.dataset.status = "refresh";
-    if (!is98Theme) refStopBtn.getElementsByClassName("toolbarButtonImage")[0].classList.replace("bi-x-circle", "bi-arrow-clockwise");
   });
   
   ipcRenderer.on("cvbvurl" + cvNumber, (event, url) => {

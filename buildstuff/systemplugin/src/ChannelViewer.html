@@ -4,26 +4,28 @@
         <title>ChannelViewer</title>
         <meta charset="utf-8">
         <link rel="stylesheet" href="style.css">
-        <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-        <link rel="stylesheet" href="bootstrap-icons/bootstrap-icons.css">
+        <link rel="stylesheet" href="98.css">
     </head>
     <body>
         <div id="container">
             <div id="toolbar">
-                <div id="back-button" class="toolbarButton" onclick="browserViewCtl('back');">
-                    <i class="bi-arrow-left toolbarButtonImage"></i>
+                <div class="grabber"></div>
+                <div id="back-button" class="toolbarButton" onclick="browserViewCtl('back');" data-disabled="true">
+                    <img class="toolbarButtonImage" src="images/Back.png">
                 </div>
-                <div id="forward-button" class="toolbarButton" onclick="browserViewCtl('forward');">
-                    <i class="bi-arrow-right toolbarButtonImage"></i>
+                <div id="forward-button" class="toolbarButton" onclick="browserViewCtl('forward');" data-disabled="true">
+                    <img class="toolbarButtonImage" src="images/Forward.png">
                 </div>
                 <div id="refresh-stop-button" class="toolbarButton" onclick="browserViewCtl(this.dataset.status);" data-status="stop">
-                    <i class="bi-x-circle toolbarButtonImage"></i>
+                    <img class="toolbarButtonImage" src="images/Stop.png">
                 </div>
-                <input id="urlbar" type="text" onfocus="this.select();" onblur="getSelection().removeAllRanges()" onkeyup="if (event.key == 'Enter') go(this.value)">
+                <div class="grabber"></div>
+                <input id="urlbar" type="text" onclick="this.select();" onkeyup="if (event.key == 'Enter') go(this.value)">
                 <div class="rightalign">
-                    <div id="progress-bar" class="progress">
-                        <div id="progress-bar-inside" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%">0%</div>
+                    <div id="progress-bar" class="meter" style="display: none">
+                        <span id="progress-bar-inside" style="width: 0%"></span>
                     </div>
+                    <span id="progress-bar-label">0%</span>
                     <div id="windowBtnContainer">
                         <div style="float: left;">
                             <div class="windowBtn" style="right: 35px;">

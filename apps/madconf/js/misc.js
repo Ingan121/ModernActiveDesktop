@@ -1,6 +1,7 @@
 // misc.js for ModernActiveDesktop Configurator
 // Made by Ingan121
 // Licensed under the MIT License
+// SPDX-License-Identifier: MIT
 
 'use strict';
 
@@ -335,20 +336,19 @@ langSelector.addEventListener('change', function () {
 
 resetBtn.addEventListener('click', parent.reset);
 
-function checkSysplug() {
+async function checkSysplug() {
     connectionStatus.locId = "MADCONF_CONNECTTEST_CHECKING";
-    fetch("http://localhost:3031/connecttest")
-        .then(response => response.text())
-        .then(responseText => {
-            if (responseText !== localStorage.madesktopLastVer) {
-                connectionStatus.locId = "MADCONF_CONNECTTEST_OUTDATED";
-            } else {
-                connectionStatus.locId = "MADCONF_CONNECTTEST_SUCCESS";
-            }
-        })
-        .catch(error => {
+    switch (await madSysPlug.checkConnectivity()) {
+        case 1:
+            connectionStatus.locId = "MADCONF_CONNECTTEST_SUCCESS";
+            break;
+        case -1:
+            connectionStatus.locId = "MADCONF_CONNECTTEST_OUTDATED";
+            break;
+        case 0:
             connectionStatus.locId = "MADCONF_CONNECTTEST_FAIL";
-        });
+            break;
+    }
 }
 
 window.scrollTo(0, 0);

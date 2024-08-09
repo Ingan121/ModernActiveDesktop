@@ -1,6 +1,7 @@
 // libmad-strings.js for ModernActiveDesktop
 // Made by Ingan121
 // Licensed under the MIT License
+// SPDX-License-Identifier: MIT
 
 'use strict';
 
@@ -83,6 +84,7 @@
         "MAD_PROMPT_ENTER_URL": "Enter URL (leave empty to reset)",
         "MAD_PROMPT_ENTER_TITLE": "Enter title (leave empty to reset)",
         "MAD_MSG_LINK_COPY_PROMPT": "Paste this URL in the browser's address bar. Click OK to copy.",
+        "MAD_MSG_LINK_COPIED": "Copied URL to clipboard! Paste it in the browser's address bar.",
         "MAD_MSG_SYSPLUG_UPDATED": "System plugin has been updated, and it needs a reinstall. Please update it with the setup guide.",
 
         "MAD_DEBUG_DEBUG_MODE": "Debug mode",

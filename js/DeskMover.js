@@ -1,6 +1,7 @@
 // DeskMover.js for ModernActiveDesktop
 // Made by Ingan121
 // Licensed under the MIT License
+// SPDX-License-Identifier: MIT
 
 'use strict';
 
@@ -524,7 +525,7 @@
             this.contextMenuBg.style.height = this.calcMenuHeight("window") + "px";
 
             // For handling window icon double click
-            // Note: dblclick doesn't fire in WE
+            // Note: dblclick doesn't fire in WPE
             this.contextMenuOpening = this.posInContainer;
             setTimeout(() => {
                 this.contextMenuOpening = null;
@@ -1327,7 +1328,7 @@
             if (this.config.style === "wnd" || this.config.style === "nonad") {
                 extraBorderSize = parseInt(getComputedStyle(this.windowContainer).getPropertyValue('--extra-border-size'));
             }
-            // Change the mouse cursor - although this is useless in WE
+            // Change the mouse cursor - although this is useless in WPE
             let left = this.posInContainer.x <= 3 + extraBorderSize;
             let right = this.posInContainer.x >= this.windowContainer.offsetWidth - 4 - extraBorderSize;
             let top = this.config.style === "ad" ? this.posInContainer.y <= 9 && this.posInContainer.y >= 6 : this.posInContainer.y <= 3 + extraBorderSize;
@@ -1701,10 +1702,7 @@
                     }
                 }
             } else if (this.config.style === "ad" && !this.noFrames) {
-                // Won't happen in WE; but required in normal browsers
-                // I use Chrome/Edge for some debugging as mouse hovering doesn't work well in WE with a debugger attached
-                // Edit: Well it now works well at the time of writing (MAD 3.0)
-                // if you use chrome://inspect instead of going directly to localhost:port
+                // Cross-origin iframe (no info about the cursor's position)
                 this.windowFrame.style.borderColor = "var(--button-face)";
                 this.windowFrame.style.backgroundColor = "var(--button-face)";
                 this.windowTitlebar.style.display = this.config.style === "wnd" ? "flex" : "block";

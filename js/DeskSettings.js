@@ -1,8 +1,11 @@
 // DeskSettings.js for ModernActiveDesktop
 // Made by Ingan121
 // Licensed under the MIT License
+// SPDX-License-Identifier: MIT
 
 'use strict';
+
+// This is the main MAD JavaScript file
 
 // #region Constants and variables
 let windowContainers = document.getElementsByClassName("windowContainer");
@@ -52,6 +55,7 @@ const LW = 2; // Lively Wallpaper
 const BROWSER = 0; // None of the above
 window.runningMode = BROWSER;
 let origRunningMode = BROWSER;
+let kbdSupport = 1; // 1 = Keyboard supported, 0 = Keyboard supported with prompt(), -1 = Keyboard not supported
 
 window.scaleFactor = "1";
 window.vWidth = window.innerWidth;
@@ -112,6 +116,11 @@ initSimpleMover(debugMenu, debugMenu, debugMenu.querySelectorAll("a"));
 
 if (typeof wallpaperOnVideoEnded === "function") { // Check if running in Wallpaper Engine
     runningMode = WE;
+    if (parseInt(navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./)[2]) >= 100) {
+        kbdSupport = -1;
+    } else {
+        kbdSupport = 0;
+    }
 } else if (location.href.startsWith("localfolder://")) { // Check if running in Lively Wallpaper
     runningMode = LW;
 }
@@ -291,7 +300,7 @@ window.addEventListener('resize', function () {
     changeScale(scaleFactor);
 });
 
-// Detect WE config change
+// Detect WPE config change
 window.wallpaperPropertyListener = {
     applyUserProperties: function(properties) {
         log(properties);
@@ -441,7 +450,7 @@ function changeBgColor(str) {
 
 function loadBgImgConf() {
     if (localStorage.madesktopBgImg) {
-        if (localStorage.madesktopBgImg.startsWith("file:///") || // Set in WE
+        if (localStorage.madesktopBgImg.startsWith("file:///") || // Set in WPE
             localStorage.madesktopBgImg.startsWith("wallpapers/")) // Built-in wallpapers set in madconf
         {
             document.body.style.backgroundImage = "url('" + localStorage.madesktopBgImg + "')";
@@ -521,16 +530,15 @@ function changeColorScheme(scheme) {
             processTheme();
         }
 
-        fetch("http://localhost:3031/systemscheme")
-            .then(response => response.text())
+        madSysPlug.getSystemScheme()
             .then(responseText => {
                 const dataURL = `data:text/css,${encodeURIComponent(responseText)}`;
                 schemeElement.href = dataURL;
-                localStorage.madesktopSysColorCache = dataURL; // Cache it as SysPlug startup is slower than high priority WE startup
+                localStorage.madesktopSysColorCache = dataURL; // Cache it as SysPlug startup is slower than high priority WPE startup
                 processTheme();
             })
             .catch(error => {
-                // Ignore it as SysPlug startup is slower than high priority WE startup
+                // Ignore it as SysPlug startup is slower than high priority WPE startup
             })
 
         delete localStorage.madesktopCustomColor;
@@ -727,7 +735,7 @@ function changeSoundScheme(scheme) {
             break;
         case '8':
             soundScheme.startup = new Audio("sounds/Aero/startup.wav");
-            // idk why but WE uploader somehow hates these specific files so I converted these to flac
+            // idk why but WPE uploader somehow hates these specific files so I converted these to flac
             soundScheme.question = new Audio("sounds/8/Windows Background.flac");
             soundScheme.error = new Audio("sounds/8/Windows Foreground.flac");
             soundScheme.warning = new Audio("sounds/8/Windows Background.flac");
@@ -935,7 +943,7 @@ function generateThemeSvgs(targetElement = document.documentElement) {
     return css;
 }
 
-// Convert WE color format to #rrggbb
+// Convert WPE color format to #rrggbb
 function parseWallEngColorProp(value) {
     let customColor = value.split(' ');
     customColor = customColor.map(function(c) {
@@ -1044,8 +1052,8 @@ function openExternal(url, fullscreen, specs = "", temp = true, noExternal = fal
     return deskMover;
 }
 
-function openExternalExternally(url, fullscreen, noInternal = false) {
-    if (runningMode === BROWSER) {
+async function openExternalExternally(url, fullscreen, noInternal = false) {
+    if (runningMode === BROWSER && (!localStorage.madesktopLinkOpenMode || localStorage.madesktopLinkOpenMode === "0")) {
         window.open(url, "_blank");
     } else if (localStorage.sysplugIntegration) {
         const headers = {};
@@ -1055,20 +1063,15 @@ function openExternalExternally(url, fullscreen, noInternal = false) {
         if (localStorage.madesktopLinkOpenMode === "2") {
             headers["X-Use-ChannelViewer"] = "true";
         }
-        fetch("http://localhost:3031/open", { method: "POST", body: url, headers })
-            .then(response => response.text())
-            .then(responseText => {
-                if (responseText !== "OK") {
-                    madAlert(madGetString("UI_MSG_SYSPLUG_ERROR") + responseText, function () {
-                        copyPrompt(url);
-                    }, "error");
-                }
-            })
-            .catch(error => {
-                madAlert(madGetString("UI_MSG_NO_SYSPLUG"), function () {
-                    copyPrompt(url);
-                }, "warning");
-            });
+        try {
+            if (await madSysPlug.openExternal(url, headers) !== "OK") {
+                await madAlert(madGetString("UI_MSG_SYSPLUG_ERROR"), null, "error");
+                copyPrompt(url);
+            }
+        } catch {
+            await madAlert(madGetString("UI_MSG_NO_SYSPLUG"), null, "warning");
+            copyPrompt(url);
+        }
     } else {
         copyPrompt(url);
     }
@@ -1076,13 +1079,16 @@ function openExternalExternally(url, fullscreen, noInternal = false) {
     function copyPrompt(url) {
         if (!noInternal) {
             openExternal(url, fullscreen, "", true, true);
-        } else if (prompt(madGetString("MAD_MSG_LINK_COPY_PROMPT"), url)) {
+        } else if (kbdSupport === -1 || prompt(madGetString("MAD_MSG_LINK_COPY_PROMPT"), url)) {
             const tmp = document.createElement("textarea");
             document.body.appendChild(tmp);
             tmp.value = url;
             tmp.select();
             document.execCommand('copy');
             document.body.removeChild(tmp);
+            if (kbdSupport === -1) {
+                madAlert(madGetString("MAD_MSG_LINK_COPIED"), null, "info");
+            }
         }
     }
 }
@@ -1124,7 +1130,7 @@ function updateIframeScale() {
             }
         } catch {
             // page did not load yet
-            // it works on external webpages thanks to the new WE iframe policy
+            // it works on external webpages thanks to the new WPE iframe policy
         }
     }
 }
@@ -1151,7 +1157,7 @@ function hookIframeSize(iframe, num) {
         }
     });
 
-    // Also hook window.open as this doesn't work in WE
+    // Also hook window.open as this doesn't work in WPE
     if (localStorage.madesktopLinkOpenMode !== "0" || runningMode !== BROWSER) {
         iframe.contentWindow.open = function (url, name, specs) {
             const deskMover = openExternal(url, false, specs);
@@ -1446,7 +1452,17 @@ async function madConfirm(msg, callback) {
 
 async function madPrompt(msg, callback, hint, text) {
     return new Promise(resolve => {
-        if (runningMode === WE) { // Wallpaper Engine normally does not support keyboard input
+        if (runningMode === WE && kbdSupport === 0) { // Wallpaper Engine normally does not support keyboard input
+            if (kbdSupport === -1) {
+                // WPE 2.5 broke the native JS alert/confirm/prompt,
+                // locking the wallpaper until the user reloads the wallpaper from the WPE UI
+                // (can't even close the dialog)
+                // Temp fix?: just disable the prompt
+                // TODO: Implement a proper keyboard input with the system plugin
+                // Also add a simple on-screen keyboard for those without the plugin
+                //madAlert("prompt disabled for now", null, "error");
+                //return;
+            }
             const res = prompt(msg, text);
             callback(res);
             resolve(res);
@@ -1462,12 +1478,17 @@ async function madPrompt(msg, callback, hint, text) {
 
         document.addEventListener('keypress', keypress);
         document.addEventListener('keyup', keyup);
+        document.addEventListener('spinput', spinput);
+        msgboxInput.addEventListener('click', focus);
         msgboxBtn1.addEventListener('click', ok);
         msgboxBtn2.addEventListener('click', close);
         msgboxCloseBtn.addEventListener('click', close);
 
         showDialog();
         msgboxInput.focus();
+        if (kbdSupport === -1) {
+            madSysPlug.beginInput();
+        }
 
         function keypress(event) {
             if (event.key === "Enter") {
@@ -1477,6 +1498,26 @@ async function madPrompt(msg, callback, hint, text) {
         function keyup(event) {
             if (event.key === "Escape") {
                 close();
+            }
+        }
+        function spinput(event) {
+            switch (event.key) {
+                case "Enter":
+                    ok();
+                    break;
+                case "Escape":
+                    close();
+                    break;
+                case "Backspace":
+                    msgboxInput.value = msgboxInput.value.slice(0, -1);
+                    break;
+                default:
+                    msgboxInput.value += event.key;
+            }
+        }
+        function focus() {
+            if (kbdSupport === -1) {
+                madSysPlug.focusInput();
             }
         }
         function ok() {
@@ -1493,6 +1534,9 @@ async function madPrompt(msg, callback, hint, text) {
             hideDialog();
             document.removeEventListener('keypress', keypress);
             document.removeEventListener('keyup', keyup);
+            document.removeEventListener('spinput', spinput);
+            madSysPlug.endInput();
+            msgboxInput.removeEventListener('click', focus);
             msgboxBtn1.removeEventListener('click', ok);
             msgboxBtn2.removeEventListener('click', close);
             msgboxCloseBtn.removeEventListener('click', close);

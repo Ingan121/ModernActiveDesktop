@@ -1,6 +1,7 @@
 // scheme_preview.js for ModernActiveDesktop Configurator
 // Made by Ingan121
 // Licensed under the MIT License
+// SPDX-License-Identifier: MIT
 
 'use strict';
 
@@ -37,15 +38,14 @@ function changeColorScheme(scheme) {
             schemeElement.href = localStorage.madesktopSysColorCache;
         }
 
-        fetch("http://localhost:3031/systemscheme")
-            .then(response => response.text())
+        madSysPlug.getSystemScheme()
             .then(responseText => {
                 const dataURL = `data:text/css,${encodeURIComponent(responseText)}`;
                 schemeElement.href = dataURL;
                 processTheme();
             })
             .catch(error => {
-                // Ignore it as SysPlug startup is slower than high priority WE startup
+                // Ignore it as SysPlug startup is slower than high priority WPE startup
             })
     } else {
         schemeElement.href = `../../schemes/${scheme}.css`;
