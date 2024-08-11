@@ -72,6 +72,7 @@
     "MAD_DEBUG_ENABLE_LOGGING": "디버그 로깅 활성화",
     "MAD_DEBUG_DISABLE_LOGGING": "디버그 로깅 비활성화",
     "MAD_DEBUG_SIMULATE": "다른 환경 시뮬레이션",
+    "MAD_DEBUG_KBD_SUPPORT": "키보드 지원 수준 변경",
     "MAD_DEBUG_DEACTIVATE": "디버그 모드 비활성화",
 
 

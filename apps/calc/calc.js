@@ -6,7 +6,7 @@
 'use strict';
 
 const menuBar = document.getElementById('menuBar');
-const editMenuItem = document.querySelector('#editMenu .contextMenuItem');
+const editMenuItems = document.querySelectorAll('#editMenu .contextMenuItem');
 const helpMenuItem = document.querySelector('#helpMenu .contextMenuItem');
 
 const calcDisplay = document.getElementById('calcDisplay');
@@ -48,13 +48,28 @@ let copying = false;
 
 madDeskMover.menu = new MadMenu(menuBar, ['edit', 'view', 'help']);
 
-editMenuItem.addEventListener('click', function () { // Copy button
+editMenuItems[0].addEventListener('click', function () { // Copy button
     copying = true;
     calcDisplay.select();
+    if (calcDisplay.value.endsWith('.')) {
+        calcDisplay.selectionEnd = calcDisplay.value.length - 1;
+    }
     document.execCommand('copy');
     calcDisplay.selectionStart = calcDisplay.selectionEnd;
     copying = false;
     calcDisplay.blur();
+});
+
+editMenuItems[1].addEventListener('click', async function () { // Paste button
+    let clipboard = '';
+    if (localStorage.sysplugIntegration) {
+        clipboard = await madSysPlug.getClipboard();
+    } else if (madRunningMode === 0) {
+        clipboard = await navigator.clipboard.readText();
+    }
+    if (clipboard) {
+        handlePaste(clipboard);
+    }
 });
 
 helpMenuItem.addEventListener('click', function () { // About Calculator button
@@ -331,14 +346,14 @@ function clickButton(elem) {
     }, 100);
 }
 
-document.addEventListener('keydown', function (event) {
+function handleInput(event) {
     if (event.key === 'Escape') {
         clickButton(c);
     } else if (event.key === 'Delete') {
         clickButton(ce);
     } else if (event.key === 'Backspace') {
         clickButton(backspace);
-    } else if (event.key === 'Enter') {
+    } else if (event.key === 'Enter' || event.key === '=' || event.key === '\n') {
         clickButton(equals);
     } else if (event.key === '0') {
         clickButton(numButtons[9]);
@@ -386,6 +401,18 @@ document.addEventListener('keydown', function (event) {
         clickButton(ms);
     } else if (event.key === 'l' && event.ctrlKey) {
         clickButton(mc);
+    } else if (event.key === 'c' && event.ctrlKey) {
+        editMenuItems[0].click();
+    } else if (event.key === 'v' && event.ctrlKey) {
+        editMenuItems[1].click();
     }
-    event.preventDefault();
-});
+}
+
+function handlePaste(string) {
+    for (const char of string) {
+        // This is how the old Windows Calculator handles pasting
+        handleInput({ key: char });
+    }
+}
+
+document.addEventListener('keydown', handleInput);

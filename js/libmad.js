@@ -40,6 +40,7 @@
 
         window.madScaleFactor = 1;
         window.madRunningMode = 0;
+        window.madKbdSupport = 1;
         window.madOpenWindow = function (url, temp, optionsOrWidth = {}, heightArg, style, centeredArg, topArg, leftArg) {
             if (url.startsWith("apps/")) {
                 url = "../../" + url;
@@ -327,6 +328,11 @@
         madRunningMode: {
             get: function () {
                 return top.runningMode;
+            }
+        },
+        madKbdSupport: {
+            get: function () {
+                return top.kbdSupport;
             }
         }
     });

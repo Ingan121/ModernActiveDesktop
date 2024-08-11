@@ -504,15 +504,19 @@ urlbar.addEventListener('click', function (event) {
         }
         return;
     }
-    if (madRunningMode === 1) {
-        madPrompt(madGetString("CV_PROMPT_ENTER_URL"), function (url) {
-            if (url === null) return;
-            if (goButton.style.display !== "block") {
-                go(url);
-            } else {
-                urlbar.value = url;
-            }
-        }, "", urlbar.value);
+    if (madKbdSupport !== 1) {
+        if (localStorage.sysplugIntegration) {
+            madSysPlug.beginInput();
+        } else {
+            madPrompt(madGetString("CV_PROMPT_ENTER_URL"), function (url) {
+                if (url === null) return;
+                if (goButton.style.display !== "block") {
+                    go(url);
+                } else {
+                    urlbar.value = url;
+                }
+            }, "", urlbar.value);
+        }
     }
 });
 
@@ -811,6 +815,8 @@ function hookIframeSize(iframe) {
         }
         if (activeElement.matches("input[type='text'], input[type='search'], input[type='url'], input[type='tel'], input[type='email'], input[type='password'], textarea")) {
             if (madRunningMode === 1) {
+                // Don't use madPrompt-less SysPlug input here
+                // as handling madInput inside an iframe (inside an iframe) is a bit tricky
                 madPrompt(madGetString("UI_PROMPT_ENTER_VALUE"), function (res) {
                     if (res === null) return;
                     activeElement.value = res;

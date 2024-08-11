@@ -164,6 +164,15 @@ if (!gotTheLock) {
       // dock icon is clicked and there are no other windows open.
       if (BrowserWindow.getAllWindows().length === 0) createWindow();
     });
+
+    ipcMain.on('inputmsg', (event, message) => {
+      if (!inputPanel || inputPanel.isDestroyed()) {
+        return;
+      }
+      if (message === 'CompModeOn') {
+        inputPanel.center();
+      }
+    });
   })
 }
 
@@ -504,6 +513,10 @@ function onRequest(req, res) {
       res.end(generateCssScheme());
       break;
 
+    case '/clipboard':
+      res.end(clipboard.readText());
+      break;
+
     case '/playpause':
       if (req.method === 'POST') {
         processPost(req, res, function (body) {
@@ -552,6 +565,7 @@ function onRequest(req, res) {
       cleanInputPanel();
       inputPanel = openInputPanel();
       inputPanel.webContents.on('did-finish-load', () => {
+        inputPanel.webContents.executeJavaScript('const style=document.createElement("style");style.id="schemeStyle";style.textContent=`'+generateCssScheme()+'`;document.head.appendChild(style);');
         inputPanel.show();
         res.end('OK');
       });
@@ -588,7 +602,7 @@ function onRequest(req, res) {
     case '/endinput':
       cleanInputPanel();
       res.end('OK');
-      break
+      break;
 
     case '/connecttest':
       res.writeHead(200, {'Content-Type':'text/html'});
@@ -613,14 +627,15 @@ function onRequest(req, res) {
       <a href="/open">/open</a><br>
       <a href="/save">/save</a><br>
       <a href="/systemscheme">/systemscheme</a><br>
+      <a href="/clipboard">/clipboard</a><br><br>
       <a href="/playpause">/playpause</a><br>
       <a href="/stop">/stop</a><br>
       <a href="/prev">/prev</a><br>
-      <a href="/next">/next</a><br>
+      <a href="/next">/next</a><br><br>
       <a href="/begininput">/begininput</a><br>
       <a href="/getinput">/getinput</a><br>
       <a href="/focusinput">/focusinput</a><br>
-      <a href="/endinput">/endinput</a><br>
+      <a href="/endinput">/endinput</a><br><br>
       <a href="/connecttest">/connecttest</a><br>
       <a href="/debugger">/debugger</a></p>`)
       break;
@@ -683,7 +698,7 @@ function runMccCmd(command, title = "") {
 function openInputPanel() {
   const inputPanel = new BrowserWindow({
     width: 640,
-    height: 240,
+    height: 38,
     x: -1000,
     y: -1000,
     icon: process.platform === 'win32' ? path.join(__dirname, 'icon.ico') : null,
@@ -693,17 +708,19 @@ function openInputPanel() {
     show: false,
     frame: false,
     skipTaskbar: true,
+    resizable: false
   });
 
   inputPanel.removeMenu();
-  inputPanel.loadURL('about:blank');
-  inputPanel.setTitle('ModernActiveDesktop System Plugin Input Panel');
+  inputPanel.loadURL(path.join(__dirname, 'inputpanel.html'));
 
   inputPanel.on('show', () => {
     // Ensure the window is focused when opened
-    inputPanel.minimize();
-    inputPanel.restore();
-    inputPanel.focus();
+    setTimeout(() => {
+      inputPanel.minimize();
+      inputPanel.restore();
+      inputPanel.focus();
+    }, 100);
   });
 
   inputPanel.on('close', () => {

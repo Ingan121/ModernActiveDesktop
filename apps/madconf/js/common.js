@@ -31,7 +31,7 @@ for (const tab of tabs) {
 
 for (const textbox of textboxes) {
     textbox.addEventListener("click", function () {
-        if (madRunningMode === 1) {
+        if (madKbdSupport !== 1) {
             madPrompt(madGetString("UI_PROMPT_ENTER_VALUE"), function (res) {
                 if (res === null) return;
                 textbox.value = res;

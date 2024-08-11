@@ -187,7 +187,7 @@ dpiSelector.addEventListener('change', function () {
     if (this.value === 'custom') {
         madPrompt(madGetString("MADCONF_PROMPT_ENTER_SCALE"), async (res) => {
             if (res === null) {
-                if (madRunningMode === 1) {
+                if (madKbdSupport === 0 && !localStorage.sysplugIntegration) {
                     // Weird timing issues with prompt() and libmad mad-select
                     await parent.asyncTimeout(100);
                 }

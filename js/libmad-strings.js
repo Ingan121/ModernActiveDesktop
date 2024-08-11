@@ -96,6 +96,7 @@
         "MAD_DEBUG_ENABLE_LOGGING": "Enable debug logging",
         "MAD_DEBUG_DISABLE_LOGGING": "Disable debug logging",
         "MAD_DEBUG_SIMULATE": "Simulate other environment",
+        "MAD_DEBUG_KBD_SUPPORT": "MAD_DEBUG_KBD_SUPPORT",
         "MAD_DEBUG_DEACTIVATE": "Deactivate debug mode",
         // #endregion
 

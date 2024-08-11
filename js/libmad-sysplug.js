@@ -16,6 +16,7 @@
         beginInput,
         focusInput,
         endInput,
+        getClipboard,
         inputStatus: false
     };
 
@@ -72,28 +73,32 @@
         const response = await request("begininput");
         if (response === "OK") {
             madSysPlug.inputStatus = true;
-        }
-        // long polling from /getinput
-        const inputEvent = new Event("spinput");
-        while (madSysPlug.inputStatus) {
-            await new Promise(resolve => {
-                const eventSource = new EventSource("http://localhost:3031/getinput");
-                eventSource.onmessage = function(event) {
-                    inputEvent.key = event.data;
-                    document.dispatchEvent(inputEvent);
-                    if (event.data === "Escape") {
+
+            // long polling from /getinput
+            const inputEvent = new Event("madinput");
+            while (madSysPlug.inputStatus) {
+                await new Promise(resolve => {
+                    const eventSource = new EventSource("http://localhost:3031/getinput");
+                    eventSource.onmessage = function(event) {
+                        inputEvent.key = event.data;
+                        document.dispatchEvent(inputEvent);
+                        if (event.data === "Escape") {
+                            madSysPlug.inputStatus = false;
+                        }
+                        eventSource.close();
+                        resolve();
+                    };
+                    eventSource.onerror = function (error) {
+                        console.error("EventSource failed:", error);
+                        eventSource.close();
                         madSysPlug.inputStatus = false;
-                    }
-                    eventSource.close();
-                    resolve();
-                };
-                eventSource.onerror = function (error) {
-                    console.error("EventSource failed:", error);
-                    eventSource.close();
-                    madSysPlug.inputStatus = false;
-                    resolve();
-                };
-            });
+                        resolve();
+                    };
+                });
+            }
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -111,4 +116,14 @@
         }
         return response;
     }
+
+    async function getClipboard() {
+        return await request("clipboard");
+    }
+
+    window.addEventListener("beforeunload", () => {
+        if (madSysPlug.inputStatus) {
+            endInput();
+        }
+    });
 })();

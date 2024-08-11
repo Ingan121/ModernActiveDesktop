@@ -32,6 +32,7 @@ const mainMenu = document.getElementById("mainMenu");
 const mainMenuItems = mainMenu.getElementsByClassName("contextMenuItem");
 const runningModeLabel = document.getElementById("runmode");
 const simulatedModeLabel = document.getElementById("simmode");
+const kbdSupportLabel = document.getElementById("kbdsupport");
 const debugMenu = document.getElementById("debug");
 const jsRunBtn = document.getElementById("jsRunBtn");
 const debugLogBtn = document.getElementById("debugLogBtn");
@@ -55,7 +56,7 @@ const LW = 2; // Lively Wallpaper
 const BROWSER = 0; // None of the above
 window.runningMode = BROWSER;
 let origRunningMode = BROWSER;
-let kbdSupport = 1; // 1 = Keyboard supported, 0 = Keyboard supported with prompt(), -1 = Keyboard not supported
+window.kbdSupport = 1; // 1 = Keyboard supported, 0 = Keyboard supported with prompt(), -1 = Keyboard not supported
 
 window.scaleFactor = "1";
 window.vWidth = window.innerWidth;
@@ -124,6 +125,7 @@ if (typeof wallpaperOnVideoEnded === "function") { // Check if running in Wallpa
 } else if (location.href.startsWith("localfolder://")) { // Check if running in Lively Wallpaper
     runningMode = LW;
 }
+kbdSupportLabel.textContent = kbdSupport;
 
 // Migrate old configs
 if (localStorage.madesktopNonADStyle) {
@@ -1478,7 +1480,6 @@ async function madPrompt(msg, callback, hint, text) {
 
         document.addEventListener('keypress', keypress);
         document.addEventListener('keyup', keyup);
-        document.addEventListener('spinput', spinput);
         msgboxInput.addEventListener('click', focus);
         msgboxBtn1.addEventListener('click', ok);
         msgboxBtn2.addEventListener('click', close);
@@ -1500,21 +1501,6 @@ async function madPrompt(msg, callback, hint, text) {
                 close();
             }
         }
-        function spinput(event) {
-            switch (event.key) {
-                case "Enter":
-                    ok();
-                    break;
-                case "Escape":
-                    close();
-                    break;
-                case "Backspace":
-                    msgboxInput.value = msgboxInput.value.slice(0, -1);
-                    break;
-                default:
-                    msgboxInput.value += event.key;
-            }
-        }
         function focus() {
             if (kbdSupport === -1) {
                 madSysPlug.focusInput();
@@ -1534,7 +1520,6 @@ async function madPrompt(msg, callback, hint, text) {
             hideDialog();
             document.removeEventListener('keypress', keypress);
             document.removeEventListener('keyup', keyup);
-            document.removeEventListener('spinput', spinput);
             madSysPlug.endInput();
             msgboxInput.removeEventListener('click', focus);
             msgboxBtn1.removeEventListener('click', ok);
@@ -1818,6 +1803,11 @@ function toggleRunningMode() {
             break;
     }
     if (runningMode === origRunningMode) simulatedModeLabel.textContent = "";
+}
+
+function toggleKbdSupport() {
+    kbdSupport = [1, -1, 0][kbdSupport + 1];
+    kbdSupportLabel.textContent = kbdSupport;
 }
 
 function showErrors() {
