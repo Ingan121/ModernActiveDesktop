@@ -96,6 +96,14 @@
                 </section>
             </div>
         </div>
+        <div id="osk" class="window">
+            <div class="title-bar">
+                <div class="title-bar-text">
+                    <mad-string data-locid="OSK_TITLE">On-Screen Keyboard</mad-string>
+                </div>
+            </div>
+            <iframe id="oskWindow"></iframe>
+        </div>
     </div>
     <div class="miniPicker window" tabindex="-1">
         <div class="miniPickerColors">
@@ -130,7 +138,7 @@
         <button onclick="copyLog();">Copy log</button> <button onclick="location.reload(true);">Retry</button> <button onclick="errorWnd.style.display='none';">Ignore</button>
     </div>
     <div id="debug" class="debug">
-        <span>ModernActiveDesktop 3.2.2 Pre-release</span><br>
+        <span>ModernActiveDesktop 3.3.0 Pre-release</span><br>
         <span>Loaded from <span id="location"></span></span><br>
         <span>Running in <span id="runmode">browser</span><span id="simmode"></span></span><br>
         <span>Keyboard support level: <span id="kbdsupport">1</span></span><br>

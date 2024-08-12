@@ -554,5 +554,9 @@
     "JSPAINT_SAVE_SYSPLUG_REQUIRED": "죄송합니다. 이 기능을 사용하려면 시스템 플러그인 연동을 활성화해야 합니다.",
 
 
-    "CB_TITLE": "채널 바"
+    "CB_TITLE": "채널 바",
+
+
+    "OSK_TITLE": "화상 키보드",
+    "OSK_INFO": "화상 키보드는 Wallpaper Engine 2.5+에서 지원되지 않습니다. 키보드로 텍스트를 입력하려면 <a href=\"javascript:madOpenWindow('SysplugSetupGuide.md',true);sendMadInput('Escape')\">시스템 플러그인을 설치</a>하세요."
 }

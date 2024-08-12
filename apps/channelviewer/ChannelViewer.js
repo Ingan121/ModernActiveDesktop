@@ -484,7 +484,7 @@ openButton.addEventListener("click", function () {
     parent.openExternalExternally(getCurrentUrl(true), false, true);
 });
 
-urlbar.addEventListener('click', function (event) {
+urlbar.addEventListener('click', async function (event) {
     // Urlbar icon click
     if (event.offsetX <= 24 * madScaleFactor) {
         if (loading) {
@@ -505,9 +505,9 @@ urlbar.addEventListener('click', function (event) {
         return;
     }
     if (madKbdSupport !== 1) {
-        if (localStorage.sysplugIntegration) {
-            madSysPlug.beginInput();
-        } else {
+        if (madSysPlug.inputStatus) {
+            madSysPlug.focusInput();
+        } else if (!await madSysPlug.beginInput()) {
             madPrompt(madGetString("CV_PROMPT_ENTER_URL"), function (url) {
                 if (url === null) return;
                 if (goButton.style.display !== "block") {
@@ -529,6 +529,15 @@ urlbar.addEventListener('focus', function () {
 urlbar.addEventListener('keyup', function (e) {
     if (e.key === "Enter") {
         go(urlbar.value);
+    }
+});
+
+document.addEventListener("madinput", function (event) {
+    const textbox = document.activeElement;
+    if (textbox === urlbar) {
+        if (event.key === "Enter") {
+            go(urlbar.value);
+        }
     }
 });
 

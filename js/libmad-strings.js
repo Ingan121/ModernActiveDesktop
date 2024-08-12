@@ -96,7 +96,7 @@
         "MAD_DEBUG_ENABLE_LOGGING": "Enable debug logging",
         "MAD_DEBUG_DISABLE_LOGGING": "Disable debug logging",
         "MAD_DEBUG_SIMULATE": "Simulate other environment",
-        "MAD_DEBUG_KBD_SUPPORT": "MAD_DEBUG_KBD_SUPPORT",
+        "MAD_DEBUG_KBD_SUPPORT": "Change keyboard support level",
         "MAD_DEBUG_DEACTIVATE": "Deactivate debug mode",
         // #endregion
 
@@ -640,7 +640,13 @@
 
 
         // #region Channel bar strings
-        "CB_TITLE": "Channel Bar"
+        "CB_TITLE": "Channel Bar",
+        // #endregion
+
+
+        // #region On-Screen Keyboard strings
+        "OSK_TITLE": "On-Screen Keyboard",
+        "OSK_INFO": "Keyboard input is not supported on Wallpaper Engine 2.5+. To enter text using a keyboard, please <a href=\"javascript:madOpenWindow('SysplugSetupGuide.md',true);sendMadInput('Escape')\">set up the system plugin</a>.",
         // #endregion
     }
     window.madStrings = top.madStrings || fallbackStrings;

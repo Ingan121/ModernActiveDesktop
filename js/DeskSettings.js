@@ -21,10 +21,13 @@ const msgbox = document.getElementById("msgbox");
 const msgboxTitlebar = msgbox.getElementsByClassName("title-bar")[0];
 const msgboxMessage = document.getElementById("msgbox-msg");
 const msgboxIcon = document.getElementById("msgbox-icon");
-const msgboxInput = document.getElementById("msgbox-input");
+window.msgboxInput = document.getElementById("msgbox-input");
 const msgboxCloseBtn = document.getElementById("msgbox-close");
 const msgboxBtn1 = document.getElementById("msgbox-btn1");
 const msgboxBtn2 = document.getElementById("msgbox-btn2");
+const osk = document.getElementById("osk");
+const oskTitlebar = osk.getElementsByClassName("title-bar")[0];
+const oskWindow = document.getElementById("oskWindow");
 const miniPickerBase = document.getElementsByClassName("miniPicker")[0];
 const errorWnd = document.getElementById("errorWnd");
 const mainMenuBg = document.getElementById("mainMenuBg");
@@ -109,6 +112,7 @@ changeSoundScheme(localStorage.madesktopSoundScheme || "98");
 
 deskMovers[0] = new DeskMover(windowContainers[0], "");
 initSimpleMover(msgbox, msgboxTitlebar, [msgboxCloseBtn]);
+initSimpleMover(osk, oskTitlebar, []);
 if (localStorage.madesktopChanViewTopMargin || localStorage.madesktopChanViewRightMargin) {
     debugMenu.style.top = localStorage.madesktopChanViewTopMargin || "0";
     debugMenu.style.right = localStorage.madesktopChanViewRightMargin || "0";
@@ -190,7 +194,7 @@ if (localStorage.madesktopItemCount > 1) {
 }
 
 if (localStorage.madesktopLastVer) {
-    if (!localStorage.madesktopLastVer.startsWith("3.2")) { // Update from 3.1 and below
+    if (!localStorage.madesktopLastVer.startsWith("3.3")) { // Update from 3.1 and below
         delete localStorage.madesktopHideWelcome;
         delete localStorage.madesktopCheckedChanges;
         delete localStorage.madesktopCheckedConfigs;
@@ -204,7 +208,7 @@ if (localStorage.madesktopLastVer) {
         startup();
     }
 
-    if (localStorage.madesktopLastVer !== "3.2.2" && localStorage.sysplugIntegration) { // Update from 3.2.1 and below
+    if (localStorage.madesktopLastVer !== "3.3.0" && localStorage.sysplugIntegration) { // Update from 3.2.1 and below
         madAlert("locid:MAD_MSG_SYSPLUG_UPDATED", function () {
             openWindow("SysplugSetupGuide.md", true);
         });
@@ -219,7 +223,7 @@ if (localStorage.madesktopLastVer) {
         localStorage.madesktopChanViewBottomMargin = "0";
     }
 }
-localStorage.madesktopLastVer = "3.2.2";
+localStorage.madesktopLastVer = "3.3.0";
 
 if (localStorage.madesktopItemVisible === "false") {
     windowContainers[0].style.display = "none";
@@ -232,6 +236,10 @@ bgHtmlView.addEventListener('load', function () {
     this.contentDocument.body.style.zoom = scaleFactor;
     hookIframeSize(bgHtmlView);
     bgHtmlView.contentDocument.addEventListener("contextmenu", openMainMenu, false);
+});
+oskWindow.addEventListener('load', function () {
+    this.contentDocument.body.style.zoom = scaleFactor;
+    hookIframeSize(oskWindow);
 });
 
 // #region Main context menu things (only for browser use)
@@ -297,6 +305,7 @@ function closeMainMenu() {
 msgboxBg.addEventListener('click', flashDialog);
 
 msgbox.addEventListener('click', preventDefault);
+osk.addEventListener('click', preventDefault);
 
 window.addEventListener('resize', function () {
     changeScale(scaleFactor);
@@ -1369,6 +1378,7 @@ async function madAlert(msg, callback, icon = "info") {
         msgboxIcon.src = `images/${icon}.png`;
         msgboxBtn2.style.display = "none";
         msgboxInput.style.display = "none";
+        osk.style.display = "none";
 
         document.addEventListener('keypress', keypress);
         document.addEventListener('keyup', keyup);
@@ -1409,6 +1419,7 @@ async function madConfirm(msg, callback) {
         msgboxIcon.src = "images/question.png";
         msgboxBtn2.style.display = "block";
         msgboxInput.style.display = "none";
+        osk.style.display = "none";
 
         document.addEventListener('keypress', keypress);
         document.addEventListener('keyup', keyup);
@@ -1453,18 +1464,8 @@ async function madConfirm(msg, callback) {
 }
 
 async function madPrompt(msg, callback, hint, text) {
-    return new Promise(resolve => {
-        if (runningMode === WE && kbdSupport === 0) { // Wallpaper Engine normally does not support keyboard input
-            if (kbdSupport === -1) {
-                // WPE 2.5 broke the native JS alert/confirm/prompt,
-                // locking the wallpaper until the user reloads the wallpaper from the WPE UI
-                // (can't even close the dialog)
-                // Temp fix?: just disable the prompt
-                // TODO: Implement a proper keyboard input with the system plugin
-                // Also add a simple on-screen keyboard for those without the plugin
-                //madAlert("prompt disabled for now", null, "error");
-                //return;
-            }
+    return new Promise(async resolve => {
+        if (kbdSupport === 0) { // Wallpaper Engine normally does not support keyboard input
             const res = prompt(msg, text);
             callback(res);
             resolve(res);
@@ -1478,6 +1479,12 @@ async function madPrompt(msg, callback, hint, text) {
         msgboxInput.placeholder = hint || "";
         msgboxInput.value = text || "";
 
+        if (hint.length > 50 || text.length > 50) {
+            msgboxInput.style.width = "500px";
+        } else {
+            msgboxInput.style.width = "100%";
+        }
+
         document.addEventListener('keypress', keypress);
         document.addEventListener('keyup', keyup);
         msgboxInput.addEventListener('click', focus);
@@ -1488,7 +1495,21 @@ async function madPrompt(msg, callback, hint, text) {
         showDialog();
         msgboxInput.focus();
         if (kbdSupport === -1) {
-            madSysPlug.beginInput();
+            // WPE 2.5 broke the native JS alert/confirm/prompt,
+            // locking the wallpaper until the user reloads the wallpaper from the WPE UI
+            // (can't even close the dialog)
+            // If the system plugin is available, use that for receiving input
+            // Otherwise, use the on-screen keyboard
+            if (!await madSysPlug.beginInput()) {
+                oskWindow.src = "apps/osk/index.html";
+                osk.style.display = "block";
+                osk.style.left = (vWidth - osk.offsetWidth - parseInt(localStorage.madesktopChanViewRightMargin) - 100) + "px";
+                osk.style.top = (vHeight - osk.offsetHeight - parseInt(localStorage.madesktopChanViewBottomMargin) - 50) + "px";
+            } else {
+                osk.style.display = "none";
+            }
+        } else {
+            osk.style.display = "none";
         }
 
         function keypress(event) {

@@ -20,6 +20,9 @@
         inputStatus: false
     };
 
+    let eventSource;
+    let waitingForBeginInput = false;
+
     async function request(endpoint, data, headers = {}) {
         if (endpoint !== "connecttest" && !localStorage.sysplugIntegration) {
             return;
@@ -70,60 +73,96 @@
     }
 
     async function beginInput() {
-        const response = await request("begininput");
-        if (response === "OK") {
-            madSysPlug.inputStatus = true;
-
-            // long polling from /getinput
-            const inputEvent = new Event("madinput");
-            while (madSysPlug.inputStatus) {
-                await new Promise(resolve => {
-                    const eventSource = new EventSource("http://localhost:3031/getinput");
-                    eventSource.onmessage = function(event) {
-                        inputEvent.key = event.data;
-                        document.dispatchEvent(inputEvent);
-                        if (event.data === "Escape") {
-                            madSysPlug.inputStatus = false;
-                        }
-                        eventSource.close();
-                        resolve();
-                    };
-                    eventSource.onerror = function (error) {
-                        console.error("EventSource failed:", error);
-                        eventSource.close();
-                        madSysPlug.inputStatus = false;
-                        resolve();
-                    };
-                });
-            }
-            return true;
-        } else {
+        if (madSysPlug.inputStatus || waitingForBeginInput) {
             return false;
+        }
+
+        try {
+            waitingForBeginInput = true; // Prevent multiple beginInput calls
+            const response = await request("begininput");
+            waitingForBeginInput = false;
+            if (response !== "OK") {
+                return false;
+            }
+        } catch (error) {
+            waitingForBeginInput = false;
+            return false;
+        }
+
+        madSysPlug.inputStatus = true;
+        getInput();            
+        return true;
+    }
+
+    // long polling from /getinput
+    async function getInput() {
+        const inputEvent = new Event("madinput");
+        while (madSysPlug.inputStatus) {
+            await new Promise(resolve => {
+                eventSource = new EventSource("http://localhost:3031/getinput");
+                eventSource.onmessage = function(event) {
+                    inputEvent.key = event.data;
+                    document.dispatchEvent(inputEvent);
+                    if (event.data === "Escape") {
+                        madSysPlug.inputStatus = false;
+                    }
+                    eventSource.close();
+                    resolve();
+                };
+                eventSource.onerror = function (error) {
+                    console.error("EventSource failed:", error);
+                    eventSource.close();
+                    madSysPlug.inputStatus = false;
+                    resolve();
+                };
+            });
         }
     }
 
     function focusInput() {
+        if (!madSysPlug.inputStatus) {
+            beginInput();
+            return;
+        }
         setTimeout(() => {
             // Wait a bit cuz wallpaper click un-focuses the input panel
             request("focusinput");
         }, 100);
     }
 
-    async function endInput() {
+    async function endInput(abrupt = false) {
+        if (abrupt) {
+            madSysPlug.inputStatus = false;
+            if (eventSource) {
+                eventSource.close();
+            }
+            return -1;
+        }
         const response = await request("endinput");
         if (response === "OK") {
             madSysPlug.inputStatus = false;
+            if (eventSource) {
+                eventSource.close();
+            }
         }
         return response;
     }
 
     async function getClipboard() {
-        return await request("clipboard");
+        return await request("clipboard") || "[Pasting requires the system plugin]";
     }
 
     window.addEventListener("beforeunload", () => {
         if (madSysPlug.inputStatus) {
             endInput();
+        }
+    });
+
+    window.addEventListener("message", (event) => {
+        if (event.data.type === "sysplug-option-changed") {
+            if (!localStorage.sysplugIntegration && madSysPlug.inputStatus) {
+                endInput(true);
+            }
         }
     });
 })();

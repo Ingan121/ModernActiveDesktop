@@ -1,0 +1,79 @@
+@charset "utf-8";
+
+html, body {
+    overflow: hidden;
+}
+
+body {
+    background-color: var(--button-face);
+    margin: 0;
+    margin-top: 3px;
+}
+
+body[data-ctrl="true"] button[data-key="ctrl"] {
+    box-shadow: var(--border-sunken-outer), var(--border-sunken-inner);
+    text-shadow: 1px 1px var(--button-text);
+}
+
+body[data-shift="1"] button[data-key="shift"] {
+    box-shadow: var(--border-sunken-outer), var(--border-sunken-inner);
+    text-shadow: 1px 1px var(--button-text);
+}
+
+body[data-shift="2"] button[data-key="caps"] {
+    box-shadow: var(--border-sunken-outer), var(--border-sunken-inner);
+    text-shadow: 1px 1px var(--button-text);
+}
+
+body:not([data-shift="0"]) button:not(.special) {
+    text-transform: uppercase;
+}
+
+.row {
+    display: flex;
+    justify-content: center;
+}
+
+button {
+    min-width: 24px;
+    padding: 0;
+    font-size: 12px;
+    margin: 1px;
+}
+
+button:focus {
+    outline: none;
+}
+
+button[data-key="space"] {
+    width: 200px;
+}
+
+button[data-key="ctrl"] {
+    width: 50px;
+    margin-right: 25px;
+}
+
+button[data-key="shift"] {
+    width: 48px;
+}
+
+button[data-key="caps"] {
+    width: 40px;
+}
+
+button[data-key="tab"] {
+    width: 30px;
+}
+
+button[data-key="enter"] {
+    width: 40px;
+}
+
+button[data-key="left"] {
+    margin-left: 25px;
+}
+
+mad-string {
+    white-space: inherit;
+}

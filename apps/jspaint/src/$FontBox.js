@@ -5,7 +5,7 @@
 			FontDetective.each(callback);
 			FontDetective.all(afterAllCallback);
 		}
-		if (window.queryLocalFonts) {
+		if (window.queryLocalFonts && madRunningMode === 0) {
 			let availableFonts;
 			try {
 				availableFonts = await window.queryLocalFonts();

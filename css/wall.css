@@ -554,7 +554,7 @@ body[data-cm-shadow] .contextMenuBg {
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: 99995;
+    z-index: 99994;
 }
 
 #msgbox {
@@ -564,7 +564,7 @@ body[data-cm-shadow] .contextMenuBg {
     left: 50%;
     min-width: 300px;
     max-width: 50%;
-    z-index: 99996;
+    z-index: 99995;
 }
 
 #msgbox-close {
@@ -598,13 +598,29 @@ body::after { /* preload images */
     justify-content: center;
 }
 
+#osk {
+    width: 370px;
+    height: 180px;
+    position: absolute;
+    z-index: 99996;
+    display: none;
+    right: 300px;
+    bottom: 300px;
+}
+
+#oskWindow {
+    width: 100%;
+    height: 160px;
+    border: none;
+}
+
 .miniPicker {
     position: absolute;
     top: 0;
     left: 0;
     width: 72px;
     height: 115px;
-    z-index: 99994;
+    z-index: 99993;
     display: none;
 }
 

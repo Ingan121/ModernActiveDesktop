@@ -20,6 +20,7 @@ document.addEventListener('madinput', async (event) => {
     }
 
     const origCursorPos = textbox.selectionStart;
+    let changed = false;
     switch (event.key) {
         case "Enter":
             if (textbox.tagName === "TEXTAREA") {
@@ -43,6 +44,7 @@ document.addEventListener('madinput', async (event) => {
                 textbox.value = textbox.value.slice(0, textbox.selectionStart - 1) + textbox.value.slice(textbox.selectionStart);
             }
             textbox.selectionStart = textbox.selectionEnd = origCursorPos - 1;
+            changed = true;
             break;
         case "Delete":
             if (textbox.selectionStart === textbox.value.length) {
@@ -53,6 +55,7 @@ document.addEventListener('madinput', async (event) => {
                 textbox.value = textbox.value.slice(0, textbox.selectionStart) + textbox.value.slice(textbox.selectionStart + 1);
             }
             textbox.selectionStart = textbox.selectionEnd = origCursorPos;
+            changed = true;
             break;
         case "ArrowLeft":
             textbox.selectionStart = textbox.selectionEnd = Math.max(0, origCursorPos - 1);
@@ -67,6 +70,11 @@ document.addEventListener('madinput', async (event) => {
             textbox.select();
             document.execCommand('copy');
             break;
+        case "^x":
+            textbox.select();
+            document.execCommand('cut');
+            changed = true;
+            break;
         case "^v":
             const clipboard = await madSysPlug.getClipboard();
             if (textbox.selectionStart === textbox.value.length) {
@@ -77,6 +85,7 @@ document.addEventListener('madinput', async (event) => {
                 textbox.value = textbox.value.slice(0, textbox.selectionStart) + clipboard + textbox.value.slice(textbox.selectionStart);
             }
             textbox.selectionStart = textbox.selectionEnd = origCursorPos + clipboard.length;
+            changed = true;
             break;
         default:
             if (event.key.length === 1) {
@@ -100,6 +109,12 @@ document.addEventListener('madinput', async (event) => {
                 textbox.selectionStart = textbox.selectionEnd = origCursorPos + compositedInput.length;
                 const keyEvent = new KeyboardEvent("keypress", { key: "Enter" });
                 document.dispatchEvent(keyEvent);
+                madSysPlug.inputStatus = false;
             }
+            changed = true;
+    }
+    if (changed) {
+        const inputEvent = new Event("input", { bubbles: true });
+        textbox.dispatchEvent(inputEvent);
     }
 });

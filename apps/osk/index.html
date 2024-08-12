@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>On-Screen Keyboard</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../../css/98.css">
+    <link rel="stylesheet" href="osk.css">
+    <link id="scheme" rel="stylesheet" href="data:text/css,">
+    <style id="langStyle"></style>
+    <style id="style"></style>
+</head>
+<body id="madKeyboard" data-shift="0">
+    <div class="row">
+        <button data-key="`" data-shift="~">`</button>
+        <button data-key="1" data-shift="!">1</button>
+        <button data-key="2" data-shift="@">2</button>
+        <button data-key="3" data-shift="#">3</button>
+        <button data-key="4" data-shift="$">4</button>
+        <button data-key="5" data-shift="%">5</button>
+        <button data-key="6" data-shift="^">6</button>
+        <button data-key="7" data-shift="&">7</button>
+        <button data-key="8" data-shift="*">8</button>
+        <button data-key="9" data-shift="(">9</button>
+        <button data-key="0" data-shift=")">0</button>
+        <button data-key="-" data-shift="_">-</button>
+        <button data-key="=" data-shift="+">=</button>
+        <button class="special" data-key="backspace">⌫</button>
+    </div>
+    <div class="row">
+        <button class="special" data-key="tab">Tab</button>
+        <button data-key="q">q</button>
+        <button data-key="w">w</button>
+        <button data-key="e">e</button>
+        <button data-key="r">r</button>
+        <button data-key="t">t</button>
+        <button data-key="y">y</button>
+        <button data-key="u">u</button>
+        <button data-key="i">i</button>
+        <button data-key="o">o</button>
+        <button data-key="p">p</button>
+        <button data-key="[" data-shift="{">[</button>
+        <button data-key="]" data-shift="}">]</button>
+        <button data-key="\" data-shift="|">\</button>
+    </div>
+    <div class="row">
+        <button class="special" data-key="caps">Caps</button>
+        <button data-key="a">a</button>
+        <button data-key="s">s</button>
+        <button data-key="d">d</button>
+        <button data-key="f">f</button>
+        <button data-key="g">g</button>
+        <button data-key="h">h</button>
+        <button data-key="j">j</button>
+        <button data-key="k">k</button>
+        <button data-key="l">l</button>
+        <button data-key=";" data-shift=":">;</button>
+        <button data-key="'" data-shift='"'>"</button>
+        <button class="special" data-key="enter">↵</button>
+    </div>
+    <div class="row">
+        <button class="special" data-key="shift">⇧ Shift</button>
+        <button data-key="z">z</button>
+        <button data-key="x">x</button>
+        <button data-key="c">c</button>
+        <button data-key="v">v</button>
+        <button data-key="b">b</button>
+        <button data-key="n">n</button>
+        <button data-key="m">m</button>
+        <button data-key="," data-shift="<">,</button>
+        <button data-key="." data-shift=">">.</button>
+        <button data-key="/" data-shift="?">/</button>
+        <button class="special" data-key="shift">⇧ Shift</button>
+    </div>
+    <div class="row">
+        <button class="special" data-key="ctrl">Ctrl</button>
+        <button class="special" data-key="space">Space</button>
+        <button class="special" data-key="left">←</button>
+        <button class="special" data-key="right">→</button>
+    </div>
+    <mad-string data-locid="OSK_INFO">Keyboard input is not supported on Wallpaper Engine 2.5+. To enter text using a keyboard, please <a href="javascript:madOpenWindow('SysplugSetupGuide.md',true);sendMadInput('Escape')">set up the system plugin</a>.</mad-string>
+    <script src="../../js/libmad-strings.js"></script>
+    <script src="../../js/libmad.js"></script>
+    <script src="osk.js"></script>
+</body>
+</html>

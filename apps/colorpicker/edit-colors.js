@@ -321,15 +321,11 @@
 
 				input.addEventListener("click", function () {
 					if (madKbdSupport !== 1) {
-						if (localStorage.sysplugIntegration) {
-							madSysPlug.focusInput();
-						} else {
-							madPrompt(madGetString("UI_PROMPT_ENTER_VALUE"), function (res) {
-								if (res === null) return;
-								input.value = res;
-								handle_input(input);
-							}, '', input.value);
-						}
+						madPrompt(madGetString("UI_PROMPT_ENTER_VALUE"), function (res) {
+							if (res === null) return;
+							input.value = res;
+							handle_input(input);
+						}, '', input.value);
 					}
 				});
 
