@@ -51,7 +51,7 @@ const metrics = {
 
 const tempFilePath = app.getPath('temp') + '/madsp-uploaded.dat';
 const tokenPath = path.join(__dirname, '../../../madsp-token.txt');
-const wpeCheckPath = path.join(__dirname, '../../../index.html'); // Check if this MADSysPlug is bundled with the WPE Workshop distribution
+const wpeCheckPath = path.join(__dirname, '../../../js/DeskSettings.js'); // Check if this MADSysPlug is bundled with the WPE Workshop distribution
 let token = null;
 if (!ignoreToken) {
   if (!fs.existsSync(tokenPath) && fs.existsSync(wpeCheckPath)) {
