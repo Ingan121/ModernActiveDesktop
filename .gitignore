@@ -1,5 +1,6 @@
 # system plugin installation
 /systemplugin
+madsp-token.txt
 
 *.zip
 *.exe

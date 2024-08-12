@@ -345,6 +345,9 @@ async function checkSysplug() {
         case -1:
             connectionStatus.locId = "MADCONF_CONNECTTEST_OUTDATED";
             break;
+        case -2:
+            connectionStatus.locId = "MADCONF_CONNECTTEST_DENIED";
+            break;
         case 0:
             connectionStatus.locId = "MADCONF_CONNECTTEST_FAIL";
             break;

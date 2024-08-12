@@ -49,7 +49,7 @@
         // #region Common messages
         "UI_MSG_SYSPLUG_REQUIRED": "This feature requires system plugin integration.",
         "UI_MSG_NO_SYSPLUG": "System plugin is not running. Please make sure you have installed it properly.",
-        "UI_MSG_SYSPLUG_ERROR": "An error occured!<br>System plugin response: ",
+        "UI_MSG_SYSPLUG_ERROR": "An error occured!<br>System plugin response: %s",
         "UI_PROMPT_RUNJS": "Enter JavaScript code to run.",
         "UI_PROMPT_ENTER_VALUE": "Enter value",
         "UI_PROMPT_ENTER_VALUE_RESETTABLE": "Enter value (leave empty to reset)",
@@ -354,6 +354,7 @@
         "MADCONF_CONNECTTEST_SUCCESS": "System plugin connection successful!",
         "MADCONF_CONNECTTEST_FAIL": "System plugin is not running. Please install the system plugin.",
         "MADCONF_CONNECTTEST_OUTDATED": "System plugin is outdated! Please update the system plugin.",
+        "MADCONF_CONNECTTEST_DENIED": "System plugin connection has been denied.",
         "MADCONF_SYSPLUG_UNSUPPORTED": "System plugin requires Windows 10 or higher.",
 
         "MADCONF_PROMPT_ENTER_SCALE": "Enter scale (%) :",

@@ -22,12 +22,29 @@
 
     let eventSource;
     let waitingForBeginInput = false;
+    let token = top.spToken || null;
+
+    if (window.madMainWindow) {
+        fetchToken();
+    }
+
+    async function fetchToken() {
+        try {
+            token = (await fetch("madsp-token.txt").then(res => res.text())).split("\r\n")[0];
+            window.spToken = token;
+        } catch (error) {
+            console.error("Failed to get the token: ", error);
+        }
+    }
 
     async function request(endpoint, data, headers = {}) {
         if (endpoint !== "connecttest" && !localStorage.sysplugIntegration) {
             return;
         }
 
+        if (token) {
+            headers["X-MADSP-Token"] = token;
+        }
         if (data) {
             if (typeof data !== "string") {
                 data = JSON.stringify(data);
@@ -50,6 +67,9 @@
             if (response === localStorage.madesktopLastVer) {
                 // The system plugin is up to date
                 return 1;
+            } else if (response === "403 Forbidden") {
+                // The system plugin has denied the connection
+                return -2;
             } else {
                 // The system plugin is outdated
                 return -1;

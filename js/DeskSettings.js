@@ -1075,8 +1075,9 @@ async function openExternalExternally(url, fullscreen, noInternal = false) {
             headers["X-Use-ChannelViewer"] = "true";
         }
         try {
-            if (await madSysPlug.openExternal(url, headers) !== "OK") {
-                await madAlert(madGetString("UI_MSG_SYSPLUG_ERROR"), null, "error");
+            const response = await madSysPlug.openExternal(url, headers);
+            if (response !== "OK") {
+                await madAlert(madGetString("UI_MSG_SYSPLUG_ERROR", response), null, "error");
                 copyPrompt(url);
             }
         } catch {

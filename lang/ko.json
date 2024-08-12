@@ -28,7 +28,7 @@
 
     "UI_MSG_SYSPLUG_REQUIRED": "이 기능은 시스템 플러그인 연동이 필요합니다.",
     "UI_MSG_NO_SYSPLUG": "시스템 플러그인이 실행 중이 아닙니다. 시스템 플러그인이 설치되어 있는지 확인해주세요.",
-    "UI_MSG_SYSPLUG_ERROR": "오류가 발생하였습니다! 시스템 플러그인 응답: ",
+    "UI_MSG_SYSPLUG_ERROR": "오류가 발생하였습니다! 시스템 플러그인 응답: %s",
     "UI_PROMPT_RUNJS": "실행할 JavaScript 코드 입력",
     "UI_PROMPT_ENTER_VALUE": "값 입력",
     "UI_PROMPT_ENTER_VALUE_RESETTABLE": "값 입력 (빈칸으로 두면 초기화)",
@@ -300,6 +300,7 @@
     "MADCONF_CONNECTTEST_SUCCESS": "시스템 플러그인 연결 성공!",
     "MADCONF_CONNECTTEST_FAIL": "시스템 플러그인이 실행 중이 아닙니다. 플러그인을 설치해주세요.",
     "MADCONF_CONNECTTEST_OUTDATED": "시스템 플러그인이 오래되었습니다. 플러그인을 업데이트해주세요.",
+    "MADCONF_CONNECTTEST_DENIED": "시스템 플러그인 연결이 거부되었습니다.",
     "MADCONF_SYSPLUG_UNSUPPORTED": "시스템 플러그인은 Windows 10 이상에서만 지원됩니다.",
 
     "MADCONF_PROMPT_ENTER_SCALE": "배율 입력 (%) :",
