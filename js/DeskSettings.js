@@ -123,6 +123,7 @@ if (typeof wallpaperOnVideoEnded === "function") { // Check if running in Wallpa
     runningMode = WE;
     if (parseInt(navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./)[2]) >= 100) {
         kbdSupport = -1;
+        window.alert = window.confirm = window.prompt = () => {};
     } else {
         kbdSupport = 0;
     }
@@ -1111,6 +1112,7 @@ function iframeClickEventCtrl(clickable) {
     log(clickable ? "clickable" : "unclickable", "debug", caller + " -> iframeClickEventCtrl");
     const value = clickable ? "auto" : "none";
     bgHtmlView.style.pointerEvents = value;
+    oskWindow.style.pointerEvents = value;
     for (let i = 0; i < windowContainers.length; i++) {
         windowContainers[i].style.pointerEvents = value;
     }
@@ -1464,7 +1466,7 @@ async function madConfirm(msg, callback) {
     });
 }
 
-async function madPrompt(msg, callback, hint, text) {
+async function madPrompt(msg, callback, hint = "", text = "") {
     return new Promise(async resolve => {
         if (kbdSupport === 0) { // Wallpaper Engine normally does not support keyboard input
             const res = prompt(msg, text);
@@ -1477,8 +1479,8 @@ async function madPrompt(msg, callback, hint, text) {
         msgboxIcon.style.display = "none";
         msgboxBtn2.style.display = "block";
         msgboxInput.style.display = "block";
-        msgboxInput.placeholder = hint || "";
-        msgboxInput.value = text || "";
+        msgboxInput.placeholder = hint;
+        msgboxInput.value = text;
 
         if (hint.length > 50 || text.length > 50) {
             msgboxInput.style.width = "500px";
@@ -1506,11 +1508,7 @@ async function madPrompt(msg, callback, hint, text) {
                 osk.style.display = "block";
                 osk.style.left = (vWidth - osk.offsetWidth - parseInt(localStorage.madesktopChanViewRightMargin) - 100) + "px";
                 osk.style.top = (vHeight - osk.offsetHeight - parseInt(localStorage.madesktopChanViewBottomMargin) - 50) + "px";
-            } else {
-                osk.style.display = "none";
             }
-        } else {
-            osk.style.display = "none";
         }
 
         function keypress(event) {
@@ -1597,6 +1595,7 @@ function hideDialog() {
     } else {
         msgboxBg.style.display = "none";
     }
+    osk.style.display = "none";
 }
 
 function flashDialog() {

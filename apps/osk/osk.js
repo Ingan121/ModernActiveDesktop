@@ -53,9 +53,8 @@ for (const key of keys) {
                 case 'caps':
                     shift = shift !== 2 ? 2 : 0;
                     break;
-                case 'tab':
-                    // Do nothing
-                    // Only for aesthetics
+                case 'esc':
+                    sendMadInput('Escape');
                     break;
             }
         }

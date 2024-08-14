@@ -24,17 +24,10 @@
     let waitingForBeginInput = false;
     let token = top.spToken || null;
 
-    if (window.madMainWindow) {
-        fetchToken();
-    }
-
     async function fetchToken() {
-        try {
-            token = (await fetch("madsp-token.txt").then(res => res.text())).split("\r\n")[0];
-            window.spToken = token;
-        } catch (error) {
-            console.error("Failed to get the token: ", error);
-        }
+        const url = new URL("madsp-token.txt", top.location.href).href;
+        token = (await fetch(url).then(res => res.text())).split("\r\n")[0];
+        window.spToken = token;
     }
 
     async function request(endpoint, data, headers = {}) {
@@ -42,6 +35,13 @@
             return;
         }
 
+        if (!token && (window.runningMode || window.madRunningMode || 0) === 1) {
+            try {
+                await fetchToken();
+            } catch (error) {
+                console.error("Failed to get the token; continuing without it", error);
+            }
+        }
         if (token) {
             headers["X-MADSP-Token"] = token;
         }

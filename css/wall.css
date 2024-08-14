@@ -599,8 +599,9 @@ body::after { /* preload images */
 }
 
 #osk {
-    width: 370px;
-    height: 180px;
+    --extra-border-size: 0px;
+    width: calc(370px + var(--extra-border-size) * 2);
+    height: calc(180px + var(--extra-border-size) * 2 + var(--extra-border-bottom));
     position: absolute;
     z-index: 99996;
     display: none;
@@ -609,9 +610,9 @@ body::after { /* preload images */
 }
 
 #oskWindow {
-    width: 100%;
+    width: calc(100% - var(--extra-border-size) * 2);
     height: 160px;
-    border: none;
+    border: solid var(--extra-border-size) transparent;
 }
 
 .miniPicker {

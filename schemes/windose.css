@@ -55,7 +55,7 @@
 }
 
 .windowContainer[data-style="wnd"],
-.os-window {
+.os-window, #osk {
     background-color: var(--active-border) !important;
     background-image: var(--bottom-image) !important;
     background-position: 3px bottom !important;
@@ -63,11 +63,13 @@
     image-rendering: pixelated !important;
 }
 
-.windowContainer[data-style="wnd"]:not(#JustHereToGiveItPriority) {
+.windowContainer[data-style="wnd"]:not(#JustHereToGiveItPriority),
+#osk {
     box-shadow: var(--title-text) -1px -1px inset, var(--title-text) 1px 1px inset, 2px 2px #4D22CD50 !important;
 }
 
-.windowContainer[data-style="wnd"] .windowElement {
+.windowContainer[data-style="wnd"] .windowElement,
+#oskWindow {
     background-color: var(--button-face);
 }
 
@@ -79,12 +81,7 @@
         2px 2px #4D22CD50 !important;
 }
 
-#madconf-preview[data-no-win-shadow] #activeWindow {
-    box-shadow: var(--title-text) -1px -1px inset, var(--title-text) 1px 1px inset,
-        var(--active-border) -3px -3px inset, var(--active-border) 3px 3px inset,
-        var(--title-text) -4px -4px inset, var(--title-text) 4px 4px inset !important;
-}
-
+#madconf-preview[data-no-win-shadow] #activeWindow,
 body[data-no-win-shadow] #msgbox:not([data-inactive]) {
     box-shadow: var(--title-text) -1px -1px inset, var(--title-text) 1px 1px inset,
         var(--active-border) -3px -3px inset, var(--active-border) 3px 3px inset,
@@ -97,7 +94,8 @@ body[data-no-win-shadow] #msgbox:not([data-inactive]) {
 }
 
 .windowContainer[data-style="wnd"][data-inactive]:not(#JustHereToGiveItPriority),
-body[data-no-win-shadow] .windowContainer[data-style="wnd"]:not(#JustHereToGiveItPriority) {
+body[data-no-win-shadow] .windowContainer[data-style="wnd"]:not(#JustHereToGiveItPriority),
+body[data-no-win-shadow] #osk {
     box-shadow: var(--title-text) -1px -1px inset, var(--title-text) 1px 1px inset !important;
 }
 
@@ -136,7 +134,8 @@ body[data-no-win-shadow] .windowContainer[data-style="wnd"]:not(#JustHereToGiveI
     border-bottom: 2px solid var(--inactive-title) !important;
 }
 
-#msgbox .title-bar {
+#msgbox .title-bar,
+#osk .title-bar {
     box-shadow: var(--title-text) -1px -1px inset, var(--title-text) 1px 1px inset, var(--title-text) 0 1px 0;
 }
 
@@ -172,7 +171,8 @@ body[data-no-win-shadow] .windowContainer[data-style="wnd"]:not(#JustHereToGiveI
     margin-left: 0;
 }
 
-.windowContainer[data-style="wnd"] .windowElement {
+.windowContainer[data-style="wnd"] .windowElement,
+#oskWindow {
     border-color: var(--title-text) !important;
 }
 
