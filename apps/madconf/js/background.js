@@ -14,7 +14,7 @@ const customWebImgItem = document.getElementById('customWebImgItem');
 const weImgItem = document.getElementById('weImgItem');
 const videoImgItem = document.getElementById('videoImgItem');
 const wpBrowseBtn = document.getElementById('wpBrowseBtn');
-const wpEnterUrlBtn = document.getElementById('wpEnterUrlBtn');
+const wpPatternBtn = document.getElementById('wpPatternBtn');
 const imgModeSelector = document.getElementById('imgModeSelector');
 const wpVideoMuteChkBox = document.getElementById('wpVideoMuteChkBox');
 const wpVideoMuteLabel = document.querySelector('label[for=wpVideoMuteChkBox]');
@@ -53,11 +53,6 @@ for (const imgItem of imgItems) {
                 preview.contentWindow.location.reload();
             }
             imgModeSelector.disabled = false;
-            switchDisplayOptionElement(false);
-        } else if (imgItem.id == 'customWebImgItem') {
-            preview.contentWindow.changeBgType('web');
-            preview.contentWindow.bgHtmlView.src = this.dataset.url;
-            imgModeSelector.disabled = true;
             switchDisplayOptionElement(false);
         } else if (imgItem.id == 'weImgItem') {
             preview.contentWindow.changeBgType('image');
@@ -121,13 +116,26 @@ wpBrowseBtn.addEventListener('click', async function () {
     reader.readAsDataURL(file);
 });
 
+wpPatternBtn.addEventListener('click', async function () {
+    const patternB64 = await madPrompt("Enter the base64 pattern data");
+    if (patternB64 === null) return;
+    if (patternB64 === '') {
+        delete localStorage.madesktopBgPattern;
+        parent.document.documentElement.style.backgroundImage = 'none';
+    } else {
+        const pattern = parent.base64ToPattern(patternB64);
+        parent.document.documentElement.style.backgroundImage = `url('${parent.genPatternImage(pattern)}')`;
+        localStorage.madesktopBgPattern = patternB64;
+    }
+});
+
 imgModeSelector.addEventListener('change', function () {
     preview.contentWindow.changeBgImgMode(this.value);
 });
 
 imgModeSelector.value = localStorage.madesktopBgImgMode || 'center';
 
-wpEnterUrlBtn.addEventListener('click', function () {
+customWebImgItem.addEventListener('click', function () {
     madPrompt(madGetString('MADCONF_MSG_ENTER_URL'), function (res) {
         if (res === null) return;
         preview.contentWindow.changeBgType('web');
@@ -139,9 +147,7 @@ wpEnterUrlBtn.addEventListener('click', function () {
             delete activeItem.dataset.active;
         }
         customWebImgItem.dataset.active = true;
-        customWebImgItem.dataset.url = res;
-        customWebImgItem.style.display = 'block';
-        scrollIntoView(customWebImgItem);
+        switchDisplayOptionElement(false);
     });
 });
 
@@ -222,9 +228,7 @@ if (localStorage.madesktopBgType == 'web') {
         if (activeItem) {
             delete activeItem.dataset.active;
         }
-        customWebImgItem.dataset.url = localStorage.madesktopBgHtmlSrc;
         customWebImgItem.dataset.active = true;
-        customWebImgItem.style.display = 'block';
         imgModeSelector.disabled = true;
         scrollIntoView(customWebImgItem);
     }
@@ -268,11 +272,7 @@ window.apply = function () {
     localStorage.madesktopBgImgMode = imgModeSelector.value;
 
     switch (preview.contentWindow.bgType) {
-        case 'web':
-            parent.document.getElementById('bgHtmlView').src = preview.contentWindow.bgHtmlView.src;        
-            delete localStorage.madesktopBgImg;
-            break;
-        case 'video':
+        case 'web': case 'video':
             delete localStorage.madesktopBgImg;
     }
 
@@ -290,19 +290,6 @@ window.apply = function () {
         customImgItem.querySelector('span').textContent = madGetString("MADCONF_WPCHOOSER_CURRENT_IMG");
         customImgItem.style.display = 'none';
     }
-}
-
-function loadBgImgConf() {
-    if (localStorage.madesktopBgImg) {
-        if (localStorage.madesktopBgImg.startsWith("file:///") || // Set in WPE
-            localStorage.madesktopBgImg.startsWith("wallpapers/")) // Built-in wallpapers set in madconf
-        {
-            return "url('" + localStorage.madesktopBgImg + "')";
-        } else {
-            return "url('data:image/png;base64," + localStorage.madesktopBgImg + "')"; // Set in madconf
-        }
-    }
-    return "";
 }
 
 function switchDisplayOptionElement(isVideo) {

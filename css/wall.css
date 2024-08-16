@@ -85,7 +85,14 @@ html, body {
     user-select: none;
     margin: 0;
     overflow: hidden;
+}
+
+html {
     background-color: var(--background);
+    background-attachment: fixed;
+    background-size: auto;
+    background-repeat: repeat;
+    background-position: left top;
 }
 
 body {

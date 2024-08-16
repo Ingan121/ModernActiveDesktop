@@ -91,11 +91,15 @@ if (!isWin10) {
     delete localStorage.sysplugIntegration;
 }
 
-if (localStorage.madesktopBgColor) document.body.style.backgroundColor = localStorage.madesktopBgColor;
+if (localStorage.madesktopBgColor) {
+    document.documentElement.style.backgroundColor = localStorage.madesktopBgColor;
+}
+if (localStorage.madesktopBgPattern) {
+    document.documentElement.style.backgroundImage = `url('${genPatternImage(base64ToPattern(localStorage.madesktopBgPattern))}')`;
+}
 changeBgType(localStorage.madesktopBgType || "image");
 changeBgImgMode(localStorage.madesktopBgImgMode || "center");
 if (localStorage.madesktopBgVideoMuted) bgVideoView.muted = true;
-if (localStorage.madesktopBgHtmlSrc) bgHtmlView.src = localStorage.madesktopBgHtmlSrc;
 changeColorScheme(localStorage.madesktopColorScheme || "98");
 changeAeroColor(localStorage.madesktopAeroColor);
 changeAeroGlass(localStorage.madesktopAeroNoGlass);
@@ -450,13 +454,16 @@ function changeBgType(type) {
             bgHtmlContainer.style.display = "block";
             bgVideoView.style.display = "none";
             bgVideoView.src = "";
+            if (localStorage.madesktopBgHtmlSrc) {
+                bgHtmlView.src = localStorage.madesktopBgHtmlSrc;
+            }
             break;
     }
 }
 
 function changeBgColor(str) {
     log(str);
-    document.body.style.backgroundColor = str;
+    document.documentElement.style.backgroundColor = str;
     localStorage.madesktopBgColor = str;
 }
 
@@ -466,7 +473,7 @@ function loadBgImgConf() {
             localStorage.madesktopBgImg.startsWith("wallpapers/")) // Built-in wallpapers set in madconf
         {
             document.body.style.backgroundImage = "url('" + localStorage.madesktopBgImg + "')";
-        } else {
+        } else { // Custom image set in madconf
             document.body.style.backgroundImage = "url('data:image/png;base64," + localStorage.madesktopBgImg + "')"; // Set in madconf
         }
     } else {
@@ -502,6 +509,57 @@ function changeBgImgMode(value) {
             document.body.style.backgroundPosition = "center center";
             break;
     }
+}
+
+// Generate pattern image from pattern
+/* pattern: [
+    [first row],
+    [second row],
+    ...
+    [eighth row],
+    1: black, 0: transparent
+] */
+function genPatternImage(pattern) {
+    const canvas = genPatternImage.canvas || (genPatternImage.canvas = document.createElement("canvas"));
+    canvas.width = 8;
+    canvas.height = 8;
+    const ctx = canvas.getContext("2d");
+    for (let i = 0; i < 8; i++) {
+        for (let j = 0; j < 8; j++) {
+            ctx.fillStyle = pattern[i][j] ? "black" : "transparent";
+            ctx.fillRect(j, i, 1, 1);
+        }
+    }
+    return canvas.toDataURL();
+}
+
+// Convert pattern to base64 (direct pattern binary to base64 conversion)
+function patternToBase64(pattern) {
+    if (pattern.length !== 8) {
+        throw new Error("Pattern must be 8x8");
+    }
+    let hex = new Uint8Array(8);
+    let i = 0;
+    for (let row of pattern) {
+        for (let j = 0; j < 8; j++) {
+            hex[i] = hex[i] | (row[j] << (7 - j));
+        }
+        i++;
+    }
+    return btoa(String.fromCharCode(...hex));
+}
+
+// Convert base64 to pattern
+function base64ToPattern(base64) {
+    let hex = atob(base64);
+    let pattern = [];
+    for (let i = 0; i < 8; i++) {
+        pattern.push([]);
+        for (let j = 0; j < 8; j++) {
+            pattern[i].push((hex.charCodeAt(i) >> (7 - j)) & 1);
+        }
+    }
+    return pattern;
 }
 
 function announce(type) {
@@ -559,7 +617,7 @@ function changeColorScheme(scheme) {
         delete localStorage.madesktopCustomColor;
         delete localStorage.madesktopSysColorCache;
     }
-    
+
     try {
         document.documentElement.style.setProperty('--hilight-inverted', invertColor(getComputedStyle(document.documentElement).getPropertyValue('--hilight')));
     } catch {
@@ -1726,23 +1784,6 @@ function reset(res) {
             }
         });
     }
-}
-
-/**
-  * Uses canvas.measureText to compute and return the width of the given text of given font in pixels.
-  * 
-  * @param {String} text The text to be rendered.
-  * @param {String} font The css font descriptor that text is to be rendered with (e.g. "bold 14px verdana").
-  * 
-  * @see https://stackoverflow.com/questions/118241/calculate-text-width-with-javascript/21015393#21015393
-  */
-function getTextWidth(text, font = getComputedStyle(document.documentElement).getPropertyValue("--menu-font")) {
-    // re-use canvas object for better performance
-    const canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
-    const context = canvas.getContext("2d");
-    context.font = font;
-    const metrics = context.measureText(text);
-    return metrics.width;
 }
 
 function getCaller() {
