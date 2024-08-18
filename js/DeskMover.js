@@ -453,6 +453,9 @@
         }
 
         async closeWindow() {
+            if (this.beforeClose) {
+                await this.beforeClose(localStorage, window);
+            }
             const winCloseAnim = getComputedStyle(this.windowContainer).getPropertyValue('--win-close-anim');
             if (winCloseAnim && !localStorage.madesktopNoWinAnim && this.config.style === "wnd") {
                 this.windowContainer.style.animation = `0.2s ${winCloseAnim} linear`;
@@ -460,9 +463,6 @@
             }
             if (this.numStr !== "") {
                 this.windowContainer.style.display = "none";
-                if (this.beforeClose) {
-                    this.beforeClose(localStorage, window);
-                }
                 this.windowContainer.innerHTML = "";
                 if (!this.temp) {
                     this.#clearConfig();
@@ -479,6 +479,10 @@
                 }
                 delete deskMovers[this.numStr];
                 this.windowContainer.remove();
+                let prevActiveWindow = activeWindowHistory.pop();
+                while (prevActiveWindow && !deskMovers[prevActiveWindow] && prevActiveWindow !== parseInt(this.numStr)) {
+                    prevActiveWindow = activeWindowHistory.pop();
+                }
                 activateWindow(prevActiveWindow);
             } else {
                 this.#clearConfig();
@@ -786,7 +790,8 @@
 
             const label = elem.querySelector(".label");
             const dummy = this.dropdownBg.querySelector(".dropdownItem");
-            const options = elem.options || elem.querySelectorAll("option");
+            let options = elem.options || elem.querySelectorAll("option");
+            const optionsUnsorted = Array.from(options);
             let optionCnt = 0;
             let selectedIndex = 0;
 
@@ -796,7 +801,11 @@
                 }
             }
 
+            if (elem.dataset.sorted) {
+                options = Array.from(options).sort((a, b) => a.textContent.localeCompare(b.textContent));
+            }
             for (const option of options) {
+                const origIndex = optionsUnsorted.indexOf(option);
                 if (option.hidden) {
                     continue;
                 }
@@ -813,12 +822,12 @@
                 const item = dummy.cloneNode(true);
                 item.textContent = option.textContent;
                 item.dataset.value = option.value;
-                if (option.value === elem.value) {
-                    selectedIndex = optionCnt;
+                if (elem.selectedIndex === origIndex) {
+                    selectedIndex = origIndex;
                     item.dataset.hover = true;
                 }
                 item.addEventListener('click', () => {
-                    elem.value = item.dataset.value;
+                    elem.selectedIndex = origIndex;
                     elem.dispatchEvent(new Event('change'));
                     if (label) {
                         label.textContent = item.textContent;

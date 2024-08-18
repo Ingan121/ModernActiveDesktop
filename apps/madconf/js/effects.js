@@ -1,3 +1,10 @@
+// effect.js for ModernActiveDesktop Configurator
+// Made by Ingan121
+// Licensed under the MIT License
+// SPDX-License-Identifier: MIT
+
+'use strict';
+
 const okBtn = document.getElementById("okBtn");
 const cancelBtn = document.getElementById("cancelBtn");
 const checkboxes = document.getElementsByTagName("input");

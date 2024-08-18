@@ -49,10 +49,11 @@ let lastAoTZIndex = lastZIndex + 50000;
 let isContextMenuOpen = false;
 let openedMenu = null;
 let openedMenuCloseFunc = null;
-let activeWindow = 0;
-let prevActiveWindow = 0;
 let startupRan = false;
 let flashInterval;
+
+let activeWindow = 0;
+const activeWindowHistory = [0];
 
 const WE = 1; // Wallpaper Engine
 const LW = 2; // Lively Wallpaper
@@ -519,14 +520,15 @@ function changeBgImgMode(value) {
     [eighth row],
     1: black, 0: transparent
 ] */
-function genPatternImage(pattern) {
+function genPatternImage(pattern, colorRetrievingTarget = document.documentElement) {
     const canvas = genPatternImage.canvas || (genPatternImage.canvas = document.createElement("canvas"));
     canvas.width = 8;
     canvas.height = 8;
     const ctx = canvas.getContext("2d");
+    const patternColor = getComputedStyle(colorRetrievingTarget).getPropertyValue('--window-text');
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
-            ctx.fillStyle = pattern[i][j] ? "black" : "transparent";
+            ctx.fillStyle = pattern[i][j] ? patternColor : "transparent";
             ctx.fillRect(j, i, 1, 1);
         }
     }
@@ -538,33 +540,40 @@ function patternToBase64(pattern) {
     if (pattern.length !== 8) {
         throw new Error("Pattern must be 8x8");
     }
-    let hex = new Uint8Array(8);
+    const hex = new Uint8Array(8);
     let i = 0;
-    for (let row of pattern) {
+    for (const row of pattern) {
         for (let j = 0; j < 8; j++) {
             hex[i] = hex[i] | (row[j] << (7 - j));
         }
         i++;
     }
-    return btoa(String.fromCharCode(...hex));
+    return btoa(String.fromCharCode(...hex)).replaceAll("=", "");
 }
 
 // Convert base64 to pattern
 function base64ToPattern(base64) {
-    let hex = atob(base64);
-    let pattern = [];
-    for (let i = 0; i < 8; i++) {
-        pattern.push([]);
-        for (let j = 0; j < 8; j++) {
-            pattern[i].push((hex.charCodeAt(i) >> (7 - j)) & 1);
+    try {
+        const hex = atob(base64);
+        const pattern = [];
+        for (let i = 0; i < 8; i++) {
+            pattern.push([]);
+            for (let j = 0; j < 8; j++) {
+                pattern[i].push((hex.charCodeAt(i) >> (7 - j)) & 1);
+            }
         }
+        return pattern;
+    } catch (error) {
+        // Don't let trivial stuff break the whole thing
+        console.error(error);
+        return base64ToPattern("AAAAAAAAAAA");
     }
-    return pattern;
 }
 
 function announce(type) {
     try {
         bgHtmlView.contentWindow.postMessage({ type }, "*");
+        oskWindow.contentWindow.postMessage({ type }, "*");
     } catch {
         // page did not load yet
     }
@@ -917,6 +926,9 @@ function isDarkColor(color) {
 
 function processTheme() {
     styleElement.textContent = generateThemeSvgs();
+    if (localStorage.madesktopBgPattern) {
+        document.documentElement.style.backgroundImage = `url('${genPatternImage(base64ToPattern(localStorage.madesktopBgPattern))}')`;
+    }
 }
 
 function generateThemeSvgs(targetElement = document.documentElement) {
@@ -1292,6 +1304,7 @@ function saveZOrder() {
 function activateWindow(num = activeWindow || 0) {
     log(num);
     if (!deskMovers[num]) {
+        activeWindow = 0; // Prevent errors
         return;
     }
     num = parseInt(num);
@@ -1300,7 +1313,7 @@ function activateWindow(num = activeWindow || 0) {
     deskMovers[num].windowTitlebar.classList.remove("inactive");
 
     if (num !== activeWindow) {
-        prevActiveWindow = activeWindow;
+        activeWindowHistory.push(activeWindow);
         activeWindow = num;
     }
 
@@ -1562,7 +1575,10 @@ async function madPrompt(msg, callback, hint = "", text = "") {
             // If the system plugin is available, use that for receiving input
             // Otherwise, use the on-screen keyboard
             if (!await madSysPlug.beginInput()) {
-                oskWindow.src = "apps/osk/index.html";
+                if (!oskWindow.src) {
+                    oskWindow.src = "apps/osk/index.html";
+                }
+                oskWindow.contentDocument.body.style.zoom = scaleFactor;
                 osk.style.display = "block";
                 osk.style.left = (vWidth - osk.offsetWidth - parseInt(localStorage.madesktopChanViewRightMargin) - 100) + "px";
                 osk.style.top = (vHeight - osk.offsetHeight - parseInt(localStorage.madesktopChanViewBottomMargin) - 50) + "px";

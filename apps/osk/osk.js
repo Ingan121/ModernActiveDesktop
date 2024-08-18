@@ -58,17 +58,9 @@ for (const key of keys) {
                     break;
             }
         }
-        if (shift === 1) {
-            for (const key of keys) {
-                if (key.dataset.shift) {
-                    key.textContent = key.dataset.shift;
-                }
-            }
-        } else {
-            for (const key of keys) {
-                if (key.dataset.shift) {
-                    key.textContent = key.dataset.key;
-                }
+        for (const key of keys) {
+            if (key.dataset.shift) {
+                key.textContent = shift === 1 ? key.dataset.shift : key.dataset.key;
             }
         }
         document.body.dataset.ctrl = ctrl;

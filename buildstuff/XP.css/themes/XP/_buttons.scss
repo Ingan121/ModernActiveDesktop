@@ -2,7 +2,7 @@
     Buttons
 \*-------------------------------------------*/
 
-button:not(.window-button):not(.lightweight):not(.toggle) {
+body:not(.unthemed) button:not(.window-button):not(.lightweight):not(.toggle) {
     -webkit-font-smoothing: antialiased;
     font-size: 11px;
     box-sizing: border-box;

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title data-locid="MADCONF_PATTERN_TITLE">Pattern</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../../css/98.css">
+    <link rel="stylesheet" href="css/pattern.css">
+    <link id="scheme" rel="stylesheet" href="data:text/css,">
+    <style id="langStyle"></style>
+    <style id="style"></style>
+</head>
+<body id="madconf">
+    <div class="madconf-pattern window-body">
+        <p id="desc"><mad-string data-locid="MADCONF_PATTERN_DESC">You can choose a pattern for your Active Desktop. The pattern is used to fill any leftover space around your wallpaper.</mad-string></p>
+        <span id="patternChooserLabel"><mad-string data-locid="MADCONF_PATTERN_CHOOSER"><u>P</u>atterns:</mad-string></span>
+        <ul id="patternChooser" class="tree-view borderedScrollBar">
+            <li data-pattern="" class="selected"><span><mad-string data-locid="MADCONF_PATTERN_NONE">(None)</mad-string></span></li>
+        </ul>
+        <span id="patternPreviewLabel"><mad-string data-locid="MADCONF_PATTERN_PREVIEW">Preview:</mad-string></span>
+        <div id="patternPreview"></div>
+        <div id="rightButtons">
+            <button id="okBtn"><mad-string data-locid="UI_OK">OK</mad-string></button>
+            <button id="cancelBtn"><mad-string data-locid="UI_CANCEL">Cancel</mad-string></button>
+            <button id="editPatternBtn" disabled><mad-string data-locid="MADCONF_EDIT_PATTERN"><u>E</u>dit Pattern...</mad-string></button>
+        </div>
+    </div>
+
+    <script src="../../js/functions.js"></script>
+    <script src="../../js/libmad-strings.js"></script>
+    <script src="../../js/libmad.js"></script>
+    <script src="js/pattern.js"></script>
+</body>
+</html>

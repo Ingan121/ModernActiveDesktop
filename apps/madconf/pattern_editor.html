@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title data-locid="MADCONF_PATTERN_EDITOR_TITLE">Pattern Editor</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../../css/98.css">
+    <link rel="stylesheet" href="css/pattern_editor.css">
+    <link id="scheme" rel="stylesheet" href="data:text/css,">
+    <style id="langStyle"></style>
+    <style id="style"></style>
+</head>
+<body id="madconf">
+    <div class="madconf-pattern-editor window-body">
+        <span id="patternChooserLabel"><mad-string data-locid="MADCONF_PATTERN_NAME"><u>N</u>ame:</mad-string></span>
+        <mad-select id="patternChooser" class="patternChooser" data-sorted="true">
+            <option value="" hidden><mad-string data-locid="MADCONF_PATTERN_NONE">(None)</mad-string></option>
+        </mad-select>
+        <span id="patternEditorLabel"><mad-string data-locid="MADCONF_PATTERN_EDITOR">Pattern:</mad-string></span>
+        <div id="patternEditor">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+            <input type="checkbox">
+        </div>
+        <span id="patternSampleLabel"><mad-string data-locid="MADCONF_PATTERN_SAMPLE">Sample:</mad-string></span>
+        <div id="patternSample"></div>
+        <div id="rightButtons">
+            <button id="doneBtn"><mad-string data-locid="UI_DONE"><u>D</u>one</mad-string></button>
+            <button id="addBtn"><mad-string data-locid="UI_ADD"><u>A</u>dd</mad-string></button>
+            <button id="changeBtn" disabled><mad-string data-locid="UI_CHANGE"><u>C</u>hange</mad-string></button>
+            <button id="removeBtn"><mad-string data-locid="UI_REMOVE"><u>R</u>emove</mad-string></button>
+        </div>
+        <p id="base64">Base64: <span id="base64Output">AAAAAAAAAAA</span></p>
+    </div>
+
+    <script src="../../js/functions.js"></script>
+    <script src="../../js/libmad-strings.js"></script>
+    <script src="../../js/libmad.js"></script>
+    <script src="js/pattern_editor.js"></script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+@charset "utf-8";
+
+html, body {
+    overflow: hidden;
+    background-color: var(--button-face);
+    font-family: var(--ui-font);
+    font-size: 11px;
+    user-select: none;
+}
+
+body {
+    margin: 0;
+}
+
+#desc {
+    width: 200px;
+    position: absolute;
+    top: 1px;
+    left: 11px;
+}
+
+#desc mad-string {
+    white-space: initial;
+}
+
+#patternChooserLabel {
+    position: absolute;
+    top: 72px;
+    left: 12px;
+}
+
+#patternChooser {
+    width: 120px;
+    height: 81px;
+    position: absolute;
+    top: 88px;
+    left: 12px;
+    padding: 0;
+    overflow-y: scroll;
+}
+
+#patternChooser li {
+    height: 11px;
+    margin-top: 0;
+    margin-left: 2px;
+    border: solid 1px transparent;
+}
+
+#patternChooser li:first-child {
+    margin-top: 2px;
+}
+
+#patternChooser li span {
+    margin-left: 2px;
+}
+
+#patternChooser li.selected {
+    background-color: var(--hilight);
+    color: var(--hilight-text);
+    border: dotted 1px var(--hilight-inverted);
+}
+
+#patternPreviewLabel {
+    position: absolute;
+    top: 72px;
+    left: 142px;
+}
+
+#patternPreview {
+    width: 73px;
+    height: 79px;
+    background-color: var(--background);
+    background-size: auto;
+    background-repeat: repeat;
+    background-position: left top;
+    border: solid 1px var(--button-dk-shadow);;
+    position: absolute;
+    top: 88px;
+    left: 142px;
+}
+
+#rightButtons {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    position: absolute;
+    top: 5px;
+    right: 10px;
+}
+
+#rightButtons button {
+    margin-top: 6px;
+    width: 71px;
+    padding: 0;
+}

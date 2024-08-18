@@ -5,6 +5,9 @@
 
 'use strict';
 
+const genPatternImage = top.genPatternImage;
+const base64ToPattern = top.base64ToPattern;
+
 window.bgHtmlContainer = document.getElementById("bgHtmlContainer");
 window.bgHtmlView = document.getElementById("bgHtmlView");
 window.bgVideoView = document.getElementById("bgVideo");
@@ -18,7 +21,10 @@ document.body.style.zoom = scale;
 changeBgType(bgType);
 changeBgImgMode(bgImgMode);
 if (localStorage.madesktopBgColor) {
-    document.body.style.backgroundColor = localStorage.madesktopBgColor;
+    document.documentElement.style.backgroundColor = localStorage.madesktopBgColor;
+}
+if (localStorage.madesktopBgPattern) {
+    document.documentElement.style.backgroundImage = `url('${genPatternImage(base64ToPattern(localStorage.madesktopBgPattern))}')`;
 }
 if (localStorage.madesktopBgHtmlSrc) {
     bgHtmlView.src = localStorage.madesktopBgHtmlSrc;

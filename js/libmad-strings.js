@@ -36,6 +36,10 @@
         "UI_CUSTOM": "Custom",
         "UI_VERSION": "Version",
         "UI_NONE": "None",
+        "UI_DONE": "&Done",
+        "UI_ADD": "&Add",
+        "UI_CHANGE": "&Change",
+        "UI_REMOVE": "&Remove",
 
         // #region Common menu names
         "UI_MENU_FILE": "&File",
@@ -178,6 +182,50 @@
         "MADCONF_MSG_VIDEOWP": "Please use the Wallpaper Engine properties panel to configure a video wallpaper.",
         "MADCONF_MSG_LARGE_IMG": "Failed to set the image as wallpaper due to the large size of the image. Please use a smaller image.",
         "MADCONF_MSG_LARGE_IMG_WE": "Failed to set the image as wallpaper due to the large size of the image. Please use a smaller image or use the Wallpaper Engine properties panel to configure the wallpaper.",
+        // #endregion
+
+        // #region Pattern window
+        "MADCONF_PATTERN_TITLE": "Pattern",
+        "MADCONF_PATTERN_DESC": "You can choose a pattern for your Active Desktop. The pattern is used to fill any leftover space around your wallpaper.",
+        "MADCONF_PATTERN_CHOOSER": "&Pattern:",
+        "MADCONF_PATTERN_PREVIEW": "Preview:",
+        "MADCONF_EDIT_PATTERN": "&Edit Pattern...",
+        "MADCONF_PATTERN_NONE": "(None)",
+
+        // #region Default pattern names
+        "MADCONF_PATTERN_BRICKS": "Bricks",
+        "MADCONF_PATTERN_BUTTONS": "Buttons",
+        "MADCONF_PATTERN_CARGO_NET": "Cargo Net",
+        "MADCONF_PATTERN_CIRCUITS": "Circuits",
+        "MADCONF_PATTERN_COBBLESTONES": "Cobblestones",
+        "MADCONF_PATTERN_COLOSSEUM": "Colosseum",
+        "MADCONF_PATTERN_DAISIES": "Daisies",
+        "MADCONF_PATTERN_DIZZY": "Dizzy",
+        "MADCONF_PATTERN_FIELD_EFFECT": "Field Effect",
+        "MADCONF_PATTERN_KEY": "Key",
+        "MADCONF_PATTERN_LIVE_WIRE": "Live Wire",
+        "MADCONF_PATTERN_PLAID": "Plaid",
+        "MADCONF_PATTERN_ROUNDER": "Rounder",
+        "MADCONF_PATTERN_SCALES": "Scales",
+        "MADCONF_PATTERN_STONE": "Stone",
+        "MADCONF_PATTERN_THATCHES": "Thatches",
+        "MADCONF_PATTERN_TILE": "Tile",
+        "MADCONF_PATTERN_TRIANGLES": "Triangles",
+        "MADCONF_PATTERN_WAFFLES_REVENGE": "Waffle's Revenge",
+        // #endregion
+
+        // #region Pattern Editor window
+        "MADCONF_PATTERN_EDITOR_TITLE": "Pattern Editor",
+        "MADCONF_PATTERN_NAME": "&Name:",
+        "MADCONF_PATTERN_EDITOR": "Pattern:",
+        "MADCONF_PATTERN_SAMPLE": "Sample:",
+        "MADCONF_PATTERN_ENTER_B64": "Enter base64 pattern",
+        "MADCONF_PATTERN_ENTER_NAME": "Enter pattern name",
+        "MADCONF_PATTERN_UNSAVED": "The pattern \"%s\" has changed.<br><br>Do you want to save the changes to this pattern?",
+        "MADCONF_PATTERN_NAME_EXISTS": "A pattern with the same name already exists.",
+        "MADCONF_PATTERN_NAME_EMPTY": "The pattern name cannot be empty.",
+        "MADCONF_CONFIRM_PATTERN_REMOVE": "Removing the \"%s\" pattern will permanently delete it from your disk.<br><br>Are you sure you want to remove this pattern?",
+        // #endregion
         // #endregion
         // #endregion
 
@@ -736,6 +784,7 @@
         }
         return str;
     }
+    window.madProcessString = processString;
 
     function readyAll() {
         for (const element of localizableElements) {

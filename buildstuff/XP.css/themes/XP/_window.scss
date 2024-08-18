@@ -6,6 +6,7 @@
 #madconf-preview #inactiveWindow,
 #madconf-preview #activeWindow,
 #msgbox,
+#osk,
 .os-window {
     box-shadow: inset -1px -1px #00138c, inset 1px 1px #0831d9, inset -2px -2px #001ea0, inset 2px 2px #166aee,
         inset -3px -3px #003bda, inset 3px 3px #0855dd !important;
@@ -20,6 +21,17 @@
 .os-window {
     padding-left: 3px !important;
     padding-right: 3px !important;
+}
+
+#osk {
+    width: 378px;
+    height: 188px;
+}
+
+#oskWindow {
+    width: calc(100% - 8px);
+    border: solid 4px transparent;
+    border-top: none;
 }
 
 .windowContainer[data-style="wnd"][data-inactive]:not(#JustHereToGiveItPriority),

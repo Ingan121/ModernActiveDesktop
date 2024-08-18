@@ -584,6 +584,9 @@ async function main() {
             } else {
                 delete localStorage.madesktopAeroColor;
             }
+            if (localStorage.madesktopBgPattern) {
+                parent.document.documentElement.style.backgroundImage = `url('${parent.genPatternImage(parent.base64ToPattern(localStorage.madesktopBgPattern), preview.contentDocument.documentElement)}')`;
+            }
         } else {
             applyScheme(scheme, schemeName);
             delete localStorage.madesktopAeroColor;

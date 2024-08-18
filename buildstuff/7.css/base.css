@@ -57,6 +57,7 @@
 #madconf-preview #inactiveWindow:before,
 #madconf-preview #activeWindow:before,
 #msgbox:before,
+#osk:before,
 .os-window:before {
     background: var(--title-accent, #4580c4);
 }

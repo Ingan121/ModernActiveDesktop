@@ -1,4 +1,4 @@
-button:not(.window-button):not(.lightweight),
+body:not(.unthemed) button:not(.window-button):not(.lightweight),
 [role="button"] {
   font: var(--font);
   box-sizing: border-box;

@@ -18,6 +18,7 @@ const wpPatternBtn = document.getElementById('wpPatternBtn');
 const imgModeSelector = document.getElementById('imgModeSelector');
 const wpVideoMuteChkBox = document.getElementById('wpVideoMuteChkBox');
 const wpVideoMuteLabel = document.querySelector('label[for=wpVideoMuteChkBox]');
+let patternData = localStorage.madesktopBgPattern || '';
 
 for (const imgItem of imgItems) {
     wallMap[imgItem.dataset.wpname] = imgItem;
@@ -117,16 +118,13 @@ wpBrowseBtn.addEventListener('click', async function () {
 });
 
 wpPatternBtn.addEventListener('click', async function () {
-    const patternB64 = await madPrompt("Enter the base64 pattern data");
-    if (patternB64 === null) return;
-    if (patternB64 === '') {
-        delete localStorage.madesktopBgPattern;
-        parent.document.documentElement.style.backgroundImage = 'none';
-    } else {
-        const pattern = parent.base64ToPattern(patternB64);
-        parent.document.documentElement.style.backgroundImage = `url('${parent.genPatternImage(pattern)}')`;
-        localStorage.madesktopBgPattern = patternB64;
-    }
+    const left = parseInt(madDeskMover.config.xPos) + 25 + 'px';
+    const top = parseInt(madDeskMover.config.yPos) + 80 + 'px';
+    const options = { left, top, width: '312px', height: '180px', aot: true };
+    const patternWindow = madOpenWindow('apps/madconf/pattern.html', true, options);
+    patternWindow.windowElement.addEventListener('load', () => {
+        patternWindow.windowElement.contentWindow.callback = patternCallback;
+    });
 });
 
 imgModeSelector.addEventListener('change', function () {
@@ -266,6 +264,14 @@ window.apply = function () {
         localStorage.madesktopBgImg = localStorage.madesktopBgWeImg;
     }
 
+    if (patternData) {
+        localStorage.madesktopBgPattern = patternData;
+        parent.document.documentElement.style.backgroundImage = preview.contentDocument.documentElement.style.backgroundImage;
+    } else {
+        delete localStorage.madesktopBgPattern;
+        parent.document.documentElement.style.backgroundImage = 'none';
+    }
+
     localStorage.madesktopBgHtmlSrc = preview.contentWindow.bgHtmlView.src;
     parent.changeBgType(preview.contentWindow.bgType);
     localStorage.madesktopBgType = preview.contentWindow.bgType;
@@ -292,6 +298,16 @@ window.apply = function () {
     }
 }
 
+window.patternCallback = function (patternB64) {
+    patternData = patternB64;
+    if (patternB64 === '') {
+        preview.contentDocument.documentElement.style.backgroundImage = 'none';
+    } else {
+        const pattern = parent.base64ToPattern(patternB64);
+        preview.contentDocument.documentElement.style.backgroundImage = `url('${parent.genPatternImage(pattern)}')`;
+    }
+}
+
 function switchDisplayOptionElement(isVideo) {
     if (isVideo) {
         wpVideoMuteLabel.style.display = 'block';
@@ -302,12 +318,4 @@ function switchDisplayOptionElement(isVideo) {
         wpVideoMuteLabel.style.display = 'none';
         imgModeSelector.style.opacity = 1;
     }
-}
-
-function scrollIntoView(elem) {
-    const top = elem.getBoundingClientRect().top;
-    const height = elem.getBoundingClientRect().height;
-    const parentTop = elem.parentElement.getBoundingClientRect().top;
-    const parentHeight = elem.parentElement.getBoundingClientRect().height;
-    elem.parentElement.scrollBy(0, top - parentTop + height - parentHeight + 26);
 }
