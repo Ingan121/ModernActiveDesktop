@@ -30,13 +30,17 @@ for (const tab of tabs) {
 }
 
 for (const textbox of textboxes) {
-    textbox.addEventListener("click", function () {
+    textbox.addEventListener("click", async function () {
         if (madKbdSupport !== 1) {
-            madPrompt(madGetString("UI_PROMPT_ENTER_VALUE"), function (res) {
-                if (res === null) return;
-                textbox.value = res;
-                textbox.dispatchEvent(new Event('change'));
-            }, '', textbox.value);
+            if (madSysPlug.inputStatus) {
+                madSysPlug.focusInput();
+            } else if (!await madSysPlug.beginInput()) {
+                madPrompt(madGetString("UI_PROMPT_ENTER_VALUE"), function (res) {
+                    if (res === null) return;
+                    textbox.value = res;
+                    textbox.dispatchEvent(new Event('change'));
+                }, '', textbox.value);
+            }
         }
     });
 }

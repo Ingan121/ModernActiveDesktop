@@ -13,9 +13,7 @@ document.addEventListener('madinput', async (event) => {
     if (textbox.readOnly) {
         return;
     }
-    if (textbox.tagName === "INPUT" && textbox.type !== "text") {
-        // number is unsupported cuz number.value doesn't accept incomplete numbers (e.g. "1.", "-", etc.)
-        // just use madPrompt for number inputs
+    if (textbox.tagName === "INPUT" && ["text", "search", "url", "tel", "email", "password", "number"].indexOf(textbox.type) === -1) {
         return;
     }
 

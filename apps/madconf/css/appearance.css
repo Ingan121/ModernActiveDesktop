@@ -101,7 +101,7 @@ mad-select {
 
 }
 
-input[type="number"] {
+#fontSize, #itemSize {
     width: 57px;
     height: 21px;
     margin-left: -1px;

@@ -91,6 +91,11 @@
         "MAD_MSG_LINK_COPIED": "Copied URL to clipboard! Paste it in the browser's address bar.",
         "MAD_MSG_SYSPLUG_UPDATED": "System plugin has been updated, and it needs a reinstall. Please update it with the setup guide.",
 
+        "MAD_DEBUG_LOCATION": "Loaded from %s",
+        "MAD_DEBUG_RUNMODE": "Running in %s",
+        "MAD_DEBUG_RUNMODE_SIMULATED": "Running in %s, simulating %s behavior",
+        "MAD_DEBUG_BROWSER": "browser",
+        "MAD_DEBUG_KBD_SUPPORT": "Keyboard support level",
         "MAD_DEBUG_DEBUG_MODE": "Debug mode",
         "MAD_DEBUG_INIT_NOT_COMPLETE": "Initialization not complete",
         "MAD_DEBUG_RESET_CONFIG": "Reset config",
@@ -100,7 +105,7 @@
         "MAD_DEBUG_ENABLE_LOGGING": "Enable debug logging",
         "MAD_DEBUG_DISABLE_LOGGING": "Disable debug logging",
         "MAD_DEBUG_SIMULATE": "Simulate other environment",
-        "MAD_DEBUG_KBD_SUPPORT": "Change keyboard support level",
+        "MAD_DEBUG_CHANGE_KBD_SUPPORT": "Change keyboard support level",
         "MAD_DEBUG_DEACTIVATE": "Deactivate debug mode",
         // #endregion
 
@@ -770,7 +775,7 @@
         });
     }
 
-    function processString(str, extraString) {
+    function processString(str) {
         // &Apply -> <u>A</u>pply
         // \&Apply -> &Apply
         str = str.replace(/&([^&])/g, "<u>$1</u>").replace(/\\&/g, "&");
@@ -779,8 +784,10 @@
         // %c -> channelViewer
         str = str.replace(/%n/g, appName).replace(/%a/g, author).replace(/%c/g, channelViewer);
         // %s -> extraString
-        if (extraString) {
-            str = str.replace(/%s/g, extraString);
+        if (arguments.length > 1) {
+            for (let i = 1; i < arguments.length; i++) {
+                str = str.replace(/%s/, arguments[i]);
+            }
         }
         return str;
     }
@@ -793,6 +800,9 @@
         updateTitle();
         updateStyle();
         document.documentElement.lang = lang;
+        if (window.madMainWindow) {
+            showDebugInfo();
+        }
     }
 
     function updateTitle() {
@@ -818,11 +828,11 @@
         }
     }
 
-    function getString(locId, extraString) {
+    function getString(locId) {
         if (window.madStrings[locId]) {
-            return processString(window.madStrings[locId], extraString);
+            return processString(window.madStrings[locId], ...Array.from(arguments).slice(1));
         } else if (fallbackStrings[locId]) {
-            return processString(fallbackStrings[locId], extraString);
+            return processString(fallbackStrings[locId], ...Array.from(arguments).slice(1));
         } else {
             console.error(`No string found for locId ${locId}`);
             return locId;

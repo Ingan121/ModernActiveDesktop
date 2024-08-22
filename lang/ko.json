@@ -67,6 +67,11 @@
     "MAD_MSG_LINK_COPIED": "URL이 클립보드에 복사되었습니다. 복사된 URL을 브라우저 주소 표시줄에 붙여넣으세요.",
     "MAD_MSG_SYSPLUG_UPDATED": "시스템 플러그인이 업데이트되어 다시 설치해야 합니다. 설치 가이드를 따라 업데이트하세요.",
 
+    "MAD_DEBUG_LOCATION": "%s에서 로드됨",
+    "MAD_DEBUG_RUNMODE": "%s에서 실행 중",
+    "MAD_DEBUG_RUNMODE_SIMULATED": "%s에서 실행 중, %s 동작 시뮬레이션 중",
+    "MAD_DEBUG_BROWSER": "브라우저",
+    "MAD_DEBUG_KBD_SUPPORT": "키보드 지원 수준",
     "MAD_DEBUG_DEBUG_MODE": "디버그 모드",
     "MAD_DEBUG_INIT_NOT_COMPLETE": "시작이 완료되지 않음",
     "MAD_DEBUG_RESET_CONFIG": "설정값 초기화",
@@ -76,7 +81,7 @@
     "MAD_DEBUG_ENABLE_LOGGING": "디버그 로깅 활성화",
     "MAD_DEBUG_DISABLE_LOGGING": "디버그 로깅 비활성화",
     "MAD_DEBUG_SIMULATE": "다른 환경 시뮬레이션",
-    "MAD_DEBUG_KBD_SUPPORT": "키보드 지원 수준 변경",
+    "MAD_DEBUG_CHANGE_KBD_SUPPORT": "키보드 지원 수준 변경",
     "MAD_DEBUG_DEACTIVATE": "디버그 모드 비활성화",
 
 

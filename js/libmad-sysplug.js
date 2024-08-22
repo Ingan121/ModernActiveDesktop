@@ -103,6 +103,8 @@
             waitingForBeginInput = false;
             if (response !== "OK") {
                 return false;
+            } else {
+                numInputPrep();
             }
         } catch (error) {
             waitingForBeginInput = false;
@@ -131,8 +133,7 @@
                 };
                 eventSource.onerror = function (error) {
                     console.error("EventSource failed:", error);
-                    eventSource.close();
-                    madSysPlug.inputStatus = false;
+                    endInput(true);
                     resolve();
                 };
             });
@@ -140,6 +141,9 @@
     }
 
     function focusInput() {
+        if (!localStorage.sysplugIntegration) {
+            return;
+        }
         if (!madSysPlug.inputStatus) {
             beginInput();
             return;
@@ -147,6 +151,7 @@
         setTimeout(() => {
             // Wait a bit cuz wallpaper click un-focuses the input panel
             request("focusinput");
+            numInputPrep();
         }, 100);
     }
 
@@ -170,6 +175,23 @@
 
     async function getClipboard() {
         return await request("clipboard") || "[Pasting requires the system plugin]";
+    }
+
+    // input[type="number"] doesn't work well with MadInput, so we need to convert it to text
+    function numInputPrep() {
+        const textbox = document.activeElement;
+        if (textbox.tagName === "INPUT") {
+            if (textbox.type === "number") {
+                textbox.type = "text";
+                textbox.addEventListener("blur", () => {
+                    textbox.type = "number";
+                }, { once: true });
+            }
+            textbox.addEventListener("blur", () => {   
+                const changeEvent = new Event("change");
+                textbox.dispatchEvent(changeEvent);
+            }, { once: true });
+        }
     }
 
     window.addEventListener("beforeunload", () => {

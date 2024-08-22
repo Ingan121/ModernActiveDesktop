@@ -56,10 +56,13 @@ for (const colorPicker of colorPickers) {
 }
 
 for (const textbox of textboxes) {
-    textbox.addEventListener("click", function () {
+    textbox.addEventListener("click", async function () {
         if (madKbdSupport !== 1) {
-            const msg = textbox.placeholder ? "UI_PROMPT_ENTER_VALUE_RESETTABLE" : "UI_PROMPT_ENTER_VALUE";
-            madPrompt(madGetString(msg), function (res) {
+            if (madSysPlug.inputStatus) {
+                madSysPlug.focusInput();
+            } else if (!await madSysPlug.beginInput()) {
+                const msg = textbox.placeholder ? "UI_PROMPT_ENTER_VALUE_RESETTABLE" : "UI_PROMPT_ENTER_VALUE";
+                const res = await madPrompt(madGetString(msg), null, textbox.placeholder, textbox.value);
                 if (res === null) return;
                 if (res === '') {
                     textbox.value = textbox.placeholder;
@@ -67,7 +70,7 @@ for (const textbox of textboxes) {
                     textbox.value = res;
                 }
                 textbox.dispatchEvent(new Event('change'));
-            }, textbox.placeholder, textbox.value);
+            }
         }
     });
 }

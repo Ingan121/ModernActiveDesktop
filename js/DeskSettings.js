@@ -34,7 +34,6 @@ const mainMenuBg = document.getElementById("mainMenuBg");
 const mainMenu = document.getElementById("mainMenu");
 const mainMenuItems = mainMenu.getElementsByClassName("contextMenuItem");
 const runningModeLabel = document.getElementById("runmode");
-const simulatedModeLabel = document.getElementById("simmode");
 const kbdSupportLabel = document.getElementById("kbdsupport");
 const debugMenu = document.getElementById("debug");
 const jsRunBtn = document.getElementById("jsRunBtn");
@@ -60,7 +59,12 @@ const LW = 2; // Lively Wallpaper
 const BROWSER = 0; // None of the above
 window.runningMode = BROWSER;
 let origRunningMode = BROWSER;
-window.kbdSupport = 1; // 1 = Keyboard supported, 0 = Keyboard supported with prompt(), -1 = Keyboard not supported
+
+// Keyboard support levels:
+// 1 = Keyboard supported (normal browsers, Lively Wallpaper - keyboard must be enabled in LW settings)
+// 0 = Keyboard supported with prompt() (WPE 2.4 and below; uses either MadInput or prompt())
+// -1 = Keyboard not supported (WPE 2.5 and above; uses either MadInput or OSK)
+window.kbdSupport = 1;
 
 window.scaleFactor = "1";
 window.vWidth = window.innerWidth;
@@ -128,7 +132,7 @@ if (typeof wallpaperOnVideoEnded === "function") { // Check if running in Wallpa
     runningMode = WE;
     if (parseInt(navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./)[2]) >= 100) {
         kbdSupport = -1;
-        window.alert = window.confirm = window.prompt = () => {};
+        window.alert = window.confirm = window.prompt = () => null;
     } else {
         kbdSupport = 0;
     }
@@ -1541,7 +1545,7 @@ async function madPrompt(msg, callback, hint = "", text = "") {
     return new Promise(async resolve => {
         if (kbdSupport === 0) { // Wallpaper Engine normally does not support keyboard input
             const res = prompt(msg, text);
-            callback(res);
+            if (callback) callback(res);
             resolve(res);
             return;
         }
@@ -1849,7 +1853,35 @@ function deactivateDebugMode() {
     if (debugLog) toggleDebugLog();
     if (runningMode !== origRunningMode) {
         runningMode = origRunningMode;
-        simulatedModeLabel.textContent = "";
+        runningModeLabel.textContent = runningModeLabel.textContent.split(",")[0];
+    }
+}
+
+function showDebugInfo() {
+    document.getElementById("location").textContent = madGetString("MAD_DEBUG_LOCATION", location.href);
+
+    let runningModeStr = madGetString("MAD_DEBUG_BROWSER");
+    switch (runningMode) {
+        case WE:
+            runningModeStr = "Wallpaper Engine";
+            break;
+        case LW:
+            runningModeStr = "Lively Wallpaper";
+            break;
+    }
+    if (runningMode === origRunningMode) {
+        runningModeLabel.textContent = madGetString("MAD_DEBUG_RUNMODE", runningModeStr);
+    } else {
+        let origRunningModeStr = madGetString("MAD_DEBUG_BROWSER");
+        switch (origRunningMode) {
+            case WE:
+                origRunningModeStr = "Wallpaper Engine";
+                break;
+            case LW:
+                origRunningModeStr = "Lively Wallpaper";
+                break;
+        }
+        runningModeLabel.textContent = madGetString("MAD_DEBUG_RUNMODE_SIMULATED", origRunningModeStr, runningModeStr);
     }
 }
 
@@ -1867,20 +1899,14 @@ function toggleRunningMode() {
     switch (runningMode) {
         case BROWSER:
             runningMode = WE;
-            simulatedModeLabel.textContent = ", simulating Wallpaper Engine behavior"
             break;
-
         case WE:
             runningMode = LW;
-            simulatedModeLabel.textContent = ", simulating Lively Wallpaper behavior"
             break;
-
         case LW:
             runningMode = BROWSER;
-            simulatedModeLabel.textContent = ", simulating browser behavior"
-            break;
     }
-    if (runningMode === origRunningMode) simulatedModeLabel.textContent = "";
+    showDebugInfo();
 }
 
 function toggleKbdSupport() {
@@ -1923,14 +1949,14 @@ function showWelcome() {
 // #endregion
 
 // #region Final initialization
-document.getElementById("location").textContent = location.href;
+showDebugInfo();
 if (runningMode === WE) {
-    runningModeLabel.textContent = "Wallpaper Engine";
+    runningModeLabel.textContent = madGetString("MAD_DEBUG_RUNMODE", "Wallpaper Engine");
     // Dummy listener to make Wallpaper Engine recognize MAD supporting audio visualization
     window.wallpaperRegisterAudioListener(() => {});
 } else {
     if (runningMode === LW) {
-        runningModeLabel.textContent = "Lively Wallpaper";
+        runningModeLabel.textContent = madGetString("MAD_DEBUG_RUNMODE", "Lively Wallpaper");
     } else {
         // Konami code easter egg
         // Obviously a 98.js / jspaint reference
