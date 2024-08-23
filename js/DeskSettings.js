@@ -437,6 +437,11 @@ function livelyCurrentTrack(data) {
         }
     }
 }
+
+// Prevent scrolling when a partly off-screen deskMover gets focus, its iframe loads, etc.
+document.addEventListener('scroll', function () {
+    document.documentElement.scrollTo(0, 0);
+});
 // #endregion
 
 // #region Functions
@@ -1996,11 +2001,6 @@ window.addEventListener('load', function () {
             }
         }, 1000);
     }
-});
-
-// Prevent scrolling when a partly off-screen deskMover gets focus, its iframe loads, etc.
-document.addEventListener('scroll', function () {
-    document.documentElement.scrollTo(0, 0);
 });
 
 // Initialization complete

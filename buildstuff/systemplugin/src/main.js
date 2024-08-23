@@ -26,7 +26,7 @@ if (args.help) {
   console.log("--showui: Show the main UI on startup");
   console.log("--port: Port to listen on (default: 3031)");
   console.log("--listen: IP address to listen on (default: 127.0.0.1)");
-  console.log("--cors: CORS origin to allow (default: https://www.ingan121.com)");
+  console.log("--cors: CORS origin to allow (default: https://madesktop.ingan121.com)");
   console.log("--ignore-token: Don't check for a token in the request");
   console.log("--metrics: Get window metrics (border size, title height), for internal use only")
   console.log("--help: Show this help message\n");
@@ -459,7 +459,7 @@ if (!args.metrics) {
 
 function onRequest(req, res) {
   console.log('serve: ' + req.url);
-  const cors = args.cors || 'https://www.ingan121.com';
+  const cors = args.cors || 'https://madesktop.ingan121.com';
   res.setHeader('Access-Control-Allow-Origin', cors);
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Use-ChannelViewer, X-Fullscreen, X-Format-Name, X-Format-Extension, X-MADSP-Token');
 

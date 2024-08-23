@@ -32,10 +32,8 @@ if (localStorage.madesktopMigrated || !localStorage.madesktopLastVer) {
         }
         const data = event.data;
         if (data.type === 'migrateCheck') {
-            if (data.version === localStorage.madesktopLastVer) {
-                localStorage.madesktopMigrated = true;
-                location.replace('https://madesktop.ingan121.com/');
-            }
+            localStorage.madesktopMigrated = true;
+            location.replace('https://madesktop.ingan121.com/');
         }
     });
 }

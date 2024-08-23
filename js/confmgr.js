@@ -31,10 +31,8 @@ switch (action) {
     case 'migrate':
         if (localStorage.madesktopLastVer) {
             // Config already exists, no need to migrate
-            window.postMessage({
-                type: 'migrateCheck',
-                version: localStorage.madesktopLastVer
-            }, 'https://www.ingan121.com');
+            // Do not overwrite the existing config
+            parent.postMessage({ type: 'migrateCheck' }, 'https://www.ingan121.com');
         } else {
             window.addEventListener('message', function (event) {
                 if (event.origin !== 'https://www.ingan121.com') {
@@ -46,10 +44,7 @@ switch (action) {
                         localStorage.setItem(key, data.config[key]);
                     }
                     localStorage.madesktopLastVer = "3.3.0";
-                    window.postMessage({
-                        type: 'migrateCheck',
-                        version: localStorage.madesktopLastVer
-                    }, 'https://www.ingan121.com');
+                    parent.postMessage({ type: 'migrateCheck' }, 'https://www.ingan121.com');
                 }
             });
         }
