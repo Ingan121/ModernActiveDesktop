@@ -15,7 +15,9 @@ const itemsTitleText = document.getElementById("itemsTitleText");
 const checkmarks = document.querySelectorAll(".checkmark");
 
 if (!localStorage.madesktopStartSndMuted) {
-    new Audio("resources/WELCOM98.FLAC").play();
+    const audio = new Audio("resources/WELCOM98.FLAC");
+    audio.volume = 0.7;
+    audio.play();
 }
 
 for (const item of items) {

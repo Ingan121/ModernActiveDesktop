@@ -34,3 +34,19 @@ window.addEventListener('keyup', (event) => {
         window.close();
     }
 });
+
+
+if (!location.href.endsWith('#notimeout')) {
+    let timeoutTimer = null;
+    window.addEventListener('blur', () => {
+        timeoutTimer = setTimeout(() => {
+            ipcRenderer.send('input', 'Escape');
+            window.close();
+        }, 30000);
+    });
+    window.addEventListener('focus', () => {
+        if (timeoutTimer) {
+            clearTimeout(timeoutTimer);
+        }
+    });
+}

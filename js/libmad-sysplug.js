@@ -106,15 +106,18 @@
     }
 
     // Begin MadInput
+    // noTimeout: Prevent the system plugin from closing the input panel when its inactive for 30 seconds
+    // (meant for madPrompt where the timeout causes the dialog to be closed)
     // Return: true if successful, false if failed
-    async function beginInput() {
+    async function beginInput(noTimeout) {
         if (madSysPlug.inputStatus || waitingForBeginInput) {
             return false;
         }
 
         try {
             waitingForBeginInput = true; // Prevent multiple beginInput calls
-            const response = await request("begininput");
+            const headers = noTimeout ? { "X-No-Timeout": "true" } : {};
+            const response = await request("begininput", null, headers);
             waitingForBeginInput = false;
             if (response !== "OK") {
                 return false;
@@ -157,12 +160,12 @@
     }
 
     // Focus the input panel
-    function focusInput() {
+    function focusInput(noTimeout) {
         if (!localStorage.sysplugIntegration) {
             return;
         }
         if (!madSysPlug.inputStatus) {
-            beginInput();
+            beginInput(noTimeout);
             return;
         }
         setTimeout(() => {

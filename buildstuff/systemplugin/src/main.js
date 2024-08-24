@@ -461,7 +461,7 @@ function onRequest(req, res) {
   console.log('serve: ' + req.url);
   const cors = args.cors || 'https://madesktop.ingan121.com';
   res.setHeader('Access-Control-Allow-Origin', cors);
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Use-ChannelViewer, X-Fullscreen, X-Format-Name, X-Format-Extension, X-MADSP-Token');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Use-ChannelViewer, X-Fullscreen, X-Format-Name, X-Format-Extension, X-MADSP-Token, X-No-Timeout');
 
   if (req.headers.origin && req.headers.origin !== 'null') {
     console.log('Origin: ' + req.headers.origin);
@@ -570,53 +570,18 @@ function onRequest(req, res) {
       res.end(clipboard.readText());
       break;
 
+    case '/play':
+    case '/pause':
     case '/playpause':
-      if (req.method === 'POST') {
-        processPost(req, res, function (body) {
-          runMccCmd('playpause', body);
-        });
-      } else {
-        runMccCmd('playpause');
-        res.end('OK');
-      }
-      break;
-
     case '/stop':
-      if (req.method === 'POST') {
-        processPost(req, res, function (body) {
-          runMccCmd('stop', body);
-        });
-      } else {
-        runMccCmd('stop');
-        res.end('OK');
-      }
-      break;
-
     case '/prev':
-      if (req.method === 'POST') {
-        processPost(req, res, function (body) {
-          runMccCmd('prev', body);
-        });
-      } else {
-        runMccCmd('prev');
-        res.end('OK');
-      }
+    case '/next':
+      processMediaControl(req.url, req, res);
       break;
 
-    case '/next':
-      if (req.method === 'POST') {
-        processPost(req, res, function (body) {
-          runMccCmd('next', body);
-        });
-      } else {
-        runMccCmd('next');
-        res.end('OK');
-      }
-      break;
-    
     case '/begininput':
       cleanInputPanel();
-      inputPanel = openInputPanel();
+      inputPanel = openInputPanel(req.headers['x-no-timeout']);
       inputPanel.webContents.on('did-finish-load', () => {
         inputPanel.webContents.executeJavaScript('const style=document.createElement("style");style.id="schemeStyle";style.textContent=`'+generateCssScheme()+'`;document.head.appendChild(style);');
         inputPanel.show();
@@ -681,6 +646,8 @@ function onRequest(req, res) {
       <a href="/save">/save</a><br>
       <a href="/systemscheme">/systemscheme</a><br>
       <a href="/clipboard">/clipboard</a><br><br>
+      <a href="/play">/play</a><br>
+      <a href="/pause">/pause</a><br>
       <a href="/playpause">/playpause</a><br>
       <a href="/stop">/stop</a><br>
       <a href="/prev">/prev</a><br>
@@ -717,6 +684,20 @@ function processPost(req, res, callback) {
   });
 }
 
+function processMediaControl(command, req, res) {
+  if (command.startsWith('/')) {
+    command = command.substring(1);
+  }
+  if (req.method === 'POST') {
+    processPost(req, res, function (body) {
+      runMccCmd(command, body);
+    });
+  } else {
+    runMccCmd(command);
+    res.end('OK');
+  }
+}
+
 function initMcc() {
   mcc = spawn(path.join(__dirname, '../MediaControlCLI.exe'), ['utf8']);
   mcc.stdin.setEncoding('utf-8');
@@ -748,7 +729,7 @@ function runMccCmd(command, title = "") {
   mcc.stdin.write(args + "\n");
 }
 
-function openInputPanel() {
+function openInputPanel(noTimeout) {
   const inputPanel = new BrowserWindow({
     width: 640,
     height: 38,
@@ -765,7 +746,7 @@ function openInputPanel() {
   });
 
   inputPanel.removeMenu();
-  inputPanel.loadURL(path.join(__dirname, 'inputpanel.html'));
+  inputPanel.loadURL(path.join(__dirname, 'inputpanel.html') + (noTimeout ? '#notimeout' : ''));
 
   inputPanel.on('show', () => {
     // Ensure the window is focused when opened

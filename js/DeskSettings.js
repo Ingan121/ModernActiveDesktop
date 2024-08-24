@@ -1652,7 +1652,7 @@ async function madPrompt(msg, callback, hint = "", text = "") {
             // (can't even close the dialog)
             // If the system plugin is available, use that for receiving input
             // Otherwise, use the on-screen keyboard
-            if (!await madSysPlug.beginInput()) {
+            if (!await madSysPlug.beginInput(true)) {
                 if (!oskWindow.src) {
                     oskWindow.src = "apps/osk/index.html";
                 }

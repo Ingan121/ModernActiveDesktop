@@ -62,15 +62,18 @@
 
 ## 3.3
 * Added support for desktop patterns
-    * Available in the background settings page
+    * Available in the background settings page
+<br><img src="images/patterns.png" title="Patterns screenshot">
+* Fixed various bugs and improved the codebase
+* Updated Electron
 
 Changes for Wallpaper Engine:
-* Fixed the broken keyboard in Wallpaper Engine 2.5 and newer
-    * Tries to use the system plugin for directly receiving keyboard inputs (even in lower WPE versions)
-    * If the system plugin is unavailable, an on-screen keyboard will be shown as an alternative
+* Fixed the broken keyboard input in Wallpaper Engine 2.5 and newer
+    * Tries to use the system plugin for directly receiving keyboard inputs (even in lower WPE versions)
+    * If the system plugin is unavailable, an on-screen keyboard will be shown as an alternative
 * Added a token verification to the system plugin to stop random wallpapers from accessing your system without your consent
 
-Changes for browsers:  
+Changes for browsers:
 * Moved the official page to its own subdomain
 * Dialog icons are now preloaded to prevent the slow icon change
 
