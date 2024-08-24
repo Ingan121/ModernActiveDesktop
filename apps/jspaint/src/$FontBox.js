@@ -74,13 +74,17 @@
 		$button_group.append($bold, $italic, $underline, $vertical);
 		$fb.append($family, $size, $button_group);
 
-		$size.on("click", () => {
-			if (madRunningMode === 1) {
-				madPrompt(madGetString("UI_PROMPT_ENTER_VALUE"), function (res) {
-					if (res === null) return;
-					$size.val(res);
-					$size.trigger("change");
-				}, '', $size.val());
+		$size.on("click", async () => {
+			if (madKbdSupport !== 1) {
+				if (madSysPlug.inputStatus) {
+					madSysPlug.focusInput();
+				} else if (!await madSysPlug.beginInput()) {
+					madPrompt(madGetString("UI_PROMPT_ENTER_VALUE"), function (res) {
+						if (res === null) return;
+						$size.val(res);
+						$size.trigger("change");
+					}, '', $size.val());
+				}
 			}
 		});
 

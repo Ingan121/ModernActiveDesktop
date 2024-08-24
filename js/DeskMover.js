@@ -454,7 +454,11 @@
 
         async closeWindow() {
             if (this.beforeClose) {
-                await this.beforeClose(localStorage, window);
+                try {
+                    await this.beforeClose(localStorage, window);
+                } catch (error) {
+                    console.error(error);
+                }
             }
             const winCloseAnim = getComputedStyle(this.windowContainer).getPropertyValue('--win-close-anim');
             if (winCloseAnim && !localStorage.madesktopNoWinAnim && this.config.style === "wnd") {

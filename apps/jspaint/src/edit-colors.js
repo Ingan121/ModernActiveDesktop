@@ -461,13 +461,17 @@
 				});
 				$right.append(label, input);
 
-				input.addEventListener("click", function () {
-					if (madRunningMode === 1) {
-						madPrompt(madGetString("UI_PROMPT_ENTER_VALUE"), function (res) {
-							if (res === null) return;
-							input.value = res;
-							handle_input(input);
-						}, '', input.value);
+				input.addEventListener("click", async function () {
+					if (madKbdSupport !== 1) {
+						if (madSysPlug.inputStatus) {
+							madSysPlug.focusInput();
+						} else if (!await madSysPlug.beginInput()) {
+							madPrompt(madGetString("UI_PROMPT_ENTER_VALUE"), function (res) {
+								if (res === null) return;
+								input.value = res;
+								handle_input(input);
+							}, '', input.value);
+						}
 					}
 				});
 

@@ -60,72 +60,21 @@
 
 ## Changelog
 
-## 3.2
-* Added Clock and Calculator
-* Revamped the ChannelViewer
-    * It now more resembles IE4 or IE6
-    * It can now open pages that don't allow embedding
-    * Improved external link handling
-    * Note: the system plugin ChannelViewer has been deprecated. Please use the in-wallpaper ChannelViewer or any external browser on your system
-* Improved the customization settings
-    * You can now adjust the window metrics and font settings. Updated the built-in themes to have unique metrics as well
-    * Made the configuration window pretty pixel-perfect to the 98 appearance control panel
-    * Added an option to hide the keyboard navigation underlines
-    * Added an option to show only window outlines when dragging
-    * Support saving color schemes to the storage
-    * Support importing Windows theme files and exported color registry files
-    * Support exporting scheme as CSS or JSON by typing !copycss or !copyjson to the scheme save dialog
-    * Support adjusting the top and bottom margins. Adjust these based on your desktop, for example, the bottom margin would be the size of the taskbar.
-    * Support exporting and importing the complete configuration of ModernActiveDesktop
-    * Resetting configs will only remove its own configs and not touch other wallpaper's ones
-* Added a Windows Aero theme, and improved the XP theme
-    * JSPaint will use Windows Vista or Windows XP looks if you use one of these themes
-* Added more Classic schemes
-    * Catppuccin Mocha
-    * Some Plus! themes that were missing previously
-    * Reverted the 98 Classic scheme to 3.0 one, as this was indeed the correct one.
-    * The previous 98 scheme of MAD 3.1 has been renamed to Windows Classic (98SE) - in fact, this slightly different variant of the Classic scheme is also present in later versions of Windows.
-* More controls, including radio buttons and dropdowns, now follow the color scheme
-* Visualizer updates
-    * Added more configurable options to the visualizer
-    * Added fullscreen mode
-    * Automatically pause drawing when idle to reduce the CPU usage
-* ChannelBar is now an openable app, like the visualizer and others
-    * It no longer re-opens when opening a new window
-* Made various UI elements look more accurate
-    * Added ClientEdge in various places
-* Added localization support
-    * Added Korean language
-* Windows now can be resized diagonally
-* Added support for Firefox and iOS Safari, as well as touchscreens
-* Support menu navigation with keyboard (when keyboard input is available)
-* Moving the mouse over the menu while playing the animation effect will cancel the animation
-* Updated dependencies (Electron, JSPaint)
+## 3.3
+* Added support for desktop patterns
+    * Available in the background settings page
 
-## Hotfixes
-* Corrected the version string
-* Fix the XP theme looking broken in some places
+Changes for Wallpaper Engine:
+* Fixed the broken keyboard in Wallpaper Engine 2.5 and newer
+    * Tries to use the system plugin for directly receiving keyboard inputs (even in lower WPE versions)
+    * If the system plugin is unavailable, an on-screen keyboard will be shown as an alternative
+* Added a token verification to the system plugin to stop random wallpapers from accessing your system without your consent
 
-## 3.2.1
-* Fixed several bugs
-    * Placeholder message being shown instead of a proper error message when trying to enable media integration features without having it enabled in Wallpaper Engine settings
-    * Effect options not saving well when changing the appearance options
-    * Short dropdown lists showing scroll bars when the display scaling is set to higher than 100%
-    * Bottom-right resize area of some pages not disappearing when resetting the window or navigating to another page
-* Improved the system window metrics retrieval to get more accurate metrics when the system DPI is higher than 100%
-* Improved the fullscreen window handling
-* Improved menu behavior regarding submenus
-* ChannelViewer: Fixed the link navigation not working well on certain pages
-* Empty margin input fields will now be treated as 0
-* Visualizer improvements
-    * Added an option to hide the borders around the visualization area
-    * Added an option to adjust the decrement speed
-    * Fixed right channel being visible when channel separation is set to 'Combine left and right channels' and fixed bar width is enabled
-    * Fixed visualization not showing right after switching from Album Art to WMP Bars
-    * Fixed erroneously getting out of idle power-saving state on random occasions
-* Added access keys for some elements with an underline
+Changes for browsers:  
+* Moved the official page to its own subdomain
+* Dialog icons are now preloaded to prevent the slow icon change
 
-(2024/4/19)
+(2024/)
 
 ### Previous changelog
 Please see [here](?src=Updated.md&showbackbtn=1) for the previous changes

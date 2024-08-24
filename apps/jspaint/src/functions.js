@@ -400,13 +400,17 @@ function show_custom_zoom_window() {
 	const $really_custom_radio_option = $fieldset.find("input[value='really-custom']");
 	const $really_custom_input = $fieldset.find("input[name='really-custom-zoom-input']");
 
-	$really_custom_input.closest("label").on("click", (event) => {
-		if (madRunningMode === 1) {
-			madPrompt(madGetString("UI_PROMPT_ENTER_VALUE"), function (res) {
-				if (res === null) return;
-				$really_custom_input.val(res);
-				$really_custom_input.trigger("input");
-			}, '', $really_custom_input.val());
+	$really_custom_input.closest("label").on("click", async (event) => {
+		if (madKbdSupport !== 1) {
+			if (madSysPlug.inputStatus) {
+				madSysPlug.focusInput();
+			} else if (!await madSysPlug.beginInput()) {
+				madPrompt(madGetString("UI_PROMPT_ENTER_VALUE"), function (res) {
+					if (res === null) return;
+					$really_custom_input.val(res);
+					$really_custom_input.trigger("input");
+				}, '', $really_custom_input.val());
+			}
 		}
 		$really_custom_radio_option.prop("checked", true);
 		// If the user clicks on the input, let it get focus naturally, placing the caret where you click.
@@ -990,13 +994,17 @@ function file_load_from_url() {
 		</div>
 	`);
 	const $input = $w.$main.find("#url-input");
-	$input.on("click", () => {
-		if (madRunningMode === 1) {
-			madPrompt(madGetString("UI_PROMPT_ENTER_VALUE"), function (res) {
-				if (res === null) return;
-				$input.val(res);
-				$input.trigger("input");
-			}, '', $input.val());
+	$input.on("click", async () => {
+		if (madKbdSupport !== 1) {
+			if (madSysPlug.inputStatus) {
+				madSysPlug.focusInput();
+			} else if (!await madSysPlug.beginInput()) {
+				madPrompt(madGetString("UI_PROMPT_ENTER_VALUE"), function (res) {
+					if (res === null) return;
+					$input.val(res);
+					$input.trigger("input");
+				}, '', $input.val());
+			}
 		}
 	});
 	// $w.$Button("Load", () => {
@@ -2882,13 +2890,17 @@ function image_attributes() {
 	const $height = $(E("input")).attr({ type: "number", min: 1, "aria-keyshortcuts": "Alt+H H H" }).addClass("no-spinner inset-deep").appendTo($height_label);
 
 	for (const elem of [$width, $height]) {
-		elem.on("click", () => {
-			if (madRunningMode === 1) {
-				madPrompt(madGetString("UI_PROMPT_ENTER_VALUE"), function (res) {
-					if (res === null) return;
-					elem.val(res);
-					elem.trigger("input");
-				}, '', elem.val());
+		elem.on("click", async () => {
+			if (madKbdSupport !== 1) {
+				if (madSysPlug.inputStatus) {
+					madSysPlug.focusInput();
+				} else if (!await madSysPlug.beginInput()) {
+					madPrompt(madGetString("UI_PROMPT_ENTER_VALUE"), function (res) {
+						if (res === null) return;
+						elem.val(res);
+						elem.trigger("input");
+					}, '', elem.val());
+				}
 			}
 		});
 	}
@@ -3170,13 +3182,17 @@ function image_flip_and_rotate() {
 	});
 
 	const $arbitrary = $fieldset.find("input[name='rotate-by-arbitrary-angle']");
-	$arbitrary.on("click", () => {
-		if (madRunningMode === 1) {
-			madPrompt(madGetString("UI_PROMPT_ENTER_VALUE"), function (res) {
-				if (res === null) return;
-				$arbitrary.val(res);
-				$arbitrary.trigger("input");
-			}, '', $arbitrary.val());
+	$arbitrary.on("click", async () => {
+		if (madKbdSupport !== 1) {
+			if (madSysPlug.inputStatus) {
+				madSysPlug.focusInput();
+			} else if (!await madSysPlug.beginInput()) {
+				madPrompt(madGetString("UI_PROMPT_ENTER_VALUE"), function (res) {
+					if (res === null) return;
+					$arbitrary.val(res);
+					$arbitrary.trigger("input");
+				}, '', $arbitrary.val());
+			}
 		}
 	});
 
@@ -3262,13 +3278,17 @@ function image_stretch_and_skew() {
 	const skew_y = $RowInput($fieldset_skew.find("table"), "skew-y", localize("V&ertical:"), 0, localize("Degrees"), -90, 90);
 
 	for (const elem of [stretch_x, stretch_y, skew_x, skew_y]) {
-		elem.on("click", () => {
-			if (madRunningMode === 1) {
-				madPrompt(madGetString("UI_PROMPT_ENTER_VALUE"), function (res) {
-					if (res === null) return;
-					elem.val(res);
-					elem.trigger("input");
-				}, '', elem.val());
+		elem.on("click", async () => {
+			if (madKbdSupport !== 1) {
+				if (madSysPlug.inputStatus) {
+					madSysPlug.focusInput();
+				} else if (!await madSysPlug.beginInput()) {
+					madPrompt(madGetString("UI_PROMPT_ENTER_VALUE"), function (res) {
+						if (res === null) return;
+						elem.val(res);
+						elem.trigger("input");
+					}, '', elem.val());
+				}
 			}
 		});
 	}
@@ -3403,13 +3423,17 @@ function save_as_prompt({
 		const $file_type = $w.$main.find(".file-type-select");
 		const $file_name = $w.$main.find(".file-name");
 
-		$file_name.on("click", () => {
-			if (madRunningMode === 1) {
-				madPrompt(madGetString("UI_PROMPT_ENTER_VALUE"), function (res) {
-					if (res === null) return;
-					$file_name.val(res);
-					$file_name.trigger("input");
-				}, '', $file_name.val());
+		$file_name.on("click", async () => {
+			if (madKbdSupport !== 1) {
+				if (madSysPlug.inputStatus) {
+					madSysPlug.focusInput();
+				} else if (!await madSysPlug.beginInput()) {
+					madPrompt(madGetString("UI_PROMPT_ENTER_VALUE"), function (res) {
+						if (res === null) return;
+						$file_name.val(res);
+						$file_name.trigger("input");
+					}, '', $file_name.val());
+				}
 			}
 		});
 

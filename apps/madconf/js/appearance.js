@@ -148,7 +148,7 @@ async function main() {
             scheme = savedSchemes[schemeSelector.value];
             deleteBtn.disabled = false;
         } else if (schemeSelector.value === "sys") {
-            scheme = parseCssScheme(await getSchemeText("http://localhost:3031/systemscheme"));
+            scheme = parseCssScheme(await madSysPlug.getSystemScheme());
             deleteBtn.disabled = true;
         } else if (schemeSelector.value === "import") {
             try {

@@ -12,6 +12,7 @@
         checkConnectivity,
         getSystemScheme,
         openExternal,
+        saveFile,
         mediaControl,
         beginInput,
         focusInput,
@@ -32,12 +33,12 @@
     }
 
     // Send a request to the system plugin
-    async function request(endpoint, data, headers = {}) {
+    async function request(endpoint, data, headers = {}, rawReturn) {
         if (endpoint !== "connecttest" && !localStorage.sysplugIntegration) {
             return;
         }
 
-        if (!token && (window.runningMode || window.madRunningMode || 0) === 1) {
+        if (!token && (top.runningMode || 0) === 1) {
             try {
                 await fetchToken();
             } catch (error) {
@@ -48,18 +49,18 @@
             headers["X-MADSP-Token"] = token;
         }
         if (data) {
-            if (typeof data !== "string") {
+            if (typeof data !== "string" && !(data instanceof FormData) && !(data instanceof Blob)) {
                 data = JSON.stringify(data);
                 headers["Content-Type"] = "application/json";
             }
 
             return await fetch(`http://localhost:3031/${endpoint}`, {
                 method: "POST", headers, body: data
-            }).then(res => res.text());
+            }).then(res => rawReturn ? res : res.text());
         } else {
             return await fetch(`http://localhost:3031/${endpoint}`, {
                 headers
-            }).then(res => res.text());
+            }).then(res => rawReturn ? res : res.text());
         }
     }
 
@@ -91,6 +92,11 @@
     // Open a URL in the default browser (or the deprecated SysPlug ChannelViewer)
     async function openExternal(url, headers) {
         return await request("open", url, headers);
+    }
+
+    // Save a file to the system
+    async function saveFile(data, headers) {
+        return await request("save", data, headers, true);
     }
 
     // Control the media player

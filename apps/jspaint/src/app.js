@@ -148,13 +148,9 @@ window.systemHookDefaults = {
 				const new_format = formats.find((format) => format.formatID === newFileFormatID);
 				const blob = await getBlob(new_format && new_format.formatID);
 				let noErrors = true;
-				const res = await fetch("http://localhost:3031/save", {
-					method: "POST",
-					body: blob,
-					headers: {
-						"X-Format-Name": new_format.name,
-						"X-Format-Extension": new_format.extensions.toString()
-					}
+				const res = await madSysPlug.saveFile(blob, {
+					"X-Format-Name": new_format.name,
+					"X-Format-Extension": new_format.extensions.toString()
 				}).catch((err) => {
 					show_error_message("System plugin is not running. Please make sure you have installed it properly.");
 					madOpenWindow("SysplugSetupGuide.md", true);

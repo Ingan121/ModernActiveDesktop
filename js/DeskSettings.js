@@ -544,7 +544,7 @@ function loadBgImgConf() {
         {
             document.body.style.backgroundImage = "url('" + localStorage.madesktopBgImg + "')";
         } else { // Custom image set in madconf
-            document.body.style.backgroundImage = "url('data:image/png;base64," + localStorage.madesktopBgImg + "')"; // Set in madconf
+            document.body.style.backgroundImage = "url('data:image/png;base64," + localStorage.madesktopBgImg + "')";
         }
     } else {
         document.body.style.backgroundImage = "none";

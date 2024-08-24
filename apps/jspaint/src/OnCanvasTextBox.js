@@ -33,13 +33,17 @@ class OnCanvasTextBox extends OnCanvasObject {
 
 		edit_textarea.value = starting_text || "";
 
-		edit_textarea.addEventListener("click", function () {
-			if (madRunningMode === 1) {
-				madPrompt(madGetString("UI_PROMPT_ENTER_VALUE"), function (res) {
-					if (res === null) return;
-					edit_textarea.value = res;
-					edit_textarea.dispatchEvent(new Event('input'));
-				}, '', edit_textarea.value);
+		edit_textarea.addEventListener("click", async function () {
+			if (madKbdSupport !== 1) {
+				if (madSysPlug.inputStatus) {
+					madSysPlug.focusInput();
+				} else if (!await madSysPlug.beginInput()) {
+					madPrompt(madGetString("UI_PROMPT_ENTER_VALUE"), function (res) {
+						if (res === null) return;
+						edit_textarea.value = res;
+						edit_textarea.dispatchEvent(new Event('input'));
+					}, '', edit_textarea.value);
+				}
 			}
 		});
 
