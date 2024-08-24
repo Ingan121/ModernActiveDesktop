@@ -1,4 +1,4 @@
-@charset "utf-8";
+@import '../../../css/libmad.css';
 
 html, body {
     overflow: hidden;
@@ -64,10 +64,11 @@ input[type="checkbox"]:checked {
     background-size: auto;
     background-repeat: repeat;
     background-position: left top;
-    border: solid 1px var(--button-dk-shadow);;
+    border: solid 1px var(--button-dk-shadow);
     position: absolute;
     top: 76px;
     left: 156px;
+    image-rendering: pixelated;
 }
 
 #rightButtons {

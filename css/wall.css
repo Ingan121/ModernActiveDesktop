@@ -90,15 +90,17 @@ html, body {
 html {
     background-color: var(--background);
     background-attachment: fixed;
-    background-size: auto;
+    background-size: 8px 8px;
     background-repeat: repeat;
     background-position: left top;
+    image-rendering: pixelated;
 }
 
 body {
     background-attachment: fixed;
     background-position: center center;
     background-repeat: no-repeat;
+    image-rendering: auto;
 }
 
 body[data-no-underline] {

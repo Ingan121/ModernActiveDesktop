@@ -90,6 +90,7 @@
         "MAD_MSG_LINK_COPY_PROMPT": "Paste this URL in the browser's address bar. Click OK to copy.",
         "MAD_MSG_LINK_COPIED": "Copied URL to clipboard! Paste it in the browser's address bar.",
         "MAD_MSG_SYSPLUG_UPDATED": "System plugin has been updated, and it needs a reinstall. Please update it with the setup guide.",
+        "MAD_MSG_MIGRATION_INCOMPLETE": "The data migration check has not been completed. Do you want to retry it?",
 
         "MAD_DEBUG_LOCATION": "Loaded from %s",
         "MAD_DEBUG_RUNMODE": "Running in %s",

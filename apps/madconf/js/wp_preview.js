@@ -15,8 +15,9 @@ window.bgType = localStorage.madesktopBgType || "image";
 window.bgImgMode = localStorage.madesktopBgImgMode || "center";
 let bgSize = "auto";
 
-let scale = (parent.document.body.style.zoom || 1) * 0.0625;
-document.body.style.zoom = scale;
+let scale = parent.document.body.style.zoom || 1;
+document.documentElement.style.backgroundSize = `${8 * scale}px ${8 * scale}px`;
+document.body.style.zoom = scale * 0.0625
 
 changeBgType(bgType);
 changeBgImgMode(bgImgMode);
@@ -32,13 +33,14 @@ if (localStorage.madesktopBgHtmlSrc) {
 document.getElementById("scheme").href = parent.parent.document.getElementById("scheme").href;
 
 bgHtmlView.addEventListener("load", function () {
-    bgHtmlView.contentWindow.document.body.style.zoom = scale;
+    bgHtmlView.contentWindow.document.body.style.zoom = scale * 0.0625;
 });
 
 new MutationObserver(function (mutations) {
-    scale = (parent.document.body.style.zoom || 1) * 0.0625;
-    document.body.style.zoom = scale;
-    bgHtmlView.contentWindow.document.body.style.zoom = scale;
+    scale = parent.document.body.style.zoom || 1;
+    document.documentElement.style.backgroundSize = `${8 * scale}px ${8 * scale}px`;
+    document.body.style.zoom = scale * 0.0625;
+    bgHtmlView.contentWindow.document.body.style.zoom = scale * 0.0625;
 }).observe(
     parent.document.body,
     { attributes: true, attributeFilter: ["style"] }

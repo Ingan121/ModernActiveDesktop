@@ -28,31 +28,9 @@ switch (action) {
             localStorage.madesktopLastVer = "3.3.0";
         }
         break;
-    case 'migrate':
-        if (localStorage.madesktopLastVer) {
-            // Config already exists, no need to migrate
-            // Do not overwrite the existing config
-            parent.postMessage({ type: 'migrateCheck' }, 'https://www.ingan121.com');
-        } else {
-            window.addEventListener('message', function (event) {
-                if (event.origin !== 'https://www.ingan121.com') {
-                    return;
-                }
-                const data = event.data;
-                if (data.type === 'migrate') {
-                    for (const key in data.config) {
-                        localStorage.setItem(key, data.config[key]);
-                    }
-                    localStorage.madesktopLastVer = "3.3.0";
-                    parent.postMessage({ type: 'migrateCheck' }, 'https://www.ingan121.com');
-                }
-            });
-        }
 }
 
-if (action !== 'migrate') {
-    location.replace('index.html');
-}
+location.replace('index.html');
 
 function reset() {
     for (const key of keys) {

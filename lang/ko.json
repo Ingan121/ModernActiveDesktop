@@ -66,6 +66,7 @@
     "MAD_MSG_LINK_COPY_PROMPT": "다음 URL을 브라우저 주소 표시줄에 붙여넣으세요. 복사하려면 확인을 클릭하세요.",
     "MAD_MSG_LINK_COPIED": "URL이 클립보드에 복사되었습니다. 복사된 URL을 브라우저 주소 표시줄에 붙여넣으세요.",
     "MAD_MSG_SYSPLUG_UPDATED": "시스템 플러그인이 업데이트되어 다시 설치해야 합니다. 설치 가이드를 따라 업데이트하세요.",
+    "MAD_MSG_MIGRATION_INCOMPLETE": "데이터 마이그레이션 확인이 완료되지 않았습니다. 다시 시도하시겠습니까?",
 
     "MAD_DEBUG_LOCATION": "%s에서 로드됨",
     "MAD_DEBUG_RUNMODE": "%s에서 실행 중",

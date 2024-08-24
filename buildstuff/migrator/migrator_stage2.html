@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ModernActiveDesktop</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://madesktop.ingan121.com/css/wall.css">
+    <link rel="stylesheet" href="https://madesktop.ingan121.com/css/98.css">
+</head>
+<body style="background-color: var(--button-face);">
+    <div class="window-body">
+        <section class="field-row">
+            <img id="msgbox-icon" src="https://madesktop.ingan121.com/images/info.png">
+            <p id="msgbox-msg" style="font: var(--message-font);">Finishing the migration process...</p>
+        </section>
+    </div>
+    <script>
+        const keys = Object.keys(localStorage);
+        for (const key of keys) {
+            if (key.startsWith('madesktop') || key === 'sysplugIntegration' ||
+                key.startsWith('image#') || key.startsWith('jspaint '))
+            {
+                console.log("Deleting " + key);
+                localStorage.removeItem(key);
+            } else {
+                console.log("Not deleting " + key);
+            }
+        }
+        parent.postMessage({ type: 'migrateSuccess' }, 'https://madesktop.ingan121.com');
+    </script>
+</body>
+</html>

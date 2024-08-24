@@ -86,6 +86,31 @@ if (parent !== window) {
     throw new Error("Refusing to load inside an iframe");
 }
 
+// Data migration from www.ingan121.com to madesktop.ingan121.com
+if (location.href.startsWith("https://madesktop.ingan121.com/") && !localStorage.madesktopMigrationProgress) {
+    localStorage.madesktopMigrationProgress = 0;
+    bgHtmlView.src = "https://www.ingan121.com/mad/migrator.html";
+    window.addEventListener('message', function (event) {
+        if (event.origin !== 'https://www.ingan121.com') {
+            return;
+        }
+        const data = event.data;
+        if (data.type === 'migrate') {
+            for (const key in data.config) {
+                localStorage.setItem(key, data.config[key]);
+            }
+            if (localStorage.madesktopLastVer) {
+                localStorage.madesktopMigrationProgress++;
+            } else {
+                // No data to migrate, so no need to run stage 2 to clear configs at www.ingan121.com
+                localStorage.madesktopMigrationProgress = 2;
+            }
+            location.reload();
+        }
+    });
+    throw new Error("Data migration check in progress... (Retrying will abort the migration process.)");
+}
+
 // Load configs
 if (!localStorage.madesktopItemCount) {
     localStorage.madesktopItemCount = 1;
@@ -204,11 +229,13 @@ if (localStorage.madesktopItemCount > 1) {
 }
 
 if (localStorage.madesktopLastVer) {
-    if (!localStorage.madesktopLastVer.startsWith("3.3")) { // Update from 3.1 and below
+    if (!localStorage.madesktopLastVer.startsWith("3.3")) { // Update from 3.2 and below
         delete localStorage.madesktopHideWelcome;
         delete localStorage.madesktopCheckedChanges;
         delete localStorage.madesktopCheckedConfigs;
-        openWindow("placeholder.html");
+        if (!localStorage.madesktopLastVer.startsWith("3.2")) { // Update from 3.1 and below - no new apps in 3.3
+            openWindow("placeholder.html");
+        }
 
         if (localStorage.madesktopColorScheme === "xpcss4mad" && localStorage.madesktopLastVer.startsWith("3.0")) {
             // 3.0 didn't have the menu style option but the XP theme had a hardcoded menu style
@@ -234,6 +261,39 @@ if (localStorage.madesktopLastVer) {
     }
 }
 localStorage.madesktopLastVer = "3.3.0";
+
+switch (localStorage.madesktopMigrationProgress) {
+    case "0":
+        // Migration check failed, ask the user to retry migration
+        madConfirm("locid:MAD_MSG_MIGRATION_INCOMPLETE", function (res) {
+            if (res) {
+                // Migration needs to be done without any configs here
+                location.replace("confmgr.html?action=reset");
+            } else {
+                localStorage.madesktopMigrationProgress = 2;
+            }
+        });
+        break;
+    case "1":
+        // Migration succeeded, clear configs at www.ingan121.com
+        const migratorWindow = openWindow("https://www.ingan121.com/mad/migrator_stage2.html", true, {
+            width: "300px",
+            height: "52px",
+            centered: true,
+            unresizable: true,
+            noIcon: true
+        });
+        window.addEventListener('message', function (event) {
+            if (event.origin !== 'https://www.ingan121.com') {
+                return;
+            }
+            const data = event.data;
+            if (data.type === 'migrateSuccess') {
+                localStorage.madesktopMigrationProgress++;
+                migratorWindow.closeWindow();
+            }
+        });
+}
 
 if (localStorage.madesktopItemVisible === "false") {
     windowContainers[0].style.display = "none";
@@ -678,6 +738,7 @@ function changeScale(scale) {
     scaleFactor = scale || 1;
     vWidth = window.innerWidth / scaleFactor;
     vHeight = window.innerHeight / scaleFactor;
+    document.documentElement.style.backgroundSize = `${8 * scaleFactor}px ${8 * scaleFactor}px`;
     document.body.style.zoom = scaleFactor;
     updateIframeScale();
     document.dispatchEvent(new Event("pointerup")); // Move all deskitems inside the visible area
@@ -1264,15 +1325,17 @@ function hookIframeSize(iframe, num) {
         deskMovers[num].closeWindow();
     }
 
-    // Listen for title changes
-    new MutationObserver(function (mutations) {
-        if (!deskMovers[num].config.title) {
-            deskMovers[num].windowTitleText.textContent = mutations[0].target.innerText;
-        }
-    }).observe(
-        iframe.contentDocument.querySelector('title'),
-        { subtree: true, characterData: true, childList: true }
-    );
+    if (num) {
+        // Listen for title changes
+        new MutationObserver(function (mutations) {
+            if (!deskMovers[num].config.title) {
+                deskMovers[num].windowTitleText.textContent = mutations[0].target.innerText;
+            }
+        }).observe(
+            iframe.contentDocument.querySelector('title'),
+            { subtree: true, characterData: true, childList: true }
+        );
+    }
 
     iframe.contentDocument.addEventListener('click', (event) => {
         if (!iframe.contentDocument) {
@@ -1497,6 +1560,9 @@ async function madConfirm(msg, callback) {
     return new Promise(resolve => {
         playSound("question");
 
+        if (msg.startsWith("locid:")) {
+            msg = `<mad-string data-locid="${msg.slice(6)}"></mad-string>`;
+        }
         msgboxMessage.innerHTML = msg;
         msgboxIcon.style.display = "block";
         msgboxIcon.src = "images/question.png";
@@ -1548,6 +1614,9 @@ async function madConfirm(msg, callback) {
 
 async function madPrompt(msg, callback, hint = "", text = "") {
     return new Promise(async resolve => {
+        if (msg.startsWith("locid:")) {
+            msg = `<mad-string data-locid="${msg.slice(6)}"></mad-string>`;
+        }
         if (kbdSupport === 0) { // Wallpaper Engine normally does not support keyboard input
             const res = prompt(msg, text);
             if (callback) callback(res);
@@ -1954,15 +2023,11 @@ function showWelcome() {
 // #endregion
 
 // #region Final initialization
-showDebugInfo();
 if (runningMode === WE) {
-    runningModeLabel.textContent = madGetString("MAD_DEBUG_RUNMODE", "Wallpaper Engine");
     // Dummy listener to make Wallpaper Engine recognize MAD supporting audio visualization
     window.wallpaperRegisterAudioListener(() => {});
 } else {
-    if (runningMode === LW) {
-        runningModeLabel.textContent = madGetString("MAD_DEBUG_RUNMODE", "Lively Wallpaper");
-    } else {
+    if (runningMode === BROWSER) {
         // Konami code easter egg
         // Obviously a 98.js / jspaint reference
         const konamiCode = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a", "Enter"];
@@ -1984,6 +2049,7 @@ if (runningMode === WE) {
     }
 }
 origRunningMode = runningMode;
+showDebugInfo();
 
 window.addEventListener('load', function () {
     processTheme();

@@ -153,6 +153,8 @@ viewMenuItems[1].addEventListener("click", function () { // Status Bar button
 
 viewMenuItems[3].addEventListener("click", function () { // Stop button
     window.stop();
+    loadToken = 0;
+    loadFinish();
 });
 
 viewMenuItems[4].addEventListener("click", function () { // Refresh button
@@ -444,6 +446,8 @@ refreshButton.addEventListener("click", function () {
 
 stopButton.addEventListener("click", function () {
     window.stop();
+    loadToken = 0;
+    loadFinish();
 });
 
 homeButton.addEventListener("click", function () {
@@ -824,8 +828,8 @@ function hookIframeSize(iframe) {
         }
         if (activeElement.matches("input[type='text'], input[type='search'], input[type='url'], input[type='tel'], input[type='email'], input[type='password'], textarea")) {
             if (madRunningMode === 1) {
-                // Don't use madPrompt-less SysPlug input here
-                // as handling madInput inside an iframe (inside an iframe) is a bit tricky
+                // Don't use madPrompt-less MadInput here
+                // as handling MadInput inside an iframe (inside an iframe) is a bit tricky
                 madPrompt(madGetString("UI_PROMPT_ENTER_VALUE"), function (res) {
                     if (res === null) return;
                     activeElement.value = res;

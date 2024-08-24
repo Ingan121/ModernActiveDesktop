@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ModernActiveDesktop</title>
+    <meta charset="utf-8">
+</head>
+<body>
+    <script>
+        const madConfig = {};
+        for (const key in localStorage) {
+            if (key.startsWith("madesktop") || key === "sysplugIntegration" ||
+                key.startsWith('image#') || key.startsWith('jspaint '))
+            {
+                madConfig[key] = localStorage[key];
+            }
+        }
+
+        parent.postMessage({
+            type: 'migrate',
+            config: madConfig
+        }, 'https://madesktop.ingan121.com');
+    </script>
+</body>
+</html>

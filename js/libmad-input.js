@@ -61,6 +61,20 @@ document.addEventListener('madinput', async (event) => {
         case "ArrowRight":
             textbox.selectionStart = textbox.selectionEnd = Math.min(textbox.value.length, origCursorPos + 1);
             break;
+        case "ArrowUp":
+            if (textbox.dataset.origType === "number") {
+                textbox.value = Math.min(Number(textbox.value) + (textbox.step ? Number(textbox.step) : 1), Number(textbox.max || Number.MAX_SAFE_INTEGER)).toString();
+            } else {
+                textbox.selectionStart = textbox.selectionEnd = 0;
+            }
+            break;
+        case "ArrowDown":
+            if (textbox.dataset.origType === "number") {
+                textbox.value = Math.max(Number(textbox.value) - (textbox.step ? Number(textbox.step) : 1), Number(textbox.min || Number.MIN_SAFE_INTEGER)).toString();
+            } else {
+                textbox.selectionStart = textbox.selectionEnd = textbox.value.length;
+            }
+            break;
         case "^a":
             textbox.select();
             break;
@@ -87,6 +101,11 @@ document.addEventListener('madinput', async (event) => {
             break;
         default:
             if (event.key.length === 1) {
+                if (textbox.dataset.origType === "number") {
+                    if (!"0123456789.+-eE".includes(event.key)) {
+                        return;
+                    }
+                }
                 if (textbox.selectionStart === textbox.value.length) {
                     textbox.value = textbox.value.toString() + event.key;
                 } else if (textbox.selectionStart !== textbox.selectionEnd) {
