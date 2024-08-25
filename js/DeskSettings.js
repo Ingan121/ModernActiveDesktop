@@ -2040,12 +2040,14 @@ if (runningMode === WE) {
             } else {
                 konamiStack = 0;
             }
-        }); 
+        });
     }
     startup();
     if (location.href.startsWith("file:///") && runningMode === BROWSER) {
-        // Not really localizable cuz AJAX fails when running as a local file due to CORS
-        madAlert("You are running ModernActiveDesktop as a local file. For the full functionality, please use a web server to host it or restart your browser with the --allow-file-access-from-files argument.", null, "warning");
+        fetch('.').catch(() => {
+            // Not really localizable cuz AJAX fails when running as a local file due to CORS
+            madAlert("You are running ModernActiveDesktop as a local file. For the full functionality, please use a web server to host it or restart your browser with the --allow-file-access-from-files argument.", null, "warning");
+        });
     }
 }
 origRunningMode = runningMode;
