@@ -62,6 +62,17 @@
     * Current main JS structure (DeskMover + DeskSettings) hasn't really changed since 1.0 lol
 * Support multi-display background wallpaper configuration?
 
+## Setup
+* Running locally
+    * Run Chrome or Edge with `--allow-file-access-from-files`, then run index.html with it
+    * You can also run a local web server
+* Running on a server
+    * Install any web server like Apache or Nginx, then unzip or git clone MAD under the webroot
+    * It doesn't have to be in the root; MAD is designed to run well in any directories
+* Development setup
+    * I'm just using the [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) VSCode extension for the development
+    * Wallpaper Engine is also used for testing. For debugging, follow [this guide](https://docs.wallpaperengine.io/en/web/debug/debug.html) but instead of going to `localhost:[port]` directly, go to `chrome://inspect`, add `localhost:[port]` in the target discovery settings, wait a bit, and click inspect in the remote target list. It works better for me
+
 ## Notes
 * ModernActiveDesktop is primarily optimized for Chromium 98 and higher. Some features may not work or look well on other browsers.
 
