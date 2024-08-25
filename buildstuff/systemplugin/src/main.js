@@ -465,11 +465,13 @@ function onRequest(req, res) {
 
   if (req.headers.origin && req.headers.origin !== 'null') {
     console.log('Origin: ' + req.headers.origin);
-    // Allow CORS for localhost and Lively Wallpaper
-    if (new URL(req.headers.origin).hostname.match(/^(localhost|127(.[0-9]{1,3}){3})$/) || req.headers.origin.startsWith('localfolder://')) {
+    // Allow CORS for special origins
+    if (new URL(req.headers.origin).hostname.match(/^(localhost|127(.[0-9]{1,3}){3})$/) || // localhost
+      req.headers.origin.startsWith('localfolder://') || // Lively Wallpaper
+      req.headers.origin.startsWith('file://')) // Wallpaper Engine 2.4 and below, and MAD running as a local file in browsers (--allow-file-access-from-files in Chromium)
+    {
       res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
-    } else if (args.cors !== "*" && req.headers.origin !== cors && req.headers.origin !== 'file://') {
-      // (Last one is what Wallpaper Engine 2.4 and below sends)
+    } else if (args.cors !== "*" && req.headers.origin !== cors) {
       // Abort if CORS is not allowed
       // This is to prevent arbitrary website from accessing your system
       // Request can proceed even if CORS is not allowed
