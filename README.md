@@ -81,7 +81,7 @@
 ## 3.3
 * Added support for desktop patterns
     * Available in the background settings page
-<br><img src="images/patterns.png" title="Patterns screenshot">
+<br><img src="docs/images/patterns.png" title="Patterns screenshot">
 * Fixed various bugs and improved the codebase
 * Updated Electron
 
