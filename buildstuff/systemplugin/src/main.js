@@ -102,14 +102,6 @@ function createWindow () {
   // Remove the menu bar
   mainWindow.removeMenu();
 
-  if (args.metrics) {
-    const borderSize = (mainWindow.getSize()[0] - mainWindow.getContentSize()[0]) / 2;
-    const titleHeight = mainWindow.getSize()[1] - mainWindow.getContentSize()[1] - borderSize * 2 - 1;
-    console.log(borderSize, titleHeight);
-    app.quit();
-    return;
-  }
-
   if (args.cors === "*") {
     showErrorMsg(null, "WARNING: You're running ModernActiveDesktop System Plugin with a wildcard CORS option. This is considered insecure, as any webpage can access your system with this plugin. Please only use this option for testing.", "warning");
   }
@@ -140,6 +132,14 @@ function createWindow () {
   });
 
   mainWindow.webContents.on('did-finish-load', () => {
+    if (args.metrics) {
+      const borderSize = (mainWindow.getSize()[0] - mainWindow.getContentSize()[0]) / 2;
+      const titleHeight = mainWindow.getSize()[1] - mainWindow.getContentSize()[1] - borderSize * 2 - 1;
+      console.log(borderSize, titleHeight);
+      app.quit();
+      return;
+    }
+
     mainWindow.webContents.executeJavaScript('const style=document.createElement("style");style.id="schemeStyle";style.textContent=`'+generateCssScheme()+'`;document.head.appendChild(style);');
 
     if (args.open) {
