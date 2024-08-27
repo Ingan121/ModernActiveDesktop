@@ -409,7 +409,7 @@ function show_custom_zoom_window() {
 					if (res === null) return;
 					$really_custom_input.val(res);
 					$really_custom_input.trigger("input");
-				}, '', $really_custom_input.val());
+				}, '', $really_custom_input.val(), true);
 			}
 		}
 		$really_custom_radio_option.prop("checked", true);
@@ -1003,7 +1003,7 @@ function file_load_from_url() {
 					if (res === null) return;
 					$input.val(res);
 					$input.trigger("input");
-				}, '', $input.val());
+				}, '', $input.val(), true);
 			}
 		}
 	});
@@ -2899,7 +2899,7 @@ function image_attributes() {
 						if (res === null) return;
 						elem.val(res);
 						elem.trigger("input");
-					}, '', elem.val());
+					}, '', elem.val(), true);
 				}
 			}
 		});
@@ -3191,7 +3191,7 @@ function image_flip_and_rotate() {
 					if (res === null) return;
 					$arbitrary.val(res);
 					$arbitrary.trigger("input");
-				}, '', $arbitrary.val());
+				}, '', $arbitrary.val(), true);
 			}
 		}
 	});
@@ -3287,7 +3287,7 @@ function image_stretch_and_skew() {
 						if (res === null) return;
 						elem.val(res);
 						elem.trigger("input");
-					}, '', elem.val());
+					}, '', elem.val(), true);
 				}
 			}
 		});
@@ -3432,7 +3432,7 @@ function save_as_prompt({
 						if (res === null) return;
 						$file_name.val(res);
 						$file_name.trigger("input");
-					}, '', $file_name.val());
+					}, '', $file_name.val(), true);
 				}
 			}
 		});

@@ -83,7 +83,7 @@
 						if (res === null) return;
 						$size.val(res);
 						$size.trigger("change");
-					}, '', $size.val());
+					}, '', $size.val(), true);
 				}
 			}
 		});

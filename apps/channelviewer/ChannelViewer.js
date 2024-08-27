@@ -519,7 +519,7 @@ urlbar.addEventListener('click', async function (event) {
                 } else {
                     urlbar.value = url;
                 }
-            }, "", urlbar.value);
+            }, "", urlbar.value, true);
         }
     }
 });

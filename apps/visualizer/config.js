@@ -62,7 +62,7 @@ for (const textbox of textboxes) {
                 madSysPlug.focusInput();
             } else if (!await madSysPlug.beginInput()) {
                 const msg = textbox.placeholder ? "UI_PROMPT_ENTER_VALUE_RESETTABLE" : "UI_PROMPT_ENTER_VALUE";
-                const res = await madPrompt(madGetString(msg), null, textbox.placeholder, textbox.value);
+                const res = await madPrompt(madGetString(msg), null, textbox.placeholder, textbox.value, true);
                 if (res === null) return;
                 if (res === '') {
                     textbox.value = textbox.placeholder;

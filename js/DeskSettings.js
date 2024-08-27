@@ -1620,12 +1620,10 @@ async function madConfirm(msg, callback) {
     });
 }
 
-async function madPrompt(msg, callback, hint = "", text = "") {
+async function madPrompt(msg, callback, hint = "", text = "", spAlrFailed = false) {
     return new Promise(async resolve => {
-        if (msg.startsWith("locid:")) {
-            msg = `<mad-string data-locid="${msg.slice(6)}"></mad-string>`;
-        }
-        if (kbdSupport === 0) { // Wallpaper Engine normally does not support keyboard input
+        if (kbdSupport === 0 && (!localStorage.sysplugIntegration || spAlrFailed)) {
+            // Only call prompt if the system plugin integration is disabled or already failed before calling madPrompt
             const res = prompt(msg, text);
             if (callback) callback(res);
             resolve(res);
@@ -1654,20 +1652,26 @@ async function madPrompt(msg, callback, hint = "", text = "") {
 
         showDialog();
         msgboxInput.focus();
-        if (kbdSupport === -1) {
+        if (kbdSupport !== 1) {
             // WPE 2.5 broke the native JS alert/confirm/prompt,
             // locking the wallpaper until the user reloads the wallpaper from the WPE UI
             // (can't even close the dialog)
             // If the system plugin is available, use that for receiving input
             // Otherwise, use the on-screen keyboard
             if (!await madSysPlug.beginInput(true)) {
-                if (!oskWindow.src) {
-                    oskWindow.src = "apps/osk/index.html";
+                if (kbdSupport === -1) {
+                    if (!oskWindow.src) {
+                        oskWindow.src = "apps/osk/index.html";
+                    }
+                    oskWindow.contentDocument.body.style.zoom = scaleFactor;
+                    osk.style.display = "block";
+                    osk.style.left = (vWidth - osk.offsetWidth - parseInt(localStorage.madesktopChanViewRightMargin) - 100) + "px";
+                    osk.style.top = (vHeight - osk.offsetHeight - parseInt(localStorage.madesktopChanViewBottomMargin) - 50) + "px";
+                } else {
+                    // Use prompt() if kbdSupport === 0
+                    removeEvents();
+                    return await madPrompt(msg, callback, hint, text, true);
                 }
-                oskWindow.contentDocument.body.style.zoom = scaleFactor;
-                osk.style.display = "block";
-                osk.style.left = (vWidth - osk.offsetWidth - parseInt(localStorage.madesktopChanViewRightMargin) - 100) + "px";
-                osk.style.top = (vHeight - osk.offsetHeight - parseInt(localStorage.madesktopChanViewBottomMargin) - 50) + "px";
             }
         }
 
@@ -2052,7 +2056,7 @@ if (runningMode === WE) {
     }
     startup();
     if (location.href.startsWith("file:///") && runningMode === BROWSER) {
-        fetch('.').catch(() => {
+        fetch('index.html').catch(() => {
             // Not really localizable cuz AJAX fails when running as a local file due to CORS
             madAlert("You are running ModernActiveDesktop as a local file. For the full functionality, please use a web server to host it or restart your browser with the --allow-file-access-from-files argument.", null, "warning");
         });

@@ -64,6 +64,7 @@
 * Added support for desktop patterns
     * Available in the background settings page
 <br><img src="images/patterns.png" title="Patterns screenshot">
+* Reduced the volume of the welcome music
 * Fixed various bugs and improved the codebase
 * Updated Electron
 
@@ -77,7 +78,7 @@ Changes for browsers:
 * Moved the official page to its own subdomain
 * Dialog icons are now preloaded to prevent the slow icon change
 
-(2024/)
+(2024/8/30)
 
 ### Previous changelog
 Please see [here](?src=Updated.md&showbackbtn=1) for the previous changes

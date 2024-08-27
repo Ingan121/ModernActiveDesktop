@@ -470,7 +470,7 @@
 								if (res === null) return;
 								input.value = res;
 								handle_input(input);
-							}, '', input.value);
+							}, '', input.value, true);
 						}
 					}
 				});

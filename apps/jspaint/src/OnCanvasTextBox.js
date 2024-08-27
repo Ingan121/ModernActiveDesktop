@@ -42,7 +42,7 @@ class OnCanvasTextBox extends OnCanvasObject {
 						if (res === null) return;
 						edit_textarea.value = res;
 						edit_textarea.dispatchEvent(new Event('input'));
-					}, '', edit_textarea.value);
+					}, '', edit_textarea.value, true);
 				}
 			}
 		});

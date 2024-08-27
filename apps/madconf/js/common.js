@@ -39,7 +39,7 @@ for (const textbox of textboxes) {
                     if (res === null) return;
                     textbox.value = res;
                     textbox.dispatchEvent(new Event('change'));
-                }, '', textbox.value);
+                }, '', textbox.value, true);
             }
         }
     });

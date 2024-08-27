@@ -168,6 +168,7 @@ domReady = function(callback) {
     var font, j, len;
     for (j = 0, len = testedFonts.length; j < len; j++) {
       font = testedFonts[j];
+      console.log(font);
       callback(font);
     }
     if (!doneTestingFonts) {
