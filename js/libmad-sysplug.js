@@ -68,15 +68,21 @@
     async function checkConnectivity() {
         try {
             const response = await request("connecttest");
-            if (response === localStorage.madesktopLastVer) {
-                // The system plugin is up to date
-                return 1;
-            } else if (response === "403 Forbidden") {
+            if (response === "403 Forbidden") {
                 // The system plugin has denied the connection
                 return -2;
             } else {
-                // The system plugin is outdated
-                return -1;
+                switch (top.madVersion.compare(response, true)) {
+                    case 1:
+                        // The system plugin is outdated
+                        return -1;
+                    case -1:
+                        // The system plugin is newer than MAD
+                        return -3;
+                    default:
+                        // The system plugin is up to date
+                        return 1;
+                }
             }
         } catch (error) {
             // The system plugin is not running or something went wrong
@@ -95,12 +101,21 @@
     }
 
     // Save a file to the system
+    // Returns a raw fetch response. Use .text() to get the filename
+    // Text return: Filename if successful, "Aborted" if canceled
     async function saveFile(data, headers) {
+        // data: FormData or Blob
+        // headers: {
+        //    "X-Format-Name": "File format description",
+        //    "X-Format-Extension": "File extension",
+        //    "X-File-Name": "Default file sname",
+        //    "X-File-Path": "Default file path, specify as Electron's app.getPath()",
+        // }
         return await request("save", data, headers, true);
     }
 
     // Control the media player
-    // Action: "playpause", "stop", "next", "prev"
+    // Action: "play", "pause", "playpause", "stop", "next", "prev" (See MediaControlCLI.exe help)
     async function mediaControl(action, title = "") {
         return await request(action, title);
     }

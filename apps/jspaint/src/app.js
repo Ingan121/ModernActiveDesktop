@@ -150,7 +150,8 @@ window.systemHookDefaults = {
 				let noErrors = true;
 				const res = await madSysPlug.saveFile(blob, {
 					"X-Format-Name": new_format.name,
-					"X-Format-Extension": new_format.extensions.toString()
+					"X-Format-Extension": new_format.extensions.toString(),
+					"X-File-Path": "pictures",
 				}).catch((err) => {
 					show_error_message("System plugin is not running. Please make sure you have installed it properly.");
 					madOpenWindow("SysplugSetupGuide.md", true);

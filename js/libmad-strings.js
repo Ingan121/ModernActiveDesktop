@@ -16,6 +16,11 @@
         // Stylesheet to inject
         "STYLESHEET": "",
 
+        // Just for easier use with mad-string
+        "VERSION_FULL": "%0v",
+        "VERSION_MEDIUM": "%1v",
+        "VERSION_SHORT": "%2v",
+
         // #region General UI strings
         "UI_OK": "OK",
         "UI_CANCEL": "Cancel",
@@ -409,6 +414,7 @@
         "MADCONF_CONNECTTEST_SUCCESS": "System plugin connection successful!",
         "MADCONF_CONNECTTEST_FAIL": "System plugin is not running. Please install the system plugin.",
         "MADCONF_CONNECTTEST_OUTDATED": "System plugin is outdated! Please update the system plugin.",
+        "MADCONF_CONNECTTEST_NEWER": "System plugin is newer than %n.",
         "MADCONF_CONNECTTEST_DENIED": "System plugin connection has been denied.",
         "MADCONF_SYSPLUG_UNSUPPORTED": "System plugin requires Windows 10 or higher.",
 
@@ -421,6 +427,7 @@
         // #endregion
 
         // #region About tab
+        "MADCONF_VERSION_NOTIFY": "Version: %0v",
         "MADCONF_AUTHOR_NOTIFY": "Made by %a",
         "MADCONF_LIC_NOTIFY": "Licensed under the MIT License",
         "MADCONF_CREDITS_TITLE": "Credits",
@@ -683,7 +690,7 @@
         "WELCOME_MAIN_TITLE": "Welcome",
         "WELCOME_AUTOSTART_CHKBOX": "Show this screen each time %n starts.",
         "WELCOME_MAIN_CONTENT": "Welcome to the exciting new world of %n, where your modern desktop meets the classic experience!<br><br>Sit back and relax as you take a brief tour of the options available on this screen.<br><br>If you want to explore an option, just click it.",
-        "WELCOME_WHATS_NEW_CONTENT": "%n 3.3 brings a lot of new features and improvements to your experience, including:<br><br>* Add support for desktop patterns<br>* Fix keyboard input in Wallpaper Engine 2.5+<br>* Various bug fixes and improvements<br><br>Click for more information.",
+        "WELCOME_WHATS_NEW_CONTENT": "%n %2v brings a lot of new features and improvements to your experience, including:<br><br>* Add support for desktop patterns<br>* Fix keyboard input in Wallpaper Engine 2.5+<br>* Various bug fixes and improvements<br><br>Click for more information.",
         "WELCOME_CUSTOMIZE_DESKTOP_CONTENT": "%n provides a variety of options to customize your experience.<br><br>You can change the color scheme, the wallpaper, and more.<br><br>Click to configure %n.",
         "WELCOME_SETUP_SYSPLUG_CONTENT": "For better usability, it is highly recommended to install the system plugin.<br><br>It allows a better integration between your system and the wallpaper, such as opening a new browser window from the wallpaper.<br><br>Click for more information, including the setup instructions.",
         "WELCOME_GET_SUPPORT_CONTENT": "%n is an open-source project, and you can get help from the community.<br><br>If you have any problems, you can report them on the GitHub issues page.<br>You can also contribute to the project by submitting a pull request.<br><br>Click to open the GitHub repository.",
@@ -780,6 +787,8 @@
         // &Apply -> <u>A</u>pply
         // \&Apply -> &Apply
         str = str.replace(/&([^&])/g, "<u>$1</u>").replace(/\\&/g, "&");
+        // %([0-3])v -> madVersion.toString($1)
+        str = str.replace(/%([0-3])v/g, (_, p1) => top.madVersion.toString(p1));
         // %n -> appName
         // %a -> author
         // %c -> channelViewer
@@ -801,7 +810,7 @@
         updateTitle();
         updateStyle();
         document.documentElement.lang = lang;
-        if (window.madMainWindow) {
+        if (window.madMainWindow && window.showDebugInfo) {
             showDebugInfo();
         }
     }

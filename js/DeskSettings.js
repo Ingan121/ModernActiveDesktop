@@ -33,6 +33,7 @@ const errorWnd = document.getElementById("errorWnd");
 const mainMenuBg = document.getElementById("mainMenuBg");
 const mainMenu = document.getElementById("mainMenu");
 const mainMenuItems = mainMenu.getElementsByClassName("contextMenuItem");
+const locationLabel = document.getElementById("location");
 const runningModeLabel = document.getElementById("runmode");
 const kbdSupportLabel = document.getElementById("kbdsupport");
 const debugMenu = document.getElementById("debug");
@@ -53,6 +54,8 @@ let flashInterval;
 
 let activeWindow = 0;
 const activeWindowHistory = [0];
+
+window.madVersion = new MadVersion("3.3.0 Pre-release");
 
 const WE = 1; // Wallpaper Engine
 const LW = 2; // Lively Wallpaper
@@ -229,7 +232,7 @@ if (localStorage.madesktopItemCount > 1) {
 }
 
 if (localStorage.madesktopLastVer) {
-    if (!localStorage.madesktopLastVer.startsWith("3.3")) { // Update from 3.2 and below
+    if (!localStorage.madesktopLastVer.startsWith(madVersion.toString(2))) { // Update from 3.2 and below
         delete localStorage.madesktopHideWelcome;
         delete localStorage.madesktopCheckedChanges;
         delete localStorage.madesktopCheckedConfigs;
@@ -245,7 +248,7 @@ if (localStorage.madesktopLastVer) {
         startup();
     }
 
-    if (localStorage.madesktopLastVer !== "3.3.0" && localStorage.sysplugIntegration) { // Update from 3.2.1 and below
+    if (localStorage.madesktopLastVer !== madVersion.toString() && localStorage.sysplugIntegration) { // Update from 3.2.1 and below
         madAlert("locid:MAD_MSG_SYSPLUG_UPDATED", function () {
             openWindow("SysplugSetupGuide.md", true);
         });
@@ -259,8 +262,13 @@ if (localStorage.madesktopLastVer) {
         localStorage.madesktopChanViewLeftMargin = "0";
         localStorage.madesktopChanViewBottomMargin = "0";
     }
+
+    if (madVersion.extra) {
+        // Enable debug mode for pre-release versions by default
+        activateDebugMode();
+    }
 }
-localStorage.madesktopLastVer = "3.3.0";
+localStorage.madesktopLastVer = madVersion.toString();
 
 switch (localStorage.madesktopMigrationProgress) {
     case "0":
@@ -1932,7 +1940,7 @@ function deactivateDebugMode() {
 }
 
 function showDebugInfo() {
-    document.getElementById("location").textContent = madGetString("MAD_DEBUG_LOCATION", location.href);
+    locationLabel.textContent = madGetString("MAD_DEBUG_LOCATION", location.href);
 
     let runningModeStr = madGetString("MAD_DEBUG_BROWSER");
     switch (runningMode) {

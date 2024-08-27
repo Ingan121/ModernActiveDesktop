@@ -269,7 +269,7 @@ inetcplBtn.addEventListener('click', function () {
     madOpenWindow('apps/inetcpl/general.html', true, options);
 });
 
-exportBtn.addEventListener('click', function () {
+exportBtn.addEventListener('click', async function () {
     const madConfig = {};
     for (const key in localStorage) {
         if (key.startsWith("madesktop") || key === "sysplugIntegration" ||
@@ -279,15 +279,27 @@ exportBtn.addEventListener('click', function () {
         }
     }
     const json = JSON.stringify(madConfig);
+    const blob = new Blob([json], { type: 'application/json' });
     if (madRunningMode === 0) {
         const a = document.createElement('a');
-        const file = new Blob([json], { type: 'application/json' });
-        a.href = URL.createObjectURL(file);
+        a.href = URL.createObjectURL(blob);
         a.download = 'madesktop-config.json';
         a.click();
     } else {
-        copyText(json);
-        madAlert(madGetString("MADCONF_CONF_COPIED"));
+        try {
+            const res = await madSysPlug.saveFile(blob, {
+                "X-Format-Name": "JSON Files",
+                "X-Format-Extension": "json",
+                "X-File-Name": "madesktop-config.json"
+            });
+            if (!res) {
+                copyText(json);
+                madAlert(madGetString("MADCONF_CONF_COPIED"));
+            }
+        } catch {
+            copyText(json);
+            madAlert(madGetString("MADCONF_CONF_COPIED"));
+        }
     }
 });
 
@@ -300,21 +312,9 @@ importBtn.addEventListener('click', async function () {
         const parsed = JSON.parse(text);
         const confVer = parsed.madesktopLastVer;
         if (confVer) {
-            const confVerSplit = confVer.split(".");
-            const lastVerSplit = localStorage.madesktopLastVer.split(".");
-            if (confVerSplit[0] > lastVerSplit[0]) {
-                madAlert(madGetString("MADCONF_NEWER_CONF_MSG"));
+            if (top.madVersion.compare(confVer, true) < 0) {
+                madAlert(madGetString("MADCONF_NEWER_CONF_MSG"), null, "error");
                 return;
-            } else if (confVerSplit[0] === lastVerSplit[0]) {
-                if (confVerSplit[1] > lastVerSplit[1]) {
-                    madAlert(madGetString("MADCONF_NEWER_CONF_MSG"));
-                    return;
-                } else if (confVerSplit[1] === lastVerSplit[1]) {
-                    if (confVerSplit[2] > lastVerSplit[2]) {
-                        madAlert(madGetString("MADCONF_NEWER_CONF_MSG"));
-                        return;
-                    }
-                }
             }
         } else {
             madAlert(madGetString("MADCONF_CONF_INVALID"), null, "error");
@@ -347,6 +347,9 @@ async function checkSysplug() {
             break;
         case -2:
             connectionStatus.locId = "MADCONF_CONNECTTEST_DENIED";
+            break;
+        case -3:
+            connectionStatus.locId = "MADCONF_CONNECTTEST_NEWER";
             break;
         case 0:
             connectionStatus.locId = "MADCONF_CONNECTTEST_FAIL";

@@ -461,7 +461,7 @@ function onRequest(req, res) {
   console.log('serve: ' + req.url);
   const cors = args.cors || 'https://madesktop.ingan121.com';
   res.setHeader('Access-Control-Allow-Origin', cors);
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Use-ChannelViewer, X-Fullscreen, X-Format-Name, X-Format-Extension, X-MADSP-Token, X-No-Timeout');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Use-ChannelViewer, X-Fullscreen, X-Format-Name, X-Format-Extension, X-MADSP-Token, X-No-Timeout, X-File-Name, X-File-Path');
 
   if (req.headers.origin && req.headers.origin !== 'null') {
     console.log('Origin: ' + req.headers.origin);
@@ -537,7 +537,7 @@ function onRequest(req, res) {
           req.pipe(stream);
           stream.on('finish', () => {
             const options = {
-              defaultPath : app.getPath('pictures'),
+              defaultPath : path.join(app.getPath(req.headers['x-file-path'] || 'downloads'), (req.headers['x-file-name'] || '')),
               filters : [
                   {name: req.headers['x-format-name'], extensions: req.headers['x-format-extension'].split(',')},
                   {name: 'All Files', extensions: ['*']}
