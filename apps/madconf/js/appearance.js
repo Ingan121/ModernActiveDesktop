@@ -1028,7 +1028,7 @@ function applyScheme(scheme, schemeName) {
 
 function parseCssScheme(schemeText) {
     const lines = schemeText.split("\n");
-    let scheme = {};
+    const scheme = {};
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i].trim();
         if (line.startsWith("--") && line.length <= 100) {

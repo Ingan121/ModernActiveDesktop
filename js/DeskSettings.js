@@ -2054,9 +2054,13 @@ if (runningMode === WE) {
     }
     startup();
     if (location.href.startsWith("file:///") && runningMode === BROWSER) {
-        fetch('index.html').catch(() => {
+        fetch("js/DeskSettings.js").catch(() => {
             // Not really localizable cuz AJAX fails when running as a local file due to CORS
-            madAlert("You are running ModernActiveDesktop as a local file. For the full functionality, please use a web server to host it or restart your browser with the --allow-file-access-from-files argument.", null, "warning");
+            let localCorsMsg = "restart your browser with the --allow-file-access-from-files argument.";
+            if (navigator.userAgent.includes("Firefox")) {
+                localCorsMsg = "go to about:config and set security.fileuri.strict_origin_policy to false.";
+            }
+            madAlert("You are running ModernActiveDesktop as a local file. For the full functionality, please use a web server to host it or " + localCorsMsg, null, "warning");
         });
     }
 }

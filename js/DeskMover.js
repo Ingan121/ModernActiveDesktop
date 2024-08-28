@@ -85,7 +85,7 @@
 
             this.prevOffsetRight, this.prevOffsetBottom;
 
-            let tempConfigStorage = {};
+            const tempConfigStorage = {};
             this.config = new Proxy(tempConfigStorage, {
                 get(target, key) {
                     if (temp) { // Do not save configs for temporary windows
