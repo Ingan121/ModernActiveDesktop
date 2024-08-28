@@ -48,7 +48,7 @@ settingsMenuItems[1].addEventListener('click', () => { // Digital button
     settingsMenuItems[1].classList.add('activeStyle');
     settingsMenuItems[0].classList.remove('activeStyle');
     settingsMenuItems[4].classList.remove('disabled');
-    confLabel.innerHTML = madGetString("CLOCK_MENUITEM_SET_FONT");
+    confLabel.locId = "CLOCK_MENUITEM_SET_FONT";
     clockCanvas.style.display = 'none';
     digitalClock.style.display = 'table';
     updateSize();
@@ -133,7 +133,7 @@ if (localStorage.madesktopClockDigital) {
     settingsMenuItems[0].classList.remove('activeStyle');
     settingsMenuItems[1].classList.add('activeStyle');
     settingsMenuItems[4].classList.remove('disabled');
-    confLabel.innerHTML = madGetString("CLOCK_MENUITEM_SET_FONT");
+    confLabel.locId = "CLOCK_MENUITEM_SET_FONT";
     clockCanvas.style.display = 'none';
     digitalClock.style.display = 'table';
 
@@ -415,11 +415,6 @@ window.addEventListener("message", (event) => {
             break;
         case "language-ready":
             clockTitle = madGetString("CLOCK_TITLE");
-            if (localStorage.madesktopClockDigital) {
-                confLabel.locId = "CLOCK_MENUITEM_SET_FONT";
-            } else {
-                confLabel.locId = "CLOCK_MENUITEM_SET_COLORS";
-            }
             drawClock();
             break;
     }
