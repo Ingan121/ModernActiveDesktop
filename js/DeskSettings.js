@@ -411,9 +411,9 @@ window.wallpaperPropertyListener = {
                 document.body.style.backgroundImage = "url('" + path + "')";
                 localStorage.madesktopBgWeImg = path;
                 if (!isStartup) {
-                    changeBgType("image");
                     localStorage.madesktopBgImg = path;
                     localStorage.madesktopBgType = "image";
+                    changeBgType("image");
                 }
             } else {
                 if (localStorage.madesktopBgWeImg === localStorage.madesktopBgImg) {
