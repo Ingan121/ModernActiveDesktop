@@ -315,7 +315,7 @@
     "MADCONF_WIN_ANIM": "Aero 애니메이션 사용(&N)",
 
     "MADCONF_DPI_TITLE": "디스플레이 배율",
-    "MADCONF_DPI_TITLE_FF_UNSUPPORTED": "디스플레이 배율 (Firefox 미지원)",
+    "MADCONF_DPI_TITLE_FF_UNSUPPORTED": "디스플레이 배율 (미지원 브라우저)",
     "MADCONF_DPI_CUSTOM": "사용자 정의",
 
     "MADCONF_SYSPLUG_INT_TITLE": "시스템 플러그인 연동",

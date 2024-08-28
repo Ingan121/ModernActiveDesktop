@@ -90,7 +90,7 @@ switch (config.dpi * 100) {
 }
 dpiSlider.value = dpiSelector.selectedIndex;
 
-if (navigator.userAgent.includes("Firefox")) {
+if (!CSS.supports('zoom', '1')) {
     dpiSelector.disabled = true;
     dpiSlider.disabled = true;
     dpiLabel.locId = "MADCONF_DPI_TITLE_FF_UNSUPPORTED";

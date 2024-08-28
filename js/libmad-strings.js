@@ -380,7 +380,7 @@
 
         // #region Miscellanous tab
         "MADCONF_DPI_TITLE": "Display scaling",
-        "MADCONF_DPI_TITLE_FF_UNSUPPORTED": "Display scaling (not supported in Firefox)",
+        "MADCONF_DPI_TITLE_FF_UNSUPPORTED": "Display scaling (not supported in this browser)",
 
         "MADCONF_SYSPLUG_INT_TITLE": "System plugin integration",
         "MADCONF_SYSPLUG_CHKBOX": "Enable system plugin integration",
