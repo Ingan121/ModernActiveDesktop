@@ -13,6 +13,8 @@ const action = searchParams.get('action');
 
 const keys = Object.keys(localStorage);
 
+let urlAppend = "";
+
 switch (action) {
     case 'reset':
         reset();
@@ -21,16 +23,27 @@ switch (action) {
         const json = localStorage.madesktopConfigToImport;
         if (json) {
             const parsed = JSON.parse(json);
+            const confVer = parsed.madesktopLastVer;
+            if (confVer) {
+                if (madVersion.compare(confVer, true) < 0) {
+                    urlAppend = "#cmfail_oldver";
+                    break;
+                }
+            } else {
+                urlAppend = "#cmfail_invconf";
+                break;
+            }
             reset();
             for (const key in parsed) {
                 localStorage.setItem(key, parsed[key]);
             }
-            localStorage.madesktopLastVer = "3.3.0";
+            localStorage.madesktopLastVer = madVersion.toString();
         }
         break;
 }
 
-location.replace('index.html');
+delete localStorage.madesktopConfigToImport;
+location.replace('index.html' + urlAppend);
 
 function reset() {
     for (const key of keys) {

@@ -17,6 +17,7 @@ Changes for Wallpaper Engine:
 Changes for browsers:
 * Moved the official page to its own subdomain
 * Dialog icons are now preloaded to prevent the slow icon change
+* Added support for display scaling on Firefox 126 and newer
 
 (2024/8/30)
 

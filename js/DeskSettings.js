@@ -55,8 +55,6 @@ let flashInterval;
 let activeWindow = 0;
 const activeWindowHistory = [0];
 
-window.madVersion = new MadVersion("3.3.0 Pre-release");
-
 const WE = 1; // Wallpaper Engine
 const LW = 2; // Lively Wallpaper
 const BROWSER = 0; // None of the above
@@ -2082,6 +2080,16 @@ window.addEventListener('load', function () {
         }, 1000);
     }
 });
+
+switch (location.hash) {
+    case "#cmfail_oldver":
+        madAlert("locid:MADCONF_NEWER_CONF_MSG", null, "error");
+        break;
+    case "#cmfail_invconf":
+        madAlert("locid:MADCONF_CONF_INVALID", null, "error");
+}
+// Clear hash
+history.pushState("", document.title, window.location.pathname + window.location.search);
 
 // Initialization complete
 jsRunBtn.addEventListener('click', debug);
