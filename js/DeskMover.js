@@ -633,6 +633,12 @@
             for (const item of this.confMenuItems) {
                 delete item.dataset.active;
             }
+            if (window.isIframeAutoScaled) {
+                this.confMenuItems[3].dataset.hidden = true;
+            } else {
+                // Normally this variable never reverts to false tho
+                delete this.confMenuItems[3].dataset.hidden;
+            }
             this.contextMenuItems[0].dataset.active = true;
             this.confMenuBg.style.left = this.contextMenuBg.offsetLeft + this.contextMenuBg.offsetWidth - 6 + 'px';
             this.confMenuBg.style.top = this.contextMenuBg.offsetTop + this.contextMenuItems[0].offsetTop + 'px';
@@ -880,7 +886,11 @@
 
             let height = 0;
             for (let i = 1; i <= Math.min(optionCnt, 25); i++) {
-                height += this.dropdown.children[i].getBoundingClientRect().height;
+                let itemHeight = this.dropdown.children[i].getBoundingClientRect().height;
+                if (window.isIframeAutoScaled) {
+                    itemHeight /= window.scaleFactor; // somehow the height is also wrongly scaled in recent browsers with iframe auto scaling
+                }
+                height += itemHeight;
             }
             this.dropdownBg.style.height = height + "px";
             this.dropdown.style.height = this.dropdownBg.style.height;
@@ -1428,8 +1438,12 @@
             }
             this.windowIcon.src = await getFavicon(this.windowElement);
 
-            if (!this.config.unscaled) {
+            if (!this.config.unscaled && !window.isIframeAutoScaled) {
                 this.windowElement.contentDocument.body.style.zoom = window.scaleFactor;
+            }
+            if (window.devicePixelRatio !== this.windowElement.contentWindow.devicePixelRatio) {
+                window.isIframeAutoScaled = true;
+                this.windowElement.contentDocument.body.style.zoom = 1;
             }
             hookIframeSize(this.windowElement, this.numStr || 0);
             this.firstLoadSuccess = true;
@@ -1461,6 +1475,9 @@
 
         #toggleScale() {
             this.closeContextMenu();
+            if (window.isIframeAutoScaled) {
+                return;
+            }
             if (this.config.unscaled) {
                 this.windowElement.contentDocument.body.style.zoom = window.scaleFactor;
                 this.confMenuItems[3].classList.add("checkedItem");

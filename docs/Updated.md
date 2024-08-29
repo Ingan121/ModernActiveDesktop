@@ -18,8 +18,9 @@ Changes for browsers:
 * Moved the official page to its own subdomain
 * Dialog icons are now preloaded to prevent the slow icon change
 * Added support for display scaling on Firefox 126 and newer
+* Fixed the display scaling feature broken on recent Chromium update
 
-(2024/8/30)
+(2024/9/1)
 
 ## 3.2
 * Added Clock and Calculator

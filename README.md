@@ -75,6 +75,7 @@
 
 ## Notes
 * ModernActiveDesktop is primarily optimized for Chromium 98 and higher. Some features may not work or look well on other browsers.
+    * The display scaling feature is currently buggy on Firefox (which is only supported on FF 126 and newer)
 
 ## Changelog
 
@@ -96,8 +97,9 @@ Changes for browsers:
 * Moved the official page to its own subdomain
 * Dialog icons are now preloaded to prevent the slow icon change
 * Added support for display scaling on Firefox 126 and newer
+* Fixed the display scaling feature broken on recent Chromium update
 
-(2024/8/30)
+(2024/9/1)
 
 ### Previous changelog
 Please see [here](docs/Updated.md) for the previous changes

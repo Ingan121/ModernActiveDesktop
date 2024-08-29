@@ -70,6 +70,7 @@ window.kbdSupport = 1;
 window.scaleFactor = "1";
 window.vWidth = window.innerWidth;
 window.vHeight = window.innerHeight;
+window.isIframeAutoScaled = false;
 
 window.deskMovers = {};
 window.visDeskMover = null;
@@ -309,12 +310,16 @@ if (localStorage.madesktopItemVisible === "false") {
 // #region Event listeners
 // Change the scale on load
 bgHtmlView.addEventListener('load', function () {
-    this.contentDocument.body.style.zoom = scaleFactor;
+    if (!isIframeAutoScaled) {
+        this.contentDocument.body.style.zoom = scaleFactor;
+    }
     hookIframeSize(bgHtmlView);
     bgHtmlView.contentDocument.addEventListener("contextmenu", openMainMenu, false);
 });
 oskWindow.addEventListener('load', function () {
-    this.contentDocument.body.style.zoom = scaleFactor;
+    if (!isIframeAutoScaled) {
+        this.contentDocument.body.style.zoom = scaleFactor;
+    }
     hookIframeSize(oskWindow);
 });
 
@@ -747,7 +752,7 @@ function changeScale(scale) {
     document.documentElement.style.backgroundSize = `${8 * scaleFactor}px ${8 * scaleFactor}px`;
     document.body.style.zoom = scaleFactor;
     updateIframeScale();
-    document.dispatchEvent(new Event("pointerup")); // Move all deskitems inside the visible area
+    document.dispatchEvent(new Event("pointerup")); // Move all deskMovers inside the visible area
     log({scaleFactor, vWidth, vHeight, dpi: 96 * scaleFactor});
 }
 
@@ -1262,10 +1267,19 @@ function iframeClickEventCtrl(clickable) {
     for (let i = 0; i < windowContainers.length; i++) {
         windowContainers[i].style.pointerEvents = value;
     }
+    debugMenu.style.pointerEvents = value; // Also apply to debug menu cuz otherwise it will be clickable over windows
+    
 }
 
 // Change the scaleFactor of all iframes
 function updateIframeScale() {
+    let scaleFactor = window.scaleFactor;
+    // Latest browsers auto-scale iframes according to the new spec
+    // https://github.com/w3c/csswg-drafts/issues/9644
+    // So don't scale iframes ourselves if the browser supports it
+    if (isIframeAutoScaled) {
+        scaleFactor = 1;
+    }
     try {
         bgHtmlView.contentDocument.body.style.zoom = scaleFactor;
         bgHtmlView.contentWindow.dispatchEvent(new Event("resize"));
@@ -1273,11 +1287,23 @@ function updateIframeScale() {
         // page did not load yet
     }
     for (const i in deskMovers) {
+        let stopLoop = false;
+        if (stopLoop) {
+            break;
+        }
         try {
             if (!deskMovers[i].config.unscaled) {
                 const iframe = deskMovers[i].windowElement;
                 iframe.contentDocument.body.style.zoom = scaleFactor;
+                // Check if the iframe is auto-scaled
                 iframe.contentWindow.dispatchEvent(new Event("resize"));
+                setTimeout(() => {
+                    if (parseFloat(scaleFactor) !== 1 && window.devicePixelRatio !== iframe.contentWindow.devicePixelRatio) {
+                        isIframeAutoScaled = true;
+                        updateIframeScale();
+                        stopLoop = true;
+                    }
+                }, 1); // Apparently CSS changes are not applied immediately
             }
             if (deskMovers[i].isFullscreen) {
                 if (deskMovers[i].isFullscreenWithMargins) {
@@ -1295,9 +1321,10 @@ function updateIframeScale() {
     }
 }
 
-// innerWidth/Height hook
-// Fixes some sites that are broken when scaled, such as YT
+// Initialize general iframe hooks for all iframes
 function hookIframeSize(iframe, num) {
+    // innerWidth/Height hook
+    // Fixes some sites that are broken when scaled, such as YT
     Object.defineProperties(iframe.contentWindow, {
         innerWidth: {
             get: function () {
@@ -1661,7 +1688,9 @@ async function madPrompt(msg, callback, hint = "", text = "", spAlrFailed = fals
                     if (!oskWindow.src) {
                         oskWindow.src = "apps/osk/index.html";
                     }
-                    oskWindow.contentDocument.body.style.zoom = scaleFactor;
+                    if (!isIframeAutoScaled) {
+                        oskWindow.contentDocument.body.style.zoom = scaleFactor;
+                    }
                     osk.style.display = "block";
                     osk.style.left = (vWidth - osk.offsetWidth - parseInt(localStorage.madesktopChanViewRightMargin) - 100) + "px";
                     osk.style.top = (vHeight - osk.offsetHeight - parseInt(localStorage.madesktopChanViewBottomMargin) - 50) + "px";

@@ -23,7 +23,7 @@
                 <div class="windowMenuBtn windowBtn">
                     <p class="windowBtnText">⏷</p>
                 </div>
-                <img class="windowIcon" src="images/mad16.png">
+                <img class="windowIcon" src="images/mad16.png" draggable="false">
                 <div class="windowCloseBtn windowBtn">
                     <p class="windowBtnText">🗙</p>
                 </div>
@@ -144,14 +144,14 @@
         <span><mad-string data-locid="MAD_DEBUG_KBD_SUPPORT">Keyboard support level</mad-string>: <span id="kbdsupport">1</span></span><br>
         <span id="debugLabel"><mad-string data-locid="MAD_DEBUG_DEBUG_MODE">Debug mode</mad-string></span><br>
         <span id="initNotCompleteLabel"><mad-string data-locid="MAD_DEBUG_INIT_NOT_COMPLETE">Initialization not complete</mad-string></span><br>
-        <a href="confmgr.html?action=reset"><mad-string data-locid="MAD_DEBUG_RESET_CONFIG">Reset config</mad-string></a><br>
-        <a href="javascript:location.reload(true);"><mad-string data-locid="MAD_DEBUG_REFRESH">Refresh</mad-string></a><br>
-        <a id="jsRunBtn" href="javascript:(function(){eval(prompt('Enter JavaScript code to run.'));return;})();"><mad-string data-locid="MAD_DEBUG_RUNJS">Run JavaScript code</mad-string></a><br>
-        <a href="javascript:showErrors();"><mad-string data-locid="MAD_DEBUG_SHOW_ERRORS">Show errors</mad-string> <span id="errorCnt"></span></a><br>
-        <a href="javascript:toggleDebugLog();"><mad-string id="debugLogBtn" data-locid="MAD_DEBUG_ENABLE_LOGGING">Enable debug logging</mad-string></a><br>
-        <a href="javascript:toggleRunningMode();"><mad-string data-locid="MAD_DEBUG_SIMULATE">Simulate other environment</mad-string></a><br>
-        <a href="javascript:toggleKbdSupport();"><mad-string data-locid="MAD_DEBUG_CHANGE_KBD_SUPPORT">Change keyboard support level</mad-string></a><br>
-        <a href="javascript:deactivateDebugMode();"><mad-string data-locid="MAD_DEBUG_DEACTIVATE">Deactivate debug mode</mad-string></a>
+        <a href="confmgr.html?action=reset" draggable="false"><mad-string data-locid="MAD_DEBUG_RESET_CONFIG">Reset config</mad-string></a><br>
+        <a href="javascript:location.reload(true);" draggable="false"><mad-string data-locid="MAD_DEBUG_REFRESH">Refresh</mad-string></a><br>
+        <a id="jsRunBtn" href="javascript:(function(){eval(prompt('Enter JavaScript code to run.'));return;})();" draggable="false"><mad-string data-locid="MAD_DEBUG_RUNJS">Run JavaScript code</mad-string></a><br>
+        <a href="javascript:showErrors();" draggable="false"><mad-string data-locid="MAD_DEBUG_SHOW_ERRORS">Show errors</mad-string> <span id="errorCnt"></span></a><br>
+        <a href="javascript:toggleDebugLog();" draggable="false"><mad-string id="debugLogBtn" data-locid="MAD_DEBUG_ENABLE_LOGGING">Enable debug logging</mad-string></a><br>
+        <a href="javascript:toggleRunningMode();" draggable="false"><mad-string data-locid="MAD_DEBUG_SIMULATE">Simulate other environment</mad-string></a><br>
+        <a href="javascript:toggleKbdSupport();" draggable="false"><mad-string data-locid="MAD_DEBUG_CHANGE_KBD_SUPPORT">Change keyboard support level</mad-string></a><br>
+        <a href="javascript:deactivateDebugMode();" draggable="false"><mad-string data-locid="MAD_DEBUG_DEACTIVATE">Deactivate debug mode</mad-string></a>
     </div>
     <script>
         var errorLog = document.getElementById("errorLog");

@@ -199,8 +199,8 @@ function updateSize() {
             clockCanvas.style.width = 'auto';
         }
         const clientRect = clockCanvas.getBoundingClientRect();
-        clockCanvas.height = Math.round(clientRect.height * madScaleFactor);
-        clockCanvas.width = Math.round(clientRect.width * madScaleFactor);
+        clockCanvas.height = Math.round(clientRect.height * madScaleFactor * window.devicePixelRatio);
+        clockCanvas.width = Math.round(clientRect.width * madScaleFactor * window.devicePixelRatio);
         if (!localStorage.madesktopClockBackgroundColor) {
             colors.background = getComputedStyle(document.documentElement).getPropertyValue('--button-face');
         }
@@ -350,13 +350,19 @@ function drawSecondHand(time) {
     clockCtx.resetTransform();
     const radius = clockCanvas.width / 2;
     let second = time.getSeconds();
+    const isMultipleOf15 = second % 15 === 0;
     let angle = (Math.PI / 30) * second - Math.PI / 2;
     clockCtx.beginPath();
     clockCtx.moveTo(radius, radius);
     const endPoint = [radius + radius * 0.8 * Math.cos(angle), radius + radius * 0.8 * Math.sin(angle)]
+    if (isMultipleOf15) {
+        // Issue with the antialias remover filter
+        // Otherwise the second hand won't be visible
+        clockCtx.translate(-0.1, -0.1);
+    }
     clockCtx.lineTo(endPoint[0], endPoint[1]);
     clockCtx.globalCompositeOperation = 'difference';
-    clockCtx.strokeStyle='white';
+    clockCtx.strokeStyle = 'white';
     clockCtx.lineWidth = 1;
     clockCtx.stroke();
     clockCtx.globalCompositeOperation = 'source-over';

@@ -318,7 +318,7 @@
     Object.defineProperties(window, {
         madScaleFactor: {
             get: function () {
-                if (config.unscaled) {
+                if (config.unscaled || top.isIframeAutoScaled || navigator.userAgent.includes("Firefox")) {
                     return 1;
                 } else {
                     return parseFloat(top.scaleFactor);

@@ -193,14 +193,14 @@ dpiSelector.addEventListener('change', function () {
                 }
                 dpiSelector.value = config.dpi;
                 dpiSlider.value = dpiSelector.selectedIndex;
-                dpiSelectorCustom.textContent = madGetString("UI_CUSTOM");
+                dpiSelectorCustom.innerHTML = '<mad-string data-locid="UI_CUSTOM"></mad-string>';
                 return;
             }
             config.dpi = res / 100;
             dpiSelectorCustom.textContent = res + "%";
         });
     } else {
-        dpiSelectorCustom.textContent = madGetString("UI_CUSTOM");
+        dpiSelectorCustom.innerHTML = '<mad-string data-locid="UI_CUSTOM"></mad-string>';
         config.dpi = this.value;
     }
 });

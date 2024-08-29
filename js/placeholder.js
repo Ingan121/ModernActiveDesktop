@@ -83,7 +83,9 @@ function openYoutube() {
 
 function parseVideoId(url) {
     try {
-        if (url.includes("embed/")) {
+        if (url.length == 11) {
+            return url;
+        } else if (url.includes("embed/")) {
             return url.split("embed/")[1].split("?")[0];
         } else if (!url.startsWith("http")) {
             url = "https://" + url;

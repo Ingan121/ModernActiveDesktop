@@ -60,6 +60,8 @@ for (const imgItem of imgItems) {
             preview.contentDocument.body.style.backgroundImage = `url('${localStorage.madesktopBgWeImg}')`;
             imgModeSelector.disabled = false;
             switchDisplayOptionElement(false);
+        } else if (imgItem.id == 'customWebImgItem') {
+            return; // It's handled by the click event listener below
         } else if (imgItem.id == 'videoImgItem') {
             if (localStorage.madesktopBgVideo) {
                 preview.contentWindow.changeBgType('video');
