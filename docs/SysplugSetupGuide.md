@@ -1,4 +1,14 @@
-# MAD System Plugin Setup Guide
+# ModernActiveDesktop System Plugin
+The system plugin provides some useful features for your experience with ModernActiveDesktop. More specifically, the system plugin allows the following.
+* Opening URLs with the default browser
+* Controlling the currently playing media
+* Pasting text from your clipboard
+* Receiving input from the user
+* Saving files from the wallpaper to the disk
+* Applying the system color scheme to the wallpaper
+
+## Setup Guide
+To install the ModernActiveDesktop System Plugin, please follow the instructions below.
 1. Open the Wallpaper Engine's wallpaper selection window.
 2. Right-click this wallpaper.
 3. Click 'Open in Explorer'  

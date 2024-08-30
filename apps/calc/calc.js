@@ -48,6 +48,10 @@ let copying = false;
 
 madDeskMover.menu = new MadMenu(menuBar, ['edit', 'view', 'help']);
 
+if (madRunningMode !== 0 && !localStorage.sysplugIntegration) {
+    editMenuItems[1].classList.add('disabled');
+}
+
 editMenuItems[0].addEventListener('click', function () { // Copy button
     copying = true;
     calcDisplay.select();
@@ -61,6 +65,12 @@ editMenuItems[0].addEventListener('click', function () { // Copy button
 });
 
 editMenuItems[1].addEventListener('click', async function () { // Paste button
+    if (madRunningMode !== 0 && !localStorage.sysplugIntegration) {
+        madAlert(madGetString("UI_MSG_SYSPLUG_REQUIRED"), function () {
+            madOpenWindow("SysplugSetupGuide.md", true);
+        });
+        return;
+    }
     let clipboard = '';
     if (localStorage.sysplugIntegration) {
         clipboard = await madSysPlug.getClipboard();
@@ -416,3 +426,13 @@ function handlePaste(string) {
 }
 
 document.addEventListener('keydown', handleInput);
+
+window.addEventListener("message", (event) => {
+    if (event.data.type === "sysplug-option-changed" && madRunningMode !== 0) {
+        if (localStorage.sysplugIntegration) {
+            editMenuItems[1].classList.remove('disabled');
+        } else {
+            editMenuItems[1].classList.add('disabled');
+        }
+    }
+});

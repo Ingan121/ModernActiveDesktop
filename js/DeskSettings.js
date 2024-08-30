@@ -2065,6 +2065,7 @@ function showWelcome() {
 if (runningMode === WE) {
     // Dummy listener to make Wallpaper Engine recognize MAD supporting audio visualization
     window.wallpaperRegisterAudioListener(() => {});
+    window.wallpaperRegisterMediaPropertiesListener(() => {});
 } else {
     if (runningMode === BROWSER) {
         // Konami code easter egg

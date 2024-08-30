@@ -67,6 +67,9 @@
 <br><img src="images/patterns.png" title="Patterns screenshot">
 * Reduced the volume of the welcome music
 * Fixed various bugs and improved the codebase
+    * Clock's second hand being invisible when it's 0, 15, 30, or 45 seconds
+    * Multiple instances of Visualizers being allowed under some conditions
+    * Background image set in the Wallpaper Engine properties panel not being applied immediately
 * Updated Electron
 
 Changes for Wallpaper Engine:
