@@ -1444,6 +1444,7 @@
             if (window.devicePixelRatio !== this.windowElement.contentWindow.devicePixelRatio) {
                 window.isIframeAutoScaled = true;
                 this.windowElement.contentDocument.body.style.zoom = 1;
+                this.config.unscaled = false;
             }
             hookIframeSize(this.windowElement, this.numStr || 0);
             this.firstLoadSuccess = true;

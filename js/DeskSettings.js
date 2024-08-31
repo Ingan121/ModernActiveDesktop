@@ -70,7 +70,7 @@ window.kbdSupport = 1;
 window.scaleFactor = "1";
 window.vWidth = window.innerWidth;
 window.vHeight = window.innerHeight;
-window.isIframeAutoScaled = false;
+window.isIframeAutoScaled = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./)[2] >= 128;
 
 window.deskMovers = {};
 window.visDeskMover = null;
@@ -1304,6 +1304,10 @@ function updateIframeScale() {
                         stopLoop = true;
                     }
                 }, 1); // Apparently CSS changes are not applied immediately
+            } else if (isIframeAutoScaled) {
+                // Delete the unscaled flag if the browser supports auto-scaling
+                // Otherwise unexpected behavior may occur
+                deskMovers[i].config.unscaled = false;
             }
             if (deskMovers[i].isFullscreen) {
                 if (deskMovers[i].isFullscreenWithMargins) {
