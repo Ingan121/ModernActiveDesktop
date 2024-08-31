@@ -70,7 +70,7 @@ window.kbdSupport = 1;
 window.scaleFactor = "1";
 window.vWidth = window.innerWidth;
 window.vHeight = window.innerHeight;
-window.isIframeAutoScaled = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./)[2] >= 128;
+window.isIframeAutoScaled = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./)?.[2] >= 128;
 
 window.deskMovers = {};
 window.visDeskMover = null;
