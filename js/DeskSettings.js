@@ -183,7 +183,7 @@ if (localStorage.madesktopDestroyedItems) {
         if (!localStorage.madesktopDestroyedItems.includes(`|${i}|`)) {
             openWindows.push(i);
         } else {
-            // Clean up configs of destroyed deskitems
+            // Clean up configs of destroyed deskMovers
             localStorage.removeItem(`madesktopItemWidth${i}`);
             localStorage.removeItem(`madesktopItemHeight${i}`);
             localStorage.removeItem(`madesktopItemXPos${i}`);
@@ -222,9 +222,9 @@ if (localStorage.madesktopCustomColor) {
 }
 
 if (localStorage.madesktopItemCount > 1) {
-    // Check if the deskitem we're trying to initialize is open or not
-    // Skip for deskitem 0 (the ChannelBar) - this design is to maintain backwards compatibility with old versions
-    // which supported only one deskitem
+    // Check if the deskMover we're trying to initialize is open or not
+    // Skip for deskMover 0 (the ChannelBar) - this design is to maintain backwards compatibility with old versions
+    // which supported only one deskMover
     for (const i of localStorage.madesktopOpenWindows.split(',').slice(1)) {
         createNewDeskItem(i.toString());
     }
@@ -1145,7 +1145,7 @@ function padZero(str, len) {
     return (zeros + str).slice(-len);
 }
 
-// Create a new ActiveDesktop item and initialize it
+// Create a new window and initialize it
 function createNewDeskItem(numStr, openDoc, temp, options) {
     const newContainer = windowContainers[0].cloneNode(true);
     document.body.appendChild(newContainer);
@@ -1155,7 +1155,7 @@ function createNewDeskItem(numStr, openDoc, temp, options) {
     return deskMover;
 }
 
-// Create a new AD item, initialize, and increase the saved window count
+// Create a new window, initialize, and increase the saved window count
 function openWindow(openDoc, temp, optionsOrWidth, height, style, centered, top, left, aot, unresizable, noIcon) {
     if (!temp) {
         localStorage.madesktopOpenWindows += `,${localStorage.madesktopItemCount}`;

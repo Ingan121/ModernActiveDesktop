@@ -1585,7 +1585,7 @@
             this.prevOffsetBottom = this.windowElement.offsetHeight + this.windowContainer.offsetTop;
         }
 
-        // Keep the deskitem inside the visible area
+        // Keep the deskMover inside the visible area
         #keepInside() {
             if (this.windowContainer.offsetLeft < -this.windowContainer.offsetWidth + 60) {
                 this.windowContainer.style.left = -this.windowTitlebar.offsetWidth + 60 + 'px';
