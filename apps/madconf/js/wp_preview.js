@@ -33,7 +33,7 @@ if (localStorage.madesktopBgHtmlSrc) {
 document.getElementById("scheme").href = parent.parent.document.getElementById("scheme").href;
 
 bgHtmlView.addEventListener("load", function () {
-    bgHtmlView.contentWindow.document.body.style.zoom = scale * 0.0625;
+    bgHtmlView.contentDocument?.body.style.zoom = scale * 0.0625;
 });
 
 new MutationObserver(function (mutations) {

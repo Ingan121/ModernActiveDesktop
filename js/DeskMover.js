@@ -1476,7 +1476,7 @@
 
         #toggleScale() {
             this.closeContextMenu();
-            if (window.isIframeAutoScaled) {
+            if (window.isIframeAutoScaled || !this.windowElement.contentDocument) {
                 return;
             }
             if (this.config.unscaled) {
@@ -1559,7 +1559,7 @@
                     this.config.title = title;
                 } else {
                     delete this.config.title;
-                    this.windowTitleText.textContent = this.windowElement.contentDocument.title || "ModernActiveDesktop";
+                    this.windowTitleText.textContent = this.windowElement.contentDocument?.title || "ModernActiveDesktop";
                 }
             }, "", this.config.title || "");
         }

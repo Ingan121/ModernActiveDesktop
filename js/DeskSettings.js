@@ -311,10 +311,10 @@ if (localStorage.madesktopItemVisible === "false") {
 // Change the scale on load
 bgHtmlView.addEventListener('load', function () {
     if (!isIframeAutoScaled) {
-        this.contentDocument.body.style.zoom = scaleFactor;
+        this.contentDocument?.body.style.zoom = scaleFactor;
     }
     hookIframeSize(bgHtmlView);
-    bgHtmlView.contentDocument.addEventListener("contextmenu", openMainMenu, false);
+    bgHtmlView.contentDocument?.addEventListener("contextmenu", openMainMenu, false);
 });
 oskWindow.addEventListener('load', function () {
     if (!isIframeAutoScaled) {
@@ -1285,6 +1285,7 @@ function updateIframeScale() {
         bgHtmlView.contentWindow.dispatchEvent(new Event("resize"));
     } catch {
         // page did not load yet
+        // or is a cross-origin iframe
     }
     for (const i in deskMovers) {
         let stopLoop = false;
@@ -1327,6 +1328,12 @@ function updateIframeScale() {
 
 // Initialize general iframe hooks for all iframes
 function hookIframeSize(iframe, num) {
+    if (!iframe.contentDocument) {
+        // Window was closed (Firefox specific, doesn't happen in Chromium)
+        // Or the iframe is cross-origin
+        return;
+    }
+
     // innerWidth/Height hook
     // Fixes some sites that are broken when scaled, such as YT
     Object.defineProperties(iframe.contentWindow, {
