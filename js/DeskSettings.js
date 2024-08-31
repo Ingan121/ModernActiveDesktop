@@ -310,8 +310,8 @@ if (localStorage.madesktopItemVisible === "false") {
 // #region Event listeners
 // Change the scale on load
 bgHtmlView.addEventListener('load', function () {
-    if (!isIframeAutoScaled) {
-        this.contentDocument?.body.style.zoom = scaleFactor;
+    if (!isIframeAutoScaled && this.contentDocument) {
+        this.contentDocument.body.style.zoom = scaleFactor;
     }
     hookIframeSize(bgHtmlView);
     bgHtmlView.contentDocument?.addEventListener("contextmenu", openMainMenu, false);
