@@ -2125,6 +2125,11 @@ switch (location.hash) {
 // Clear hash
 history.pushState("", document.title, window.location.pathname + window.location.search);
 
+if (location.href.startsWith("https://madesktop.ingan121.com/index.html")) {
+    // Remove index.html from the URL cuz it looks ugly
+    history.replaceState("", document.title, location.href.replace("index.html", ""));
+}
+
 // Initialization complete
 jsRunBtn.addEventListener('click', debug);
 document.body.dataset.initComplete = true;

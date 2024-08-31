@@ -576,6 +576,10 @@ body[data-cm-shadow] .contextMenuBg {
     z-index: 99995;
 }
 
+#msgbox mad-string {
+    white-space: initial;
+}
+
 #msgbox-close {
     height: calc(16px + var(--extra-title-height));
     width: calc(18px + var(--extra-title-height));
