@@ -94,6 +94,7 @@ Changes for Wallpaper Engine:
 * Fixed the broken keyboard input in Wallpaper Engine 2.5 and newer
     * Tries to use the system plugin for directly receiving keyboard inputs (even in lower WPE versions)
     * If the system plugin is unavailable, an on-screen keyboard will be shown as an alternative
+    * An input box in the Wallpaper Engine properties panel can also be used for typing and pasting things without the system plugin. Note that this doesn't support backspaces, ctrl key shortcuts, and arrow keys
 * Added a token verification to the system plugin to stop random wallpapers from accessing your system without your consent
 
 Changes for browsers:

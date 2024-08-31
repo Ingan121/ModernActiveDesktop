@@ -114,7 +114,7 @@ document.addEventListener('madinput', async (event) => {
                     textbox.value = textbox.value.slice(0, textbox.selectionStart) + event.key + textbox.value.slice(textbox.selectionStart);
                 }
                 textbox.selectionStart = textbox.selectionEnd = origCursorPos + 1;
-            } else if (event.key.startsWith("/comp ")) {
+            } else if (event.key.startsWith("/comp ") || event.key.startsWith("/past ")) {
                 const compositedInput = event.key.slice(6);
                 if (textbox.selectionStart === textbox.value.length) {
                     textbox.value = textbox.value.toString() + compositedInput;
@@ -124,9 +124,11 @@ document.addEventListener('madinput', async (event) => {
                     textbox.value = textbox.value.slice(0, textbox.selectionStart) + compositedInput + textbox.value.slice(textbox.selectionStart);
                 }
                 textbox.selectionStart = textbox.selectionEnd = origCursorPos + compositedInput.length;
-                const keyEvent = new KeyboardEvent("keypress", { key: "Enter" });
-                document.dispatchEvent(keyEvent);
-                madSysPlug.inputStatus = false;
+                if (event.key.startsWith("/comp ")) {
+                    const keyEvent = new KeyboardEvent("keypress", { key: "Enter" });
+                    document.dispatchEvent(keyEvent);
+                    madSysPlug.inputStatus = false;
+                }
             }
             changed = true;
     }

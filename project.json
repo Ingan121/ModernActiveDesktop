@@ -12,7 +12,8 @@
 				"ui_bgcolor" : "Background color",
 				"ui_bgimg" : "BG image",
 				"ui_bgvideo" : "BG video",
-				"ui_openproperties" : "Show more options"
+				"ui_openproperties" : "Show more options",
+				"ui_inputpanel" : "Input box"
 			},
 			"ko-kr" : 
 			{
@@ -20,7 +21,8 @@
 				"ui_bgcolor" : "배경 색상",
 				"ui_bgimg" : "배경 이미지",
 				"ui_bgvideo" : "배경 비디오",
-				"ui_openproperties" : "더 많은 옵션 표시"
+				"ui_openproperties" : "더 많은 옵션 표시",
+				"ui_inputpanel" : "입력 창"
 			}
 		},
 		"properties" : 
@@ -61,6 +63,15 @@
 				"type" : "file",
 				"value" : ""
 			},
+			"inputpanel" : 
+			{
+				"condition" : "inputpanel.value = ''; true",
+				"index" : 5,
+				"order" : 105,
+				"text" : "ui_inputpanel",
+				"type" : "textinput",
+				"value" : ""
+			},
 			"openproperties" : 
 			{
 				"condition" : "openproperties.value = false; true",
@@ -85,7 +96,7 @@
 	"ratingviolence" : "none",
 	"tags" : [ "Retro" ],
 	"title" : "Windows 98 Desktop Experience",
-	"type" : "Web",
+	"type" : "web",
 	"version" : 19,
 	"visibility" : "public",
 	"workshopid" : "2278898637",

@@ -472,6 +472,18 @@ window.wallpaperPropertyListener = {
                 }
             }
         }
+        if (properties.inputpanel && !isStartup) {
+            if (msgboxBg.style.display === "block" && msgboxInput.style.display === "block") {
+                msgboxInput.focus();
+                const inputEvent = new Event("madinput");
+                if (properties.inputpanel.value.length > 1) { // Pasting
+                    inputEvent.key = "/past " + properties.inputpanel.value;
+                } else {
+                    inputEvent.key = properties.inputpanel.value;
+                }
+                document.dispatchEvent(inputEvent);
+            }
+        }
     }
 };
 

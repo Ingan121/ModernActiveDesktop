@@ -633,11 +633,23 @@
             for (const item of this.confMenuItems) {
                 delete item.dataset.active;
             }
+            // Hide the scale contents button if the iframe is auto-scaled
             if (window.isIframeAutoScaled) {
                 this.confMenuItems[3].dataset.hidden = true;
             } else {
                 // Normally this variable never reverts to false tho
                 delete this.confMenuItems[3].dataset.hidden;
+
+                // Disable the scale contents button if the iframe is cross-origin
+                if (this.windowElement.contentDocument) {
+                    this.confMenuItems[3].classList.remove("disabled");
+                    if (!this.config.unscaled) {
+                        this.confMenuItems[3].classList.add("checkedItem");
+                    }
+                } else {
+                    this.confMenuItems[3].classList.add("disabled");
+                    this.confMenuItems[3].classList.remove("checkedItem");
+                }
             }
             this.contextMenuItems[0].dataset.active = true;
             this.confMenuBg.style.left = this.contextMenuBg.offsetLeft + this.contextMenuBg.offsetWidth - 6 + 'px';
@@ -1546,6 +1558,10 @@
                     this.#clearConfig(true);
                     this.isVisualizer = false;
                     window.visDeskMover = null;
+                }
+                if (this.isConfigurator && !url.startsWith("apps/madconf/")) {
+                    this.isConfigurator = false;
+                    window.confDeskMover = null;
                 }
             }, "", urlToShow);
         }

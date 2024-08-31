@@ -454,6 +454,18 @@ body[data-cm-shadow] .contextMenuBg {
     transform: translateY(calc(-50% - 4px));
 }
 
+.disabled,
+[data-disabled] {
+    color: var(--button-shadow) !important;
+    text-shadow: 1px 1px 0 var(--button-hilight) !important;
+}
+
+.disabled u,
+button[disabled] u,
+[data-disabled] u {
+    border-bottom-color: var(--underline-disabled);
+}
+
 .windowMenuBg {
     z-index: 2;
 }
@@ -614,7 +626,7 @@ body::after { /* preload images */
 #osk {
     --extra-border-size: 0px;
     width: calc(370px + var(--extra-border-size) * 2);
-    height: calc(180px + var(--extra-border-size) * 2 + var(--extra-border-bottom));
+    height: calc(195px + var(--extra-border-size) * 2 + var(--extra-border-bottom));
     position: absolute;
     z-index: 99996;
     display: none;
@@ -624,7 +636,7 @@ body::after { /* preload images */
 
 #oskWindow {
     width: calc(100% - var(--extra-border-size) * 2);
-    height: 160px;
+    height: 175px;
     border: solid var(--extra-border-size) transparent;
 }
 

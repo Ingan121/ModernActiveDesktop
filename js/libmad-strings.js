@@ -709,7 +709,7 @@
 
         // #region On-Screen Keyboard strings
         "OSK_TITLE": "On-Screen Keyboard",
-        "OSK_INFO": "Keyboard input is not supported on Wallpaper Engine 2.5+. To enter text using a keyboard, please <a href=\"javascript:madOpenWindow('SysplugSetupGuide.md',true);sendMadInput('Escape')\">set up the system plugin</a>.",
+        "OSK_INFO": "Keyboard input is not supported on Wallpaper Engine 2.5+. To enter text using a keyboard, please <a href=\"javascript:madOpenWindow('SysplugSetupGuide.md',true);sendMadInput('Escape')\">set up the system plugin</a>, or use the input box in the Wallpaper Engine properties panel.",
         // #endregion
     }
     window.madStrings = top.madStrings || fallbackStrings;
