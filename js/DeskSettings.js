@@ -459,7 +459,7 @@ window.wallpaperPropertyListener = {
                 delete localStorage.madesktopVisUnavailable;
                 if (!visDeskMover && !isStartup) {
                     openWindow("apps/visualizer/index.html", false, {
-                        width: "480px",
+                        width: "725px",
                         height: "380px",
                         top: "200px",
                         left: "500px"
