@@ -1692,8 +1692,8 @@ async function madPrompt(msg, callback, hint = "", text = "", spAlrFailed = fals
                         oskWindow.contentDocument.body.style.zoom = scaleFactor;
                     }
                     osk.style.display = "block";
-                    osk.style.left = (vWidth - osk.offsetWidth - parseInt(localStorage.madesktopChanViewRightMargin) - 100) + "px";
-                    osk.style.top = (vHeight - osk.offsetHeight - parseInt(localStorage.madesktopChanViewBottomMargin) - 50) + "px";
+                    osk.style.left = (vWidth - osk.offsetWidth - parseInt(localStorage.madesktopChanViewRightMargin || "0") - 100) + "px";
+                    osk.style.top = (vHeight - osk.offsetHeight - parseInt(localStorage.madesktopChanViewBottomMargin || "48px") - 50) + "px";
                 } else {
                     // Use prompt() if kbdSupport === 0
                     removeEvents();
