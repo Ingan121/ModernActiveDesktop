@@ -460,6 +460,9 @@
                     console.error(error);
                 }
             }
+            if (this.isFullscreen) {
+                this.exitFullscreen();
+            }
             const winCloseAnim = getComputedStyle(this.windowContainer).getPropertyValue('--win-close-anim');
             if (winCloseAnim && !localStorage.madesktopNoWinAnim && this.config.style === "wnd") {
                 this.windowContainer.style.animation = `0.2s ${winCloseAnim} linear`;
@@ -1060,8 +1063,8 @@
             this.isFullscreenWithMargins = withMargins;
             this.windowElement.contentDocument.body.dataset.fullscreen = true;
             // But try this anyway for browser usage
-            if (window.runningMode === BROWSER && this.windowElement.requestFullscreen) {
-                document.body.requestFullscreen();
+            if (window.runningMode === BROWSER && document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen();
             }
         }
 
