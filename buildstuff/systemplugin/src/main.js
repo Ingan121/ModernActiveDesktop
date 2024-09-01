@@ -61,6 +61,9 @@ if (!ignoreToken && fs.existsSync(wpeCheckPath)) {
   } else {
     token = fs.readFileSync(tokenPath, 'utf8').split('\r\n')[0];
   }
+} else {
+  // Disable token verification for non-WPE distributions
+  ignoreToken = true;
 }
 
 const spAccessConfirmMsg = `This allows the wallpaper to do the following:

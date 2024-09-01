@@ -415,7 +415,7 @@
         "MADCONF_CONNECTTEST_FAIL": "System plugin is not running. Please install the system plugin.",
         "MADCONF_CONNECTTEST_OUTDATED": "System plugin is outdated! Please update the system plugin.",
         "MADCONF_CONNECTTEST_NEWER": "System plugin is newer than %n.",
-        "MADCONF_CONNECTTEST_DENIED": "System plugin connection has been denied.",
+        "MADCONF_CONNECTTEST_DENIED": "System plugin has denied the connection.",
         "MADCONF_SYSPLUG_UNSUPPORTED": "System plugin requires Windows 10 or higher.",
 
         "MADCONF_PROMPT_ENTER_SCALE": "Enter scale (%) :",
