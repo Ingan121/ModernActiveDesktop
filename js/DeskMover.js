@@ -1710,6 +1710,7 @@
                 delete localStorage.madesktopVisOnlyAlbumArt;
                 delete localStorage.madesktopVisNoClientEdge;
                 delete localStorage.madesktopVisMenuAutohide;
+                delete localStorage.madesktopVisFullscreen;
                 delete localStorage.madesktopVisInfoShown;
                 delete localStorage.madesktopVisStatusShown;
                 delete localStorage.madesktopVisMediaControls;
