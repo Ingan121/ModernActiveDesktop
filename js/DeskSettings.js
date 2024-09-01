@@ -2055,8 +2055,7 @@ function showErrors() {
 }
 
 function startup() {
-    // Don't run startup twice or after ten seconds
-    if (startupRan || !localStorage.madesktopFailCount) {
+    if (startupRan) {
         return;
     }
 

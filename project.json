@@ -12,8 +12,8 @@
 				"ui_bgcolor" : "Background color",
 				"ui_bgimg" : "BG image",
 				"ui_bgvideo" : "BG video",
-				"ui_openproperties" : "Show more options",
-				"ui_inputpanel" : "Input box"
+				"ui_inputpanel" : "Input box",
+				"ui_openproperties" : "Show more options"
 			},
 			"ko-kr" : 
 			{
@@ -21,8 +21,8 @@
 				"ui_bgcolor" : "배경 색상",
 				"ui_bgimg" : "배경 이미지",
 				"ui_bgvideo" : "배경 비디오",
-				"ui_openproperties" : "더 많은 옵션 표시",
-				"ui_inputpanel" : "입력 창"
+				"ui_inputpanel" : "입력 창",
+				"ui_openproperties" : "더 많은 옵션 표시"
 			}
 		},
 		"properties" : 
@@ -96,8 +96,8 @@
 	"ratingviolence" : "none",
 	"tags" : [ "Retro" ],
 	"title" : "Windows 98 Desktop Experience",
-	"type" : "web",
-	"version" : 19,
+	"type" : "Web",
+	"version" : 20,
 	"visibility" : "public",
 	"workshopid" : "2278898637",
 	"workshopurl" : "steam://url/CommunityFilePage/2278898637"
