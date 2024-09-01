@@ -1084,17 +1084,7 @@ function updateTitle() {
 
 function printIframe() {
     if (isCrossOrigin) {
-        toolbars.style.display = "none";
-        statusBar.style.display = "none";
-        sidebar.style.display = "none";
-        iframe.style.width = "100%";
-        iframe.style.boxShadow = "none";
         window.print();
-        toolbars.style.display = "";
-        statusBar.style.display = "";
-        sidebar.style.display = "";
-        iframe.style.width = "";
-        iframe.style.boxShadow = "";
     } else {
         iframe.contentWindow.print();
     }

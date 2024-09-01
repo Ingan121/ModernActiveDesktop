@@ -626,3 +626,19 @@ body[data-fullscreen] #statusBar {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+@media print {
+    #toolbars {
+        display: none;
+    }
+    #statusBar {
+        display: none;
+    }
+    #sidebar {
+        display: none;
+    }
+    #iframe {
+        width: 100%;
+        box-shadow: none;
+    }
+}
