@@ -145,7 +145,7 @@
         }
 
         madSysPlug.inputStatus = true;
-        getInput();            
+        getInput();
         return true;
     }
 

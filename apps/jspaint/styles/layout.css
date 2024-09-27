@@ -529,7 +529,7 @@ html, body, .jspaint {
 	width: 210px;
 }
 .edit-colors-window .window-content .add-to-custom-colors-button {
-	position: absolute;
+	position: absolute !important;
 	bottom: 5px;
 	right: 5px/*rtl:ignore*/;
 	width: 213px;

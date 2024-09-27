@@ -6,6 +6,9 @@
 'use strict';
 
 (function () {
+    const windowOutline = document.getElementById("windowOutline");
+    const miniPickerBase = document.getElementsByClassName("miniPicker")[0];
+
     class DeskMover {
         // DeskMover creation options:
         // width: The width of the window
@@ -351,10 +354,10 @@
                 this.confMenuItems[3].classList.add("checkedItem");
             }
             if (this.config.alwaysOnTop) {
-                this.windowContainer.style.zIndex = (this.config.zIndex + 50000) || ++lastAoTZIndex;
+                this.windowContainer.style.zIndex = (this.config.zIndex + 50000) || ++window.lastAoTZIndex;
                 this.confMenuItems[4].classList.add("checkedItem");
             } else {
-                this.windowContainer.style.zIndex = this.config.zIndex || ++lastZIndex;
+                this.windowContainer.style.zIndex = this.config.zIndex || ++window.lastZIndex;
                 this.confMenuItems[4].classList.remove("checkedItem");
             }
             if (this.config.unresizable) {
@@ -543,9 +546,9 @@
             }, 500);
 
             iframeClickEventCtrl(false);
-            isContextMenuOpen = true;
+            window.isContextMenuOpen = true;
             this.contextMenuBg.focus();
-            openedMenu = this.contextMenuBg;
+            window.openedMenu = this.contextMenuBg;
             document.addEventListener('keydown', menuNavigationHandler);
         }
 
@@ -592,15 +595,15 @@
             this.contextMenuBg.style.height = this.calcMenuHeight("window") + "px";
 
             iframeClickEventCtrl(false);
-            isContextMenuOpen = true;
+            window.isContextMenuOpen = true;
             this.contextMenuBg.focus();
-            openedMenu = this.contextMenuBg;
+            window.openedMenu = this.contextMenuBg;
             document.addEventListener('keydown', menuNavigationHandler);
             event.preventDefault();
         }
 
         closeContextMenu() {
-            if (isContextMenuOpen && this.contextMenuOpening) {
+            if (window.isContextMenuOpen && this.contextMenuOpening) {
                 if (this.contextMenuOpening === this.posInContainer && this.config.style === "wnd")
                 {
                     this.closeWindow();
@@ -612,8 +615,8 @@
             this.contextMenuBg.style.display = "none";
             this.closeConfMenu();
             iframeClickEventCtrl(true);
-            isContextMenuOpen = false;
-            openedMenu = null;
+            window.isContextMenuOpen = false;
+            window.openedMenu = null;
             document.removeEventListener('keydown', menuNavigationHandler);
         }
 
@@ -663,8 +666,8 @@
             this.confMenu.style.width = width + " - 2px)";
             this.confMenuBg.style.height = this.calcMenuHeight("conf") + "px";
             iframeClickEventCtrl(false);
-            openedMenu = this.confMenuBg;
-            openedMenuCloseFunc = this.closeConfMenu.bind(this);
+            window.openedMenu = this.confMenuBg;
+            window.openedMenuCloseFunc = this.closeConfMenu.bind(this);
         }
 
         closeConfMenu(force) {
@@ -673,8 +676,8 @@
             }
             delete this.contextMenuItems[0].dataset.active;
             this.confMenuBg.style.display = "none";
-            openedMenu = this.contextMenuBg;
-            openedMenuCloseFunc = null;
+            window.openedMenu = this.contextMenuBg;
+            window.openedMenuCloseFunc = null;
         }
 
         #delayedCloseConfMenu(delay) { 
@@ -1063,7 +1066,7 @@
             this.isFullscreenWithMargins = withMargins;
             this.windowElement.contentDocument.body.dataset.fullscreen = true;
             // But try this anyway for browser usage
-            if (window.runningMode === BROWSER && document.documentElement.requestFullscreen) {
+            if (window.runningMode === 0 && document.documentElement.requestFullscreen) {
                 document.documentElement.requestFullscreen();
             }
         }
@@ -1428,7 +1431,7 @@
                 // Cross-origin iframe
                 return;
             }
-            if (window.runningMode === WE) {
+            if (window.runningMode === 1) {
                 if (this.windowElement.contentWindow.location.href === "chrome-error://chromewebdata/") {
                     if (this.firstLoadSuccess) {
                         madAlert(madGetString("MAD_ERROR_X_FRAME_OPTIONS"), () => {
@@ -1509,11 +1512,11 @@
         #toggleAoT() {
             this.closeContextMenu();
             if (this.config.alwaysOnTop) {
-                this.windowContainer.style.zIndex = ++lastZIndex;
+                this.windowContainer.style.zIndex = ++window.lastZIndex;
                 this.confMenuItems[4].classList.remove("checkedItem");
                 this.config.alwaysOnTop = false;
             } else {
-                this.windowContainer.style.zIndex = ++lastAoTZIndex;
+                this.windowContainer.style.zIndex = ++window.lastAoTZIndex;
                 this.confMenuItems[4].classList.add("checkedItem");
                 this.config.alwaysOnTop = true;
             }
@@ -1593,7 +1596,7 @@
         }
 
         bringToTop () {
-            this.windowContainer.style.zIndex = this.config.alwaysOnTop ? ++lastAoTZIndex : ++lastZIndex;
+            this.windowContainer.style.zIndex = this.config.alwaysOnTop ? ++window.lastAoTZIndex : ++window.lastZIndex;
             activateWindow(this.numStr || 0);
             saveZOrder();
             this.windowElement.contentWindow.focus();

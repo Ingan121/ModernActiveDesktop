@@ -1,7 +1,7 @@
 @echo off
 setlocal
 
-set ver=3.3.0
+set ver=3.3.1
 set title=ModernActiveDesktop System Plugin %ver% Installer
 title %title%
 echo %title%

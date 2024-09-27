@@ -334,7 +334,12 @@ langSelector.addEventListener('change', function () {
     config.lang = this.value;
 });
 
-resetBtn.addEventListener('click', parent.reset);
+resetBtn.addEventListener('click', async function () {
+    const res = await madConfirm(madGetString("MADCONF_CONFIRM_RESET"));
+    if (res) {
+        top.location.replace("confmgr.html?action=reset");
+    }
+});
 
 async function checkSysplug() {
     connectionStatus.locId = "MADCONF_CONNECTTEST_CHECKING";

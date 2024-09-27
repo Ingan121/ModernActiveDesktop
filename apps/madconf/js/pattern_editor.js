@@ -138,7 +138,10 @@ addBtn.addEventListener("click", async function () {
 
 changeBtn.addEventListener("click", function () {
     const selectedOption = patternChooser.options[patternChooser.selectedIndex];
-    const patternName = 'locid:' + selectedOption.querySelector("mad-string")?.getAttribute("data-locid") || selectedOption.textContent;
+    let patternName = selectedOption.textContent;
+    if (patternName.startsWith("locid:")) {
+        patternName = 'locid:' + selectedOption.querySelector("mad-string")?.getAttribute("data-locid");
+    }
     userPatterns[patternName] = base64Output.textContent;
     localStorage.madesktopUserPatterns = JSON.stringify(userPatterns);
     patternChooser.options[patternChooser.selectedIndex].value = base64Output.textContent;
