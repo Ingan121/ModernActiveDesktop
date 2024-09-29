@@ -47,9 +47,9 @@ for (const imgItem of imgItems) {
             imgModeSelector.disabled = true;
             switchDisplayOptionElement(false);
         } else if (imgItem.id == 'customImgItem') {
-            if (this.dataset.base64) {
+            if (this.blob) {
                 preview.contentWindow.changeBgType('image');
-                preview.contentDocument.body.style.backgroundImage = "url('data:image/png;base64," + this.dataset.base64 + "')";
+                preview.contentDocument.body.style.backgroundImage = `url('${URL.createObjectURL(this.blob)}')`;
             } else {
                 preview.contentWindow.location.reload();
             }
@@ -97,26 +97,23 @@ wpBrowseBtn.addEventListener('click', async function () {
       
     const [fileHandle] = await window.showOpenFilePicker(pickerOpts);
     const file = await fileHandle.getFile();
-    const reader = new FileReader();
-    reader.onload = function () {
-        const b64str = reader.result.split(";base64,")[1];
-        preview.contentWindow.changeBgType('image');
-        preview.contentDocument.body.style.backgroundImage = "url('data:image/png;base64," + b64str + "')";
-        preview.contentWindow.updateImageSize();
-        customImgItem.dataset.base64 = b64str;
-        customImgItem.querySelector('span').textContent = getFilename(file.name);
-        customImgItem.style.display = 'block';
-        imgModeSelector.disabled = false;
+    const url = URL.createObjectURL(file);
 
-        const activeItem = document.querySelector('li[data-active]');
-        if (activeItem) {
-            delete activeItem.dataset.active;
-        }
-        customImgItem.dataset.active = true;
-        wpChooser.appendChild(customImgItem);
-        wpChooser.scrollTo(0, wpChooser.scrollHeight);
+    preview.contentWindow.changeBgType('image');
+    preview.contentDocument.body.style.backgroundImage = `url('${url}')`;
+    preview.contentWindow.updateImageSize();
+    customImgItem.blob = file;
+    customImgItem.querySelector('span').textContent = getFilename(file.name);
+    customImgItem.style.display = 'block';
+    imgModeSelector.disabled = false;
+
+    const activeItem = document.querySelector('li[data-active]');
+    if (activeItem) {
+        delete activeItem.dataset.active;
     }
-    reader.readAsDataURL(file);
+    customImgItem.dataset.active = true;
+    wpChooser.appendChild(customImgItem);
+    wpChooser.scrollTo(0, wpChooser.scrollHeight);
 });
 
 wpPatternBtn.addEventListener('click', async function () {
@@ -151,90 +148,94 @@ customWebImgItem.addEventListener('click', function () {
     });
 });
 
-if (madRunningMode === 1) {
-    videoImgItem.style.display = 'block';
-}
-
-if (localStorage.madesktopBgVideoMuted) {
-    wpVideoMuteChkBox.checked = true;
-}
-
-if (localStorage.madesktopBgWeImg) {
-    weImgItem.querySelector('span').textContent = getFilename(localStorage.madesktopBgWeImg);
-    weImgItem.style.display = 'block';
-}
-
-if (localStorage.madesktopBgVideo) {
-    videoImgItem.querySelector('span').textContent = getFilename(localStorage.madesktopBgVideo);
-
-    if (localStorage.madesktopBgType === 'video') {
-        const activeItem = document.querySelector('li[data-active]');
-        if (activeItem) {
-            delete activeItem.dataset.active;
-        }
-        videoImgItem.dataset.active = true;
-        wpChooser.appendChild(videoImgItem);
-        wpChooser.scrollTo(0, wpChooser.scrollHeight);
-        switchDisplayOptionElement(true);
+async function init() {
+    if (madRunningMode === 1) {
+        videoImgItem.style.display = 'block';
     }
-}
 
-if (localStorage.madesktopBgImg) {
-    if (localStorage.madesktopBgImg.startsWith('wallpapers/')) {
-        const wallName = localStorage.madesktopBgImg.match(/wallpapers\/(.*)\.png/)[1];
-        const wallItem = wallMap[wallName];
-        if (wallItem) {
+    if (localStorage.madesktopBgVideoMuted) {
+        wpVideoMuteChkBox.checked = true;
+    }
+
+    if (localStorage.madesktopBgWeImg) {
+        weImgItem.querySelector('span').textContent = getFilename(localStorage.madesktopBgWeImg);
+        weImgItem.style.display = 'block';
+    }
+
+    if (localStorage.madesktopBgVideo) {
+        videoImgItem.querySelector('span').textContent = getFilename(localStorage.madesktopBgVideo);
+
+        if (localStorage.madesktopBgType === 'video') {
             const activeItem = document.querySelector('li[data-active]');
             if (activeItem) {
                 delete activeItem.dataset.active;
             }
-            wallItem.dataset.active = true;
-            scrollIntoView(wallItem);
+            videoImgItem.dataset.active = true;
+            wpChooser.appendChild(videoImgItem);
+            wpChooser.scrollTo(0, wpChooser.scrollHeight);
+            switchDisplayOptionElement(true);
         }
-    } else if (localStorage.madesktopBgWeImg === localStorage.madesktopBgImg) {
-        const activeItem = document.querySelector('li[data-active]');
-        if (activeItem) {
-            delete activeItem.dataset.active;
+    }
+
+    if (localStorage.madesktopBgImg) {
+        if (localStorage.madesktopBgImg.startsWith('wallpapers/')) {
+            const wallName = localStorage.madesktopBgImg.match(/wallpapers\/(.*)\.png/)[1];
+            const wallItem = wallMap[wallName];
+            if (wallItem) {
+                const activeItem = document.querySelector('li[data-active]');
+                if (activeItem) {
+                    delete activeItem.dataset.active;
+                }
+                wallItem.dataset.active = true;
+                scrollIntoView(wallItem);
+            }
+        } else if (localStorage.madesktopBgWeImg === localStorage.madesktopBgImg) {
+            const activeItem = document.querySelector('li[data-active]');
+            if (activeItem) {
+                delete activeItem.dataset.active;
+            }
+            weImgItem.dataset.active = true;
+            wpChooser.scrollTo(0, wpChooser.scrollHeight);
+        } else {
+            const idbBgImg = await top.madIdb.bgImg;
+            if (idbBgImg) {
+                customImgItem.blob = idbBgImg;
+            }
+            customImgItem.style.display = 'block';
+            imgModeSelector.disabled = false;
+
+            const activeItem = document.querySelector('li[data-active]');
+            if (activeItem) {
+                delete activeItem.dataset.active;
+            }
+            customImgItem.dataset.active = true;
+            wpChooser.scrollTo(0, wpChooser.scrollHeight);        
         }
-        weImgItem.dataset.active = true;
-        wpChooser.scrollTo(0, wpChooser.scrollHeight);
-    } else {
-        if (!localStorage.madesktopBgImg.startsWith('file:///')) {
-            customImgItem.dataset.base64 = localStorage.madesktopBgImg;
-        }
-        customImgItem.style.display = 'block';
         imgModeSelector.disabled = false;
-
-        const activeItem = document.querySelector('li[data-active]');
-        if (activeItem) {
-            delete activeItem.dataset.active;
-        }
-        customImgItem.dataset.active = true;
-        wpChooser.scrollTo(0, wpChooser.scrollHeight);        
     }
-    imgModeSelector.disabled = false;
-}
 
-if (localStorage.madesktopBgType == 'web') {
-    if (!localStorage.madesktopBgHtmlSrc || localStorage.madesktopBgHtmlSrc.endsWith('bghtml/index.html')) {
-        const activeItem = document.querySelector('li[data-active]');
-        if (activeItem) {
-            delete activeItem.dataset.active;
+    if (localStorage.madesktopBgType == 'web') {
+        if (!localStorage.madesktopBgHtmlSrc || localStorage.madesktopBgHtmlSrc.endsWith('bghtml/index.html')) {
+            const activeItem = document.querySelector('li[data-active]');
+            if (activeItem) {
+                delete activeItem.dataset.active;
+            }
+            imgItems[18].dataset.active = true;
+            scrollIntoView(imgItems[18]);
+        } else {
+            const activeItem = document.querySelector('li[data-active]');
+            if (activeItem) {
+                delete activeItem.dataset.active;
+            }
+            customWebImgItem.dataset.active = true;
+            imgModeSelector.disabled = true;
+            scrollIntoView(customWebImgItem);
         }
-        imgItems[18].dataset.active = true;
-        scrollIntoView(imgItems[18]);
-    } else {
-        const activeItem = document.querySelector('li[data-active]');
-        if (activeItem) {
-            delete activeItem.dataset.active;
-        }
-        customWebImgItem.dataset.active = true;
-        imgModeSelector.disabled = true;
-        scrollIntoView(customWebImgItem);
     }
 }
+init();
 
-window.apply = function () {
+window.apply = async function () {
     const activeItem = document.querySelector('li[data-active]');
     if (!activeItem) {
         return;
@@ -243,21 +244,18 @@ window.apply = function () {
     parent.changeBgImgMode(preview.contentWindow.bgImgMode);
 
     const i = Array.from(imgItems).indexOf(activeItem);
+    delete top.madIdb.bgImg;
     if (i == 0) {
         delete localStorage.madesktopBgImg;
     } else if (i >= 1 && i <= 17) {
         localStorage.madesktopBgImg = `wallpapers/${activeItem.dataset.wpname}.png`;
     } else if (activeItem.id === 'customImgItem') {
-        if (activeItem.dataset.base64) {
+        if (activeItem.blob) {
             try {
-                localStorage.madesktopBgImg = activeItem.dataset.base64;
+                await top.setMadIdbValue('bgImg', activeItem.blob);
             } catch (e) {
-                if (e.name === 'QuotaExceededError') {
-                    const msg = madRunningMode === 1 ? madGetString("MADCONF_MSG_LARGE_IMG_WE") : madGetString("MADCONF_MSG_LARGE_IMG");
-                    madAlert(msg, null, 'error');
-                } else {
-                    throw e;
-                }
+                console.error(e);
+                madAlert(madGetString("MADCONF_MSG_SAVE_FAIL", e.name), null, 'error');
             }
         } else {
             return;

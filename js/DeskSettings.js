@@ -16,6 +16,78 @@
     const styleElement = document.getElementById("style");
     const mainMenuBg = document.getElementById("mainMenuBg");
 
+    // Use indexedDB for storing images and JSON
+    window.madIdb = new Proxy({}, {
+        get(target, prop) {
+            return new Promise((resolve, reject) => {
+                const db = indexedDB.open("mad", 1);
+                db.onupgradeneeded = function () {
+                    db.result.createObjectStore("config");
+                };
+                db.onsuccess = function () {
+                    const transaction = db.result.transaction("config", "readwrite");
+                    const store = transaction.objectStore("config");
+                    const request = store.get(prop);
+                    request.onsuccess = function () {
+                        resolve(request.result);
+                    };
+                    request.onerror = function () {
+                        reject(request.error);
+                    };
+                };
+                db.onerror = function () {
+                    reject(db.error);
+                };
+            });
+        },
+        // set is not implemented as its tricky to handle async operations (exceptions)
+        deleteProperty(target, prop) {
+            return new Promise((resolve, reject) => {
+                const db = indexedDB.open("mad", 1);
+                db.onupgradeneeded = function () {
+                    db.result.createObjectStore("config");
+                };
+                db.onsuccess = function () {
+                    const transaction = db.result.transaction("config", "readwrite");
+                    const store = transaction.objectStore("config");
+                    store.delete(prop);
+                    transaction.oncomplete = function () {
+                        resolve();
+                    };
+                    transaction.onerror = function () {
+                        reject(transaction.error);
+                    };
+                };
+                db.onerror = function () {
+                    reject(db.error);
+                };
+            });
+        }
+    });
+
+    async function setMadIdbValue(key, value) {
+        return new Promise((resolve, reject) => {
+            const db = indexedDB.open("mad", 1);
+            db.onupgradeneeded = function () {
+                db.result.createObjectStore("config");
+            };
+            db.onsuccess = function () {
+                const transaction = db.result.transaction("config", "readwrite");
+                const store = transaction.objectStore("config");
+                store.put(value, key);
+                transaction.oncomplete = function () {
+                    resolve();
+                };
+                transaction.onerror = function () {
+                    reject(transaction.error);
+                };
+            };
+            db.onerror = function () {
+                reject(db.error);
+            };
+        });
+    }
+
     function loadConfigs() {
         if (localStorage.madesktopBgColor) {
             document.documentElement.style.backgroundColor = localStorage.madesktopBgColor;
@@ -73,14 +145,21 @@
         localStorage.madesktopBgColor = str;
     }
 
-    function loadBgImgConf() {
-        if (localStorage.madesktopBgImg) {
+    async function loadBgImgConf() {
+        const idbBgImg = await madIdb.bgImg;
+        if (idbBgImg) {
+            const url = URL.createObjectURL(idbBgImg);
+            document.body.style.backgroundImage = `url('${url}')`;
+        } else if (localStorage.madesktopBgImg) {
             if (localStorage.madesktopBgImg.startsWith("file:///") || // Set in WPE
                 localStorage.madesktopBgImg.startsWith("wallpapers/")) // Built-in wallpapers set in madconf
             {
                 document.body.style.backgroundImage = "url('" + localStorage.madesktopBgImg + "')";
             } else { // Custom image set in madconf
                 document.body.style.backgroundImage = "url('data:image/png;base64," + localStorage.madesktopBgImg + "')";
+                // Migrate to indexedDB
+                await setMadIdbValue("bgImg", new Blob([base64ToArrayBuffer(localStorage.madesktopBgImg)], {type: 'image/png'}));
+                delete localStorage.madesktopBgImg;
             }
         } else {
             document.body.style.backgroundImage = "none";
@@ -500,6 +579,7 @@
                     localStorage.madesktopBgWeImg = path;
                     if (!isStartup) {
                         document.body.style.backgroundImage = "url('" + path + "')";
+                        delete madIdb.bgImg;
                         localStorage.madesktopBgImg = path;
                         localStorage.madesktopBgType = "image";
                         changeBgType("image");
@@ -572,6 +652,7 @@
         }
     };
 
+    window.setMadIdbValue = setMadIdbValue;
     window.loadConfigs = loadConfigs;
     window.changeBgType = changeBgType;
     window.changeBgColor = changeBgColor;

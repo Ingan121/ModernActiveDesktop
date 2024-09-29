@@ -152,6 +152,7 @@
         "MADCONF_PAGE_APPEARANCE": "Appearance",
         "MADCONF_PAGE_MISC": "Miscellaneous",
         "MADCONF_PAGE_ABOUT": "About",
+        "MADCONF_MSG_SAVE_FAIL": "Failed to save configuration due to %s.",
 
         // #region Background tab
         "MADCONF_WALLPAPER_TITLE": "Wallpaper",

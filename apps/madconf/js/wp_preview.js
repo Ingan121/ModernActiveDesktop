@@ -39,7 +39,11 @@ new MutationObserver(function (mutations) {
     scale = parent.document.body.style.zoom || 1;
     document.documentElement.style.backgroundSize = `${8 * scale}px ${8 * scale}px`;
     document.body.style.zoom = scale * 0.0625;
-    bgHtmlView.contentWindow.document.body.style.zoom = scale * 0.0625;
+    try {
+        bgHtmlView.contentWindow.document.body.style.zoom = scale * 0.0625;
+    } catch {
+        // page did not load yet
+    }
 }).observe(
     parent.document.body,
     { attributes: true, attributeFilter: ["style"] }

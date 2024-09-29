@@ -11,7 +11,6 @@
     // #region Constants and variables
     const windowContainerBase = document.getElementsByClassName("windowContainer")[0];
     const bgHtmlView = document.getElementById("bgHtmlView");
-    const bgVideoView = document.getElementById("bgVideo");
     const msgboxBg = document.getElementById("msgboxBg");
     const msgbox = document.getElementById("msgbox");
     const msgboxTitlebar = msgbox.getElementsByClassName("title-bar")[0];

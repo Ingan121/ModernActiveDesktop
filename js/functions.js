@@ -189,6 +189,16 @@
         event.stopPropagation();
     }
 
+    // https://stackoverflow.com/questions/21797299/how-can-i-convert-a-base64-string-to-arraybuffer
+    function base64ToArrayBuffer(base64) {
+        const binaryString = atob(base64);
+        const bytes = new Uint8Array(binaryString.length);
+        for (var i = 0; i < binaryString.length; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+        }
+        return bytes.buffer;
+    }
+
     window.getTextWidth = getTextWidth;
     window.scrollIntoView = scrollIntoView;
     window.rgbToHex = rgbToHex;
@@ -202,4 +212,5 @@
     window.asyncTimeout = asyncTimeout;
     window.getCaller = getCaller;
     window.preventDefault = preventDefault;
+    window.base64ToArrayBuffer = base64ToArrayBuffer;
 })();

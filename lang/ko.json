@@ -117,6 +117,7 @@
     "MADCONF_PAGE_APPEARANCE": "화면 배색",
     "MADCONF_PAGE_MISC": "기타",
     "MADCONF_PAGE_ABOUT": "정보",
+    "MADCONF_MSG_SAVE_FAIL": "%s로 인해 설정을 저장하지 못했습니다.",
 
     "MADCONF_WALLPAPER_TITLE": "배경 무늬",
     "MADCONF_WPCHOOSER_TITLE": "인터넷 문서(HTML) 또는 그림 선택(&S)",
