@@ -81,51 +81,14 @@
     window.visDeskMover = null;
     window.confDeskMover = null;
     
-    // #region Function exports
-    window.changeBgType = changeBgType;
-    window.changeBgColor = changeBgColor;
-    window.changeBgImgMode = changeBgImgMode;
-    window.changeColorScheme = changeColorScheme;
-    window.changeAeroColor = changeAeroColor;
-    window.changeAeroGlass = changeAeroGlass;
-    window.changeWinAnim = changeWinAnim;
-    window.changeScale = changeScale;
-    window.changeCmAnimation = changeCmAnimation;
-    window.changeCmShadow = changeCmShadow;
-    window.changeWinShadow = changeWinShadow;
-    window.changeMenuStyle = changeMenuStyle;
-    window.changeUnderline = changeUnderline;
-    window.changeSoundScheme = changeSoundScheme;
-    window.generateThemeSvgs = generateThemeSvgs;
-
-    window.openWindow = openWindow;
-    window.openConfig = openConfig;
-    window.openExternal = openExternal;
-    window.openExternalExternally = openExternalExternally;
-    window.announce = announce;
-    window.playSound = playSound;
-
+    // #region Early function exports (those used by DeskMover.js, excluding usage from click events)
+    window.log = log;
     window.saveZOrder = saveZOrder;
     window.activateWindow = activateWindow;
     window.cascadeWindow = cascadeWindow;
-    window.adjustAllElements = adjustAllElements;
     window.iframeClickEventCtrl = iframeClickEventCtrl;
-
-    window.madAlert = madAlert;
-    window.madConfirm = madConfirm;
-    window.madPrompt = madPrompt;
-
     window.getFavicon = getFavicon;
     window.menuNavigationHandler = menuNavigationHandler;
-    window.log = log;
-
-    window.activateDebugMode = activateDebugMode;
-    window.deactivateDebugMode = deactivateDebugMode;
-    window.showDebugInfo = showDebugInfo;
-    window.toggleDebugLog = toggleDebugLog;
-    window.toggleRunningMode = toggleRunningMode;
-    window.toggleKbdSupport = toggleKbdSupport;
-    window.showErrors = showErrors;
     // #endregion
     // #endregion
 
@@ -1915,6 +1878,44 @@
         };
         openWindow("apps/welcome/index.html", true, options);
     }
+
+    // #region Late function exports
+    window.changeBgType = changeBgType;
+    window.changeBgColor = changeBgColor;
+    window.changeBgImgMode = changeBgImgMode;
+    window.changeColorScheme = changeColorScheme;
+    window.changeAeroColor = changeAeroColor;
+    window.changeAeroGlass = changeAeroGlass;
+    window.changeWinAnim = changeWinAnim;
+    window.changeScale = changeScale;
+    window.changeCmAnimation = changeCmAnimation;
+    window.changeCmShadow = changeCmShadow;
+    window.changeWinShadow = changeWinShadow;
+    window.changeMenuStyle = changeMenuStyle;
+    window.changeUnderline = changeUnderline;
+    window.changeSoundScheme = changeSoundScheme;
+    window.generateThemeSvgs = generateThemeSvgs;
+    window.adjustAllElements = adjustAllElements;
+
+    window.openWindow = openWindow;
+    window.openConfig = openConfig;
+    window.openExternal = openExternal;
+    window.openExternalExternally = openExternalExternally;
+    window.announce = announce;
+    window.playSound = playSound;
+
+    window.madAlert = madAlert;
+    window.madConfirm = madConfirm;
+    window.madPrompt = madPrompt;
+
+    window.activateDebugMode = activateDebugMode;
+    window.deactivateDebugMode = deactivateDebugMode;
+    window.showDebugInfo = showDebugInfo;
+    window.toggleDebugLog = toggleDebugLog;
+    window.toggleRunningMode = toggleRunningMode;
+    window.toggleKbdSupport = toggleKbdSupport;
+    window.showErrors = showErrors;
+    // #endregion
     // #endregion
 
     // #region Final initialization

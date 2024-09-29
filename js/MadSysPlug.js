@@ -1,4 +1,4 @@
-// libmad-sysplug.js for ModernActiveDesktop
+// MadSysPlug.js for ModernActiveDesktop
 // Made by Ingan121
 // Licensed under the MIT License
 // SPDX-License-Identifier: MIT
