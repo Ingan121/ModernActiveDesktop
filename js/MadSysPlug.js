@@ -213,7 +213,7 @@
 
     // Get the clipboard content
     async function getClipboard() {
-        return await request("clipboard") || "[Pasting requires the system plugin]";
+        return await request("clipboard") || "";
     }
 
     // input[type="number"] doesn't work well with MadInput, so we need to convert it to text

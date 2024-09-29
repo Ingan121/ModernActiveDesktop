@@ -5,9 +5,6 @@
 
 'use strict';
 
-const genPatternImage = top.genPatternImage;
-const base64ToPattern = top.base64ToPattern;
-
 window.bgHtmlContainer = document.getElementById("bgHtmlContainer");
 window.bgHtmlView = document.getElementById("bgHtmlView");
 window.bgVideoView = document.getElementById("bgVideo");

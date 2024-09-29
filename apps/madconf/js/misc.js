@@ -335,9 +335,9 @@ langSelector.addEventListener('change', function () {
 });
 
 resetBtn.addEventListener('click', async function () {
-    const res = await madConfirm(madGetString("MADCONF_CONFIRM_RESET"));
+    const res = await madConfirm(madGetString("MAD_CONFIRM_RESET"));
     if (res) {
-        top.location.replace("confmgr.html?action=reset");
+        top.location.replace("../../confmgr.html?action=reset");
     }
 });
 

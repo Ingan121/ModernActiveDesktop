@@ -46,9 +46,6 @@ if (!localStorage.madesktopUserPatterns) {
     localStorage.madesktopUserPatterns = JSON.stringify(defaultPatterns);
 }
 
-const genPatternImage = top.genPatternImage;
-const base64ToPattern = top.base64ToPattern;
-
 loadPatterns();
 
 if (localStorage.madesktopBgPattern) {

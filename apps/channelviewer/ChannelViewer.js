@@ -5,8 +5,6 @@
 
 'use strict';
 
-const log = top.log || console.log;
-
 const schemeElement = document.getElementById("scheme");
 
 const toolbars = document.getElementById("toolbars");

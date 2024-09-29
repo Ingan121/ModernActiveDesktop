@@ -5,6 +5,8 @@
 
 'use strict';
 
+// This script implements the DeskMover class, which is used for creating and managing windows in ModernActiveDesktop
+
 (function () {
     const windowOutline = document.getElementById("windowOutline");
     const miniPickerBase = document.getElementsByClassName("miniPicker")[0];

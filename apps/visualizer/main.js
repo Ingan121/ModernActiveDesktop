@@ -32,8 +32,6 @@ if (parent === window) {
 // #endregion
 
 // #region Constants and variables
-const log = top.log;
-
 const schemeElement = document.getElementById("scheme");
 const menuBar = document.getElementById('menuBar');
 

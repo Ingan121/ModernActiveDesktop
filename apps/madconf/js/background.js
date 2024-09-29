@@ -305,8 +305,8 @@ window.patternCallback = function (patternB64) {
     if (patternB64 === '') {
         preview.contentDocument.documentElement.style.backgroundImage = 'none';
     } else {
-        const pattern = parent.base64ToPattern(patternB64);
-        preview.contentDocument.documentElement.style.backgroundImage = `url('${parent.genPatternImage(pattern)}')`;
+        const pattern = base64ToPattern(patternB64);
+        preview.contentDocument.documentElement.style.backgroundImage = `url('${genPatternImage(pattern)}')`;
     }
 }
 

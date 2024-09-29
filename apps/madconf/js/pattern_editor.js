@@ -26,10 +26,6 @@ const pattern = [
     [0, 0, 0, 0, 0, 0, 0, 0]
 ];
 
-const genPatternImage = top.genPatternImage;
-const patternToBase64 = top.patternToBase64;
-const base64ToPattern = top.base64ToPattern;
-
 const userPatterns = JSON.parse(localStorage.madesktopUserPatterns);
 for (const pattern in userPatterns) {
     const option = document.createElement("option");

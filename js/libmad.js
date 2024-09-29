@@ -41,6 +41,15 @@
         window.madScaleFactor = 1;
         window.madRunningMode = 0;
         window.madKbdSupport = 1;
+        window.log = function (str, level, caller) {
+            if (!caller) {
+                caller = getCaller();
+            }
+            if (typeof str === "object") {
+                str = JSON.stringify(str);
+            }
+            console[level || 'log'](caller + ": " + str);
+        }
         window.madOpenWindow = function (url, temp, optionsOrWidth = {}, heightArg, style, centeredArg, topArg, leftArg) {
             if (url.startsWith("apps/")) {
                 url = "../../" + url;
@@ -170,6 +179,8 @@
     const deskMover = top.deskMovers[deskMoverNum];
     const config = deskMover.config;
 
+    window.log = top.log;
+
     applyScheme(true);
     applyMargins();
 
@@ -228,7 +239,7 @@
         }
 
         try {
-            document.documentElement.style.setProperty('--hilight-inverted', top.invertColor(getComputedStyle(document.documentElement).getPropertyValue('--hilight')));
+            document.documentElement.style.setProperty('--hilight-inverted', invertColor(getComputedStyle(document.documentElement).getPropertyValue('--hilight')));
         } catch {
             document.documentElement.style.setProperty('--hilight-inverted', 'var(--hilight-text)');
         }
@@ -281,7 +292,7 @@
         }
 
         try {
-            document.documentElement.style.setProperty('--hilight-inverted', top.invertColor(getComputedStyle(document.documentElement).getPropertyValue('--hilight')));
+            document.documentElement.style.setProperty('--hilight-inverted', invertColor(getComputedStyle(document.documentElement).getPropertyValue('--hilight')));
         } catch {
             document.documentElement.style.setProperty('--hilight-inverted', 'var(--hilight-text)');
         }

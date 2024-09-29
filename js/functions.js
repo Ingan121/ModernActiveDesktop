@@ -127,19 +127,7 @@
     // https://stackoverflow.com/a/35970186
     function invertColor(hex) {
         log(hex);
-        if (!hex.includes('#') || hex.length !== 7) {
-            hex = normalizeColor(hex);
-        }
-        if (hex.indexOf('#') === 0) {
-            hex = hex.slice(1);
-        }
-        // convert 3-digit hex to 6-digits.
-        if (hex.length === 3) {
-            hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
-        }
-        if (hex.length !== 6) {
-            throw new Error('Invalid HEX color.');
-        }
+        hex = normalizeColor(hex).slice(1);
         // invert color components
         const r = (255 - parseInt(hex.slice(0, 2), 16)).toString(16),
             g = (255 - parseInt(hex.slice(2, 4), 16)).toString(16),
