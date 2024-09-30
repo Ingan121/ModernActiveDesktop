@@ -352,32 +352,22 @@
     window.systemHooks = {
         setWallpaperTiled: (canvas) => {
             canvas.toBlob((blob) => {
-                const reader = new FileReader();
-                reader.onload = function () {
-                    top.changeBgType("image");
-                    top.changeBgImgMode("grid");
-                    localStorage.madesktopBgType = "image";
-                    localStorage.madesktopBgImgMode = "grid";
-                    const b64str = reader.result.split(";base64,")[1];
-                    top.document.body.style.backgroundImage = "url('data:image/png;base64," + b64str + "')";
-                    localStorage.madesktopBgImg = b64str;
-                };
-                reader.readAsDataURL(blob);
+                top.changeBgType("image", false);
+                top.changeBgImgMode("grid");
+                localStorage.madesktopBgType = "image";
+                localStorage.madesktopBgImgMode = "grid";
+                top.document.body.style.backgroundImage = "url('" + URL.createObjectURL(blob) + "')";
+                madIdb.setItem("bgImg", blob);
             });
         },
         setWallpaperCentered: (canvas) => {
             canvas.toBlob((blob) => {
-                const reader = new FileReader();
-                reader.onload = function () {
-                    top.changeBgType("image");
-                    top.changeBgImgMode("center");
-                    localStorage.madesktopBgType = "image";
-                    localStorage.madesktopBgImgMode = "center";
-                    const b64str = reader.result.split(";base64,")[1];
-                    top.document.body.style.backgroundImage = "url('data:image/png;base64," + b64str + "')";
-                    localStorage.madesktopBgImg = b64str;
-                };
-                reader.readAsDataURL(blob);
+                top.changeBgType("image", false);
+                top.changeBgImgMode("center");
+                localStorage.madesktopBgType = "image";
+                localStorage.madesktopBgImgMode = "center";
+                top.document.body.style.backgroundImage = "url('" + URL.createObjectURL(blob) + "')";
+                madIdb.setItem("bgImg", blob);
             });
         }
     };
@@ -497,6 +487,7 @@
     customElements.define("mad-select", MadSelect);
 
     // expose MAD APIs
+    window.madIdb = top.madIdb;
     window.madDeskMover = deskMover;
     window.madOpenWindow = top.openWindow;
     window.madOpenConfig = top.openConfig;

@@ -73,11 +73,11 @@ okBtn.focus();
 
 // Get filename without extension
 // Accepts both fileurl and filename with extension
-function getFilename(str) {
+window.getFilename = (str) => {
     return str.split('/').pop().split('.').slice(0, -1).join('.');
 }
 
-function copyText(str) {
+window.copyText = (str) => {
     const tmp = document.createElement("textarea");
     document.body.appendChild(tmp);
     tmp.value = str;

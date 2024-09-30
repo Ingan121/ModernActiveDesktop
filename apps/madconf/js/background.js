@@ -38,12 +38,12 @@ for (const imgItem of imgItems) {
                 preview.contentWindow.changeBgImgMode('grid');
             }
             preview.contentWindow.changeBgType('image');
-            preview.contentDocument.body.style.backgroundImage = `url('../../wallpapers/${this.dataset.wpname}.png')`;
+            preview.contentDocument.body.style.backgroundImage = `url('wallpapers/${this.dataset.wpname}.png')`;
             imgModeSelector.disabled = false;
             switchDisplayOptionElement(false);
         } else if (i === 18) {
             preview.contentWindow.changeBgType('web');
-            preview.contentWindow.bgHtmlView.src = '../../bghtml/index.html';
+            preview.contentWindow.bgHtmlView.src = 'bghtml/index.html';
             imgModeSelector.disabled = true;
             switchDisplayOptionElement(false);
         } else if (imgItem.id == 'customImgItem') {
@@ -74,11 +74,7 @@ for (const imgItem of imgItems) {
         }
         preview.contentWindow.updateImageSize();
 
-        const activeItem = document.querySelector('li[data-active]');
-        if (activeItem) {
-            delete activeItem.dataset.active;
-        }
-        imgItem.dataset.active = true;
+        activateItem(this, false);
     });
 }
 
@@ -94,7 +90,7 @@ wpBrowseBtn.addEventListener('click', async function () {
         excludeAcceptAllOption: false,
         multiple: false,
     };
-      
+
     const [fileHandle] = await window.showOpenFilePicker(pickerOpts);
     const file = await fileHandle.getFile();
     const url = URL.createObjectURL(file);
@@ -107,13 +103,7 @@ wpBrowseBtn.addEventListener('click', async function () {
     customImgItem.style.display = 'block';
     imgModeSelector.disabled = false;
 
-    const activeItem = document.querySelector('li[data-active]');
-    if (activeItem) {
-        delete activeItem.dataset.active;
-    }
-    customImgItem.dataset.active = true;
-    wpChooser.appendChild(customImgItem);
-    wpChooser.scrollTo(0, wpChooser.scrollHeight);
+    activateItem(customImgItem, true, true);
 });
 
 wpPatternBtn.addEventListener('click', async function () {
@@ -128,6 +118,7 @@ wpPatternBtn.addEventListener('click', async function () {
 
 imgModeSelector.addEventListener('change', function () {
     preview.contentWindow.changeBgImgMode(this.value);
+    preview.contentWindow.updateImageSize();
 });
 
 imgModeSelector.value = localStorage.madesktopBgImgMode || 'center';
@@ -139,11 +130,7 @@ customWebImgItem.addEventListener('click', function () {
         preview.contentWindow.bgHtmlView.src = res;
         imgModeSelector.disabled = true;
 
-        const activeItem = document.querySelector('li[data-active]');
-        if (activeItem) {
-            delete activeItem.dataset.active;
-        }
-        customWebImgItem.dataset.active = true;
+        activateItem(customWebImgItem, false);
         switchDisplayOptionElement(false);
     });
 });
@@ -166,70 +153,41 @@ async function init() {
         videoImgItem.querySelector('span').textContent = getFilename(localStorage.madesktopBgVideo);
 
         if (localStorage.madesktopBgType === 'video') {
-            const activeItem = document.querySelector('li[data-active]');
-            if (activeItem) {
-                delete activeItem.dataset.active;
-            }
-            videoImgItem.dataset.active = true;
-            wpChooser.appendChild(videoImgItem);
-            wpChooser.scrollTo(0, wpChooser.scrollHeight);
+            activateItem(videoImgItem, true, true);
             switchDisplayOptionElement(true);
         }
     }
 
-    if (localStorage.madesktopBgImg) {
+    const idbBgImg = await madIdb.bgImg;
+    if (idbBgImg) {
+        customImgItem.blob = idbBgImg;
+        if (idbBgImg.name) {
+            customImgItem.querySelector('span').textContent = getFilename(idbBgImg.name);
+        }
+        customImgItem.style.display = 'block';
+        activateItem(customImgItem);
+    } else if (localStorage.madesktopBgImg) {
         if (localStorage.madesktopBgImg.startsWith('wallpapers/')) {
             const wallName = localStorage.madesktopBgImg.match(/wallpapers\/(.*)\.png/)[1];
             const wallItem = wallMap[wallName];
             if (wallItem) {
-                const activeItem = document.querySelector('li[data-active]');
-                if (activeItem) {
-                    delete activeItem.dataset.active;
-                }
-                wallItem.dataset.active = true;
-                scrollIntoView(wallItem);
+                activateItem(wallItem);
             }
         } else if (localStorage.madesktopBgWeImg === localStorage.madesktopBgImg) {
-            const activeItem = document.querySelector('li[data-active]');
-            if (activeItem) {
-                delete activeItem.dataset.active;
-            }
-            weImgItem.dataset.active = true;
-            wpChooser.scrollTo(0, wpChooser.scrollHeight);
+            activateItem(weImgItem);
         } else {
-            const idbBgImg = await top.madIdb.bgImg;
-            if (idbBgImg) {
-                customImgItem.blob = idbBgImg;
-            }
             customImgItem.style.display = 'block';
             imgModeSelector.disabled = false;
-
-            const activeItem = document.querySelector('li[data-active]');
-            if (activeItem) {
-                delete activeItem.dataset.active;
-            }
-            customImgItem.dataset.active = true;
-            wpChooser.scrollTo(0, wpChooser.scrollHeight);        
+            activateItem(customImgItem);        
         }
         imgModeSelector.disabled = false;
     }
 
     if (localStorage.madesktopBgType == 'web') {
         if (!localStorage.madesktopBgHtmlSrc || localStorage.madesktopBgHtmlSrc.endsWith('bghtml/index.html')) {
-            const activeItem = document.querySelector('li[data-active]');
-            if (activeItem) {
-                delete activeItem.dataset.active;
-            }
-            imgItems[18].dataset.active = true;
-            scrollIntoView(imgItems[18]);
+            activateItem(imgItems[18]);
         } else {
-            const activeItem = document.querySelector('li[data-active]');
-            if (activeItem) {
-                delete activeItem.dataset.active;
-            }
-            customWebImgItem.dataset.active = true;
-            imgModeSelector.disabled = true;
-            scrollIntoView(customWebImgItem);
+            activateItem(customWebImgItem);
         }
     }
 }
@@ -244,7 +202,7 @@ window.apply = async function () {
     parent.changeBgImgMode(preview.contentWindow.bgImgMode);
 
     const i = Array.from(imgItems).indexOf(activeItem);
-    delete top.madIdb.bgImg;
+    delete madIdb.bgImg;
     if (i == 0) {
         delete localStorage.madesktopBgImg;
     } else if (i >= 1 && i <= 17) {
@@ -252,7 +210,8 @@ window.apply = async function () {
     } else if (activeItem.id === 'customImgItem') {
         if (activeItem.blob) {
             try {
-                await top.setMadIdbValue('bgImg', activeItem.blob);
+                await madIdb.setItem('bgImg', activeItem.blob);
+                delete localStorage.madesktopBgImg;
             } catch (e) {
                 console.error(e);
                 madAlert(madGetString("MADCONF_MSG_SAVE_FAIL", e.name), null, 'error');
@@ -289,9 +248,9 @@ window.apply = async function () {
         delete localStorage.madesktopBgVideoMuted;
     }
 
-    // Reset customImgItem if it's not the active item and it doesn't have a base64 data saved
+    // Reset customImgItem if it's not the active item and it doesn't have a blob data saved
     // Less likely to happen as of writing tho
-    if (activeItem.id !== 'customImgItem' && !customImgItem.dataset.base64) {
+    if (activeItem.id !== 'customImgItem' && !customImgItem.blob) {
         delete customImgItem.dataset.active;
         customImgItem.querySelector('span').textContent = madGetString("MADCONF_WPCHOOSER_CURRENT_IMG");
         customImgItem.style.display = 'none';
@@ -317,5 +276,19 @@ function switchDisplayOptionElement(isVideo) {
     } else {
         wpVideoMuteLabel.style.display = 'none';
         imgModeSelector.style.opacity = 1;
+    }
+}
+
+function activateItem(item, scroll = true, putToBottom = false) {
+    const activeItem = document.querySelector('li[data-active]');
+    if (activeItem) {
+        delete activeItem.dataset.active;
+    }
+    item.dataset.active = true;
+    if (putToBottom) {
+        wpChooser.appendChild(item);
+    }
+    if (scroll) {
+        scrollIntoView(item);
     }
 }

@@ -269,38 +269,8 @@ inetcplBtn.addEventListener('click', function () {
     madOpenWindow('apps/inetcpl/general.html', true, options);
 });
 
-exportBtn.addEventListener('click', async function () {
-    const madConfig = {};
-    for (const key in localStorage) {
-        if (key.startsWith("madesktop") || key === "sysplugIntegration" ||
-            key.startsWith('image#') || key.startsWith('jspaint '))
-        {
-            madConfig[key] = localStorage[key];
-        }
-    }
-    const json = JSON.stringify(madConfig);
-    const blob = new Blob([json], { type: 'application/json' });
-    if (madRunningMode === 0) {
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = 'madesktop-config.json';
-        a.click();
-    } else {
-        try {
-            const res = await madSysPlug.saveFile(blob, {
-                "X-Format-Name": "JSON Files",
-                "X-Format-Extension": "json",
-                "X-File-Name": "madesktop-config.json"
-            });
-            if (!res) {
-                copyText(json);
-                madAlert(madGetString("MADCONF_CONF_COPIED"));
-            }
-        } catch {
-            copyText(json);
-            madAlert(madGetString("MADCONF_CONF_COPIED"));
-        }
-    }
+exportBtn.addEventListener('click', function () {
+    exportConfig();
 });
 
 importBtn.addEventListener('click', async function () {
@@ -308,25 +278,28 @@ importBtn.addEventListener('click', async function () {
     const file = await fileHandle.getFile();
     const text = await file.text();
 
-    try {
-        const parsed = JSON.parse(text);
-        const confVer = parsed.madesktopLastVer;
-        if (confVer) {
-            if (top.madVersion.compare(confVer, true) < 0) {
-                madAlert(madGetString("MADCONF_NEWER_CONF_MSG"), null, "error");
+    const res = await madConfirm(madGetString("MADCONF_CONF_IMPORT_CONFIRM"));
+    if (res) {
+        try {
+            const parsed = JSON.parse(text);
+            const confVer = parsed.madesktopLastVer;
+            if (confVer) {
+                if (top.madVersion.compare(confVer, true) < 0) {
+                    madAlert(madGetString("MADCONF_NEWER_CONF_MSG"), null, "error");
+                    return;
+                }
+            } else {
+                madAlert(madGetString("MADCONF_CONF_INVALID"), null, "error");
                 return;
             }
-        } else {
-            madAlert(madGetString("MADCONF_CONF_INVALID"), null, "error");
-            return;
-        }
-        const res = await madConfirm(madGetString("MADCONF_CONF_IMPORT_CONFIRM"));
-        if (res) {
-            localStorage.madesktopConfigToImport = text;
+            await madIdb.setItem("configToImport", file);
+            parent.location.replace("../../confmgr.html?action=import");
+        } catch {
+            // Might be gzipped
+            // Just pass it to confmgr for further processing
+            await madIdb.setItem("configToImport", file);
             parent.location.replace("../../confmgr.html?action=import");
         }
-    } catch {
-        madAlert(madGetString("MADCONF_CONF_INVALID"), null, "error");
     }
 });
 
@@ -359,6 +332,81 @@ async function checkSysplug() {
         case 0:
             connectionStatus.locId = "MADCONF_CONNECTTEST_FAIL";
             break;
+    }
+}
+
+// Export the MAD config to a file
+// minimal: Exclude images (custom wallpapers and JSPaint image storage) from the export
+async function exportConfig(minimal = false) {
+    const madConfig = {};
+    let blob;
+    let large = false;
+
+    // Export MAD localStorage config
+    for (const key in localStorage) {
+        if (key.startsWith("madesktop") || key === "sysplugIntegration" ||
+            (key.startsWith('image#') && !minimal) || key.startsWith('jspaint '))
+        {
+            madConfig[key] = localStorage[key];
+        }
+    }
+    // Export MAD IndexedDB config
+    if (await madIdb.itemExists("bgImg") && !minimal) {
+        const base64 = await blobToBase64(await madIdb.bgImg);
+        madConfig["madesktopBgImg"] = base64;
+    }
+
+    // Handle large files, compress if > 1 MB
+    const json = JSON.stringify(madConfig);
+    blob = new Blob([json], { type: 'application/json' });
+    if (blob.size > 1024 * 1024 && !minimal) { // 1 MB
+        const cs = new CompressionStream("gzip");
+        const reader = blob.stream().pipeThrough(cs).getReader();
+        const chunks = [];
+
+        let result;
+        while (!(result = await reader.read()).done) {
+            chunks.push(result.value);
+        }
+        blob = new Blob(chunks, { type: 'application/gzip' });
+        large = true;
+    }
+
+    // Download or save the file
+    // If MAD is running in a browser, download the file
+    // Else, if the system plugin is available, save the file
+    // Otherwise, copy the JSON to the clipboard
+    // If the file is too large to copy to the clipboard,
+    // export the config again without images
+    const filename = "madesktop-config.json" + (large ? ".gz" : "");
+    if (madRunningMode === 0) {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = filename;
+        a.click();
+    } else {
+        try {
+            const res = await madSysPlug.saveFile(blob, {
+                "X-Format-Name": large ? "GZ Files" : "JSON Files",
+                "X-Format-Extension": large ? "gz" : "json",
+                "X-File-Name": filename
+            });
+            if (!res) {
+                if (large) {
+                    exportConfig(true);
+                } else {
+                    copyText(json);
+                    madAlert(madGetString(minimal ? "MADCONF_CONF_COPIED_MINIMAL" : "MADCONF_CONF_COPIED"));
+                }
+            }
+        } catch {
+            if (large) {
+                exportConfig(true);
+            } else {
+                copyText(json);
+                madAlert(madGetString(minimal ? "MADCONF_CONF_COPIED_MINIMAL" : "MADCONF_CONF_COPIED"));
+            }
+        }
     }
 }
 

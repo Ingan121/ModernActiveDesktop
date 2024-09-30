@@ -32,7 +32,6 @@
         const parentHeight = elem.parentElement.getBoundingClientRect().height;
         elem.parentElement.scrollBy(0, top - parentTop + height - parentHeight + 26);
     }
-
     
     // Convert rgb(red, green, blue) to #rrggbb
     function rgbToHex(rgbType) {
@@ -199,6 +198,16 @@
         return bytes.buffer;
     }
 
+    function blobToBase64(blob) {
+        return new Promise(resolve => {
+            const reader = new FileReader();
+            reader.onload = function() {
+                resolve(reader.result.split(',')[1]);
+            };
+            reader.readAsDataURL(blob);
+        });
+    }
+
     window.getTextWidth = getTextWidth;
     window.scrollIntoView = scrollIntoView;
     window.rgbToHex = rgbToHex;
@@ -213,4 +222,5 @@
     window.getCaller = getCaller;
     window.preventDefault = preventDefault;
     window.base64ToArrayBuffer = base64ToArrayBuffer;
+    window.blobToBase64 = blobToBase64;
 })();

@@ -15,39 +15,74 @@ const keys = Object.keys(localStorage);
 
 let urlAppend = "";
 
-switch (action) {
-    case 'reset':
-        reset();
-        break;
-    case 'import':
-        const json = localStorage.madesktopConfigToImport;
-        if (json) {
-            try {
-                const parsed = JSON.parse(json);
-                const confVer = parsed.madesktopLastVer;
-                if (confVer) {
-                    if (madVersion.compare(confVer, true) < 0) {
-                        urlAppend = "#cmfail_oldver";
-                        break;
+(async function () {
+    switch (action) {
+        case 'reset':
+            reset();
+            break;
+        case 'import':
+            const file = await madIdb.configToImport;
+            if (!file) {
+                break;
+            }
+            let json;
+            if (file.type === 'application/json') {
+                json = await file.text();
+            } else {
+                debugger;
+                // Decompress gzip
+                try {
+                    const ds = new DecompressionStream("gzip");
+                    const reader = file.stream().pipeThrough(ds).getReader();
+                    const decoder = new TextDecoder();
+                    const chunks = [];
+
+                    let result;
+                    while (!(result = await reader.read()).done) {
+                        chunks.push(decoder.decode(result.value));
                     }
-                } else {
+
+                    json = chunks.join('');
+                } catch {
                     urlAppend = "#cmfail_invconf";
                     break;
                 }
-                reset();
-                for (const key in parsed) {
-                    localStorage.setItem(key, parsed[key]);
+            }
+            if (json) {
+                try {
+                    const parsed = JSON.parse(json);
+                    const confVer = parsed.madesktopLastVer;
+                    if (confVer) {
+                        if (madVersion.compare(confVer, true) < 0) {
+                            urlAppend = "#cmfail_oldver";
+                            break;
+                        }
+                    } else {
+                        urlAppend = "#cmfail_invconf";
+                        break;
+                    }
+                    reset();
+                    for (const key in parsed) {
+                        localStorage.setItem(key, parsed[key]);
+                    }
+                    localStorage.madesktopLastVer = madVersion.toString();
+                } catch {
+                    urlAppend = "#cmfail_invconf";
                 }
-                localStorage.madesktopLastVer = madVersion.toString();
-            } catch {
+            } else {
                 urlAppend = "#cmfail_invconf";
             }
-        }
-        break;
-}
+            break;
+    }
 
-delete localStorage.madesktopConfigToImport;
-location.replace('index.html' + urlAppend);
+    console.log("Done");
+    // WPE somehow doesn't navigate to page if hash is provided without a question mark
+    // So we need to add a question mark if hash is provided and running in WPE
+    if (urlAppend && typeof wallpaperOnVideoEnded === "function") {
+        urlAppend = "?" + urlAppend;
+    }
+    //location.replace('index.html' + urlAppend);
+})();
 
 function reset() {
     for (const key of keys) {
@@ -60,4 +95,5 @@ function reset() {
             console.log("Not deleting " + key);
         }
     }
+    indexedDB.deleteDatabase('madesktop');
 }

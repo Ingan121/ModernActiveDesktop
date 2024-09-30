@@ -19,55 +19,59 @@
     // Use indexedDB for storing images and JSON
     window.madIdb = new Proxy({}, {
         get(target, prop) {
-            return new Promise((resolve, reject) => {
-                const db = indexedDB.open("mad", 1);
-                db.onupgradeneeded = function () {
-                    db.result.createObjectStore("config");
-                };
-                db.onsuccess = function () {
-                    const transaction = db.result.transaction("config", "readwrite");
-                    const store = transaction.objectStore("config");
-                    const request = store.get(prop);
-                    request.onsuccess = function () {
-                        resolve(request.result);
-                    };
-                    request.onerror = function () {
-                        reject(request.error);
-                    };
-                };
-                db.onerror = function () {
-                    reject(db.error);
-                };
-            });
+            // handle it like localStorage
+            switch (prop) {
+                case "getItem":
+                    return madIdbGetItem;
+                case "setItem":
+                    return madIdbSetItem;
+                case "deleteItem":
+                    return madIdbDeleteItem;
+                case "itemExists":
+                    return madIdbItemExists;
+                default:
+                    return new Promise(async (resolve, reject) => {
+                        resolve(await madIdbGetItem(prop));
+                    });
+            }
         },
-        // set is not implemented as its tricky to handle async operations (exceptions)
+        // Using madIdb's setter is not recommended
+        // as it's hard to handle async operations
+        // Use madIdb.setItem() instead
+        set(target, prop, value) {
+            return madIdbSetItem(prop, value);
+        },
         deleteProperty(target, prop) {
-            return new Promise((resolve, reject) => {
-                const db = indexedDB.open("mad", 1);
-                db.onupgradeneeded = function () {
-                    db.result.createObjectStore("config");
-                };
-                db.onsuccess = function () {
-                    const transaction = db.result.transaction("config", "readwrite");
-                    const store = transaction.objectStore("config");
-                    store.delete(prop);
-                    transaction.oncomplete = function () {
-                        resolve();
-                    };
-                    transaction.onerror = function () {
-                        reject(transaction.error);
-                    };
-                };
-                db.onerror = function () {
-                    reject(db.error);
-                };
-            });
+            return madIdbDeleteItem(prop);
         }
     });
 
-    async function setMadIdbValue(key, value) {
+    async function madIdbGetItem(key) {
         return new Promise((resolve, reject) => {
-            const db = indexedDB.open("mad", 1);
+            const db = indexedDB.open("madesktop", 1);
+            db.onupgradeneeded = function () {
+                db.result.createObjectStore("config");
+            };
+            db.onsuccess = function () {
+                const transaction = db.result.transaction("config", "readwrite");
+                const store = transaction.objectStore("config");
+                const request = store.get(key);
+                request.onsuccess = function () {
+                    resolve(request.result);
+                };
+                request.onerror = function () {
+                    reject(request.error);
+                };
+            };
+            db.onerror = function () {
+                reject(db.error);
+            };
+        });
+    }
+
+    async function madIdbSetItem(key, value) {
+        return new Promise((resolve, reject) => {
+            const db = indexedDB.open("madesktop", 1);
             db.onupgradeneeded = function () {
                 db.result.createObjectStore("config");
             };
@@ -80,6 +84,52 @@
                 };
                 transaction.onerror = function () {
                     reject(transaction.error);
+                };
+            };
+            db.onerror = function () {
+                reject(db.error);
+            };
+        });
+    }
+
+    async function madIdbDeleteItem(key) {
+        return new Promise((resolve, reject) => {
+            const db = indexedDB.open("madesktop", 1);
+            db.onupgradeneeded = function () {
+                db.result.createObjectStore("config");
+            };
+            db.onsuccess = function () {
+                const transaction = db.result.transaction("config", "readwrite");
+                const store = transaction.objectStore("config");
+                store.delete(key);
+                transaction.oncomplete = function () {
+                    resolve();
+                };
+                transaction.onerror = function () {
+                    reject(transaction.error);
+                };
+            };
+            db.onerror = function () {
+                reject(db.error);
+            };
+        });
+    }
+
+    async function madIdbItemExists(key) {
+        return new Promise((resolve, reject) => {
+            const db = indexedDB.open("madesktop", 1);
+            db.onupgradeneeded = function () {
+                db.result.createObjectStore("config");
+            };
+            db.onsuccess = function () {
+                const transaction = db.result.transaction("config", "readwrite");
+                const store = transaction.objectStore("config");
+                const request = store.getKey(key);
+                request.onsuccess = function () {
+                    resolve(request.result !== undefined);
+                };
+                request.onerror = function () {
+                    reject(request.error);
                 };
             };
             db.onerror = function () {
@@ -113,10 +163,12 @@
         changeSoundScheme(localStorage.madesktopSoundScheme || "98");
     }
 
-    function changeBgType(type) {
+    function changeBgType(type, loadBgImg = window.madMainWindow) {
         switch(type) {
             case 'image':
-                loadBgImgConf();
+                if (loadBgImg) {
+                    loadBgImgConf();
+                }
                 bgHtmlContainer.style.display = "none";
                 bgVideoView.style.display = "none";
                 bgVideoView.src = "";
@@ -136,6 +188,10 @@
                     bgHtmlView.src = localStorage.madesktopBgHtmlSrc;
                 }
                 break;
+        }
+        // MADConf Wallpaper preview page
+        if (!window.madMainWindow) {
+            window.bgType = type;
         }
     }
 
@@ -158,7 +214,8 @@
             } else { // Custom image set in madconf
                 document.body.style.backgroundImage = "url('data:image/png;base64," + localStorage.madesktopBgImg + "')";
                 // Migrate to indexedDB
-                await setMadIdbValue("bgImg", new Blob([base64ToArrayBuffer(localStorage.madesktopBgImg)], {type: 'image/png'}));
+                log("Migrating bgImg to indexedDB");
+                await madIdb.setItem("bgImg", new Blob([base64ToArrayBuffer(localStorage.madesktopBgImg)], {type: 'image/png'}));
                 delete localStorage.madesktopBgImg;
             }
         } else {
@@ -193,6 +250,10 @@
                 document.body.style.backgroundRepeat = "no-repeat";
                 document.body.style.backgroundPosition = "center center";
                 break;
+        }
+        // MADConf Wallpaper preview page
+        if (!window.madMainWindow) {
+            window.bgImgMode = value;
         }
     }
 
@@ -652,7 +713,6 @@
         }
     };
 
-    window.setMadIdbValue = setMadIdbValue;
     window.loadConfigs = loadConfigs;
     window.changeBgType = changeBgType;
     window.changeBgColor = changeBgColor;

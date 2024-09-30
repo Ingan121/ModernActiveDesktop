@@ -421,6 +421,7 @@
 
         "MADCONF_PROMPT_ENTER_SCALE": "Enter scale (%) :",
         "MADCONF_CONF_COPIED": "Configuration copied to clipboard! Paste it to a text file and save it to import it later.",
+        "MADCONF_CONF_COPIED_MINIMAL": "Configuration copied to clipboard, but since it was too large, image data was not included. Please set up the system plugin and export the configuration again to export the full configuration. Paste the configuration to a text file and save it to import it later.",
         "MADCONF_NEWER_CONF_MSG": "This configuration file is for a newer version of %n. Please update %n to import this configuration.",
         "MADCONF_CONF_INVALID": "Invalid configuration file!",
         "MADCONF_CONF_IMPORT_CONFIRM": "Importing this configuration will overwrite your current configuration. Are you sure you want to continue?",
