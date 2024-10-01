@@ -61,9 +61,13 @@ let urlAppend = "";
                         urlAppend = "#cmfail_invconf";
                         break;
                     }
-                    reset();
+                    reset(true);
                     for (const key in parsed) {
-                        localStorage.setItem(key, parsed[key]);
+                        if (key === "madesktopBgImg") {
+                            await madIdb.setItem("bgImg", new Blob([base64ToArrayBuffer(parsed[key])], { type: "image/png" }));
+                        } else {
+                            localStorage.setItem(key, parsed[key]);
+                        }
                     }
                     localStorage.madesktopLastVer = madVersion.toString();
                 } catch {
@@ -81,10 +85,10 @@ let urlAppend = "";
     if (urlAppend && typeof wallpaperOnVideoEnded === "function") {
         urlAppend = "?" + urlAppend;
     }
-    //location.replace('index.html' + urlAppend);
+    location.replace('index.html' + urlAppend);
 })();
 
-function reset() {
+function reset(softIdbReset = false) {
     for (const key of keys) {
         if (key.startsWith('madesktop') || key === 'sysplugIntegration' ||
             key.startsWith('image#') || key.startsWith('jspaint '))
@@ -95,5 +99,11 @@ function reset() {
             console.log("Not deleting " + key);
         }
     }
-    indexedDB.deleteDatabase('madesktop');
+    if (softIdbReset) {
+        delete madIdb.bgImg;
+        delete madIdb.configToImport;
+    } else {
+        // This causes further IDB operations to take a long time
+        indexedDB.deleteDatabase('madesktop');
+    }
 }

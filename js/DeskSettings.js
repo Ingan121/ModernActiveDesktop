@@ -30,9 +30,7 @@
                 case "itemExists":
                     return madIdbItemExists;
                 default:
-                    return new Promise(async (resolve, reject) => {
-                        resolve(await madIdbGetItem(prop));
-                    });
+                    return madIdbGetItem(prop);
             }
         },
         // Using madIdb's setter is not recommended
