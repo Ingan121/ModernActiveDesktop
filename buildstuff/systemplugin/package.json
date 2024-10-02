@@ -7,7 +7,7 @@
     "start": "electron .",
     "build": "electron-builder --win --x64"
   },
-  "homepage": "https://www.ingan121.com/mad/",
+  "homepage": "https://madesktop.ingan121.com/",
   "repository": {
     "type": "git",
     "url": "https://github.com/Ingan121/ModernActiveDesktop.git",

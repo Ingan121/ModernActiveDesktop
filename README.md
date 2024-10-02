@@ -10,7 +10,7 @@
 [Old Screenshot (circa 2.3)](docs/images/screenshot.png)
 <br><br>
 * [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2278898637)
-* [Try in your browser](https://www.ingan121.com/mad/)
+* [Try in your browser](https://madesktop.ingan121.com/)
 
 ## Included Apps
 |Icon|Name|Description|Links|
