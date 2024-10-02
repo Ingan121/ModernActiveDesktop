@@ -44,6 +44,7 @@
 * More themes to add
     * Windows 3.x
         * I think it would be pretty easy, just give it flat title bars and buttons with border-radius
+    * More XP Visual Styles
     * Windows Vista/7 Basic
     * Windows 8
         * Maybe just modifying the Aero theme a bit would work
@@ -51,8 +52,6 @@
     * Windows 10/11?
     * Mac OS 7?
     * Also if I implement the Win3 theme, I should make a separate visual style selector in the appearance control panel, like the one in XP
-* Split the main scripts into multiple JS files
-    * Current main JS structure (DeskMover + DeskSettings) hasn't really changed since 1.0 lol
 * Support multi-display background wallpaper configuration?
 
 ## Notes
