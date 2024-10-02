@@ -744,12 +744,10 @@
         // Only for the main MAD page
         window.changeLanguage = (newLang) => {
             if (!supportedLanguages.includes(newLang)) {
-                if (newLang.length === 2) {
-                    for (const supportedLang of supportedLanguages) {
-                        if (newLang.slice(0, 2) === supportedLang.slice(0, 2)) {
-                            newLang = supportedLang;
-                            break;
-                        }
+                for (const supportedLang of supportedLanguages) {
+                    if (newLang.slice(0, 2) === supportedLang.slice(0, 2)) {
+                        newLang = supportedLang;
+                        break;
                     }
                 }
                 if (!supportedLanguages.includes(newLang)) {
