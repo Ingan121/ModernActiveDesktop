@@ -107,7 +107,7 @@ function wallpaperAudioListener(audioArray) {
             lastBar[i] -= visConfig.decSpeed;
             const diff = audioArray[i] - lastAud[i];
             if (diff > 0.1) {
-                lastBar[i] += Math.round(visBar.height * diff * visConfig.diffScale);
+                lastBar[i] += Math.round(360 * diff * visConfig.diffScale);
                 if (lastBar[i] > visBar.height) {
                     lastBar[i] = visBar.height;
                 }

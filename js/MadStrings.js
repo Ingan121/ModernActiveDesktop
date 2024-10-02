@@ -11,7 +11,7 @@
     const author = "Ingan121";
     const channelViewer = "ChannelViewer";
 
-    // Default English strings
+    // Default English strings (en-US)
     const fallbackStrings = {
         // Stylesheet to inject
         "STYLESHEET": "",
@@ -716,10 +716,9 @@
     }
     window.madStrings = top.madStrings || fallbackStrings;
 
-    const supportedLanguages = ["en", "ko"];
+    const supportedLanguages = ["en-US", "ko-KR"];
 
     let lang = top.madLang || localStorage.madesktopLang || navigator.language || navigator.userLanguage;
-    lang = lang.split("-")[0];
     window.madLang = lang;
 
     const localizableElements = [];
@@ -728,46 +727,66 @@
     const langStyleElement = document.getElementById("langStyle");
 
     if (!supportedLanguages.includes(lang)) {
-        lang = "en";
+        if (lang.length === 2) {
+            for (const supportedLang of supportedLanguages) {
+                if (lang.slice(0, 2) === supportedLang.slice(0, 2)) {
+                    lang = supportedLang;
+                    break;
+                }
+            }
+        }
+        if (!supportedLanguages.includes(lang)) {
+            lang = "en-US";
+        }
     }
 
     if (top === window) {
         // Only for the main MAD page
         window.changeLanguage = (newLang) => {
-            if (supportedLanguages.includes(newLang)) {
-                lang = newLang;
-                window.madLang = lang;
-                if (lang !== "en") {
-                    let url = `lang/${lang}.json`;
-                    if (!window.madMainWindow) {
-                        url = `../../${url}`;
+            if (!supportedLanguages.includes(newLang)) {
+                if (newLang.length === 2) {
+                    for (const supportedLang of supportedLanguages) {
+                        if (newLang.slice(0, 2) === supportedLang.slice(0, 2)) {
+                            newLang = supportedLang;
+                            break;
+                        }
                     }
-                    fetch(url)
-                        .then(response => response.json())
-                        .then(json => {
-                            window.madStrings = Object.assign({}, fallbackStrings, json);
-                            readyAll();
-                            if (window.announce) {
-                                announce("language-ready");
-                            }
-                        })
-                        .catch(err => {
-                            console.error(`Failed to load language file for ${lang}. Using English strings instead.`);
-                            readyAll();
-                            if (window.announce) {
-                                announce("language-ready");
-                            }
-                        });
-                } else {
-                    window.madStrings = fallbackStrings;
-                    readyAll();
-                    announce("language-ready");
                 }
+                if (!supportedLanguages.includes(newLang)) {
+                    throw new Error(`Language ${newLang} is not supported`);
+                }
+            }
+            lang = newLang;
+            window.madLang = lang;
+            if (lang !== "en-US") {
+                let url = `lang/${lang}.json`;
+                if (!window.madMainWindow) {
+                    url = `../../${url}`;
+                }
+                fetch(url)
+                    .then(response => response.json())
+                    .then(json => {
+                        window.madStrings = Object.assign({}, fallbackStrings, json);
+                        readyAll();
+                        if (window.announce) {
+                            announce("language-ready");
+                        }
+                    })
+                    .catch(err => {
+                        console.error(`Failed to load language file for ${lang}. Using English strings instead.`);
+                        readyAll();
+                        if (window.announce) {
+                            announce("language-ready");
+                        }
+                    });
             } else {
-                throw new Error(`Language ${newLang} is not supported`);
+                window.madStrings = fallbackStrings;
+                readyAll();
+                announce("language-ready");
             }
         }
-        if (lang !== "en") {
+
+        if (lang !== "en-US") {
             changeLanguage(lang);
         }
     } else {
