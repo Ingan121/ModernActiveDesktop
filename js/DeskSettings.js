@@ -6,6 +6,8 @@
 'use strict';
 
 // This script handles configuration and settings of ModernActiveDesktop
+// Dependencies (full): functions.js, MadSysPlug.js, patterns.js, debugging.js, main.js
+// Dependencies vary depending on the features used
 
 (function () {
     const bgHtmlContainer = document.getElementById("bgHtmlContainer");
@@ -643,7 +645,6 @@
                         localStorage.madesktopBgType = "image";
                         changeBgType("image");
                     }
-                    log(isStartup)
                 } else {
                     if (localStorage.madesktopBgWeImg === localStorage.madesktopBgImg) {
                         document.body.style.backgroundImage = 'none';

@@ -77,7 +77,7 @@ for (let i = 0; i < checkboxes.length; i++) {
 }
 
 document.addEventListener("pointerup", function () {
-    dragging = false;
+    dragging = 0;
 });
 
 patternChooser.addEventListener("change", function () {

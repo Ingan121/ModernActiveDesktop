@@ -154,6 +154,8 @@
         <a href="javascript:deactivateDebugMode();" draggable="false"><mad-string data-locid="MAD_DEBUG_DEACTIVATE">Deactivate debug mode</mad-string></a>
     </div>
     <script>
+        window.loadStartTime = performance.now();
+
         var errorLog = document.getElementById("errorLog");
         var errorCnt = document.getElementById("errorCnt");
 

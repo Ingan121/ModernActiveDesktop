@@ -5,6 +5,17 @@
 
 'use strict';
 
+// This script is a collection of functions that are used by the built-in
+//   apps of ModernActiveDesktop that are run in the iframe of DeskMovers.
+// This script implements the following:
+//  - MAD APIs for easier access of the MAD and DeskMover functions.
+//  - Custom dropdown element for more design flexibility.
+//  - JS Paint systemHooks for setting wallpaper.
+//  - Apply the main theme and styles to the iframe.
+// This script also provides a fallback for non-MAD environments or in
+//   cross-origin restricted mode so that the apps can still run to some extent.
+// Dependencies: functions.js (required by the custom dropdown and theme functions)
+
 (function () {
     if (!frameElement) {
         // minimal MAD APIs fallback for non-MAD environments (or in cross-origin restricted mode)

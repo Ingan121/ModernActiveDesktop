@@ -23,7 +23,7 @@ if (localStorage.madesktopBgColor) {
     document.documentElement.style.backgroundColor = localStorage.madesktopBgColor;
 }
 if (localStorage.madesktopBgPattern) {
-    document.documentElement.style.backgroundImage = `url('${genPatternImage(base64ToPattern(localStorage.madesktopBgPattern))}')`;
+    document.documentElement.style.backgroundImage = `url('${genPatternImage(base64ToPattern(localStorage.madesktopBgPattern), top.document.documentElement)}')`;
 }
 document.getElementById("scheme").href = parent.parent.document.getElementById("scheme").href;
 

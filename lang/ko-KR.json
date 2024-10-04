@@ -344,6 +344,7 @@
     "MADCONF_CONFIG_RESET": "설정 초기화",
 
     "MADCONF_LANG_TITLE": "언어",
+    "MADCONF_LANG_CONTRIBUTE": "번역 참여",
 
     "MADCONF_CONNECTTEST_CHECKING": "시스템 플러그인 연결 확인 중...",
     "MADCONF_CONNECTTEST_SUCCESS": "시스템 플러그인 연결 성공!",

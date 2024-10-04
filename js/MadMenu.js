@@ -5,7 +5,16 @@
 
 'use strict';
 
+// This script handles the menu bar and context menus in ModernActiveDesktop apps
+// Dependencies: functions.js (getTextWidth)
+// Load libmad.css for the default styles
+
 class MadMenu {
+    // menuBar: The menu bar element
+    // menuOrder: An array of menu names in the order they appear in the menu bar
+    // submenus: An array of submenu names
+    // simpleMenus: An array of other context menus that are not part of the menu bar
+    // menu names are defined by the id of the menu button, the menu background, and the menu element (e.g. "fileMenuBtn", "fileMenuBg", and "fileMenu")
     constructor(menuBar, menuOrder, submenus = [], simpleMenus = []) {
         this.menuBar = menuBar;
         this.menuOrder = menuOrder;

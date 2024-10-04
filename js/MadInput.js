@@ -5,6 +5,10 @@
 
 'use strict';
 
+// This script is for handling keyboard input in Wallpaper Engine (window.kbdSupport !== 1)
+//   using the MAD System Plugin integration (handled in MadSysPlug.js, also see buildstuff/systemplugin/src/inputpanel.js)
+//   or the input box in the WPE properties panel (handled in DeskSettings.js WPE settings listener)
+
 document.addEventListener('madinput', async (event) => {
     const textbox = document.activeElement;
     if (textbox.tagName !== "INPUT" && textbox.tagName !== "TEXTAREA") {

@@ -89,6 +89,7 @@
         // Running MAD inside MAD will cause unexpected behavior
         throw new Error("Refusing to load inside an iframe");
     }
+    logTimed(`ModernActiveDesktop ${madVersion.toString(0)} load started`);
 
     // Data migration from www.ingan121.com to madesktop.ingan121.com
     if (location.href.startsWith("https://madesktop.ingan121.com/") && !localStorage.madesktopMigrationProgress) {
@@ -415,7 +416,6 @@
 
     // #region Functions
     // #region Global API functions (Exposed to DeskMovers by libmad.js)
-    // @unexported
     // Create a new window and initialize it
     function createNewDeskItem(numStr, openDoc, temp, options) {
         const newContainer = windowContainerBase.cloneNode(true);
@@ -445,7 +445,7 @@
                 noIcon
             };
         }
-        let deskMover = createNewDeskItem(localStorage.madesktopItemCount, openDoc, temp, options);
+        const deskMover = createNewDeskItem(localStorage.madesktopItemCount, openDoc, temp, options);
         activateWindow(localStorage.madesktopItemCount);
         localStorage.madesktopItemCount++;
         return deskMover;
@@ -958,21 +958,21 @@
                     madSysPlug.focusInput();
                 }
             }
-            function ok() {
-                removeEvents();
+            async function ok() {
+                await removeEvents();
                 if (callback) callback(msgboxInput.value);
                 resolve(msgboxInput.value);
             }
-            function close() {
-                removeEvents();
+            async function close() {
+                await removeEvents();
                 if (callback) callback(null);
                 resolve(null);
             }
-            function removeEvents() {
+            async function removeEvents() {
                 hideDialog();
                 document.removeEventListener('keypress', keypress);
                 document.removeEventListener('keyup', keyup);
-                madSysPlug.endInput();
+                await madSysPlug.endInput();
                 msgboxInput.removeEventListener('click', focus);
                 msgboxBtn1.removeEventListener('click', ok);
                 msgboxBtn2.removeEventListener('click', close);
@@ -1209,6 +1209,7 @@
     }
 
     // #region Late function exports
+    window.createNewDeskItem = createNewDeskItem;
     window.openWindow = openWindow;
     window.openConfig = openConfig;
     window.openExternal = openExternal;
@@ -1280,6 +1281,7 @@
                 }
             }, 1000);
         }
+        logTimed("ModernActiveDesktop load complete");
     });
 
     switch (location.hash) {
@@ -1305,5 +1307,7 @@
     setTimeout(function () {
         delete localStorage.madesktopFailCount;
     }, 10000);
+
+    logTimed("ModernActiveDesktop initialization complete");
     // #endregion
 })();

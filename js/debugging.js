@@ -5,6 +5,10 @@
 
 'use strict';
 
+// This script handles debugging features for ModernActiveDesktop
+// Such as the debug menu and logging
+// Error handling is done by the inline script in html
+
 (function () {
     const errorWnd = document.getElementById("errorWnd");
     const locationLabel = document.getElementById("location");
@@ -21,11 +25,21 @@
             if (!caller) {
                 caller = getCaller();
             }
-            if (typeof str === "object") {
-                str = JSON.stringify(str);
+            switch (typeof str) {
+                case "object":
+                    str = JSON.stringify(str);
+                    break;
+                case "string":
+                    str = madProcessString(str.toString(), Array.from(arguments).slice(3));
+                    break;
             }
-            console[level || 'log'](caller + ": " + str);
+            console[level || 'log'](`${caller}: ${str}`);
         }
+    }
+
+    function logTimed(str) {
+        const time = performance.now() - window.loadStartTime;
+        console.log(`[${time.toFixed(6)}ms] ${str}`);
     }
 
     // @unexported
@@ -123,6 +137,7 @@
     }
 
     window.log = log;
+    window.logTimed = logTimed;
     window.activateDebugMode = activateDebugMode;
     window.deactivateDebugMode = deactivateDebugMode;
     window.showDebugInfo = showDebugInfo;

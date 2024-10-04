@@ -6,13 +6,13 @@
 'use strict';
 
 (function () {
-    // Generate pattern image from pattern
+    // Generate 8x8 pattern image from pattern
     /* pattern: [
         [first row],
         [second row],
         ...
         [eighth row],
-        1: black, 0: transparent
+        1: black (WindowText), 0: transparent
     ] */
     function genPatternImage(pattern, colorRetrievingTarget = document.documentElement) {
         const canvas = genPatternImage.canvas || (genPatternImage.canvas = document.createElement("canvas"));

@@ -303,8 +303,14 @@ importBtn.addEventListener('click', async function () {
     }
 });
 
-langSelector.addEventListener('change', function () {
-    config.lang = this.value;
+langSelector.addEventListener('change', async function () {
+    if (this.value === 'translate') {
+        madOpenWindow('Translating.md', true);
+        await asyncTimeout(100);
+        this.value = config.lang;
+    } else {
+        config.lang = this.value;
+    }
 });
 
 resetBtn.addEventListener('click', async function () {

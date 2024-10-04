@@ -5,6 +5,8 @@
 
 'use strict';
 
+// This class is used to handle version numbers in MAD
+
 class MadVersion {
     constructor(ver) {
         const split = ver.split(" ");
