@@ -1,11 +1,11 @@
 # Translating ModernActiveDesktop
 Thank you for your interest in translating ModernActiveDesktop! This guide will help you get started with the translation process.
 
-<div class="mad-only" style="display: none">
-* Start by <a href="https://github.com/Ingan121/ModernActiveDesktop/blob/master/docs/Translating.md" target="_blank">opening this page in a web browser</a>!<br>
-* Also open this project in Explorer. <a href="javascript:madOpenWindow('SysplugSetupGuide.md', true)">Open this guide</a> and follow instructions 1-3.<br>
+<!--mad-only>
+* Start by <a href="https://github.com/Ingan121/ModernActiveDesktop/blob/master/docs/Translating.md" target="_blank">opening this page in a web browser</a>!
+* Also open this project in Explorer. <a href="javascript:madOpenWindow('SysplugSetupGuide.md', true)">Open this guide</a> and follow instructions 1-3.
 * If you are using ModernActiveDesktop in a browser, clone the repository to your computer instead.
-</div>
+</mad-only-->
 
 ## Project Structure
 
