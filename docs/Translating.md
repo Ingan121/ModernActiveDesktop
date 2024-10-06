@@ -13,7 +13,7 @@ The localization files are located in the `lang/` directory. Each language is re
 
 ## Adding a New Language
 
-1. **Create a New JSON File**: Create a new JSON file in the `lang/` folder with the appropriate language code (e.g., `fr-FR.json` for French).
+1. **Create a New JSON File**: Create a new JSON file in the `lang/` folder with the appropriate language code (e.g., `fr-FR.json` for French). The language code should be identical to `navigator.language` in the browser.
 
 2. **Copy the Base Language File**: Copy the contents of the `en-US.json` file into your new language file. This will serve as the base for your translations.
 

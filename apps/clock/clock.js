@@ -210,9 +210,7 @@ function updateSize() {
 
 function updateClockOpts() {
     timeOptions = {};
-    if (localStorage.madesktopClock24H) {
-        timeOptions.hour12 = false;
-    }
+    timeOptions.hour12 = !localStorage.madesktopClock24H;
     if (localStorage.madesktopClockHideSeconds) {
         timeOptions.timeStyle = 'short';
     } else {

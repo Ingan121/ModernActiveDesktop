@@ -19,7 +19,7 @@
     const mainMenuBg = document.getElementById("mainMenuBg");
 
     // Use indexedDB for storing images and JSON
-    window.madIdb = new Proxy({}, {
+    window.madIdb = window.madIdb || top.madIdb || new Proxy({}, {
         get(target, prop) {
             // handle it like localStorage
             switch (prop) {
