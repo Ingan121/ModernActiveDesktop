@@ -11,7 +11,6 @@
     const author = "Ingan121";
     const channelViewer = "ChannelViewer";
 
-    // Default English strings (en-US)
     window.madStrings = top.madStrings || {};
     const fallbackStrings = {}; // TODO: implement fallback again
 
@@ -62,12 +61,7 @@
                 url = `../../${url}`;
             }
             try {
-                const response = await fetch(url);
-                const text = await response.text();
-                if (localStorage.madesktopDebugLangLoadDelay && window.asyncTimeout) {
-                    await window.asyncTimeout(parseInt(localStorage.madesktopDebugLangLoadDelay));
-                }
-                window.madStrings = JSON.parse(stripComments(text));
+                window.madStrings = await loadLanguageFile(url);
                 readyAll();
                 if (window.announce) {
                     announce("language-ready");
@@ -102,6 +96,15 @@
                 languageReady = true;
             }
         });
+    }
+
+    async function loadLanguageFile(url) {
+        const response = await fetch(url);
+        const text = await response.text();
+        if (localStorage.madesktopDebugLangLoadDelay && window.asyncTimeout) {
+            await window.asyncTimeout(parseInt(localStorage.madesktopDebugLangLoadDelay));
+        }
+        return JSON.parse(stripComments(text));
     }
 
     function stripComments(str) {
