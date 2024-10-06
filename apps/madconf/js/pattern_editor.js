@@ -135,8 +135,9 @@ addBtn.addEventListener("click", async function () {
 changeBtn.addEventListener("click", function () {
     const selectedOption = patternChooser.options[patternChooser.selectedIndex];
     let patternName = selectedOption.textContent;
-    if (patternName.startsWith("locid:")) {
-        patternName = 'locid:' + selectedOption.querySelector("mad-string")?.getAttribute("data-locid");
+    const patternNameLocElem = selectedOption.querySelector("mad-string");
+    if (patternNameLocElem) {
+        patternName = 'locid:' + patternNameLocElem.getAttribute("data-locid");
     }
     userPatterns[patternName] = base64Output.textContent;
     localStorage.madesktopUserPatterns = JSON.stringify(userPatterns);
@@ -149,7 +150,11 @@ changeBtn.addEventListener("click", function () {
 removeBtn.addEventListener("click", async function () {
     if (await madConfirm(madGetString("MADCONF_CONFIRM_PATTERN_REMOVE", patternChooser.options[patternChooser.selectedIndex].textContent))) {
         const selectedOption = patternChooser.options[patternChooser.selectedIndex];
-        const patternName = 'locid:' + selectedOption.querySelector("mad-string")?.getAttribute("data-locid") || selectedOption.textContent;
+        let patternName = selectedOption.textContent;
+        const patternNameLocElem = selectedOption.querySelector("mad-string");
+        if (patternNameLocElem) {
+            patternName = 'locid:' + patternNameLocElem.getAttribute("data-locid");
+        }
         delete userPatterns[patternName];
         localStorage.madesktopUserPatterns = JSON.stringify(userPatterns);
         patternChooser.options[patternChooser.selectedIndex].remove();

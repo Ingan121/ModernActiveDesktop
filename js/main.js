@@ -417,10 +417,10 @@
     // #region Functions
     // #region Global API functions (Exposed to DeskMovers by libmad.js)
     // Create a new window and initialize it
-    function createNewDeskItem(numStr, openDoc, temp, options) {
+    function createNewDeskItem(numStr, openDoc, temp, options, isResetting) {
         const newContainer = windowContainerBase.cloneNode(true);
         document.body.appendChild(newContainer);
-        const deskMover = new DeskMover(newContainer, numStr, openDoc, temp, options);
+        const deskMover = new DeskMover(newContainer, numStr, openDoc, temp, options, isResetting);
         deskMovers[numStr] = deskMover;
         return deskMover;
     }

@@ -91,6 +91,9 @@ class MadMenu {
             });
 
             menuBg.addEventListener('focusout', (event) => {
+                if (top.ignoreFocusLoss) {
+                    return;
+                }
                 if (event.relatedTarget && event.relatedTarget.dataset.submenuOf === menuName) {
                     return;
                 }
@@ -171,6 +174,9 @@ class MadMenu {
             });
 
             menuBg.addEventListener('focusout', (event) => {
+                if (top.ignoreFocusLoss) {
+                    return;
+                }
                 if (menuBg.style.display === 'none') {
                     return;
                 }
@@ -194,6 +200,9 @@ class MadMenu {
         for (const simpleMenu of simpleMenus) {
             const simpleMenuBg = document.getElementById(simpleMenu + 'MenuBg');
             simpleMenuBg.addEventListener('focusout', () => {
+                if (top.ignoreFocusLoss) {
+                    return;
+                }
                 this.closeMenu(simpleMenu);
             });
         }

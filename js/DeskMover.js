@@ -31,8 +31,10 @@
         // numStr: The number of the window, used for saving and loading configs
         // temp: Whether the window is temporary, will not save configs and will be destroyed on next load
         // src: The URL of the window, will be opened with docs viewer if the string does not end with .html
+        // options: The options object specified above
+        // isResetting: Whether the window is being reset, currently only for disabling animations
 
-        constructor(windowContainer, numStr, src, temp, options = {}) {
+        constructor(windowContainer, numStr, src, temp, options = {}, isResetting) {
             this.numStr = numStr;
             this.temp = temp;
 
@@ -392,7 +394,7 @@
                     this.changeWndStyle(style || "wnd");
 
                     const winOpenAnim = getComputedStyle(this.windowContainer).getPropertyValue('--win-open-anim');
-                    if (winOpenAnim && !localStorage.madesktopNoWinAnim && this.config.style === "wnd") {
+                    if (winOpenAnim && !localStorage.madesktopNoWinAnim && this.config.style === "wnd" && !isResetting) {
                         this.windowContainer.style.animation = `0.22s ${winOpenAnim} linear`;
                         this.windowContainer.addEventListener("animationend", () => {
                             this.windowContainer.style.animation = "";
@@ -470,7 +472,7 @@
                 this.exitFullscreen();
             }
             const winCloseAnim = getComputedStyle(this.windowContainer).getPropertyValue('--win-close-anim');
-            if (winCloseAnim && !localStorage.madesktopNoWinAnim && this.config.style === "wnd") {
+            if (winCloseAnim && !localStorage.madesktopNoWinAnim && this.config.style === "wnd" && isResetting !== true) {
                 this.windowContainer.style.animation = `0.2s ${winCloseAnim} linear`;
                 await waitForAnim(this.windowContainer);
             }
@@ -481,7 +483,7 @@
                 this.windowContainer.innerHTML = "";
                 if (!this.temp) {
                     this.#clearConfig();
-                    if (!isResetting) {
+                    if (isResetting !== true) {
                         const openWindows = localStorage.madesktopOpenWindows.split(',');
                         openWindows.splice(openWindows.indexOf(this.numStr), 1);
                         localStorage.madesktopOpenWindows = openWindows;
@@ -504,6 +506,7 @@
             } else {
                 this.#clearConfig();
                 this.windowContainer.style.display = 'none';
+                this.windowContainer.style.animation = '';
                 localStorage.madesktopItemVisible = false;
             }
         }
@@ -609,7 +612,12 @@
             event.preventDefault();
         }
 
-        closeContextMenu() {
+        closeContextMenu(event) {
+            if (event?.type === "focusout" && window.ignoreFocusLoss) {
+                // Debug feature; set window.ignoreMenuFocusLoss to true to prevent closing the menu on focusout
+                return;
+            }
+            // Handle window icon double click
             if (window.isContextMenuOpen && this.contextMenuOpening) {
                 if (this.contextMenuOpening === this.posInContainer && this.config.style === "wnd")
                 {
@@ -930,7 +938,11 @@
             this.dropdownBg.focus();
         }
 
-        closeDropdown() {
+        closeDropdown(event) {
+            if (event?.type === "focusout" && window.ignoreFocusLoss) {
+                // Debug feature; set window.ignoreFocusLoss to true to prevent closing the dropdown on focusout
+                return;
+            }
             this.dropdownBg.style.display = "none";
             delete this.lastDropdown.dataset.open;
             iframeClickEventCtrl(true);
@@ -1490,15 +1502,11 @@
             }
             madConfirm(madGetString("MAD_CONFIRM_WIN_RESET"), res => {
                 if (res) {
-                    this.#clearConfig();
-                    if (this.isVisualizer) {
-                        window.visDeskMover = null;
-                    }
                     if (this.numStr) {
                         // Keep the window number when resetting DeskMovers
                         // Not much reason to keep it tho
                         this.closeWindow(true);
-                        deskMovers[this.numStr || 0] = createNewDeskItem(this.numStr);
+                        deskMovers[this.numStr || 0] = createNewDeskItem(this.numStr, undefined, false, undefined, true);
                         activateWindow(this.numStr || 0);
                     } else {
                         // Don't keep the window number for DeskMover 0

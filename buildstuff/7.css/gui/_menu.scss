@@ -362,7 +362,7 @@ body:not(#madChanView) .menu, .menus {
     background: var(--item-hover-background);
     border-color: #b8d6fb;
     box-shadow: none !important;
-    color: initial !important;
+    color: #000 !important;
   }
 
   &.disabled {
