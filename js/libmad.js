@@ -274,6 +274,12 @@
     }
 
     if (styleElement) {
+        new MutationObserver((mutations) => {
+            styleElement.textContent = parentStyleElement.textContent;
+        }).observe(
+            parentStyleElement,
+            { characterData: false, attributes: false, childList: true, subtree: false }
+        );
         window.addEventListener("load", processTheme);
     }
 

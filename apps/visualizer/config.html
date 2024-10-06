@@ -54,6 +54,22 @@
             <label for="albumArtChkBox"><mad-string data-locid="VISCONF_ALBUM_ART_SHOW">Show album art</mad-string></label><br>
             <input id="dimAlbumArtChkBox" type="checkbox" name="albumArt" disabled>
             <label for="dimAlbumArtChkBox"><mad-string data-locid="VISCONF_ALBUM_ART_DIM">Dim album art</mad-string></label>
+            <div id="albumArtSizeArea">
+                <span id="albumArtSizeLabel"><mad-string data-locid="VISCONF_ALBUM_ART_SIZE">Album art size</mad-string>:</span>
+                <mad-select id="albumArtSizeSelector">
+                    <option value="3">Windows 3.x</option>
+                    <option value="95">Windows 95</option>
+                    <option value="nt4">Windows NT 4.0</option>
+                    <option value="98" selected>Windows 98</option>
+                    <option value="2k">Windows 2000 / Me</option>
+                    <option value="xp">Windows XP</option>
+                    <option value="vista">Windows Vista</option>
+                    <option value="7">Windows 7</option>
+                    <option value="8">Windows 8</option>
+                    <option value="10">Windows 10</option>
+                    <option value="11">Windows 11</option>
+                </mad-select>
+            </div>
         </fieldset>
         <fieldset>
             <legend><mad-string data-locid="VISCONF_CHAN_SEP_TITLE">Channel separation</mad-string></legend>

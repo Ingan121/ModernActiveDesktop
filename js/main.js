@@ -652,7 +652,7 @@
             deskMovers[num].closeWindow();
         }
 
-        if (num) {
+        if (typeof num !== "undefined") {
             // Listen for title changes
             new MutationObserver(function (mutations) {
                 if (!deskMovers[num].config.title) {

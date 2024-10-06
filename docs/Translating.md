@@ -31,6 +31,8 @@ The localization files are located in the `lang/` directory. Each language is re
         <option value="en-US">English</option>
         <option value="ko-KR">한국어</option>
         <option value="fr-FR">Français</option>
+        <!-- keep this one at the bottom -->
+        <option value="translate"><mad-string data-locid="MADCONF_LANG_CONTRIBUTE">Help translate!</mad-string></option>
     </mad-select>
     ```
 

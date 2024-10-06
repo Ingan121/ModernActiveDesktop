@@ -646,7 +646,7 @@
                         changeBgType("image");
                     }
                 } else {
-                    if (localStorage.madesktopBgWeImg === localStorage.madesktopBgImg) {
+                    if (localStorage.madesktopBgWeImg === localStorage.madesktopBgImg && localStorage.madesktopBgWeImg !== undefined) {
                         document.body.style.backgroundImage = 'none';
                         delete localStorage.madesktopBgImg;
                     }

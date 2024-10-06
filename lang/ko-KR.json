@@ -248,6 +248,11 @@
     "MADCONF_SCHEME_PLUS_THE_GOLDEN_ERA": "산업 혁명",
     "MADCONF_SCHEME_PLUS_TRAVEL": "여행",
     "MADCONF_SCHEME_PLUS_UNDERWATER": "해저 여행",
+    // PLUS! 98 didn't release in Korea
+    "MADCONF_SCHEME_PLUS_98_CITYSCAPE": "Cityscape",
+    "MADCONF_SCHEME_PLUS_98_GEOMETRY": "Geometry",
+    "MADCONF_SCHEME_PLUS_98_PHOTODISC": "PhotoDisc",
+    "MADCONF_SCHEME_PLUS_98_ROCK-N-ROLL": "Rock-n-Roll",
     "MADCONF_SCHEME_HC_1": "고대비 #1",
     "MADCONF_SCHEME_HC_2": "고대비 #2",
     "MADCONF_SCHEME_HC_BLACK": "고대비 검정",

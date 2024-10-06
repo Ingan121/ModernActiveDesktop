@@ -72,6 +72,19 @@ label[for="dimAlbumArtChkBox"] {
     margin-top: 3px;
 }
 
+#albumArtSizeArea {
+    margin-left: 20px;
+}
+
+#albumArtSizeLabel {
+    position: relative;
+    top: -6px;
+}
+
+#albumArtSizeSelector {
+    width: 130px;
+}
+
 #visConfArea {
     width: 100%;
     display: grid;

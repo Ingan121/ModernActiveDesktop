@@ -13,6 +13,7 @@
 
     // Default English strings (en-US)
     window.madStrings = top.madStrings || {};
+    const fallbackStrings = {}; // TODO: implement fallback again
 
     const supportedLanguages = ["en-US", "ko-KR"];
 
@@ -24,7 +25,7 @@
     const titleLocId = titleElem.dataset.locid;
     const langStyleElement = document.getElementById("langStyle");
 
-    let languageReady = false;
+    let languageReady = Object.keys(window.madStrings).length !== 0;
 
     if (!supportedLanguages.includes(lang)) {
         if (lang.length === 2) {
@@ -42,7 +43,7 @@
 
     if (top === window) {
         // Only for the main MAD page
-        window.changeLanguage = (newLang, isInit) => {
+        window.changeLanguage = async (newLang, isInit) => {
             if (!supportedLanguages.includes(newLang) && !isInit) {
                 for (const supportedLang of supportedLanguages) {
                     if (newLang.slice(0, 2) === supportedLang.slice(0, 2)) {
@@ -60,30 +61,37 @@
             if (!window.madMainWindow) {
                 url = `../../${url}`;
             }
-            fetch(url)
-                .then(response => response.text())
-                .then(text => {
-                    window.madStrings = JSON.parse(stripComments(text));
-                    readyAll();
-                    if (window.announce) {
-                        announce("language-ready");
-                    }
-                    languageReady = true;
-                })
-                .catch(err => {
-                    if (isInit) {
-                        console.error(`Failed to load language file for ${lang}. Trying to load English instead.`);
-                        changeLanguage("en-US", isInit);
-                    } else {
-                        console.error(`Failed to load language file for ${lang}.`);
-                    }
-                });
+            try {
+                const response = await fetch(url);
+                const text = await response.text();
+                if (localStorage.madesktopDebugLangLoadDelay && window.asyncTimeout) {
+                    await window.asyncTimeout(parseInt(localStorage.madesktopDebugLangLoadDelay));
+                }
+                window.madStrings = JSON.parse(stripComments(text));
+                readyAll();
+                if (window.announce) {
+                    announce("language-ready");
+                }
+                languageReady = true;
+                if (window.logTimed) {
+                    logTimed(`MADStrings: Language ${lang} loaded successfully`);
+                }
+            } catch (err) {
+                if (isInit) {
+                    console.error(`Failed to load language file for ${lang}. Trying to load English instead.`);
+                    changeLanguage("en-US");
+                } else {
+                    console.error(`Failed to load language file for ${lang}.`);
+                }
+            }
         }
         changeLanguage(lang, true);
     } else {
-        updateTitle(true);
-        updateStyle();
         document.documentElement.lang = lang;
+        if (languageReady) {
+            updateTitle(true);
+            updateStyle();
+        }
         window.addEventListener("message", (event) => {
             if (event.data.type === "language-ready") {
                 window.madStrings = top.madStrings;
@@ -91,6 +99,7 @@
                 window.madLang = lang;
                 document.documentElement.lang = lang;
                 readyAll();
+                languageReady = true;
             }
         });
     }
@@ -177,7 +186,7 @@
                     },
                     set(value) {
                         this.dataset.locid = value;
-                        this.ready();
+                        this.ready(true);
                     }
                 }
             });
@@ -188,11 +197,16 @@
             this.ready();
         }
 
-        ready() {
+        ready(isLocIdChange) {
             if (window.madStrings[this.locId]) {
                 this.innerHTML = processString(window.madStrings[this.locId]);
-            } else if (languageReady) {
-                console.error(`No string found for locId ${this.locId}`);
+            } else {
+                if (languageReady) {
+                    console.error(`No string found for locId ${this.locId}`);
+                }
+                if (isLocIdChange || !this.innerHTML) {
+                    this.innerHTML = this.locId;
+                }
             }
         }
     }
