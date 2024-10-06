@@ -29,7 +29,6 @@ let urlAppend = "";
             if (file.type === 'application/json') {
                 json = await file.text();
             } else {
-                debugger;
                 // Decompress gzip
                 try {
                     const ds = new DecompressionStream("gzip");

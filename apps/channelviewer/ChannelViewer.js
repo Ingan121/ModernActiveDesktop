@@ -1349,7 +1349,17 @@ function injectStyle() {
             iframe.contentDocument.head.insertBefore(styleElement, iframe.contentDocument.head.firstChild);
         }
         let baseStylesheetLocal = baseStylesheet;
-        if (iframe.contentDocument.body.bgColor) {
+        // If the page has a legacy bgcolor/text/link attributes, or if the html element has a background color set, remove the corresponding styles
+        // Tested with:
+        //   GitHub
+        //   madesktop.ingan121.com (although it shouldn't load it still has the html background color set)
+        //   ToastyTech
+        //   motherfuckingwebsite.com
+        // If the page's text has a bad contrast in dark color schemes, and the background of the text is light, (or maybe opposite?)
+        //   then this is the fault of the website using hardcoded colors only for backgrounds.
+        //   Also test that website with Firefox with light-on-dark color settings.
+        //   If the problem exists there too, just disable the "Enable classic styling" option.
+        if (iframe.contentDocument.body.bgColor || getComputedStyle(iframe.contentDocument.documentElement).getPropertyValue("background-color") !== "rgba(0, 0, 0, 0)") {
             baseStylesheetLocal = baseStylesheetLocal.replace("body/*not-if-bgcolor*/", "null");
         }
         if (iframe.contentDocument.body.text) {
