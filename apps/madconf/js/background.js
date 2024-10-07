@@ -166,6 +166,7 @@ async function init() {
         }
         customImgItem.style.display = 'block';
         activateItem(customImgItem);
+        imgModeSelector.disabled = false;
     } else if (localStorage.madesktopBgImg) {
         if (localStorage.madesktopBgImg.startsWith('wallpapers/')) {
             const wallName = localStorage.madesktopBgImg.match(/wallpapers\/(.*)\.png/)[1];

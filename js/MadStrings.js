@@ -12,7 +12,7 @@
     const channelViewer = "ChannelViewer";
 
     window.madStrings = top.madStrings || {};
-    const fallbackStrings = {}; // TODO: implement fallback again
+    let fallbackStrings = null;
 
     const supportedLanguages = ["en-US", "ko-KR"];
 
@@ -24,7 +24,7 @@
     const titleLocId = titleElem.dataset.locid;
     const langStyleElement = document.getElementById("langStyle");
 
-    let languageReady = Object.keys(window.madStrings).length !== 0;
+    let languageReady = window.madStrings.loaded;
 
     if (!supportedLanguages.includes(lang)) {
         if (lang.length === 2) {
@@ -54,24 +54,47 @@
                     throw new Error(`Language ${newLang} is not supported`);
                 }
             }
-            lang = newLang;
-            window.madLang = lang;
-            let url = `lang/${lang}.json`;
-            if (!window.madMainWindow) {
-                url = `../../${url}`;
+            if (!isInit) {
+                lang = newLang;
+                window.madLang = lang;
             }
             try {
-                window.madStrings = await loadLanguageFile(url);
+                window.madStrings = await loadLanguageFile(lang);
                 readyAll();
+                languageReady = true;
+                window.madStrings.loaded = true;
                 if (window.announce) {
                     announce("language-ready");
                 }
-                languageReady = true;
-                if (window.logTimed) {
-                    logTimed(`MADStrings: Language ${lang} loaded successfully`);
+
+                const logFunc = (isInit && window.logTimed) ? window.logTimed : console.log;
+                logFunc(`MADStrings: Language ${lang} loaded successfully`);
+
+                if (isInit) {
+                    if (lang === "en-US") {
+                        fallbackStrings = window.madStrings;
+                    } else {
+                        try {
+                            fallbackStrings = await loadLanguageFile("en-US");
+                            logFunc(`MADStrings: Fallback language en-US loaded successfully`);
+                        } catch (err) {
+                            console.error(`Failed to load fallback language file for en-US.\n`, err);
+                        }
+                    }
+                }
+                if (fallbackStrings) {
+                    window.madStrings.fallbackStrings = fallbackStrings;
                 }
             } catch (err) {
-                if (isInit) {
+                if (lang === "en-US") {
+                    console.error(`Failed to load language file for en-US.\n`, err);
+                    // This is a critical error, so we need to show an alert
+                    window.addEventListener("load", () => {
+                        if (window.madAlert && !languageReady) {
+                            madAlert("ModernActiveDesktop failed to load the language file for en-US. Expect things to be broken. Check the console for more information.", null, "error");
+                        }
+                    });
+                } else if (isInit) {
                     console.error(`Failed to load language file for ${lang}. Trying to load English instead.`);
                     changeLanguage("en-US");
                 } else {
@@ -98,10 +121,14 @@
         });
     }
 
-    async function loadLanguageFile(url) {
+    async function loadLanguageFile(lang) {
+        let url = `lang/${lang}.json`;
+        if (!window.madMainWindow) {
+            url = `../../${url}`;
+        }
         const response = await fetch(url);
         const text = await response.text();
-        if (localStorage.madesktopDebugLangLoadDelay && window.asyncTimeout) {
+        if (localStorage.madesktopDebugMode && localStorage.madesktopDebugLangLoadDelay && window.asyncTimeout) {
             await window.asyncTimeout(parseInt(localStorage.madesktopDebugLangLoadDelay));
         }
         return JSON.parse(stripComments(text));
@@ -170,6 +197,9 @@
     function getString(locId) {
         if (window.madStrings[locId]) {
             return processString(window.madStrings[locId], ...Array.from(arguments).slice(1));
+        } else if (window.madStrings.fallbackStrings?.[locId]) {
+            console.info(`Fallback string used for locId ${locId}`);
+            return processString(window.madStrings.fallbackStrings?.[locId], ...Array.from(arguments).slice(1));
         } else {
             if (languageReady) {
                 console.error(`No string found for locId ${locId}`);
@@ -203,6 +233,9 @@
         ready(isLocIdChange) {
             if (window.madStrings[this.locId]) {
                 this.innerHTML = processString(window.madStrings[this.locId]);
+            } else if (window.madStrings.fallbackStrings?.[this.locId]) {
+                console.info(`Fallback string used for locId ${this.locId}`);
+                this.innerHTML = processString(window.madStrings.fallbackStrings?.[this.locId]);
             } else {
                 if (languageReady) {
                     console.error(`No string found for locId ${this.locId}`);

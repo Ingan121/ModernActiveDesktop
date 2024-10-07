@@ -1263,7 +1263,6 @@
         }
     }
     origRunningMode = runningMode;
-    showDebugInfo();
 
     window.addEventListener('load', function () {
         processTheme();
