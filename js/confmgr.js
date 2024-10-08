@@ -42,8 +42,9 @@ let urlAppend = "";
                     }
 
                     json = chunks.join('');
-                } catch {
+                } catch (error) {
                     urlAppend = "#cmfail_invconf";
+                    console.error(error);
                     break;
                 }
             }
@@ -69,8 +70,13 @@ let urlAppend = "";
                         }
                     }
                     localStorage.madesktopLastVer = madVersion.toString();
-                } catch {
-                    urlAppend = "#cmfail_invconf";
+                } catch (error) {
+                    if (error.name === "QuotaExceededError") {
+                        urlAppend = "#cmfail_full";
+                    } else {
+                        urlAppend = "#cmfail_invconf";
+                    }
+                    console.error(error);
                 }
             } else {
                 urlAppend = "#cmfail_invconf";

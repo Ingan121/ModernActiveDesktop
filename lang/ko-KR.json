@@ -67,6 +67,9 @@
     "MAD_MSG_LINK_COPIED": "URL이 클립보드에 복사되었습니다. 복사된 URL을 브라우저 주소 표시줄에 붙여넣으세요.",
     "MAD_MSG_SYSPLUG_UPDATED": "시스템 플러그인이 업데이트되어 다시 설치해야 합니다. 설치 가이드를 따라 업데이트하세요.",
     "MAD_MSG_MIGRATION_INCOMPLETE": "데이터 마이그레이션 확인이 완료되지 않았습니다. 다시 시도하시겠습니까?",
+    "MAD_MSG_LOCALSTORAGE_FULL": "로컬 저장소가 가득 찼습니다! 이는 JS Paint 이미지가 많아서 발생한 것일 수 있습니다. 이 문제를 해결할 때까지 %n의 작동에 문제가 발생할 수 있습니다.<br>JS Paint를 열어 이미지를 확인하시겠습니까?",
+    "MAD_MSG_LOCALSTORAGE_FULL_ON_IMPORT": "로컬 저장소가 가득 찼습니다! 다른 애플리케이션이 많은 로컬 저장소를 사용하고 있는 것 같습니다. 로컬 저장소를 완전히 지우시겠습니까? 이는 이 도메인의 다른 애플리케이션에 영향을 줍니다.",
+    "MAD_MSG_LOCALSTORAGE_FULL_ON_IMPORT_WPE": "로컬 저장소가 가득 찼습니다! 다른 배경화면이 많은 로컬 저장소를 사용하고 있는 것 같습니다. 로컬 저장소를 완전히 지우시겠습니까? 이는 다른 배경화면의 저장된 데이터에도 영향을 줍니다. (Wallpaper Engine 속성 창에서 설정된 것에는 영향을 주지 않습니다.)",
 
     "MAD_DEBUG_LOCATION": "%s에서 로드됨",
     "MAD_DEBUG_RUNMODE": "%s에서 실행 중",
@@ -462,6 +465,13 @@
     "VISCONF_ALBUM_ART_TITLE": "앨범 아트",
     "VISCONF_ALBUM_ART_SHOW": "앨범 아트 표시",
     "VISCONF_ALBUM_ART_DIM": "앨범 아트 어둡게 표시",
+
+    "VISCONF_ALBUM_ART_SIZE_TITLE": "앨범 아트 크기",
+    "VISCONF_ALBUM_ART_SIZE_AUTO": "자동",
+    "VISCONF_ALBUM_ART_SIZE_AUTO2X": "자동 (2배 선호)",
+    "VISCONF_ALBUM_ART_SIZE_AUTO2XMIN": "자동 (최소 크기 2배)",
+    "VISCONF_ALBUM_ART_SIZE_ORIG": "원본",
+    "VISCONF_ALBUM_ART_SIZE_2X": "2배",
 
     "VISCONF_CHAN_SEP_TITLE": "채널 분리",
     "VISCONF_CHAN_SEP_DISABLE": "처리 안함 (3.2 이전 작동 방식)",

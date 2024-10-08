@@ -286,7 +286,7 @@
     function processTheme() {
         styleElement.textContent = parentStyleElement.textContent;
 
-        if (top.isDarkColor(getComputedStyle(top.document.documentElement).getPropertyValue('--button-face'))) {
+        if (isDarkColor(getComputedStyle(top.document.documentElement).getPropertyValue('--button-face'))) {
             if (window.osguiCompatRequired) {
                 styleElement.textContent += `
                     .tool-icon {

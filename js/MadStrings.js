@@ -89,9 +89,13 @@
                 if (lang === "en-US") {
                     console.error(`Failed to load language file for en-US.\n`, err);
                     // This is a critical error, so we need to show an alert
+                    // Unless we're in a file:// context (main.js will show the alert in that case)
                     window.addEventListener("load", () => {
-                        if (window.madAlert && !languageReady) {
-                            madAlert("ModernActiveDesktop failed to load the language file for en-US. Expect things to be broken. Check the console for more information.", null, "error");
+                        // Wait for window.madAlert to be defined (in main.js)
+                        if (!languageReady && !location.href.startsWith("file:")) {
+                            // Avoid window.alert when running MAD normally, as it softlocks WPE 2.5+
+                            const alertFunc = window.madMainWindow ? window.madAlert : window.alert;
+                            alertFunc("ModernActiveDesktop failed to load the language file for en-US. Expect things to be broken. Check the console for more information.", null, "error");
                         }
                     });
                 } else if (isInit) {

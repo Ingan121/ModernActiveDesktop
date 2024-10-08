@@ -77,6 +77,9 @@
     "MAD_MSG_LINK_COPIED": "Copied URL to clipboard! Paste it in the browser's address bar.",
     "MAD_MSG_SYSPLUG_UPDATED": "System plugin has been updated, and it needs a reinstall. Please update it with the setup guide.",
     "MAD_MSG_MIGRATION_INCOMPLETE": "The data migration check has not been completed. Do you want to retry it?",
+    "MAD_MSG_LOCALSTORAGE_FULL": "Local storage is full! This is likely due to the large amount of JS Paint images. Expect things to break until this is resolved.<br>Do you want to open JS Paint to review the images?",
+    "MAD_MSG_LOCALSTORAGE_FULL_ON_IMPORT": "Config import failed because local storage is full. It seems that another application is using a lot of local storage. Do you want to completely clear the local storage? This will affect other applications on this domain.",
+    "MAD_MSG_LOCALSTORAGE_FULL_ON_IMPORT_WPE": "Config import failed because local storage is full. It seems that other wallpapers are using a lot of local storage. Do you want to completely clear the local storage? This will affect other wallpapers' saved data too. (Won't affect things set in the Wallpaper Engine properties panel.)",
 
     "MAD_DEBUG_LOCATION": "Loaded from %s",
     "MAD_DEBUG_RUNMODE": "Running in %s",
@@ -514,6 +517,13 @@
     "VISCONF_ALBUM_ART_TITLE": "Album art",
     "VISCONF_ALBUM_ART_SHOW": "Show album art",
     "VISCONF_ALBUM_ART_DIM": "Dim album art",
+
+    "VISCONF_ALBUM_ART_SIZE_TITLE": "Album art size",
+    "VISCONF_ALBUM_ART_SIZE_AUTO": "Auto",
+    "VISCONF_ALBUM_ART_SIZE_AUTO2X": "Auto (Prefer 2x)",
+    "VISCONF_ALBUM_ART_SIZE_AUTO2XMIN": "Auto (2x minimum size)",
+    "VISCONF_ALBUM_ART_SIZE_ORIG": "Original",
+    "VISCONF_ALBUM_ART_SIZE_2X": "2x",
 
     "VISCONF_CHAN_SEP_TITLE": "Channel separation",
     "VISCONF_CHAN_SEP_DISABLE": "No processing (pre-3.2 behavior)",

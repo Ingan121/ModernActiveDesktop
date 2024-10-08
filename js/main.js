@@ -33,7 +33,9 @@
     let startupRan = false;
     let flashInterval;
     let msgboxLoopDetector = null;
+    let msgboxMsgChangeDetector = null;
     let msgboxLoopCount = 0;
+    let showedStorageFullAlert = false;
 
     window.soundScheme = {};
 
@@ -374,6 +376,14 @@
         changeScale(scaleFactor);
     });
 
+    // Handle localStorage full error
+    // (Other error events are handled in the inline script of index.html)
+    window.addEventListener('error', function (event) {
+        if (event.error.name === "QuotaExceededError") {
+            handleStorageFull();
+        }
+    })
+
     // #region Lively Wallpaper function-style listeners
     function livelyPropertyListener(name, val) {
         wallpaperPropertyListener.applyUserProperties({ [name]: { value: val } });
@@ -418,11 +428,22 @@
     // #region Global API functions (Exposed to DeskMovers by libmad.js)
     // Create a new window and initialize it
     function createNewDeskItem(numStr, openDoc, temp, options, isResetting) {
-        const newContainer = windowContainerBase.cloneNode(true);
-        document.body.appendChild(newContainer);
-        const deskMover = new DeskMover(newContainer, numStr, openDoc, temp, options, isResetting);
-        deskMovers[numStr] = deskMover;
-        return deskMover;
+        try {
+            const newContainer = windowContainerBase.cloneNode(true);
+            document.body.appendChild(newContainer);
+            const deskMover = new DeskMover(newContainer, numStr, openDoc, temp, options, isResetting);
+            deskMovers[numStr] = deskMover;
+            return deskMover;
+        } catch (error) {
+            // errors here interrupt the whole initialization process
+            if (error.name === "QuotaExceededError") {
+                // localStorage is full; let MAD finish initialization and handle it
+                handleStorageFull();
+            } else {
+                // something else went wrong?
+                throw error;
+            }
+        }
     }
 
     // Create a new window, initialize, and increase the saved window count
@@ -694,7 +715,13 @@
         });
 
         for (let i = 0; i < zOrders.length; i++) {
-            deskMovers[zOrders[i][0]].config.zIndex = i;
+            try {
+                deskMovers[zOrders[i][0]].config.zIndex = i;
+            } catch (error) {
+                // localStorage error, like QuotaExceededError
+                // but ignore it here as this function is called too frequently (on every window click)
+                console.error(error);
+            }
         }
 
         log(zOrders);
@@ -788,6 +815,15 @@
     // #region Dialog functions
     async function madAlert(msg, callback, icon = "info") {
         return new Promise(resolve => {
+            // Close the previous dialog if it's open
+            if (msgbox.style.display === "block") {
+                if (msgboxBtn2.style.display === "block") {
+                    msgboxBtn2.click();
+                } else {
+                    msgboxBtn1.click();
+                }
+            }
+
             playSound(icon);
 
             if (msg.startsWith("locid:")) {
@@ -830,16 +866,25 @@
         });
     }
 
-    async function madConfirm(msg, callback) {
+    async function madConfirm(msg, callback, icon = "question") {
         return new Promise(resolve => {
-            playSound("question");
+            // Close the previous dialog if it's open
+            if (msgboxBg.style.display === "block") {
+                if (msgboxBtn2.style.display === "block") {
+                    msgboxBtn2.click();
+                } else {
+                    msgboxBtn1.click();
+                }
+            }
+
+            playSound(icon);
 
             if (msg.startsWith("locid:")) {
                 msg = `<mad-string data-locid="${msg.slice(6)}"></mad-string>`;
             }
             msgboxMessage.innerHTML = msg;
             msgboxIcon.style.display = "block";
-            msgboxIcon.src = "images/question.png";
+            msgboxIcon.src = `images/${icon}.png`;
             msgboxBtn2.style.display = "block";
             msgboxInput.style.display = "none";
             osk.style.display = "none";
@@ -1007,10 +1052,19 @@
         msgbox.style.top = (vHeight - msgbox.offsetHeight) / 2 + "px";
         msgbox.style.left = (vWidth - msgbox.offsetWidth) / 2 + "px";
         msgboxBtn1.focus();
+
+        // Detect changes in the message content
+        // For centering the dialog when MadString is loaded lately
+        msgboxMsgChangeDetector = new MutationObserver(function (mutations) {
+            msgbox.style.top = (vHeight - msgbox.offsetHeight) / 2 + "px";
+            msgbox.style.left = (vWidth - msgbox.offsetWidth) / 2 + "px";
+        });
+        msgboxMsgChangeDetector.observe(msgboxMessage, { childList: true, subtree: true });
     }
 
     // @unexported
     function hideDialog() {
+        msgboxMsgChangeDetector.disconnect();
         const winCloseAnim = getComputedStyle(msgbox).getPropertyValue('--win-close-anim');
         if (winCloseAnim && !localStorage.madesktopNoWinAnim) {
             msgbox.style.animation = `0.2s ${winCloseAnim} linear`;
@@ -1208,6 +1262,17 @@
         openWindow("apps/welcome/index.html", true, options);
     }
 
+    // @unexported
+    async function handleStorageFull() {
+        // Ask the user to fix the issue by deleting some images
+        if (!showedStorageFullAlert && await madConfirm("locid:MAD_MSG_LOCALSTORAGE_FULL", null, "error")) {
+            // Temp windows still work to some extent even if localStorage is completely full
+            openWindow("apps/jspaint/index.html", true);
+            openConfig("background");
+            showedStorageFullAlert = true;
+        }
+    }
+
     // #region Late function exports
     window.createNewDeskItem = createNewDeskItem;
     window.openWindow = openWindow;
@@ -1289,6 +1354,15 @@
             break;
         case "#cmfail_invconf":
             madAlert("locid:MADCONF_CONF_INVALID", null, "error");
+            break;
+        case "#cmfail_full":
+            const msg = runningMode === 1 ? "locid:MAD_MSG_LOCALSTORAGE_FULL_ON_IMPORT_WPE" : "locid:MAD_MSG_LOCALSTORAGE_FULL_ON_IMPORT";
+            madConfirm(msg, (res) => {
+                if (res) {
+                    localStorage.clear();
+                    location.replace("confmgr.html?action=reset");
+                }
+            }, "error");
     }
     // Clear hash
     history.pushState("", document.title, window.location.pathname + window.location.search);

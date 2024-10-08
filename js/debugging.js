@@ -68,6 +68,7 @@
     function deactivateDebugMode() {
         delete document.body.dataset.debugMode;
         delete localStorage.madesktopDebugMode;
+        delete localStorage.madesktopDebugLangLoadDelay;
         if (debugLog) toggleDebugLog();
         if (runningMode !== origRunningMode) {
             runningMode = origRunningMode;
