@@ -11,7 +11,6 @@ const defaultRadBtn = document.getElementById('radDefault');
 const schemeRadBtn = document.getElementById('radScheme');
 const customRadBtn = document.getElementById('radCustom');
 const followAlbumArtChkBox = document.getElementById('followAlbumArtChkBox');
-const showClientEdgeChkBox = document.getElementById('showClientEdgeChkBox');
 
 const customColors = document.getElementById("customColors");
 const colorPickers = document.querySelectorAll(".colorPicker");
@@ -26,17 +25,8 @@ const topColorPickerLabel = document.getElementById("topColorPickerLabel");
 
 const albumArtChkBox = document.getElementById("albumArtChkBox");
 const dimAlbumArtChkBox = document.getElementById("dimAlbumArtChkBox");
-const albumArtSizeLabel = document.getElementById("albumArtSizeLabel");
+const albumArtSizeArea = document.getElementById("albumArtSizeArea");
 const albumArtSizeSelector = document.getElementById("albumArtSizeSelector");
-
-const titleThenArtistRadBtn = document.getElementById("radTitleThenArtist");
-const artistThenTitleRadBtn = document.getElementById("radArtistThenTitle");
-const titleOnlyRadBtn = document.getElementById("radTitleOnly");
-const staticRadBtn = document.getElementById("radStatic");
-
-const noProcessingRadBtn = document.getElementById("radNoProcessing");
-const reverseRadBtn = document.getElementById("radReverse");
-const combineRadBtn = document.getElementById("radCombine");
 
 const fixedBarsChkBox = document.getElementById("fixedBarsChkBox");
 const barWidthInput = document.getElementById("barWidthInput");
@@ -48,6 +38,11 @@ const primaryScaleInput = document.getElementById("primaryScaleInput");
 const diffScaleLabel = document.getElementById("diffScaleLabel");
 const diffScaleInput = document.getElementById("diffScaleInput");
 const diffScaleInfo = document.getElementById("diffScaleInfo");
+
+const titleOptSelector = document.getElementById("titleOptSelector");
+const chanSepSelector = document.getElementById("chanSepSelector");
+const showClientEdgeChkBox = document.getElementById('showClientEdgeChkBox');
+const fsMarginChkBox = document.getElementById("fsMarginChkBox");
 
 const okBtn = document.getElementById("okBtn");
 const cancelBtn = document.getElementById("cancelBtn");
@@ -118,11 +113,11 @@ customRadBtn.addEventListener("click", () => {
 albumArtChkBox.addEventListener("change", () => {
     if (albumArtChkBox.checked) {
         dimAlbumArtChkBox.disabled = false;
-        albumArtSizeLabel.classList.remove("disabled");
+        albumArtSizeArea.classList.remove("disabled");
         albumArtSizeSelector.disabled = false;
     } else {
         dimAlbumArtChkBox.disabled = true;
-        albumArtSizeLabel.classList.add("disabled");
+        albumArtSizeArea.classList.add("disabled");
         albumArtSizeSelector.disabled = true;
     }
 });
@@ -156,11 +151,6 @@ window.apply = function () {
     } else {
         delete localStorage.madesktopVisFollowAlbumArt;
     }
-    if (showClientEdgeChkBox.checked) {
-        delete localStorage.madesktopVisNoClientEdge;
-    } else {
-        localStorage.madesktopVisNoClientEdge = true;
-    }
 
     if (albumArtChkBox.checked) {
         localStorage.madesktopVisShowAlbumArt = true;
@@ -174,24 +164,6 @@ window.apply = function () {
     }
     localStorage.madesktopVisAlbumArtSize = albumArtSizeSelector.value;
 
-    if (titleThenArtistRadBtn.checked) {
-        localStorage.madesktopVisTitleMode = 0;
-    } else if (artistThenTitleRadBtn.checked) {
-        localStorage.madesktopVisTitleMode = 1;
-    } else if (titleOnlyRadBtn.checked) {
-        localStorage.madesktopVisTitleMode = 2;
-    } else {
-        localStorage.madesktopVisTitleMode = -1;
-    }
-
-    if (noProcessingRadBtn.checked) {
-        localStorage.madesktopVisChannelSeparation = 1;
-    } else if (reverseRadBtn.checked) {
-        localStorage.madesktopVisChannelSeparation = 2;
-    } else {
-        localStorage.madesktopVisChannelSeparation = 3;
-    }
-
     if (fixedBarsChkBox.checked) {
         localStorage.madesktopVisBarWidth = barWidthInput.value;
     } else {
@@ -201,6 +173,30 @@ window.apply = function () {
     localStorage.madesktopVisDecSpeed = decSpeedInput.value;
     localStorage.madesktopVisPrimaryScale = primaryScaleInput.value;
     localStorage.madesktopVisDiffScale = diffScaleInput.value;
+
+    localStorage.madesktopVisTitleMode = titleOptSelector.value;
+    switch (chanSepSelector.value) {
+        case "noProcessing":
+            localStorage.madesktopVisChannelSeparation = 1;
+            break;
+        case "reverse":
+            localStorage.madesktopVisChannelSeparation = 2;
+            break;
+        case "combine":
+            localStorage.madesktopVisChannelSeparation = 3;
+            break;
+    }
+    if (showClientEdgeChkBox.checked) {
+        delete localStorage.madesktopVisNoClientEdge;
+    } else {
+        localStorage.madesktopVisNoClientEdge = true;
+    }
+    if (fsMarginChkBox.checked) {
+        delete localStorage.madesktopVisNoFsMargin;
+    } else {
+        localStorage.madesktopVisNoFsMargin = true;
+    }
+
     top.visDeskMover.windowElement.contentWindow.configChanged();
 }
 
@@ -217,6 +213,7 @@ applyBtn.addEventListener("click", () => {
     window.apply();
 });
 
+// Colors / Custom colors fieldset
 if (localStorage.madesktopVisUseSchemeColors) {
     schemeRadBtn.checked = true;
 } else if (localStorage.madesktopVisBgColor) {
@@ -230,16 +227,14 @@ if (localStorage.madesktopVisUseSchemeColors) {
     customColors.classList.remove("disabled");
 }
 
+// Album art fieldset
 if (localStorage.madesktopVisFollowAlbumArt) {
     followAlbumArtChkBox.checked = true;
-}
-if (localStorage.madesktopVisNoClientEdge) {
-    showClientEdgeChkBox.checked = false;
 }
 if (localStorage.madesktopVisShowAlbumArt) {
     albumArtChkBox.checked = true;
     dimAlbumArtChkBox.disabled = false;
-    albumArtSizeLabel.classList.remove("disabled");
+    albumArtSizeArea.classList.remove("disabled");
     albumArtSizeSelector.disabled = false;
 }
 if (localStorage.madesktopVisDimAlbumArt) {
@@ -249,37 +244,7 @@ if (localStorage.madesktopVisAlbumArtSize) {
     albumArtSizeSelector.value = localStorage.madesktopVisAlbumArtSize;
 }
 
-if (localStorage.madesktopVisTitleMode) {
-    switch (parseInt(localStorage.madesktopVisTitleMode)) {
-        case 0:
-            titleThenArtistRadBtn.checked = true;
-            break;
-        case 1:
-            artistThenTitleRadBtn.checked = true;
-            break;
-        case 2:
-            titleOnlyRadBtn.checked = true;
-            break;
-        case -1:
-            staticRadBtn.checked = true;
-            break;
-    }
-}
-
-if (localStorage.madesktopVisChannelSeparation) {
-    switch (parseInt(localStorage.madesktopVisChannelSeparation)) {
-        case 1:
-            noProcessingRadBtn.checked = true;
-            break;
-        case 2:
-            reverseRadBtn.checked = true;
-            break;
-        case 3:
-            combineRadBtn.checked = true;
-            break;
-    }
-}
-
+// Visualizer fieldset
 if (localStorage.madesktopVisBarWidth) {
     fixedBarsChkBox.checked = true;
     barWidthInput.value = localStorage.madesktopVisBarWidth;
@@ -293,6 +258,30 @@ if (localStorage.madesktopVisPrimaryScale) {
 }
 if (localStorage.madesktopVisDiffScale) {
     diffScaleInput.value = localStorage.madesktopVisDiffScale;
+}
+
+// Miscellanous fieldset
+if (localStorage.madesktopVisTitleMode) {
+    titleOptSelector.value = localStorage.madesktopVisTitleMode;
+}
+if (localStorage.madesktopVisChannelSeparation) {
+    switch (parseInt(localStorage.madesktopVisChannelSeparation)) {
+        case 1:
+            chanSepSelector.value = "noProcessing";
+            break;
+        default:
+            chanSepSelector.value = "reverse";
+            break;
+        case 3:
+            chanSepSelector.value = "combine";
+            break;
+    }
+}
+if (localStorage.madesktopVisNoClientEdge) {
+    showClientEdgeChkBox.checked = false;
+}
+if (localStorage.madesktopVisNoFsMargin) {
+    fsMarginChkBox.checked = false;
 }
 
 if (localStorage.madesktopVisOnlyAlbumArt) {

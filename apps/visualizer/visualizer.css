@@ -343,7 +343,7 @@ a {
     margin-right: 8px;
 }
 
-body[data-fullscreen] {
+body[data-fullscreen]:not([data-no-fs-margin]) {
     padding-top: var(--mad-margin-top);
     padding-left: var(--mad-margin-left);
     padding-right: var(--mad-margin-right);
@@ -365,4 +365,12 @@ body[data-fullscreen] #bottomArea {
     width: calc(100% - var(--mad-margin-left) - var(--mad-margin-right));
     bottom: var(--mad-margin-bottom);
     opacity: 0;
+}
+
+/* Always apply margins to clickable elements */
+body[data-fullscreen][data-no-fs-margin] #menuBar,
+body[data-fullscreen][data-no-fs-margin] #bottomArea {
+    margin-top: var(--mad-margin-top);
+    margin-left: var(--mad-margin-left);
+    margin-right: var(--mad-margin-right);
 }

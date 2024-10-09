@@ -13,16 +13,14 @@
         <fieldset>
             <legend><mad-string data-locid="VISCONF_COLOR_TITLE">Colors</mad-string></legend>
             <form name="colorSelecor">
-                <input id="radDefault" type="radio" name="color" value="default" checked>
-                <label for="radDefault"><mad-string data-locid="UI_DEFAULT">Default</mad-string></label><br>
-                <input id="radScheme" type="radio" name="color" value="scheme">
-                <label for="radScheme"><mad-string data-locid="VISCONF_COLOR_FOLLOW_SCHEME">Follow color scheme</mad-string></label><br>
-                <input id="radCustom" type="radio" name="color" value="custom">
-                <label for="radCustom"><mad-string data-locid="UI_CUSTOM">Custom</mad-string></label><br>
-                <input id="followAlbumArtChkBox" type="checkbox" name="followAlbumArt">
-                <label for="followAlbumArtChkBox"><mad-string data-locid="VISCONF_COLOR_FOLLOW_ALBUM_ART">Follow album art colors if available</mad-string></label><br>
-                <input id="showClientEdgeChkBox" type="checkbox" name="showClientEdge" checked>
-                <label for="showClientEdgeChkBox"><mad-string data-locid="VISCONF_SHOW_CLIENT_EDGE">Show client edges around the visualization area</mad-string></label>
+                <input id="radDefault" type="radio" name="color" value="default" checked accesskey="d">
+                <label for="radDefault"><mad-string data-locid="VISCONF_COLOR_DEFAULT"><u>D</u>efault</mad-string></label><br>
+                <input id="radScheme" type="radio" name="color" value="scheme" accesskey="s">
+                <label for="radScheme"><mad-string data-locid="VISCONF_COLOR_FOLLOW_SCHEME">Follow color <u>s</u>cheme</mad-string></label><br>
+                <input id="radCustom" type="radio" name="color" value="custom" accesskey="c">
+                <label for="radCustom"><mad-string data-locid="VISCONF_COLOR_FOLLOW_CUSTOM"><u>C</u>ustom</mad-string></label><br>
+                <input id="followAlbumArtChkBox" type="checkbox" name="followAlbumArt" accesskey="a">
+                <label for="followAlbumArtChkBox"><mad-string data-locid="VISCONF_COLOR_FOLLOW_ALBUM_ART">Follow <u>a</u>lbum art colors if available</mad-string></label>
             </form>
         </fieldset>
         <fieldset>
@@ -54,8 +52,8 @@
             <label for="albumArtChkBox"><mad-string data-locid="VISCONF_ALBUM_ART_SHOW">Show album art</mad-string></label><br>
             <input id="dimAlbumArtChkBox" type="checkbox" name="albumArt" disabled>
             <label for="dimAlbumArtChkBox"><mad-string data-locid="VISCONF_ALBUM_ART_DIM">Dim album art</mad-string></label>
-            <div id="albumArtSizeArea">
-                <span id="albumArtSizeLabel" class="disabled"><mad-string data-locid="VISCONF_ALBUM_ART_SIZE_TITLE">Album art size</mad-string>:</span>
+            <div id="albumArtSizeArea" class="selectorArea disabled">
+                <span id="albumArtSizeLabel" class="selectorLabel"><mad-string data-locid="VISCONF_ALBUM_ART_SIZE_TITLE">Album art size</mad-string>:</span>
                 <mad-select id="albumArtSizeSelector" disabled>
                     <option value="auto"><mad-string data-locid="VISCONF_ALBUM_ART_SIZE_AUTO">Auto</mad-string></option>
                     <option value="auto2x"><mad-string data-locid="VISCONF_ALBUM_ART_SIZE_AUTO2X">Auto (Prefer 2x)</mad-string></option>
@@ -67,35 +65,6 @@
                     <option value="scale"><mad-string data-locid="MADCONF_WPDISPLAY_STRETCH">Stretch</mad-string></option>
                 </mad-select>
             </div>
-        </fieldset>
-        <fieldset>
-            <legend><mad-string data-locid="VISCONF_TITLE_OPT_TITLE">Window title</mad-string></legend>
-            <form name="titleSelector">
-                <input id="radTitleThenArtist" type="radio" name="title" value="titleThenArtist" checked>
-                <label for="radTitleThenArtist"><mad-string data-locid="VISCONF_TITLE_OPT_TITLE_THEN_ARTIST">Title - Artist (default)</mad-string></label><br>
-                <input id="radArtistThenTitle" type="radio" name="title" value="artistThenTitle">
-                <label for="radArtistThenTitle"><mad-string data-locid="VISCONF_TITLE_OPT_ARTIST_THEN_TITLE">Artist - Title</mad-string></label><br>
-                <input id="radTitleOnly" type="radio" name="title" value="titleOnly">
-                <label for="radTitleOnly"><mad-string data-locid="VISCONF_TITLE_OPT_TITLE_ONLY">Title</mad-string></label><br>
-                <input id="radStatic" type="radio" name="title" value="static">
-                <label for="radStatic"><mad-string data-locid="VISCONF_TITLE_OPT_STATIC">Static ("Visualization")</mad-string></label>
-            </form>
-            <p id="titleInfo">
-                <mad-string data-locid="VISCONF_TITLE_OPT_INFO">
-                    * Use window menu -> Configure -> Change title to set a custom static title.
-                </mad-string>
-            </p>
-        </fieldset>
-        <fieldset>
-            <legend><mad-string data-locid="VISCONF_CHAN_SEP_TITLE">Channel separation</mad-string></legend>
-            <form name="separationSelecor">
-                <input id="radNoProcessing" type="radio" name="separation" value="default">
-                <label for="radNoProcessing"><mad-string data-locid="VISCONF_CHAN_SEP_DISABLE">No processing (pre-3.2 behavior)</mad-string></label><br>
-                <input id="radReverse" type="radio" name="separation" value="reverse" checked>
-                <label for="radReverse"><mad-string data-locid="VISCONF_CHAN_SEP_REVERSE">Reverse the right channel (default)</mad-string></label><br>
-                <input id="radCombine" type="radio" name="separation" value="combine">
-                <label for="radCombine"><mad-string data-locid="VISCONF_CHAN_SEP_COMBINE">Combine left and right channels</mad-string></label>
-            </form>
         </fieldset>
         <fieldset>
             <legend><mad-string data-locid="VISCONF_VIS_TITLE">Visualization</mad-string></legend>
@@ -124,6 +93,30 @@
                     * Pre-3.2 difference scale was 0.15.
                 </mad-string>
             </p>
+        </fieldset>
+        <fieldset>
+            <legend><mad-string data-locid="VISCONF_MISC_TITLE">Miscellaneous</mad-string></legend>
+            <div id="titleOptArea" class="selectorArea">
+                <span id="titleOptLabel" class="selectorLabel"><mad-string data-locid="VISCONF_TITLE_OPT_TITLE">Window title</mad-string>:</span>
+                <mad-select id="titleOptSelector">
+                    <option value="titleThenArtist"><mad-string data-locid="VISCONF_TITLE_OPT_TITLE_THEN_ARTIST">Title - Artist (default)</mad-string></option>
+                    <option value="artistThenTitle"><mad-string data-locid="VISCONF_TITLE_OPT_ARTIST_THEN_TITLE">Artist - Title</mad-string></option>
+                    <option value="titleOnly"><mad-string data-locid="VISCONF_TITLE_OPT_TITLE_ONLY">Title</mad-string></option>
+                    <option value="static"><mad-string data-locid="VISCONF_TITLE_OPT_STATIC">Static ("Visualization")</mad-string></option>
+                </mad-select>
+            </div>
+            <div id="chanSepArea" class="selectorArea">
+                <span id="chanSepLabel" class="selectorLabel"><mad-string data-locid="VISCONF_CHAN_SEP_TITLE">Channel separation</mad-string>:</span>
+                <mad-select id="chanSepSelector">
+                    <option value="noProcessing"><mad-string data-locid="VISCONF_CHAN_SEP_DISABLE">No processing (pre-3.2 behavior)</mad-string></option>
+                    <option value="reverse"><mad-string data-locid="VISCONF_CHAN_SEP_REVERSE">Reverse the right channel (default)</mad-string></option>
+                    <option value="combine"><mad-string data-locid="VISCONF_CHAN_SEP_COMBINE">Combine left and right channels</mad-string></option>
+                </mad-select>
+            </div>
+            <input id="showClientEdgeChkBox" type="checkbox" name="showClientEdge" checked>
+            <label for="showClientEdgeChkBox"><mad-string data-locid="VISCONF_SHOW_CLIENT_EDGE">Show client edges around the visualization area</mad-string></label><br>
+            <input id="fsMarginChkBox" type="checkbox" name="fsMargin" checked>
+            <label for="fsMarginChkBox"><mad-string data-locid="VISCONF_FS_MARGIN">Apply margins in fullscreen mode</mad-string></label>
         </fieldset>
         <section class="bottomButtons field-row">
             <button id="okBtn"><mad-string data-locid="UI_OK">OK</mad-string></button>

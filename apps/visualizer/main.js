@@ -79,6 +79,11 @@ const viewMenuItems = document.querySelectorAll('#viewMenu .contextMenuItem');
 const optMenuItems = document.querySelectorAll('#optMenu .contextMenuItem');
 const helpMenuItems = document.querySelectorAll('#helpMenu .contextMenuItem');
 
+const colorMenuItems = document.querySelectorAll('#colorMenu .contextMenuItem');
+const albumArtSizeMenuItems = document.querySelectorAll('#albumArtSizeMenu .contextMenuItem');
+const titleOptMenuItems = document.querySelectorAll('#titleOptMenu .contextMenuItem');
+const chanSepMenuItems = document.querySelectorAll('#chanSepMenu .contextMenuItem');
+
 const isWin10 = navigator.userAgent.includes('Windows NT 10.0');
 const NO_MEDINT_MSG = isWin10 ? "VISUALIZER_NO_MEDINT_MSG" : "VISUALIZER_MEDINT_UNSUPPORTED_MSG";
 
@@ -144,7 +149,7 @@ window.addEventListener("message", (event) => {
                 }
             }
         case "language-ready":
-            if (lastMusic === null || localStorage.madesktopVisTitleMode === "-1") {
+            if (lastMusic === null || localStorage.madesktopVisTitleMode === "static") {
                 document.title = madGetString("VISUALIZER_TITLE");
             }
     }
@@ -152,6 +157,11 @@ window.addEventListener("message", (event) => {
 // #endregion
 
 // #region Initialization
+if (localStorage.madesktopVisOnlyAlbumArt) {   
+    visMenuItems[0].classList.add('activeStyle');
+    visMenuItems[1].classList.remove('activeStyle');
+}
+
 if (localStorage.madesktopVisMenuAutohide) {
     viewMenuItems[0].classList.add('checkedItem');
     mainArea.style.marginTop = '0';
@@ -196,14 +206,16 @@ if (localStorage.sysplugIntegration) {
     delete localStorage.madesktopVisMediaControls;
 }
 
-if (localStorage.madesktopVisOnlyAlbumArt) {   
-    visMenuItems[0].classList.add('activeStyle');
-    visMenuItems[1].classList.remove('activeStyle');
+if (localStorage.madesktopVisShowAlbumArt) {
+    optMenuItems[3].classList.add('checkedItem');
+}
+if (localStorage.madesktopVisDimAlbumArt) {
+    optMenuItems[4].classList.add('checkedItem');
 }
 // #endregion
 
 // #region Menu bar
-madDeskMover.menu = new MadMenu(menuBar, ['vis', 'view', 'opt', 'help']);
+madDeskMover.menu = new MadMenu(menuBar, ['vis', 'view', 'opt', 'help'], ['color', 'albumArtSize', 'titleOpt', 'chanSep']);
 
 visMenuItems[0].addEventListener('click', () => { // Album Art button
     if (!mediaIntegrationAvailable) {
@@ -394,7 +406,43 @@ viewMenuItems[4].addEventListener('click', () => { // Enable Media Controls butt
     }
 });
 
-optMenuItems[0].addEventListener('click', () => { // Configure Visualization button
+optMenuItems[3].addEventListener('click', () => { // Show Album Art button
+    if (localStorage.madesktopVisShowAlbumArt) {
+        delete localStorage.madesktopVisShowAlbumArt;
+        optMenuItems[3].classList.remove('checkedItem');
+        configChanged();
+    } else {
+        localStorage.madesktopVisShowAlbumArt = true;
+        optMenuItems[3].classList.add('checkedItem');
+        configChanged();
+    }
+});
+
+optMenuItems[4].addEventListener('click', () => { // Dim Album Art button
+    if (localStorage.madesktopVisDimAlbumArt) {
+        delete localStorage.madesktopVisDimAlbumArt;
+        optMenuItems[4].classList.remove('checkedItem');
+        configChanged();
+    } else {
+        localStorage.madesktopVisDimAlbumArt = true;
+        optMenuItems[4].classList.add('checkedItem');
+        configChanged();
+    }
+});
+
+optMenuItems[5].addEventListener('click', () => { // Follow Album Art button
+    if (localStorage.madesktopVisFollowAlbumArt) {
+        delete localStorage.madesktopVisFollowAlbumArt;
+        optMenuItems[5].classList.remove('checkedItem');
+        configChanged();
+    } else {
+        localStorage.madesktopVisFollowAlbumArt = true;
+        optMenuItems[5].classList.add('checkedItem');
+        configChanged();
+    }
+});
+
+optMenuItems[6].addEventListener('click', () => { // Advanced Options button
     const left = parseInt(madDeskMover.config.xPos) + 25 + 'px';
     const top = parseInt(madDeskMover.config.yPos) + 50 + 'px';
     const options = {
@@ -407,6 +455,49 @@ optMenuItems[0].addEventListener('click', () => { // Configure Visualization but
 helpMenuItems[0].addEventListener('click', () => { // About Visualizer button
     madOpenConfig('about');
 });
+
+colorMenuItems[0].addEventListener('click', () => { // Default button
+    delete localStorage.madesktopVisBgColor;
+    delete localStorage.madesktopVisBarColor;
+    delete localStorage.madesktopVisTopColor;
+    delete localStorage.madesktopVisUseSchemeColors;
+    configChanged();
+});
+
+colorMenuItems[1].addEventListener('click', () => { // Follow Color Scheme button
+    localStorage.madesktopVisUseSchemeColors = true;
+    configChanged();
+});
+
+colorMenuItems[2].addEventListener('click', () => { // Custom Color button
+    localStorage.madesktopVisBgColor = visConfig.bgColor;
+    localStorage.madesktopVisBarColor = visConfig.barColor;
+    localStorage.madesktopVisTopColor = visConfig.topColor;
+    delete localStorage.madesktopVisUseSchemeColors;
+    configChanged();
+    optMenuItems[5].click();
+});
+
+for (let i = 0; i < albumArtSizeMenuItems.length; i++) {
+    albumArtSizeMenuItems[i].addEventListener('click', () => {
+        localStorage.madesktopVisAlbumArtSize = albumArtSizeMenuItems[i].dataset.value;
+        configChanged();
+    });
+}
+
+for (let i = 0; i < titleOptMenuItems.length; i++) {
+    titleOptMenuItems[i].addEventListener('click', () => {
+        localStorage.madesktopVisTitleMode = titleOptMenuItems[i].dataset.value;
+        updateTitle();
+    });
+}
+
+for (let i = 0; i < chanSepMenuItems.length; i++) {
+    chanSepMenuItems[i].addEventListener('click', () => {
+        localStorage.madesktopVisChannelSeparation = i;
+        configChanged();
+    });
+}
 // #endregion
 
 // #region Functions
@@ -589,6 +680,7 @@ function wallpaperMediaThumbnailListener(event) {
         return;
     }
     if (localStorage.madesktopVisShowAlbumArt) {
+        albumArt.style.display = 'block';
         albumArt.src = event.thumbnail;
     }
     if (localStorage.madesktopVisFollowAlbumArt) {
@@ -612,10 +704,17 @@ function configChanged() {
         mainArea.style.boxShadow = '';
         mainArea.style.setProperty('--main-area-margin', '2px');
     }
+    if (localStorage.madesktopVisNoFsMargin) {
+        document.body.dataset.noFsMargin = true;
+    } else {
+        delete document.body.dataset.noFsMargin;
+    }
 
     if (localStorage.madesktopVisShowAlbumArt && lastAlbumArt) {
+        albumArt.style.display = 'block';
         albumArt.src = lastAlbumArt.thumbnail;
     } else {
+        albumArt.style.display = 'none';
         albumArt.src = '';
     }
 
@@ -648,11 +747,11 @@ function updateSchemeColor() {
 
 function updateTitle(musicInfo = lastMusic) {
     const titleMode = localStorage.madesktopVisTitleMode;
-    if (!musicInfo || titleMode === "-1") {
+    if (!musicInfo || titleMode === "static") {
         document.title = madGetString("VISUALIZER_TITLE");
-    } else if (!musicInfo.artist || titleMode === "2") {
+    } else if (!musicInfo.artist || titleMode === "titleOnly") {
         document.title = musicInfo.title;
-    } else if (titleMode === "1") {
+    } else if (titleMode === "artistThenTitle") {
         document.title = musicInfo.artist + ' - ' + musicInfo.title;
     } else {
         document.title = musicInfo.title + ' - ' + musicInfo.artist;

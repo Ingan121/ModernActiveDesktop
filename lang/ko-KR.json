@@ -440,7 +440,13 @@
     "VISUALIZER_VIEW_MENUITEM_PLAYBACK_STATUS": "재생 상태(&P)",
     "VISUALIZER_VIEW_MENUITEM_ENABLE_MEDIA_CONTROLS": "미디어 제어 활성화(&E)",
 
-    "VISUALIZER_OPT_MENUITEM_VISCONF": "시각화 설정(&C)",
+    "VISUALIZER_OPT_MENUITEM_COLORS": "색상(&C)",
+    "VISUALIZER_OPT_MENUITEM_TITLE": "창 제목(&T)",
+    "VISUALIZER_OPT_MENUITEM_CHAN_SEP": "채널 분리(&S)",
+    "VISUALIZER_OPT_MENUITEM_ALBUM_ART_SHOW": "앨범 아트 표시(&A)",
+    "VISUALIZER_OPT_MENUITEM_ALBUM_ART_DIM": "앨범 아트 어둡게 표시(&D)",
+    "VISUALIZER_OPT_MENUITEM_ALBUM_ART_SIZE": "앨범 아트 크기(&Z)",
+    "VISUALIZER_OPT_MENUITEM_VISCONF": "고급 옵션(&O)",
 
     "VISUALIZER_HELP_MENUITEM_ABOUT": "시각화 정보(&A)",
 
@@ -453,9 +459,10 @@
 
     "VISCONF_TITLE": "시각화 등록 정보",
     "VISCONF_COLOR_TITLE": "색상",
-    "VISCONF_COLOR_FOLLOW_SCHEME": "색 구성표 따르기",
-    "VISCONF_COLOR_FOLLOW_ALBUM_ART": "앨범 아트 색상 따르기 (가능할 경우)",
-    "VISCONF_SHOW_CLIENT_EDGE": "시각화 영역에 테두리 표시",
+    "VISCONF_COLOR_DEFAULT": "기본값(&D)",
+    "VISCONF_COLOR_FOLLOW_SCHEME": "색 구성표 따르기(&S)",
+    "VISCONF_COLOR_CUSTOM": "사용자 정의(&C)",
+    "VISCONF_COLOR_FOLLOW_ALBUM_ART": "가능할 경우 앨범 아트 색상 따르기(&F)",
 
     "VISCONF_CUSTOM_COLOR_TITLE": "사용자 정의 색상",
     "VISCONF_CUSTOM_COLOR_BG": "배경:",
@@ -473,24 +480,27 @@
     "VISCONF_ALBUM_ART_SIZE_ORIG": "원본",
     "VISCONF_ALBUM_ART_SIZE_2X": "2배",
 
-    "VISCONF_TITLE_OPT_TITLE": "창 제목",
-    "VISCONF_TITLE_OPT_TITLE_THEN_ARTIST": "제목 - 아티스트 (기본값)",
-    "VISCONF_TITLE_OPT_ARTIST_THEN_TITLE": "아티스트 - 제목",
-    "VISCONF_TITLE_OPT_TITLE_ONLY": "제목",
-    "VISCONF_TITLE_OPT_STATIC": "정적 (\"시각화\")",
-    "VISCONF_TITLE_OPT_INFO": "* 사용자 정의 정적 제목을 설정하려면 창 메뉴 -> 구성 -> 제목 변경을 사용하세요.",
-
-    "VISCONF_CHAN_SEP_TITLE": "채널 분리",
-    "VISCONF_CHAN_SEP_DISABLE": "처리 안함 (3.2 이전 작동 방식)",
-    "VISCONF_CHAN_SEP_REVERSE": "우측 채널 반전 (기본값)",
-    "VISCONF_CHAN_SEP_COMBINE": "좌우 채널 합치기",
-
     "VISCONF_VIS_TITLE": "시각화",
     "VISCONF_BAR_WIDTH": "고정 막대 너비:",
     "VISCONF_DEC_SPEED": "감소 속도:",
     "VISCONF_PRIMARY_SCALE": "주 배율:",
     "VISCONF_DIFF_SCALE": "차이 배율:",
     "VISCONF_SCALE_INFO": "* 막대가 너무 빨리 상단에 도달한다고 생각하면 배율 값을 조정하세요.<br>* 3.2 이전 차이 배율은 0.15였습니다.",
+
+    "VISCONF_MISC_TITLE": "기타",
+    "VISCONF_SHOW_CLIENT_EDGE": "시각화 영역에 테두리 표시",
+    "VISCONF_FS_MARGIN": "전체 화면 시 여백 적용",
+
+    "VISCONF_TITLE_OPT_TITLE": "창 제목",
+    "VISCONF_TITLE_OPT_TITLE_THEN_ARTIST": "제목 - 아티스트 (기본값)",
+    "VISCONF_TITLE_OPT_ARTIST_THEN_TITLE": "아티스트 - 제목",
+    "VISCONF_TITLE_OPT_TITLE_ONLY": "제목",
+    "VISCONF_TITLE_OPT_STATIC": "정적 (\"시각화\")",
+
+    "VISCONF_CHAN_SEP_TITLE": "채널 분리",
+    "VISCONF_CHAN_SEP_DISABLE": "처리 안함 (3.2 이전 작동 방식)",
+    "VISCONF_CHAN_SEP_REVERSE": "우측 채널 반전 (기본값)",
+    "VISCONF_CHAN_SEP_COMBINE": "좌우 채널 합치기",
 
 
     "CALC_TITLE": "계산기",

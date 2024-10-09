@@ -68,22 +68,21 @@ form {
     font-size: 10px;
 }
 
+.selectorArea {
+    margin-bottom: 0;
+}
+
+.selectorLabel {
+    position: relative;
+    top: -6px;
+}
+
 label[for="dimAlbumArtChkBox"] {
     margin-top: 3px;
 }
 
 #albumArtSizeArea {
     margin-top: 4px;
-    margin-bottom: 0;
-}
-
-#albumArtSizeLabel {
-    position: relative;
-    top: -6px;
-}
-
-#titleInfo mad-string {
-    white-space: initial;
 }
 
 #visConfArea {

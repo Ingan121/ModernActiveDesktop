@@ -107,12 +107,57 @@
     </div>
     <div id="optMenuBg" class="contextMenuBg window" tabindex="-1">
         <div id="optMenu" class="contextMenu window-body">
-            <div class="contextMenuItem"><p><mad-string data-locid="VISUALIZER_OPT_MENUITEM_VISCONF"><u>C</u>onfigure Visualization</mad-string></p></div>
+            <div class="contextMenuItem" data-submenu="color"><p><mad-string data-locid="VISUALIZER_OPT_MENUITEM_COLORS"><u>C</u>olors</mad-string></p><p class="submenuMark">⏵</p></div>
+            <div class="contextMenuItem" data-submenu="titleOpt"><p><mad-string data-locid="VISUALIZER_OPT_MENUITEM_TITLE">Window <u>T</u>itle</mad-string></p><p class="submenuMark">⏵</p></div>
+            <div class="contextMenuItem" data-submenu="chanSep"><p><mad-string data-locid="VISUALIZER_OPT_MENUITEM_CHAN_SEP">Channel <u>S</u>eparation</mad-string></p><p class="submenuMark">⏵</p></div>
+            <hr>
+            <div class="contextMenuItem"><p><mad-string data-locid="VISUALIZER_OPT_MENUITEM_ALBUM_ART_SHOW">Show <u>A</u>lbum Art</mad-string></p></div>
+            <div class="contextMenuItem"><p><mad-string data-locid="VISUALIZER_OPT_MENUITEM_ALBUM_ART_DIM"><u>D</u>im Album Art</mad-string></p></div>
+            <div class="contextMenuItem" data-submenu="albumArtSize"><p><mad-string data-locid="VISUALIZER_OPT_MENUITEM_ALBUM_ART_SIZE">Album Art Si<u>z</u>e</mad-string></p><p class="submenuMark">⏵</p></div>
+            <hr>
+            <div class="contextMenuItem"><p><mad-string data-locid="VISUALIZER_OPT_MENUITEM_VISCONF">Advanced <u>O</u>ptions</mad-string></p></div>
         </div>
     </div>
     <div id="helpMenuBg" class="contextMenuBg window" tabindex="-1">
         <div id="helpMenu" class="contextMenu window-body">
             <div class="contextMenuItem"><p><mad-string data-locid="VISUALIZER_HELP_MENUITEM_ABOUT"><u>A</u>bout Visualizer</mad-string></p></div>
+        </div>
+    </div>
+
+    <div id="colorMenuBg" class="contextMenuBg window" tabindex="-1" data-submenu-of="opt">
+        <div id="colorMenu" class="contextMenu window-body">
+            <div class="contextMenuItem"><p><mad-string data-locid="VISCONF_COLOR_DEFAULT"><u>D</u>efault</mad-string></p></div>
+            <div class="contextMenuItem"><p><mad-string data-locid="VISCONF_COLOR_FOLLOW_SCHEME">Follow color <u>s</u>cheme</mad-string></p></div>
+            <div class="contextMenuItem"><p><mad-string data-locid="VISCONF_COLOR_CUSTOM"><u>C</u>ustom</mad-string></p></div>
+            <hr>
+            <div class="contextMenuItem"><p><mad-string data-locid="VISCONF_COLOR_FOLLOW_ALBUM_ART">Follow <u>a</u>lbum art colors if available</mad-string></p></div>
+        </div>
+    </div>
+    <div id="albumArtSizeMenuBg" class="contextMenuBg window" tabindex="-1" data-submenu-of="opt">
+        <div id="albumArtSizeMenu" class="contextMenu window-body">
+            <div class="contextMenuItem" data-value="auto"><p><mad-string data-locid="VISCONF_ALBUM_ART_SIZE_AUTO">Auto</mad-string></p></div>
+            <div class="contextMenuItem" data-value="auto2x"><p><mad-string data-locid="VISCONF_ALBUM_ART_SIZE_AUTO2X">Auto (Prefer 2x)</mad-string></p></div>
+            <div class="contextMenuItem" data-value="auto2xmin"><p><mad-string data-locid="VISCONF_ALBUM_ART_SIZE_AUTO2XMIN">Auto (2x minimum size)</mad-string></p></div>
+            <div class="contextMenuItem" data-value="orig"><p><mad-string data-locid="VISCONF_ALBUM_ART_SIZE_ORIG">Original</mad-string></p></div>
+            <div class="contextMenuItem" data-value="2x"><p><mad-string data-locid="VISCONF_ALBUM_ART_SIZE_2X">2x</mad-string></p></div>
+            <div class="contextMenuItem" data-value="horizfit"><p><mad-string data-locid="MADCONF_WPDISPLAY_FIT">Fit</mad-string></p></div>
+            <div class="contextMenuItem" data-value="vertfit"><p><mad-string data-locid="MADCONF_WPDISPLAY_FILL">Fill</mad-string></p></div>
+            <div class="contextMenuItem" data-value="scale"><p><mad-string data-locid="MADCONF_WPDISPLAY_STRETCH">Stretch</mad-string></p></div>
+        </div>
+    </div>
+    <div id="titleOptMenuBg" class="contextMenuBg window" tabindex="-1" data-submenu-of="opt">
+        <div id="titleOptMenu" class="contextMenu window-body">
+            <div class="contextMenuItem" data-value="titleThenArtist"><p><mad-string data-locid="VISCONF_TITLE_OPT_TITLE_THEN_ARTIST">Title - Artist (default)</mad-string></p></div>
+            <div class="contextMenuItem" data-value="artistThenTitle"><p><mad-string data-locid="VISCONF_TITLE_OPT_ARTIST_THEN_TITLE">Artist - Title</mad-string></p></div>
+            <div class="contextMenuItem" data-value="titleOnly"><p><mad-string data-locid="VISCONF_TITLE_OPT_TITLE_ONLY">Title</mad-string></p></div>
+            <div class="contextMenuItem" data-value="static"><p><mad-string data-locid="VISCONF_TITLE_OPT_STATIC">Static ("Visualization")</mad-string></p></div>
+        </div>
+    </div>
+    <div id="chanSepMenuBg" class="contextMenuBg window" tabindex="-1" data-submenu-of="opt">
+        <div id="chanSepMenu" class="contextMenu window-body">
+            <div class="contextMenuItem"><p><mad-string data-locid="VISCONF_CHAN_SEP_DISABLE">No processing (pre-3.2 behavior)</mad-string></p></div>
+            <div class="contextMenuItem"><p><mad-string data-locid="VISCONF_CHAN_SEP_REVERSE">Reverse the right channel (default)</mad-string></p></div>
+            <div class="contextMenuItem"><p><mad-string data-locid="VISCONF_CHAN_SEP_COMBINE">Combine left and right channels</mad-string></p></div>
         </div>
     </div>
     <script src="../../js/functions.js"></script>
