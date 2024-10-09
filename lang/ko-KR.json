@@ -473,6 +473,13 @@
     "VISCONF_ALBUM_ART_SIZE_ORIG": "원본",
     "VISCONF_ALBUM_ART_SIZE_2X": "2배",
 
+    "VISCONF_TITLE_OPT_TITLE": "창 제목",
+    "VISCONF_TITLE_OPT_TITLE_THEN_ARTIST": "제목 - 아티스트 (기본값)",
+    "VISCONF_TITLE_OPT_ARTIST_THEN_TITLE": "아티스트 - 제목",
+    "VISCONF_TITLE_OPT_TITLE_ONLY": "제목",
+    "VISCONF_TITLE_OPT_STATIC": "정적 (\"시각화\")",
+    "VISCONF_TITLE_OPT_INFO": "* 사용자 정의 정적 제목을 설정하려면 창 메뉴 -> 구성 -> 제목 변경을 사용하세요.",
+
     "VISCONF_CHAN_SEP_TITLE": "채널 분리",
     "VISCONF_CHAN_SEP_DISABLE": "처리 안함 (3.2 이전 작동 방식)",
     "VISCONF_CHAN_SEP_REVERSE": "우측 채널 반전 (기본값)",

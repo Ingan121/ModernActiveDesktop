@@ -144,7 +144,7 @@ window.addEventListener("message", (event) => {
                 }
             }
         case "language-ready":
-            if (lastMusic === null) {
+            if (lastMusic === null || localStorage.madesktopVisTitleMode === "-1") {
                 document.title = madGetString("VISUALIZER_TITLE");
             }
     }
@@ -486,19 +486,14 @@ function wallpaperMediaPropertiesListener(event) {
         return;
     }
 
-    let artist = event.artist;
-    if (artist.endsWith(' - Topic')) { // YT auto-generated stuff
-        artist = artist.slice(0, -7);
+    if (event.artist.endsWith(' - Topic')) { // YT auto-generated stuff
+        event.artist = artist.slice(0, -7);
     }
-    if (artist) {
-        document.title = event.title + ' - ' + artist;
-    } else {
-        document.title = event.title;
-    }
+    updateTitle(event);
 
     titleValue.textContent = event.title;
     subtitleValue.textContent = event.subTitle;
-    artistValue.textContent = artist;
+    artistValue.textContent = event.artist;
     albumValue.textContent = event.albumTitle;
     albumArtistValue.textContent = event.albumArtist;
     genreValue.textContent = event.genres.replaceAll(',', ', ');
@@ -599,6 +594,13 @@ function wallpaperMediaThumbnailListener(event) {
     if (localStorage.madesktopVisFollowAlbumArt) {
         document.body.style.backgroundColor = event.primaryColor;
     }
+    const image = new Image();
+    image.onload = () => {
+        event.width = image.width;
+        event.height = image.height;
+        updateAlbumArtSize();
+    }
+    image.src = event.thumbnail;
     lastAlbumArt = event;
 }
 
@@ -631,6 +633,8 @@ function configChanged() {
         albumArt.style.opacity = '1';
     }
     updateVisConfig();
+    updateTitle();
+    updateAlbumArtSize();
     updateSize();
 }
 
@@ -639,6 +643,100 @@ function updateSchemeColor() {
     schemeTopColor = getComputedStyle(document.documentElement).getPropertyValue('--button-text');
     if (localStorage.madesktopVisUseSchemeColors && (!lastAlbumArt || !localStorage.madesktopVisFollowAlbumArt)) {
         document.body.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--button-face');
+    }
+}
+
+function updateTitle(musicInfo = lastMusic) {
+    const titleMode = localStorage.madesktopVisTitleMode;
+    if (!musicInfo || titleMode === "-1") {
+        document.title = madGetString("VISUALIZER_TITLE");
+    } else if (!musicInfo.artist || titleMode === "2") {
+        document.title = musicInfo.title;
+    } else if (titleMode === "1") {
+        document.title = musicInfo.artist + ' - ' + musicInfo.title;
+    } else {
+        document.title = musicInfo.title + ' - ' + musicInfo.artist;
+    }
+}
+
+function updateAlbumArtSize() {
+    if (!lastAlbumArt) {
+        return;
+    }
+    const width = lastAlbumArt.width;
+    const height = lastAlbumArt.height;
+    switch (localStorage.madesktopVisAlbumArtSize) {
+        case "auto2x":
+            albumArt.style.width = width * 2 + 'px';
+            albumArt.style.height = height * 2 + 'px';
+            albumArt.style.minWidth = '';
+            albumArt.style.minHeight = '';
+            albumArt.style.maxWidth = '';
+            albumArt.style.maxHeight = '';
+            albumArt.style.objectFit = '';
+            break;
+        case "auto2xmin":
+            albumArt.style.width = '';
+            albumArt.style.height = '';
+            albumArt.style.minWidth = '70%';
+            albumArt.style.minHeight = '70%';
+            albumArt.style.maxWidth = '';
+            albumArt.style.maxHeight = '';
+            albumArt.style.objectFit = '';
+            break;
+        case "orig":
+            albumArt.style.width = '';
+            albumArt.style.height = '';
+            albumArt.style.minWidth = '0';
+            albumArt.style.minHeight = '0';
+            albumArt.style.maxWidth = 'none';
+            albumArt.style.maxHeight = 'none';
+            albumArt.style.objectFit = '';
+            break;
+        case "2x":
+            albumArt.style.width = width * 2 + 'px';
+            albumArt.style.height = height * 2 + 'px';
+            albumArt.style.minWidth = '0';
+            albumArt.style.minHeight = '0';
+            albumArt.style.maxWidth = 'none';
+            albumArt.style.maxHeight = 'none';
+            albumArt.style.objectFit = '';
+            break;
+        case "horizfit":
+            albumArt.style.width = 'calc(100% - var(--main-area-margin))';
+            albumArt.style.height = 'calc(100% - var(--main-area-margin))';
+            albumArt.style.minWidth = '';
+            albumArt.style.minHeight = '';
+            albumArt.style.maxWidth = 'none';
+            albumArt.style.maxHeight = 'none';
+            albumArt.style.objectFit = 'contain';
+            break;
+        case "vertfit":
+            albumArt.style.width = 'calc(100% - var(--main-area-margin))';
+            albumArt.style.height = 'calc(100% - var(--main-area-margin))';
+            albumArt.style.minWidth = '';
+            albumArt.style.minHeight = '';
+            albumArt.style.maxWidth = 'none';
+            albumArt.style.maxHeight = 'none';
+            albumArt.style.objectFit = 'cover';
+            break;
+        case "scale":
+            albumArt.style.width = 'calc(100% - var(--main-area-margin))';
+            albumArt.style.height = 'calc(100% - var(--main-area-margin))';
+            albumArt.style.minWidth = '';
+            albumArt.style.minHeight = '';
+            albumArt.style.maxWidth = 'none';
+            albumArt.style.maxHeight = 'none';
+            albumArt.style.objectFit = 'fill';
+            break;
+        default: // "auto" or not set; handled in CSS
+            albumArt.style.width = '';
+            albumArt.style.height = '';
+            albumArt.style.minWidth = '';
+            albumArt.style.minHeight = '';
+            albumArt.style.maxWidth = '';
+            albumArt.style.maxHeight = '';
+            albumArt.style.objectFit = '';
     }
 }
 

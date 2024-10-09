@@ -1737,12 +1737,14 @@
                 delete localStorage.madesktopVisShowAlbumArt;
                 delete localStorage.madesktopVisDimAlbumArt;
                 delete localStorage.madesktopVisOnlyAlbumArt;
+                delete localStorage.madesktopVisAlbumArtSize;
                 delete localStorage.madesktopVisNoClientEdge;
                 delete localStorage.madesktopVisMenuAutohide;
                 delete localStorage.madesktopVisFullscreen;
                 delete localStorage.madesktopVisInfoShown;
                 delete localStorage.madesktopVisStatusShown;
                 delete localStorage.madesktopVisMediaControls;
+                delete localStorage.madesktopVisTitleMode;
                 delete localStorage.madesktopVisChannelSeparation;
                 delete localStorage.madesktopVisBarWidth;
                 delete localStorage.madesktopVisDecSpeed;

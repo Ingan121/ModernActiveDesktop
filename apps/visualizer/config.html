@@ -55,18 +55,36 @@
             <input id="dimAlbumArtChkBox" type="checkbox" name="albumArt" disabled>
             <label for="dimAlbumArtChkBox"><mad-string data-locid="VISCONF_ALBUM_ART_DIM">Dim album art</mad-string></label>
             <div id="albumArtSizeArea">
-                <span id="albumArtSizeLabel"><mad-string data-locid="VISCONF_ALBUM_ART_SIZE_TITLE">Album art size</mad-string>:</span>
-                <mad-select id="albumArtSizeSelector">
+                <span id="albumArtSizeLabel" class="disabled"><mad-string data-locid="VISCONF_ALBUM_ART_SIZE_TITLE">Album art size</mad-string>:</span>
+                <mad-select id="albumArtSizeSelector" disabled>
                     <option value="auto"><mad-string data-locid="VISCONF_ALBUM_ART_SIZE_AUTO">Auto</mad-string></option>
                     <option value="auto2x"><mad-string data-locid="VISCONF_ALBUM_ART_SIZE_AUTO2X">Auto (Prefer 2x)</mad-string></option>
                     <option value="auto2xmin"><mad-string data-locid="VISCONF_ALBUM_ART_SIZE_AUTO2XMIN">Auto (2x minimum size)</mad-string></option>
                     <option value="orig"><mad-string data-locid="VISCONF_ALBUM_ART_SIZE_ORIG">Original</mad-string></option>
                     <option value="2x"><mad-string data-locid="VISCONF_ALBUM_ART_SIZE_2X">2x</mad-string></option>
                     <option value="horizfit"><mad-string data-locid="MADCONF_WPDISPLAY_FIT">Fit</mad-string></option>
-                    <option value="virtfit"><mad-string data-locid="MADCONF_WPDISPLAY_FILL">Fill</mad-string></option>
+                    <option value="vertfit"><mad-string data-locid="MADCONF_WPDISPLAY_FILL">Fill</mad-string></option>
                     <option value="scale"><mad-string data-locid="MADCONF_WPDISPLAY_STRETCH">Stretch</mad-string></option>
                 </mad-select>
             </div>
+        </fieldset>
+        <fieldset>
+            <legend><mad-string data-locid="VISCONF_TITLE_OPT_TITLE">Window title</mad-string></legend>
+            <form name="titleSelector">
+                <input id="radTitleThenArtist" type="radio" name="title" value="titleThenArtist" checked>
+                <label for="radTitleThenArtist"><mad-string data-locid="VISCONF_TITLE_OPT_TITLE_THEN_ARTIST">Title - Artist (default)</mad-string></label><br>
+                <input id="radArtistThenTitle" type="radio" name="title" value="artistThenTitle">
+                <label for="radArtistThenTitle"><mad-string data-locid="VISCONF_TITLE_OPT_ARTIST_THEN_TITLE">Artist - Title</mad-string></label><br>
+                <input id="radTitleOnly" type="radio" name="title" value="titleOnly">
+                <label for="radTitleOnly"><mad-string data-locid="VISCONF_TITLE_OPT_TITLE_ONLY">Title</mad-string></label><br>
+                <input id="radStatic" type="radio" name="title" value="static">
+                <label for="radStatic"><mad-string data-locid="VISCONF_TITLE_OPT_STATIC">Static ("Visualization")</mad-string></label>
+            </form>
+            <p id="titleInfo">
+                <mad-string data-locid="VISCONF_TITLE_OPT_INFO">
+                    * Use window menu -> Configure -> Change title to set a custom static title.
+                </mad-string>
+            </p>
         </fieldset>
         <fieldset>
             <legend><mad-string data-locid="VISCONF_CHAN_SEP_TITLE">Channel separation</mad-string></legend>

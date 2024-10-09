@@ -95,6 +95,8 @@ a {
 
 #bottomArea {
     background-color: var(--button-face);
+    position: relative;
+    z-index: 4;
 }
 
 #bottomArea:hover {
@@ -363,5 +365,4 @@ body[data-fullscreen] #bottomArea {
     width: calc(100% - var(--mad-margin-left) - var(--mad-margin-right));
     bottom: var(--mad-margin-bottom);
     opacity: 0;
-    z-index: 4;
 }

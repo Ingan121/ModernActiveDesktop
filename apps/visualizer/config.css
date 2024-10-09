@@ -82,6 +82,10 @@ label[for="dimAlbumArtChkBox"] {
     top: -6px;
 }
 
+#titleInfo mad-string {
+    white-space: initial;
+}
+
 #visConfArea {
     width: 100%;
     display: grid;

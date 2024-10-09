@@ -26,6 +26,13 @@ const topColorPickerLabel = document.getElementById("topColorPickerLabel");
 
 const albumArtChkBox = document.getElementById("albumArtChkBox");
 const dimAlbumArtChkBox = document.getElementById("dimAlbumArtChkBox");
+const albumArtSizeLabel = document.getElementById("albumArtSizeLabel");
+const albumArtSizeSelector = document.getElementById("albumArtSizeSelector");
+
+const titleThenArtistRadBtn = document.getElementById("radTitleThenArtist");
+const artistThenTitleRadBtn = document.getElementById("radArtistThenTitle");
+const titleOnlyRadBtn = document.getElementById("radTitleOnly");
+const staticRadBtn = document.getElementById("radStatic");
 
 const noProcessingRadBtn = document.getElementById("radNoProcessing");
 const reverseRadBtn = document.getElementById("radReverse");
@@ -111,8 +118,12 @@ customRadBtn.addEventListener("click", () => {
 albumArtChkBox.addEventListener("change", () => {
     if (albumArtChkBox.checked) {
         dimAlbumArtChkBox.disabled = false;
+        albumArtSizeLabel.classList.remove("disabled");
+        albumArtSizeSelector.disabled = false;
     } else {
         dimAlbumArtChkBox.disabled = true;
+        albumArtSizeLabel.classList.add("disabled");
+        albumArtSizeSelector.disabled = true;
     }
 });
 
@@ -160,6 +171,17 @@ window.apply = function () {
         localStorage.madesktopVisDimAlbumArt = true;
     } else {
         delete localStorage.madesktopVisDimAlbumArt;
+    }
+    localStorage.madesktopVisAlbumArtSize = albumArtSizeSelector.value;
+
+    if (titleThenArtistRadBtn.checked) {
+        localStorage.madesktopVisTitleMode = 0;
+    } else if (artistThenTitleRadBtn.checked) {
+        localStorage.madesktopVisTitleMode = 1;
+    } else if (titleOnlyRadBtn.checked) {
+        localStorage.madesktopVisTitleMode = 2;
+    } else {
+        localStorage.madesktopVisTitleMode = -1;
     }
 
     if (noProcessingRadBtn.checked) {
@@ -217,9 +239,31 @@ if (localStorage.madesktopVisNoClientEdge) {
 if (localStorage.madesktopVisShowAlbumArt) {
     albumArtChkBox.checked = true;
     dimAlbumArtChkBox.disabled = false;
+    albumArtSizeLabel.classList.remove("disabled");
+    albumArtSizeSelector.disabled = false;
 }
 if (localStorage.madesktopVisDimAlbumArt) {
     dimAlbumArtChkBox.checked = true;
+}
+if (localStorage.madesktopVisAlbumArtSize) {
+    albumArtSizeSelector.value = localStorage.madesktopVisAlbumArtSize;
+}
+
+if (localStorage.madesktopVisTitleMode) {
+    switch (parseInt(localStorage.madesktopVisTitleMode)) {
+        case 0:
+            titleThenArtistRadBtn.checked = true;
+            break;
+        case 1:
+            artistThenTitleRadBtn.checked = true;
+            break;
+        case 2:
+            titleOnlyRadBtn.checked = true;
+            break;
+        case -1:
+            staticRadBtn.checked = true;
+            break;
+    }
 }
 
 if (localStorage.madesktopVisChannelSeparation) {

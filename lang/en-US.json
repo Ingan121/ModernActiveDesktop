@@ -525,6 +525,13 @@
     "VISCONF_ALBUM_ART_SIZE_ORIG": "Original",
     "VISCONF_ALBUM_ART_SIZE_2X": "2x",
 
+    "VISCONF_TITLE_OPT_TITLE": "Window title",
+    "VISCONF_TITLE_OPT_TITLE_THEN_ARTIST": "Title - Artist (default)",
+    "VISCONF_TITLE_OPT_ARTIST_THEN_TITLE": "Artist - Title",
+    "VISCONF_TITLE_OPT_TITLE_ONLY": "Title",
+    "VISCONF_TITLE_OPT_STATIC": "Static (\"Visualization\")",
+    "VISCONF_TITLE_OPT_INFO": "* Use window menu -> Configure -> Change title to set a custom static title.",
+
     "VISCONF_CHAN_SEP_TITLE": "Channel separation",
     "VISCONF_CHAN_SEP_DISABLE": "No processing (pre-3.2 behavior)",
     "VISCONF_CHAN_SEP_REVERSE": "Reverse the right channel (default)",
