@@ -40,6 +40,7 @@ const diffScaleInput = document.getElementById("diffScaleInput");
 const diffScaleInfo = document.getElementById("diffScaleInfo");
 
 const titleOptSelector = document.getElementById("titleOptSelector");
+const chanSepArea = document.getElementById("chanSepArea");
 const chanSepSelector = document.getElementById("chanSepSelector");
 const showClientEdgeChkBox = document.getElementById('showClientEdgeChkBox');
 const fsMarginChkBox = document.getElementById("fsMarginChkBox");
@@ -291,9 +292,6 @@ if (localStorage.madesktopVisOnlyAlbumArt) {
     topColorPicker.disabled = true;
     barColorPickerLabel.classList.add("disabled");
     topColorPickerLabel.classList.add("disabled");
-    noProcessingRadBtn.disabled = true;
-    reverseRadBtn.disabled = true;
-    combineRadBtn.disabled = true;
     fixedBarsChkBox.disabled = true;
     barWidthInput.disabled = true;
     decSpeedLabel.classList.add("disabled");
@@ -303,6 +301,8 @@ if (localStorage.madesktopVisOnlyAlbumArt) {
     diffScaleLabel.classList.add("disabled");
     diffScaleInput.disabled = true;
     diffScaleInfo.classList.add("disabled");
+    chanSepArea.classList.add("disabled");
+    chanSepSelector.disabled = true;
 }
 
 window.addEventListener('load', () => {

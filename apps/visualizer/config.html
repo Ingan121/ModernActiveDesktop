@@ -18,9 +18,9 @@
                 <input id="radScheme" type="radio" name="color" value="scheme" accesskey="s">
                 <label for="radScheme"><mad-string data-locid="VISCONF_COLOR_FOLLOW_SCHEME">Follow color <u>s</u>cheme</mad-string></label><br>
                 <input id="radCustom" type="radio" name="color" value="custom" accesskey="c">
-                <label for="radCustom"><mad-string data-locid="VISCONF_COLOR_FOLLOW_CUSTOM"><u>C</u>ustom</mad-string></label><br>
-                <input id="followAlbumArtChkBox" type="checkbox" name="followAlbumArt" accesskey="a">
-                <label for="followAlbumArtChkBox"><mad-string data-locid="VISCONF_COLOR_FOLLOW_ALBUM_ART">Follow <u>a</u>lbum art colors if available</mad-string></label>
+                <label for="radCustom"><mad-string data-locid="VISCONF_COLOR_CUSTOM"><u>C</u>ustom</mad-string></label><br>
+                <input id="followAlbumArtChkBox" type="checkbox" name="followAlbumArt" accesskey="l">
+                <label for="followAlbumArtChkBox"><mad-string data-locid="VISCONF_COLOR_FOLLOW_ALBUM_ART">Follow a<u>l</u>bum art colors if available</mad-string></label>
             </form>
         </fieldset>
         <fieldset>
@@ -48,10 +48,10 @@
         </fieldset>
         <fieldset>
             <legend><mad-string data-locid="VISCONF_ALBUM_ART_TITLE">Album art</mad-string></legend>
-            <input id="albumArtChkBox" type="checkbox" name="albumArt">
-            <label for="albumArtChkBox"><mad-string data-locid="VISCONF_ALBUM_ART_SHOW">Show album art</mad-string></label><br>
-            <input id="dimAlbumArtChkBox" type="checkbox" name="albumArt" disabled>
-            <label for="dimAlbumArtChkBox"><mad-string data-locid="VISCONF_ALBUM_ART_DIM">Dim album art</mad-string></label>
+            <input id="albumArtChkBox" type="checkbox" name="albumArt" accesskey="h">
+            <label for="albumArtChkBox"><mad-string data-locid="VISCONF_ALBUM_ART_SHOW">S<u>h</u>ow album art</mad-string></label><br>
+            <input id="dimAlbumArtChkBox" type="checkbox" name="albumArt" disabled accesskey="i">
+            <label for="dimAlbumArtChkBox"><mad-string data-locid="VISCONF_ALBUM_ART_DIM">D<u>i</u>m album art</mad-string></label>
             <div id="albumArtSizeArea" class="selectorArea disabled">
                 <span id="albumArtSizeLabel" class="selectorLabel"><mad-string data-locid="VISCONF_ALBUM_ART_SIZE_TITLE">Album art size</mad-string>:</span>
                 <mad-select id="albumArtSizeSelector" disabled>
@@ -70,8 +70,8 @@
             <legend><mad-string data-locid="VISCONF_VIS_TITLE">Visualization</mad-string></legend>
             <div id="visConfArea">
                 <div>
-                    <input id="fixedBarsChkBox" type="checkbox">
-                    <label for="fixedBarsChkBox"><mad-string data-locid="VISCONF_BAR_WIDTH">Fixed bar width:</mad-string></label>
+                    <input id="fixedBarsChkBox" type="checkbox" accesskey="w">
+                    <label for="fixedBarsChkBox"><mad-string data-locid="VISCONF_BAR_WIDTH">Fixed bar <u>w</u>idth:</mad-string></label>
                     <input id="barWidthInput" type="number" name="barWidth" value="6" step="1" placeholder="6" disabled>
                 </div>
                 <div>
@@ -113,10 +113,10 @@
                     <option value="combine"><mad-string data-locid="VISCONF_CHAN_SEP_COMBINE">Combine left and right channels</mad-string></option>
                 </mad-select>
             </div>
-            <input id="showClientEdgeChkBox" type="checkbox" name="showClientEdge" checked>
-            <label for="showClientEdgeChkBox"><mad-string data-locid="VISCONF_SHOW_CLIENT_EDGE">Show client edges around the visualization area</mad-string></label><br>
-            <input id="fsMarginChkBox" type="checkbox" name="fsMargin" checked>
-            <label for="fsMarginChkBox"><mad-string data-locid="VISCONF_FS_MARGIN">Apply margins in fullscreen mode</mad-string></label>
+            <input id="showClientEdgeChkBox" type="checkbox" name="showClientEdge" checked accesskey="b">
+            <label for="showClientEdgeChkBox"><mad-string data-locid="VISCONF_SHOW_CLIENT_EDGE">Show <u>b</u>orders around the visualization area</mad-string></label><br>
+            <input id="fsMarginChkBox" type="checkbox" name="fsMargin" checked accesskey="m">
+            <label for="fsMarginChkBox"><mad-string data-locid="VISCONF_FS_MARGIN">Apply <u>m</u>argins in fullscreen mode</mad-string></label>
         </fieldset>
         <section class="bottomButtons field-row">
             <button id="okBtn"><mad-string data-locid="UI_OK">OK</mad-string></button>

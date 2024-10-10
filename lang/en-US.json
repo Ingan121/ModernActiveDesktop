@@ -514,7 +514,7 @@
     "VISCONF_COLOR_DEFAULT": "&Default",
     "VISCONF_COLOR_FOLLOW_SCHEME": "Follow color &scheme",
     "VISCONF_COLOR_CUSTOM": "&Custom",
-    "VISCONF_COLOR_FOLLOW_ALBUM_ART": "Follow &album art colors if available",
+    "VISCONF_COLOR_FOLLOW_ALBUM_ART": "Follow a&lbum art colors if available",
 
     "VISCONF_CUSTOM_COLOR_TITLE": "Custom colors",
     "VISCONF_CUSTOM_COLOR_BG": "Background:",
@@ -522,8 +522,8 @@
     "VISCONF_CUSTOM_COLOR_TOP": "Top:",
 
     "VISCONF_ALBUM_ART_TITLE": "Album art",
-    "VISCONF_ALBUM_ART_SHOW": "Show album art",
-    "VISCONF_ALBUM_ART_DIM": "Dim album art",
+    "VISCONF_ALBUM_ART_SHOW": "S&how album art",
+    "VISCONF_ALBUM_ART_DIM": "D&im album art",
 
     "VISCONF_ALBUM_ART_SIZE_TITLE": "Album art size",
     "VISCONF_ALBUM_ART_SIZE_AUTO": "Auto",
@@ -533,15 +533,15 @@
     "VISCONF_ALBUM_ART_SIZE_2X": "2x",
 
     "VISCONF_VIS_TITLE": "Visualization",
-    "VISCONF_BAR_WIDTH": "Fixed bar width:",
+    "VISCONF_BAR_WIDTH": "Fixed bar &width:",
     "VISCONF_DEC_SPEED": "Decrement speed:",
     "VISCONF_PRIMARY_SCALE": "Primary scale:",
     "VISCONF_DIFF_SCALE": "Difference scale:",
     "VISCONF_SCALE_INFO": "* Adjust the scale values if you think the bars reach the top too fast.<br>* Pre-3.2 difference scale was 0.15.",
 
     "VISCONF_MISC_TITLE": "Miscellaneous",
-    "VISCONF_FS_MARGIN": "Apply margins in fullscreen mode",
-    "VISCONF_SHOW_CLIENT_EDGE": "Show borders around the visualization area",
+    "VISCONF_FS_MARGIN": "Apply &margins in fullscreen mode",
+    "VISCONF_SHOW_CLIENT_EDGE": "Show &borders around the visualization area",
 
     "VISCONF_TITLE_OPT_TITLE": "Window title",
     "VISCONF_TITLE_OPT_TITLE_THEN_ARTIST": "Title - Artist (default)",

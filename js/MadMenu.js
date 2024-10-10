@@ -250,6 +250,9 @@ class MadMenu {
                 }
                 let parentMenuItemIndex = Array.from(parentMenuBg.querySelectorAll('.contextMenuItem')).findIndex((elem) => elem.dataset.submenu === menuName);
                 parentMenuItem = parentMenuBg.querySelectorAll('.contextMenuItem')[parentMenuItemIndex];
+                if (parentMenuItem.classList.contains('disabled')) {
+                    return;
+                }
             } else {
                 // Make sure other menus are closed
                 for (const menu of this.menuOrder) {
