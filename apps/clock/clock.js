@@ -411,11 +411,12 @@ window.addEventListener("message", (event) => {
     switch (event.data.type) {
         case "scheme-updated":
             delete localStorage.madesktopClockBackgroundColor;
-            if (localStorage.madesktopColorScheme !== 'custom' && localStorage.madesktopColorScheme !== '98' && !localStorage.madesktopClockDigital) {
+            if (!localStorage.madesktopClockDigital && !['98', 'custom', 'sys', undefined].includes(localStorage.madesktopColorScheme)) {
                 location.reload();
+            } else {
+                colors.background = getComputedStyle(document.documentElement).getPropertyValue('--button-face');
+                drawClock();
             }
-            colors.background = getComputedStyle(document.documentElement).getPropertyValue('--button-face');
-            drawClock();
             break;
         case "language-ready":
             clockTitle = madGetString("CLOCK_TITLE");

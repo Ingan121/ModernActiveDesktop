@@ -11,6 +11,7 @@
 
 (function () {
     const errorWnd = document.getElementById("errorWnd");
+    const appInfoLabel = document.getElementById("appinfo");
     const locationLabel = document.getElementById("location");
     const runningModeLabel = document.getElementById("runmode");
     const kbdSupportLabel = document.getElementById("kbdsupport");
@@ -77,6 +78,7 @@
     }
 
     function showDebugInfo() {
+        appInfoLabel.textContent = madProcessString("%n %0v");
         locationLabel.textContent = madGetString("MAD_DEBUG_LOCATION", location.href);
 
         let runningModeStr = madGetString("MAD_DEBUG_BROWSER");

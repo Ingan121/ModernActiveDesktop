@@ -5,6 +5,11 @@
 
 'use strict';
 
+if (!parent.favorites) {
+    document.body.textContent = "Loading...";
+    parent.favorites = [];
+}
+
 const dummyItem = document.getElementById('dummyFavoriteItem');
 
 for (const favorite of parent.favorites) {
@@ -15,7 +20,7 @@ for (const favorite of parent.favorites) {
         parent.go(favorite[0]);
     });
     if (favorite[2]) {
-        newItem.style.backgroundImage = "url(" + favorite[2] + ")";
+        newItem.style.backgroundImage = "url(" + URL.createObjectURL(favorite[2]) + ")";
     }
     document.body.appendChild(newItem);
 }

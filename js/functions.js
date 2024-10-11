@@ -208,6 +208,16 @@
         });
     }
 
+    function escapeHTML(str) {
+        return str.replace(/[&<>'"]/g, tag => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            "'": '&#39;',
+            '"': '&quot;'
+        }[tag] || tag));
+    }
+
     window.getTextWidth = getTextWidth;
     window.scrollIntoView = scrollIntoView;
     window.rgbToHex = rgbToHex;
@@ -223,4 +233,5 @@
     window.preventDefault = preventDefault;
     window.base64ToArrayBuffer = base64ToArrayBuffer;
     window.blobToBase64 = blobToBase64;
+    window.escapeHTML = escapeHTML;
 })();

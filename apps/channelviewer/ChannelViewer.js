@@ -5,6 +5,7 @@
 
 'use strict';
 
+// #region Constants and variables
 const schemeElement = document.getElementById("scheme");
 
 const toolbars = document.getElementById("toolbars");
@@ -73,7 +74,6 @@ if (parent === window) {
 const cvBase = madBase + 'apps/channelviewer/';
 
 let title = "";
-window.favorites = JSON.parse(localStorage.madesktopChanViewFavorites || "[[\"https://www.ingan121.com/\",\"Ingan121's Webpage\"],[\"https://github.com/Ingan121/ModernActiveDesktop\",\"ModernActiveDesktop GitHub\"]]");
 let didFirstLoad = false;
 let isCrossOrigin = madRunningMode !== 1; // Wallpaper Engine disables all cross-origin iframe restrictions
 let historyLength = 0;
@@ -89,7 +89,9 @@ let favEditMode = false;
 let baseStylesheet = '';
 let themeStylesheet = '';
 let loadToken = 0; // Used for canceling forceLoad if the user navigates before it's done
+// #endregion
 
+// #region Menus
 madDeskMover.menu = new MadMenu(menuBar, ['file', 'edit', 'view', 'go', 'favorites', 'help'], ['toolbars', 'explorerBar'], ['history']);
 
 fileMenuItems[0].addEventListener("click", function () { // New window button
@@ -211,7 +213,11 @@ favoritesMenuBg.addEventListener("beforemenuopen", function () {
             item.remove();
         }
     }
-    for (const favorite of favorites) {
+    if (!window.favorites) {
+        appendFavoriteItem(["about:blank", "Loading..."]);
+        return;
+    }
+    for (const favorite of window.favorites) {
         appendFavoriteItem(favorite);
     }
     const menuItems = Array.from(favoritesMenu.querySelectorAll(".contextMenuItem")).slice(2);
@@ -236,16 +242,11 @@ favoritesMenuItems[0].addEventListener("click", function () { // Add to Favorite
         if (name === null) return;
         const iconBlob = await getFavicon(true);
         if (iconBlob) {
-            const icon = await getDataUrl(iconBlob);
-            if (icon.startsWith("data:image/")) {
-                favorites.push([getCurrentUrl(), name, icon]);
-            } else {
-                favorites.push([getCurrentUrl(), name]);
-            }
+            window.favorites.push([getCurrentUrl(), name, iconBlob]);
         } else {
-            favorites.push([getCurrentUrl(), name]);
+            window.favorites.push([getCurrentUrl(), name]);
         }
-        localStorage.madesktopChanViewFavorites = JSON.stringify(favorites);
+        await madIdb.setItem("cvFavorites", window.favorites);
         if (mainArea.classList.contains("sidebarOpen") && sidebarTitle.locId === "CV_SIDEBAR_FAVORITES") {
             openSidebar("Favorites");
         }
@@ -359,7 +360,9 @@ explorerBarMenuItems[1].addEventListener("click", function () { // Channels butt
 explorerBarMenuItems[2].addEventListener("click", function () { // None button
     closeSidebar();
 });
+// #endregion
 
+// #region Event listeners - toolbar buttons
 backButton.addEventListener("click", function () {
     if (isCrossOrigin) {
         history.back();
@@ -572,7 +575,10 @@ sslIndicator.addEventListener('click', function () {
         madAlert(madGetString("CV_MSG_SSL_SECURE"));
     }
 });
+// #endregion
 
+// #region Initialization - load settings
+loadFavorites();
 reorderToolbars();
 
 switch (localStorage.madesktopChanViewLabels) {
@@ -610,6 +616,7 @@ if (localStorage.madesktopChanViewShowGoButton) {
     goButton.style.display = "block";
     toolbarsMenuItems[6].classList.add("checkedItem");
 }
+// #endregion
 
 window.addEventListener('focus', function () {
     iframe.style.pointerEvents = "auto";
@@ -629,6 +636,7 @@ new MutationObserver(function (mutations) {
     { attributes: true, attributeFilter: ["style"] }
 );
 
+// #region Functions
 function reorderToolbars() {
     const order = (localStorage.madesktopChanViewToolbarOrder || "menuBar,toolbar,addressBar").split(",");
     const hidden = [];
@@ -942,39 +950,62 @@ function appendHistoryItem(historyItem) {
     historyMenu.appendChild(item);
 }
 
+async function loadFavorites() {
+    if (localStorage.madesktopChanViewFavorites) {
+        // Migrate localStorage favorites to IndexedDB
+        const parsed = JSON.parse(localStorage.madesktopChanViewFavorites);
+        for (const favorite of parsed) {
+            if (favorite.length === 3) {
+                favorite[2] = new Blob([base64ToArrayBuffer(favorite[2].split(",")[1])], { type: favorite[2].split(",")[0].split(":")[1].split(";")[0] });
+            }
+        }
+        await madIdb.setItem("cvFavorites", parsed);
+        delete localStorage.madesktopChanViewFavorites;
+        window.favorites = parsed;
+    } else if (await madIdb.itemExists("cvFavorites")) {
+        window.favorites = await madIdb.cvFavorites;
+    } else {
+        // Default favorites
+        window.favorites = [
+            ["https://www.ingan121.com/", "Ingan121's Webpage"],
+            ["https://github.com/Ingan121/ModernActiveDesktop", "ModernActiveDesktop GitHub"]
+        ];
+        await madIdb.setItem("cvFavorites", window.favorites);
+    }
+    if (mainArea.classList.contains("sidebarOpen") && sidebarTitle.locId === "CV_SIDEBAR_FAVORITES") {
+        // Reload favorites sidebar
+        openSidebar("Favorites");
+    }
+    madDeskMover.menu.closeMenu('favorites');
+}
+
 function appendFavoriteItem(favorite) {
     const item = document.createElement("div");
     item.classList.add("contextMenuItem");
     item.classList.add("favoriteItem");
     const img = document.createElement("img");
     img.classList.add("favoriteItemImage");
-    img.src = favorite[2] || "images/icon.png";
+    img.src = favorite[2] ? URL.createObjectURL(favorite[2]) : "images/icon.png";
     item.appendChild(img);
     const p = document.createElement("p");
     p.textContent = favorite[1];
-    item.addEventListener("click", function () {
+    item.addEventListener("click", async function () {
         if (favEditMode) {
-            madPrompt(madGetString("CV_PROMPT_FAV_EDIT"), function (name) {
-                if (name === null) return;
-                if (name === "!url") {
-                    madPrompt(madGetString("CV_PROMPT_FAV_EDIT_URL"), function (url) {
-                        if (url === null) return;
-                        favorite[0] = url;
-                        localStorage.madesktopChanViewFavorites = JSON.stringify(favorites);
-                        if (mainArea.classList.contains("sidebarOpen") && sidebarTitle.locId === "CV_SIDEBAR_FAVORITES") {
-                            openSidebar("Favorites");
-                        }
-                    }, favorite[0], favorite[0]);
-                } else if (name === "") {
-                    favorites.splice(favorites.indexOf(favorite), 1);
-                } else {
-                    favorite[1] = name;
-                }
-                localStorage.madesktopChanViewFavorites = JSON.stringify(favorites);
-                if (mainArea.classList.contains("sidebarOpen") && sidebarTitle.locId === "CV_SIDEBAR_FAVORITES") {
-                    openSidebar("Favorites");
-                }
-            }, favorite[1], favorite[1]);
+            const name = await madPrompt(madGetString("CV_PROMPT_FAV_EDIT"), null, favorite[1], favorite[1]);
+            if (name === null) return;
+            if (name === "!url") {
+                const url = await madPrompt(madGetString("CV_PROMPT_FAV_EDIT_URL"), null, favorite[0], favorite[0]);
+                if (url === null) return;
+                favorite[0] = url;
+            } else if (name === "") {
+                window.favorites.splice(window.favorites.indexOf(favorite), 1);
+            } else {
+                favorite[1] = name;
+            }
+            await madIdb.setItem("cvFavorites", window.favorites);
+            if (mainArea.classList.contains("sidebarOpen") && sidebarTitle.locId === "CV_SIDEBAR_FAVORITES") {
+                openSidebar("Favorites");
+            }
         } else {
             go(favorite[0], true);
         }
@@ -1136,15 +1167,6 @@ async function getFavicon(asImage = false) {
     }
 }
 
-async function getDataUrl(blob) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
-    });
-}
-
 function updateSandboxFlags() {
     let flags = "allow-forms allow-modals allow-pointer-lock allow-popups-to-escape-sandbox allow-presentation allow-same-origin";
     if (!localStorage.madesktopChanViewNoJs) {
@@ -1210,7 +1232,7 @@ async function forceLoad(url) {
         // Check if window is not closed
         if (loadToken !== 0) {
             iframe.removeAttribute("srcdoc");
-            madAlert(madGetString("CV_MSG_LOAD_ERROR", url), null, "error");
+            madAlert(madGetString("CV_MSG_LOAD_ERROR", encodeURI(url)), null, "error");
             go("about:NavigationCanceled");
         }
     });
@@ -1371,6 +1393,7 @@ function injectStyle() {
         styleElement.textContent = baseStylesheetLocal + themeStylesheet;
     }
 }
+// #endregion
 
 // Main logic
 function init() {

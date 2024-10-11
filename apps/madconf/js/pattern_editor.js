@@ -30,9 +30,9 @@ const userPatterns = JSON.parse(localStorage.madesktopUserPatterns);
 for (const pattern in userPatterns) {
     const option = document.createElement("option");
     if (pattern.startsWith("locid:")) {
-        option.innerHTML = `<span><mad-string data-locid="${pattern.substring(6)}"></mad-string></span>`;
+        option.innerHTML = `<span><mad-string data-locid="${escapeHTML(pattern.substring(6))}"></mad-string></span>`;
     } else {
-        option.innerHTML = `<span>${pattern}</span>`;
+        option.innerHTML = `<span>${escapeHTML(pattern)}</span>`;
     }
     option.value = userPatterns[pattern];
     patternChooser.appendChild(option);
@@ -122,7 +122,7 @@ addBtn.addEventListener("click", async function () {
         userPatterns[result] = base64Output.textContent;
         localStorage.madesktopUserPatterns = JSON.stringify(userPatterns);
         const option = document.createElement("option");
-        option.innerHTML = `<span>${result}</span>`;
+        option.innerHTML = `<span>${escapeHTML(result)}</span>`;
         option.value = base64Output.textContent;
         patternChooser.appendChild(option);
         patternChooser.selectedIndex = patternChooser.options.length - 1;
@@ -174,7 +174,7 @@ madDeskMover.beforeClose = async function () {
     if (!window.callback) {
         return;
     }
-    if (!changed || await madConfirm(madGetString("MADCONF_PATTERN_UNSAVED", patternChooser.options[patternChooser.selectedIndex].textContent))) {
+    if (!changed || await madConfirm(madGetString("MADCONF_PATTERN_UNSAVED", escapeHTML(patternChooser.options[patternChooser.selectedIndex].textContent)))) {
         if (changed) {
             changeBtn.dispatchEvent(new Event("click"));
         }

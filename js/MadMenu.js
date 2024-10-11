@@ -66,7 +66,7 @@ class MadMenu {
                     }
                 });
                 elem.addEventListener('click', () => {
-                    if (elem.dataset.submenu) {
+                    if (elem.dataset.submenu && !elem.classList.contains('disabled')) {
                         if (this.openedMenu.id !== elem.dataset.submenu + 'MenuBg') {
                             this.openMenu(elem.dataset.submenu);
                         } else {

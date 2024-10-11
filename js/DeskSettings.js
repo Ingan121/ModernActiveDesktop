@@ -283,8 +283,14 @@
                 .then(responseText => {
                     const dataURL = `data:text/css,${encodeURIComponent(responseText)}`;
                     schemeElement.href = dataURL;
-                    localStorage.madesktopSysColorCache = dataURL; // Cache it as SysPlug startup is slower than high priority WPE startup
-                    processTheme();
+                    if (localStorage.madesktopSysColorCache !== dataURL) {
+                        log("System color scheme updated", "log", "changeColorScheme");
+                        localStorage.madesktopSysColorCache = dataURL; // Cache it as SysPlug startup is slower than high priority WPE startup
+                        processTheme();
+                        if (window.announce) {
+                            announce("scheme-updated");
+                        }
+                    }
                 })
                 .catch(error => {
                     // Ignore it as SysPlug startup is slower than high priority WPE startup

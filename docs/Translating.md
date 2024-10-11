@@ -68,9 +68,11 @@ The localization files are located in the `lang/` directory. Each language is re
 
 4. **Open a Pull Request**: Push your branch to GitHub and open a pull request. Provide a clear description of the changes you made.
 
+* Alternatively, you can send the translated JSON file to <a href="mailto:ingan121@ingan121.com">ingan121@ingan121.com</a> if you prefer not to use GitHub.
+
 ## Formatting
 * Use ampersands (&) for hotkeys. For example, "&File" will be displayed as "<ins>F</ins>ile" in the application.
-    * Use \& to display an actual ampersand.
+    * Use `\&` to display an actual ampersand.
 * Format characters:
     * `%0v`: Full version number (e.g., 3.3.1 Pre-release)
     * `%1v`: Numbers only (e.g., 3.3.1)

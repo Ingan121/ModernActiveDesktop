@@ -245,7 +245,7 @@
                     console.error(`No string found for locId ${this.locId}`);
                 }
                 if (isLocIdChange || !this.innerHTML) {
-                    this.innerHTML = this.locId;
+                    this.innerHTML = escapeHTML(this.locId);
                 }
             }
         }

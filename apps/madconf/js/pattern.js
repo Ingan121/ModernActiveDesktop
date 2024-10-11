@@ -124,9 +124,9 @@ function loadPatterns() {
         option.dataset.pattern = userPatterns[pattern];
         option.dataset.index = Object.keys(userPatterns).indexOf(pattern);
         if (pattern.startsWith("locid:")) {
-            option.innerHTML = `<span><mad-string data-locid="${pattern.substring(6)}"></mad-string></span>`;
+            option.innerHTML = `<span><mad-string data-locid="${escapeHTML(pattern.substring(6))}"></mad-string></span>`;
         } else {
-            option.innerHTML = `<span>${pattern}</span>`;
+            option.innerHTML = `<span>${escapeHTML(pattern)}</span>`;
         }
         option.addEventListener("click", function () {
             for (const child of patternChooser.children) {

@@ -135,7 +135,7 @@ window.addEventListener('load', updateSchemeColor);
 window.addEventListener("message", (event) => {
     switch (event.data.type) {
         case "scheme-updated":
-            if (schemeElement.href.startsWith('file:///') &&
+            if (!['98', 'custom', 'sys', undefined].includes(localStorage.madesktopColorScheme) &&
                 localStorage.madesktopVisUseSchemeColors &&
                 (!lastAlbumArt || !localStorage.madesktopVisFollowAlbumArt))
             {
@@ -475,7 +475,7 @@ optMenuItems[6].addEventListener('click', () => { // Advanced Options button
     const left = parseInt(madDeskMover.config.xPos) + 25 + 'px';
     const top = parseInt(madDeskMover.config.yPos) + 50 + 'px';
     const options = {
-        left, top, width: '400px', height: '467px',
+        left, top, width: '400px', height: '502px',
         aot: true, unresizable: true, noIcon: true
     }
     madOpenWindow('apps/visualizer/config.html', true, options);
@@ -747,6 +747,7 @@ function wallpaperMediaThumbnailListener(event) {
     if (localStorage.madesktopVisFollowAlbumArt) {
         document.body.style.backgroundColor = event.primaryColor;
     }
+    lastAlbumArt = event;
     const image = new Image();
     image.onload = () => {
         event.width = image.width;
@@ -754,7 +755,6 @@ function wallpaperMediaThumbnailListener(event) {
         updateAlbumArtSize();
     }
     image.src = event.thumbnail;
-    lastAlbumArt = event;
 }
 
 function configChanged() {
