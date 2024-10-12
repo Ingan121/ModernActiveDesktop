@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title data-locid="UNV_TITLE">Warning! Unverified Page!</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../../css/98.css">
+    <link rel="stylesheet" href="warning.css">
+    <link rel="shortcut icon" href="../../images/warning.png">
+    <link id="scheme" rel="stylesheet" href="data:text/css,">
+    <style id="langStyle"></style>
+    <style id="style"></style>
+</head>
+<body>
+    <div class="window-body">
+        <section class="field-row">
+            <img id="msgbox-icon" src="../../images/warning.png">
+            <p id="msgbox-msg">
+                <mad-string data-locid="UNV_MSG">
+                    The last configuration file you imported is trying to load an unverified page.<br><br>
+                    Loaded pages can have the same access as ModernActiveDesktop, including the system plugin (if installed).<br><br>
+                    Loading unverified pages can be dangerous. Are you sure you want to load it?
+                </mad-string>
+                <br><br>
+                URL: <span id="url"></span>
+            </p>
+        </section>
+        <button id="loadBtn"><mad-string data-locid="UNV_LOAD">Load</mad-string></button>
+    </div>
+
+    <script src="../../js/functions.js"></script>
+    <script src="../../js/MadStrings.js"></script>
+    <script src="../../js/libmad.js"></script>
+    <script src="warning.js"></script>
+</body>
+</html>

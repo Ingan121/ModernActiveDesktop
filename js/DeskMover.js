@@ -387,7 +387,11 @@
             this.noFrames = this.config.noFrames;
 
             if (this.config.src) {
-                this.windowElement.src = this.config.src;
+                if (this.config.unverified) {
+                    this.windowElement.src = "apps/unverifiedwarning/index.html";
+                } else {
+                    this.windowElement.src = this.config.src;
+                }
             } else {
                 if (this.numStr !== "") {
                     // Assign default values

@@ -1,0 +1,42 @@
+@import '../../../css/libmad.css';
+
+body {
+    background-color: var(--button-face);
+}
+
+#msgbox-icon {
+    width: 32px;
+    height: 32px;
+    margin-top: 4px;
+    margin-left: 3px;
+    margin-right: 12px;
+    image-rendering: pixelated;
+}
+
+#msgbox-msg {
+    font: var(--message-font);
+}
+
+#msgbox-msg mad-string {
+    white-space: initial;
+}
+
+button {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+body[data-compact] #msgbox-msg {
+    display: none;
+}
+body[data-compact] #msgbox-icon {
+    position: absolute;
+    top: calc(50% - 10px);
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+}
+body[data-compact] button {
+    top: calc(50% + 20px);
+}

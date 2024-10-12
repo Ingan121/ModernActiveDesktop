@@ -65,6 +65,32 @@ let urlAppend = "";
                     for (const key in parsed) {
                         if (key === "madesktopBgImg") {
                             await madIdb.setItem("bgImg", new Blob([base64ToArrayBuffer(parsed[key])], { type: "image/png" }));
+                        } else if (key === "madesktopChanViewFavorites") {
+                            const favParsed = JSON.parse(parsed[key]);
+                            for (const favorite of favParsed) {
+                                if (favorite.length === 3) {
+                                    favorite[2] = new Blob([base64ToArrayBuffer(favorite[2].split(",")[1])], { type: favorite[2].split(",")[0].split(":")[1].split(";")[0] });
+                                }
+                            }
+                            await madIdb.setItem("cvFavorites", favParsed);
+                        } else if (key.startsWith("madesktopItemSrc")) {
+                            // Prevent loading unverified URL after import
+                            const src = parsed[key];
+                            if (!src.startsWith("apps/") &&
+                                !src.startsWith("placeholder.html") &&
+                                !src.startsWith("ChannelBar.html") &&
+                                !src.startsWith("ChannelBar-ko.html") &&
+                                (!src.startsWith("https://www.youtube.com/embed/") || src.length !== 41)
+                            ) {
+                                localStorage.setItem("madesktopItemUnverified" + key.slice(16), true);
+                            }
+                            if (src.includes("apps/channelviewer")) {
+                                const page = new URL(src, location.href).searchParams.get("page");
+                                if (page && !page.startsWith("about:")) {
+                                    localStorage.setItem("madesktopItemUnverified" + key.slice(16), true);
+                                }
+                            }
+                            localStorage.setItem(key, src);
                         } else {
                             localStorage.setItem(key, parsed[key]);
                         }
@@ -106,6 +132,7 @@ function reset(softIdbReset = false) {
     }
     if (softIdbReset) {
         delete madIdb.bgImg;
+        delete madIdb.cvFavorites;
         delete madIdb.configToImport;
     } else {
         // This causes further IDB operations to take a long time

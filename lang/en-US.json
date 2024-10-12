@@ -720,6 +720,13 @@
 
     // #region On-Screen Keyboard strings
     "OSK_TITLE": "On-Screen Keyboard",
-    "OSK_INFO": "Keyboard input is not supported on Wallpaper Engine 2.5+. To enter text using a keyboard, please <a href=\"javascript:madOpenWindow('SysplugSetupGuide.md',true);sendMadInput('Escape')\">set up the system plugin</a>, or use the input box in the Wallpaper Engine properties panel."
+    "OSK_INFO": "Keyboard input is not supported on Wallpaper Engine 2.5+. To enter text using a keyboard, please <a href=\"javascript:madOpenWindow('SysplugSetupGuide.md',true);sendMadInput('Escape')\">set up the system plugin</a>, or use the input box in the Wallpaper Engine properties panel.",
+    // #endregion
+
+
+    // #region Unverified warning strings
+    "UNV_TITLE": "Warning! Unverified Page!",
+    "UNV_MSG": "The last configuration file you imported is trying to load an unverified page.<br><br>Loaded pages can have the same access as %n, including the system plugin (if installed).<br><br>Loading unverified pages can be dangerous. Are you sure you want to load it?",
+    "UNV_LOAD": "Load"
     // #endregion
 }
