@@ -26,7 +26,7 @@ document.getElementById('loadBtn').addEventListener('click', async () => {
 
 window.addEventListener('resize', () => {
     delete document.body.dataset.compact;
-    if (document.body.offsetHeight + 40 > window.innerHeight || window.innerWidth < 300) {
+    if (window.innerWidth < 300 || document.body.offsetHeight + 40 > window.innerHeight) {
         document.body.dataset.compact = true;
     } else {
         delete document.body.dataset.compact;
