@@ -33,4 +33,6 @@ window.addEventListener('resize', () => {
     }
 });
 
-window.dispatchEvent(new Event('resize'));
+window.addEventListener('load', () => {
+    window.dispatchEvent(new Event('resize'));
+});

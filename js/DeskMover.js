@@ -236,6 +236,8 @@
                 this.closeContextMenu();
                 if (this.config.src.startsWith('apps/channelviewer/') && !localStorage.madesktopDebugMode) {
                     this.windowElement.contentDocument.getElementById('refresh-button').click();
+                } else if (this.config.unverified) {
+                    this.windowElement.src = "apps/unverifiedwarning/index.html";
                 } else {
                     this.windowElement.src = this.config.src;
                 }
@@ -1589,6 +1591,7 @@
                 this.firstLoadSuccess = false;
                 this.windowElement.src = url;
                 this.config.src = url;
+                delete this.config.unverified;
 
                 if (this.isVisualizer && !url.startsWith("apps/visualizer/")) {
                     this.#clearConfig(true);
@@ -1729,6 +1732,8 @@
                 delete this.config.active;
                 delete this.config.alwaysOnTop;
                 delete this.config.jspaintHash;
+                delete this.config.unresizable;
+                delete this.config.unverified;
                 clearTimeout(this.timeout);
             }
 
