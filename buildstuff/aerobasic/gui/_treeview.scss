@@ -1,0 +1,90 @@
+:root {
+  --treeview-square-size: 8px;
+  --treeview-spacing: 20px;
+}
+
+ul.tree-view {
+  font: var(--font);
+  display: block;
+  margin: 0;
+  box-shadow: none;
+  border: solid 1px #888;
+
+  li {
+    list-style-type: none;
+    margin-top: 4px;
+    position: relative;
+  }
+
+  a {
+    text-decoration: none;
+    color: #000;
+  }
+
+  ul {
+    margin-top: 4px;
+    padding-left: var(--treeview-spacing);
+  }
+
+  &.has-container {
+    background: #fff;
+    border: 1px solid var(--button-border-color);
+  }
+
+  &.has-collapse-button details {
+    > summary::before {
+      content: "\002b";
+      top: calc(50% - var(--treeview-square-size) / 2);
+      left: calc(-var(--treeview-square-size) * 2);
+      right: unset;
+      width: var(--treeview-square-size);
+      height: var(--treeview-square-size);
+      background: linear-gradient(
+        to bottom,
+        var(--button-face) 45%,
+        var(--button-shade-light)
+      );
+      border: 1px solid #919191;
+      border-radius: 1px;
+      color: #4b63a7;
+      font-size: 8pt;
+      font-weight: bold;
+      line-height: 0.5;
+      text-align: center;
+      margin: 0;
+    }
+
+    &[open] > summary::before {
+      content: "\2013";
+      transform: none;
+    }
+  }
+
+  &.has-connector {
+    ul {
+      position: relative;
+
+      &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: var(--treeview-square-size);
+        height: calc(100% - var(--treeview-square-size));
+        border-left: 1px dotted #000;
+      }
+
+      li::before {
+        content: "";
+        position: absolute;
+        top: var(--treeview-square-size);
+        right: calc(100% + var(--treeview-square-size) / 4);
+        width: calc(var(--treeview-spacing) / 2);
+        border-bottom: 1px dotted #000;
+      }
+    }
+  }
+}
+
+#madconf #wpChooser li {
+  margin-top: -2px;
+}

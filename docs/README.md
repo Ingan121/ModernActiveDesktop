@@ -23,6 +23,8 @@
     * Fallback schemes: Blue, Olive Green, Silver, and Royale
 * Aero
     * A CSS theme based on 7.css
+* Aero Basic
+    * A CSS theme based on 7.css with Aero Basic title bars
 * Windows 9x / 2000 Classic schemes
 * Plus! 95 and 98 schemes
 * Windose
@@ -45,7 +47,6 @@
     * Windows 3.x
         * I think it would be pretty easy, just give it flat title bars and buttons with border-radius
     * More XP Visual Styles
-    * Windows Vista/7 Basic
     * Windows 8
         * Maybe just modifying the Aero theme a bit would work
     * Aero Lite

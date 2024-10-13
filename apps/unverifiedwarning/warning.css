@@ -22,7 +22,7 @@ body {
 }
 
 button {
-    position: absolute;
+    position: absolute !important;
     left: 50%;
     transform: translateX(-50%);
 }

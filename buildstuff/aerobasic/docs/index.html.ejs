@@ -1,0 +1,123 @@
+<!doctype html>
+<html>
+
+<head>
+  <title><%= meta.title + " - A CSS framework for recreating Windows 7 UI" %></title>
+  <link rel="Shortcut Icon" type="image/x-icon" href="icon.png" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="<%= meta.description %>" />
+  <meta name="keywords"
+    content="7.css,css,scss,framework,windows 7,windows 7 ui,windows 7 css framework,windows 7 web" />
+  <meta name="author" content="© 2020 KhangND" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://khang-nd.github.io/7.css" />
+  <meta property="og:title" content="<%= meta.title %>" />
+  <meta property="og:image" content="<%= meta.image %>" />
+  <meta property="og:description" content="<%= meta.description %>" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@_khangnd" />
+  <meta name="twitter:creator" content="@_khangnd" />
+
+  <link rel="stylesheet" href="7.css">
+  <link rel="stylesheet" href="docs.css">
+  <link rel="stylesheet" href="vs.css">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G4ZQ4HN11K"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-G4ZQ4HN11K');
+  </script>
+</head>
+
+<body class="surface has-scrollbar" ontouchstart>
+  <%- include('sections/socialshare') -%>
+  <%- include('sections/navigation') -%>
+
+  <main>
+    <h1>7.css</h1>
+    <hr>
+    <p>A design system for building faithful recreations of old UIs.</p>
+
+    <p>
+      <a href="http://npm.im/7.css" rel="nofollow" style="text-decoration: none">
+        <img alt="npm" src="https://img.shields.io/npm/v/7.css">
+      </a>
+      <a href="https://unpkg.com/7.css" rel="nofollow" style="text-decoration: none">
+        <img alt="npm bundle size" src="https://img.shields.io/bundlephobia/minzip/7.css">
+      </a>
+    </p>
+
+    <h2 id="intro">Intro</h2>
+    <%- include('sections/intro') -%>
+
+    <h2 id="install">Installation / Usage</h2>
+    <%- include('sections/install') -%>
+
+    <h2 id="components">Components</h2>
+
+    <%- include('components/balloon') -%>
+    <%- include('components/button') -%>
+    <%- include('components/checkbox') -%>
+    <%- include('components/collapse') -%>
+    <%- include('components/combobox') -%>
+    <%- include('components/dropdown') -%>
+    <%- include('components/groupbox') -%>
+    <%- include('components/listbox') -%>
+
+    <h3 id="nav">Navigation</h3>
+    <p>
+      The following components compose a complete navigation menu, also known as Navbar.
+    </p>
+    <%- include('components/menu') -%>
+    <%- include('components/menubar') -%>
+
+    <%- include('components/optionbutton') -%>
+    <%- include('components/progressbar') -%>
+    <%- include('components/scrollbar') -%>
+    <%- include('components/searchbox') -%>
+    <%- include('components/slider') -%>
+    <%- include('components/spinner') -%>
+    <%- include('components/tabs') -%>
+    <%- include('components/textbox') -%>
+    <%- include('components/treeview') -%>
+
+    <h3 id="window">Window</h3>
+    <p>
+      The following components illustrate how to build complete windows using
+      7.css.
+    </p>
+    <%- include('components/window/titlebar') -%>
+    <%- include('components/window/body') -%>
+    <%- include('components/window/statusbar') -%>
+    <%- include('components/window/frame') -%>
+    <%- include('components/window/dialogbox') -%>
+
+    <h2 id="issues-contributing-etc">Issues, Contributing, etc.</h2>
+
+    <p>
+      7.css is <a href="https://github.com/khang-nd/7.css/blob/main/LICENSE">MIT licensed</a>.
+      Refer to <a href="https://github.com/khang-nd/7.css/issues">the GitHub issues page</a> to report any issue in
+      the
+      code.
+    </p>
+
+    <p>
+      Started as a clone of <a href="https://github.com/botoxparty/XP.css">XP.css</a>, 7.css is a fun project I
+      worked on in my free time to enhance my tech skills.
+    </p>
+
+    <p>
+      Consider <a href="https://github.com/khang-nd/7.css/stargazers">starring this project</a>
+      if it is useful to you in some way or if you also share the love for Windows 7 with me ;)
+    </p>
+  </main>
+</body>
+
+<script src="script.js"></script>
+
+</html>

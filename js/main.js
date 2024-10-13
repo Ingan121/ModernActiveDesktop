@@ -219,7 +219,7 @@
             delete localStorage.madesktopHideWelcome;
             delete localStorage.madesktopCheckedChanges;
             delete localStorage.madesktopCheckedConfigs;
-            if (!localStorage.madesktopLastVer.startsWith("3.2")) { // Update from 3.1 and below - no new apps in 3.3
+            if (!localStorage.madesktopLastVer.startsWith("3.2") && !localStorage.madesktopLastVer.startsWith("3.3")) { // Update from 3.1 and below - no new apps in 3.3 / 3.4
                 openWindow("placeholder.html");
             }
 
