@@ -86,12 +86,12 @@ let urlAppend = "";
                             }
                             if (src.includes("apps/channelviewer")) {
                                 const page = new URL(src, location.href).searchParams.get("page");
-                                if (page && !page.startsWith("about:")) {
+                                if (page && !page.startsWith("about:") && !page.startsWith("channels-") && !page.startsWith("https://www.ingan121.com/")) {
                                     localStorage.setItem("madesktopItemUnverified" + key.slice(16), true);
                                 }
                             }
                             localStorage.setItem(key, src);
-                        } else {
+                        } else if (!key.startsWith("madesktopItemUnverified")) {
                             localStorage.setItem(key, parsed[key]);
                         }
                     }
