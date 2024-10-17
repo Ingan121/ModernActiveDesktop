@@ -231,7 +231,7 @@ async function main() {
 
         applyPreview();
         selector.dispatchEvent(new Event("change"));
-        if (schemeSelector.value === "7css4mad") {
+        if (scheme["supports-colorization"]) {
             secondColorPickerWrap.classList.remove("disabled");
             secondColorPicker.disabled = false;
             secondColorPickerColor.style.backgroundColor = "#4580c4";
@@ -578,7 +578,7 @@ async function main() {
             localStorage.madesktopColorScheme = schemeSelector.value;
             localStorage.madesktopLastSchemeName = schemeName;
             parent.changeBgColor(colorPickerColor.style.backgroundColor);
-            if (schemeSelector.value === "7css4mad") {
+            if (scheme["supports-colorization"]) {
                 parent.changeAeroColor(secondColorPickerColor.style.backgroundColor);
                 localStorage.madesktopAeroColor = secondColorPickerColor.style.backgroundColor;
             } else {
@@ -664,7 +664,7 @@ async function main() {
             selector.disabled = true;
             preview.style.pointerEvents = "none";
             colorPickerColor.style.backgroundColor = localStorage.madesktopBgColor;
-            if (localStorage.madesktopColorScheme === "7css4mad") {
+            if (getComputedStyle(parent.document.documentElement).getPropertyValue("--supports-colorization")) {
                 secondColorPickerWrap.classList.remove("disabled");
                 secondColorPicker.disabled = false;
                 secondColorPickerColor.style.backgroundColor = localStorage.madesktopAeroColor || "#4580c4";
@@ -753,7 +753,7 @@ async function main() {
                 scheme[option] = color;
                 break;
             case "secondColor":
-                if (schemeSelector.value !== "7css4mad") {
+                if (!scheme["supports-colorization"]) {
                     scheme[itemMappings[option].second] = color;
                 }
                 break;
@@ -813,7 +813,7 @@ async function main() {
             preview.addEventListener("load", function () {
                 preview.contentDocument.body.style.backgroundColor = colorPickerColor.style.backgroundColor;
                 preview.contentWindow.changeMenuStyle(flatMenuChkBox.checked ? flatMenuSelector.value : false);
-                if (schemeSelector.value === "7css4mad") {
+                if (scheme["supports-colorization"]) {
                     preview.contentWindow.changeAeroColor(secondColorPickerColor.style.backgroundColor);
                     preview.contentWindow.changeAeroGlass(!transparencyChkBox.checked);
                 }

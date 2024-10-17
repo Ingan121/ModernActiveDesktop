@@ -1082,20 +1082,19 @@
     }
 
     // @unexported
-    function flashDialog(dialog = msgbox) {
+    function flashDialog() {
         playSound("modal");
         clearInterval(flashInterval);
-        const msgboxTitlebar = dialog.getElementsByClassName("title-bar")[0];
         let cnt = 1;
         flashInterval = setInterval(function () {
             if (cnt === 18) {
                 clearInterval(flashInterval);
             }
             if (cnt % 2) {
-                dialog.dataset.inactive = true;
+                msgbox.dataset.inactive = true;
                 msgboxTitlebar.classList.add("inactive");
             } else {
-                delete dialog.dataset.inactive;
+                delete msgbox.dataset.inactive;
                 msgboxTitlebar.classList.remove("inactive");
             }
             cnt++;

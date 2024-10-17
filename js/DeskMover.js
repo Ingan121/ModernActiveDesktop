@@ -1229,9 +1229,6 @@
                         windowOutline.style.padding = this.borderSize + "px";
                     } else {
                         this.borderSize = extraBorderSize + 3;
-                        if (localStorage.madesktopColorScheme === "7css4mad") {
-                            this.borderSize -= 0;
-                        }
                         if (this.config.unresizable) {
                             windowOutline.style.padding = "1px";
                         } else {
@@ -1628,8 +1625,15 @@
             this.timeout = setTimeout(this.#updateWindowComponentVisibility.bind(this), 500);
         }
 
+        // Update z-index
         bringToTop () {
-            this.windowContainer.style.zIndex = this.config.alwaysOnTop ? ++window.lastAoTZIndex : ++window.lastZIndex;
+            if (this.bottomMost) {
+                this.windowContainer.style.zIndex = 1;
+            } else if (this.config.alwaysOnTop) {
+                this.windowContainer.style.zIndex = ++window.lastAoTZIndex;
+            } else {
+                this.windowContainer.style.zIndex = ++window.lastZIndex;
+            }
             activateWindow(this.numStr || 0);
             saveZOrder();
             this.windowElement.contentWindow.focus();

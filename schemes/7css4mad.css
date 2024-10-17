@@ -36,6 +36,7 @@
     --menu-animation: fade;
     --menu-shadow: true;
     --supports-win-shadow: true;
+    --supports-colorization: true;
     --win-open-anim: aeroWinOpen;
     --win-close-anim: aeroWinClose;
     --scrollbar-size: 17px;

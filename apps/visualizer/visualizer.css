@@ -270,6 +270,7 @@ a {
     margin: 0;
     font-family: var(--ui-font);
     display: none;
+    font-size: 11px;
 }
 
 #infoMainArea {
@@ -300,13 +301,13 @@ a {
     text-overflow: ellipsis;
     white-space: nowrap;
     width: 100%;
-    height: 15px;
-    line-height: 15px;
+    height: 14px;
+    line-height: 14px;
     margin: 0;
 }
 
 #rightArea .infoItem:first-child {
-    margin-top: 6px;
+    margin-top: 5px;
 }
 
 #rightArea .infoItem p:empty {

@@ -18,165 +18,7 @@
 
 (function () {
     if (!frameElement) {
-        // minimal MAD APIs fallback for non-MAD environments (or in cross-origin restricted mode)
-        const noop = () => {};
-        window.madDeskMover = {
-            config: {
-                src: location.href
-            },
-            isFullscreen: false
-        };
-        Object.defineProperties(window.madDeskMover.config, {
-            xPos: {
-                get: function () {
-                    return window.screenX;
-                }
-            },
-            yPos: {
-                get: function () {
-                    return window.screenY;
-                }
-            },
-            width: {
-                get: function () {
-                    return window.outerWidth;
-                }
-            },
-            height: {
-                get: function () {
-                    return window.outerHeight;
-                }
-            } 
-        });
-
-        window.madScaleFactor = 1;
-        window.madRunningMode = 0;
-        window.madKbdSupport = 1;
-        window.log = function (str, level, caller) {
-            if (!caller) {
-                caller = getCaller();
-            }
-            if (typeof str === "object") {
-                str = JSON.stringify(str);
-            }
-            console[level || 'log'](caller + ": " + str);
-        }
-        window.madOpenWindow = function (url, temp, optionsOrWidth = {}, heightArg, style, centeredArg, topArg, leftArg) {
-            if (url.startsWith("apps/")) {
-                url = "../../" + url;
-            } else if (!url.endsWith(".html")) {
-                url = "../../docs/index.html?src=" + url;
-                optionsOrWidth = {
-                    width: optionsOrWidth.width || 800,
-                    height: optionsOrWidth.height || 600,
-                    top: optionsOrWidth.top || 200,
-                    left: optionsOrWidth.left || 250
-                }
-            }
-            const width = optionsOrWidth.width || optionsOrWidth;
-            const height = optionsOrWidth.height || heightArg;
-            const centered = optionsOrWidth.centered || centeredArg;
-            const top = centered ? (screen.availHeight - parseInt(height)) / 2 : (optionsOrWidth.top || topArg);
-            const left = centered ? (screen.availWidth - parseInt(width)) / 2 : (optionsOrWidth.left || leftArg);
-            let specs = "";
-            if (width) {
-                specs += `width=${width},`;
-            }
-            if (height) {
-                specs += `height=${height},`;
-            }
-            if (top) {
-                specs += `top=${top},`;
-            }
-            if (left) {
-                specs += `left=${left},`;
-            }
-            const newWnd = window.open(url, "_blank", specs);
-            return {
-                windowElement: {
-                    contentWindow: newWnd,
-                    addEventListener: newWnd.addEventListener.bind(newWnd),
-                }
-            }
-        }
-        window.madOpenConfig = function (page) {
-            if (page === "about") {
-                madOpenWindow(`apps/madconf/about.html`, false, 398, 423, "wnd", false, 200, 250);
-            } else if (parent === window) {
-                alert("This page cannot be opened when not running in ModernActiveDesktop. Please open it from ModernActiveDesktop.");
-            } else {
-                alert("This page cannot be opened when cross-origin restricted. Please run ModernActiveDesktop with a web server.");
-            }
-        }
-        window.madOpenExternal = function (url) {
-            window.open(url, "_blank");
-        }
-        window.madOpenDropdown = function (elem) {
-            return;
-        }
-        window.madLocReplace = function (url) {
-            if (url.startsWith("apps/")) {
-                url = "../../" + url;
-            }
-            location.replace(url);
-        }
-        window.madAlert = async function (msg, callback, icon) {
-            return new Promise((resolve) => {
-                alert(msg);
-                if (callback) {
-                    callback();
-                }
-                resolve();
-            });
-        }
-        window.madConfirm = async function (msg, callback) {
-            return new Promise((resolve) => {
-                const result = confirm(msg);
-                if (callback) {
-                    callback(result);
-                }
-                resolve(result);
-            });
-        }
-        window.madPrompt = async function (msg, callback, hint, text) {
-            return new Promise((resolve) => {
-                const result = prompt(msg, text);
-                if (callback) {
-                    callback(result);
-                }
-                resolve(result);
-            });
-        }
-        window.madAnnounce = function (type) {
-            window.postMessage({ type }, "*");
-            if (window.opener) {
-                window.opener.postMessage({ type }, "*");
-            }
-        }
-        window.madCloseWindow = window.close;
-        window.madResizeTo = window.resizeTo;
-        window.madMoveTo = window.moveTo;
-        window.madBringToTop = window.focus;
-
-        window.madEnterFullscreen = function () {
-            window.madDeskMover.isFullscreen = true;
-            document.body.dataset.fullscreen = true;
-            document.documentElement.requestFullscreen();
-        }
-        window.madExitFullscreen = function () {
-            window.madDeskMover.isFullscreen = false;
-            delete document.body.dataset.fullscreen;
-            document.exitFullscreen();
-        }
-
-        window.madSetIcon = noop;
-        window.madSetResizeArea = noop;
-        window.madSetResizable = noop;
-        window.madChangeWndStyle = noop;
-        window.madOpenMiniColorPicker = noop;
-        window.madOpenColorPicker = noop;
-        window.madPlaySound = noop;
-        window.madExtendMoveTarget = noop;
+        setupFallback();
         return;
     }
 
@@ -186,6 +28,11 @@
     const schemeElement = document.getElementById("scheme");
     const menuStyleElement = document.getElementById("menuStyle");
     const styleElement = document.getElementById("style");
+    if (frameElement.dataset.num === undefined) {
+        // bghtml, etc.
+        setupFallback();
+        return;
+    }
     const deskMoverNum = frameElement.dataset.num || 0;
     const deskMover = top.deskMovers[deskMoverNum];
     const config = deskMover.config;
@@ -446,7 +293,7 @@
                 }
             });
         }
-        
+
         connectedCallback() {
             this.label = document.createElement("span");
             this.label.classList.add("label");
@@ -469,7 +316,7 @@
             if (this.getAttribute('disabled') !== null) {
                 this.dataset.disabled = true;
             }
-            
+
             this.label.textContent = this.options[this.selectedIndex].textContent;
             this.insertAdjacentElement("afterbegin", this.label);
 
@@ -531,4 +378,168 @@
     window.madPrompt = top.madPrompt;
     window.madPlaySound = top.playSound;
     window.madAnnounce = top.announce;
+
+    function setupFallback() {
+        // minimal MAD APIs fallback for non-MAD environments (or in cross-origin restricted mode)
+        const noop = () => {};
+        window.madDeskMover = {
+            config: {
+                src: location.href
+            },
+            isFullscreen: false
+        };
+        Object.defineProperties(window.madDeskMover.config, {
+            xPos: {
+                get: function () {
+                    return window.screenX;
+                }
+            },
+            yPos: {
+                get: function () {
+                    return window.screenY;
+                }
+            },
+            width: {
+                get: function () {
+                    return window.outerWidth;
+                }
+            },
+            height: {
+                get: function () {
+                    return window.outerHeight;
+                }
+            } 
+        });
+
+        window.madScaleFactor = 1;
+        window.madRunningMode = 0;
+        window.madKbdSupport = 1;
+        window.log = function (str, level, caller) {
+            if (!caller) {
+                caller = getCaller();
+            }
+            if (typeof str === "object") {
+                str = JSON.stringify(str);
+            }
+            console[level || 'log'](caller + ": " + str);
+        }
+        window.madOpenWindow = function (url, temp, optionsOrWidth = {}, heightArg, style, centeredArg, topArg, leftArg) {
+            if (url.startsWith("apps/")) {
+                url = "../../" + url;
+            } else if (!url.endsWith(".html")) {
+                url = "../../docs/index.html?src=" + url;
+                optionsOrWidth = {
+                    width: optionsOrWidth.width || 800,
+                    height: optionsOrWidth.height || 600,
+                    top: optionsOrWidth.top || 200,
+                    left: optionsOrWidth.left || 250
+                }
+            }
+            const width = optionsOrWidth.width || optionsOrWidth;
+            const height = optionsOrWidth.height || heightArg;
+            const centered = optionsOrWidth.centered || centeredArg;
+            const top = centered ? (screen.availHeight - parseInt(height)) / 2 : (optionsOrWidth.top || topArg);
+            const left = centered ? (screen.availWidth - parseInt(width)) / 2 : (optionsOrWidth.left || leftArg);
+            let specs = "";
+            if (width) {
+                specs += `width=${width},`;
+            }
+            if (height) {
+                specs += `height=${height},`;
+            }
+            if (top) {
+                specs += `top=${top},`;
+            }
+            if (left) {
+                specs += `left=${left},`;
+            }
+            const newWnd = window.open(url, "_blank", specs);
+            return {
+                windowElement: {
+                    contentWindow: newWnd,
+                    addEventListener: newWnd.addEventListener.bind(newWnd),
+                }
+            }
+        }
+        window.madOpenConfig = function (page) {
+            if (page === "about") {
+                madOpenWindow(`apps/madconf/about.html`, false, 398, 423, "wnd", false, 200, 250);
+            } else if (parent === window) {
+                alert("This page cannot be opened when not running in ModernActiveDesktop. Please open it from ModernActiveDesktop.");
+            } else {
+                alert("This page cannot be opened when cross-origin restricted. Please run ModernActiveDesktop with a web server.");
+            }
+        }
+        window.madOpenExternal = function (url) {
+            window.open(url, "_blank");
+        }
+        window.madOpenDropdown = function (elem) {
+            return;
+        }
+        window.madLocReplace = function (url) {
+            if (url.startsWith("apps/")) {
+                url = "../../" + url;
+            }
+            location.replace(url);
+        }
+        window.madAlert = top.madAlert || async function (msg, callback, icon) {
+            return new Promise((resolve) => {
+                alert(msg);
+                if (callback) {
+                    callback();
+                }
+                resolve();
+            });
+        }
+        window.madConfirm = top.madConfirm || async function (msg, callback) {
+            return new Promise((resolve) => {
+                const result = confirm(msg);
+                if (callback) {
+                    callback(result);
+                }
+                resolve(result);
+            });
+        }
+        window.madPrompt = top.madPrompt || async function (msg, callback, hint, text) {
+            return new Promise((resolve) => {
+                const result = prompt(msg, text);
+                if (callback) {
+                    callback(result);
+                }
+                resolve(result);
+            });
+        }
+        window.madAnnounce = function (type) {
+            window.postMessage({ type }, "*");
+            if (window.opener) {
+                window.opener.postMessage({ type }, "*");
+            }
+        }
+        window.madCloseWindow = window.close;
+        window.madResizeTo = window.resizeTo;
+        window.madMoveTo = window.moveTo;
+        window.madBringToTop = window.focus;
+
+        window.madEnterFullscreen = function () {
+            window.madDeskMover.isFullscreen = true;
+            document.body.dataset.fullscreen = true;
+            document.documentElement.requestFullscreen();
+        }
+        window.madExitFullscreen = function () {
+            window.madDeskMover.isFullscreen = false;
+            delete document.body.dataset.fullscreen;
+            document.exitFullscreen();
+        }
+
+        window.madSetIcon = noop;
+        window.madSetResizeArea = noop;
+        window.madSetResizable = noop;
+        window.madChangeWndStyle = noop;
+        window.madOpenMiniColorPicker = noop;
+        window.madOpenColorPicker = noop;
+        window.madPlaySound = noop;
+        window.madExtendMoveTarget = noop;
+
+        window.madFallbackMode = true;
+    }
 })();

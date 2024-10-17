@@ -47,6 +47,6 @@
     --sm-caption-font: 9pt/0.9 var(--ui-font);
 }
 .window {
-    --extra-border-size: 5px;
+    --extra-border-size: 5px !important;
     --extra-title-height: 1px !important;
 }

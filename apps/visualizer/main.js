@@ -10,6 +10,8 @@ if (parent === window) {
     alert("This page is not meant to be opened directly. Please open it from ModernActiveDesktop.");
 } else if (!frameElement) {
     alert("MADVis is being cross-origin restricted. Please run ModernActiveDesktop with a web server.");
+} else if (window.madFallbackMode) {
+    top.madAlert(madGetString("UI_MSG_RUNNING_AS_BG"), null, "error");
 } else if (madRunningMode === 0) {
     madAlert(madGetString("VISUALIZER_UNSUPPORTED_MSG"), null, "error");
     madDeskMover.isVisualizer = true;
@@ -106,13 +108,13 @@ let schemeTopColor = null;
 // #region Event listeners
 playIcon.addEventListener('click', () => {
     if (!playIcon.dataset.active) {
-        mediaControl('playpause');
+        mediaControl('play');
     }
 });
 
 pauseIcon.addEventListener('click', () => {
     if (!pauseIcon.dataset.active && !pauseIcon.dataset.disabled) {
-        mediaControl('playpause');
+        mediaControl('pause');
     }
 });
 
@@ -183,6 +185,12 @@ if (localStorage.madesktopVisMenuAutohide) {
 if (localStorage.madesktopVisFullscreen) {
     madEnterFullscreen();
     viewMenuItems[1].classList.add('checkedItem');
+
+    if (localStorage.madesktopVisBgMode) {
+        viewMenuItems[5].classList.add('checkedItem');
+        madDeskMover.bottomMost = true;
+        madBringToTop(); // Trigger z-index update
+    }
 }
 
 if (localStorage.madesktopVisInfoShown) {
@@ -284,6 +292,9 @@ viewMenuItems[1].addEventListener('click', () => { // Fullscreen button
         madExitFullscreen();
         viewMenuItems[1].classList.remove('checkedItem');
         delete localStorage.madesktopVisFullscreen;
+        if (localStorage.madesktopVisBgMode) {
+            viewMenuItems[5].click();
+        }
     } else {
         madEnterFullscreen();
         viewMenuItems[1].classList.add('checkedItem');
@@ -419,6 +430,26 @@ viewMenuItems[4].addEventListener('click', () => { // Enable Media Controls butt
             madAlert(madGetString("UI_MSG_SYSPLUG_REQUIRED"), () => {
                 madOpenWindow('SysplugSetupGuide.md', true);
             });
+        }
+    }
+});
+
+viewMenuItems[5].addEventListener('click', () => { // Show as Background button
+    if (localStorage.madesktopVisBgMode) {
+        delete localStorage.madesktopVisBgMode;
+        viewMenuItems[5].classList.remove('checkedItem');
+        madDeskMover.bottomMost = false;
+        madBringToTop(); // Trigger z-index update
+        if (madDeskMover.isFullscreen) {
+            viewMenuItems[1].click();
+        }
+    } else {
+        localStorage.madesktopVisBgMode = true;
+        viewMenuItems[5].classList.add('checkedItem');
+        madDeskMover.bottomMost = true;
+        madBringToTop(); // Trigger z-index update
+        if (!madDeskMover.isFullscreen) {
+            viewMenuItems[1].click();
         }
     }
 });

@@ -302,10 +302,10 @@ class MadMenu {
             } else {
                 top = menuBtn.offsetTop + menuBtn.offsetHeight;
                 left = menuBtn.offsetLeft;
-            }
-            if (madDeskMover.isFullscreen) {
-                top += parseInt(localStorage.madesktopChanViewTopMargin || '0');
-                left += parseInt(localStorage.madesktopChanViewLeftMargin || '75px');
+                if (madDeskMover.isFullscreen) {
+                    top += parseInt(localStorage.madesktopChanViewTopMargin || '0');
+                    left += parseInt(localStorage.madesktopChanViewLeftMargin || '75px');
+                }
             }
             menuBg.style.top = top + 'px';
             menuBg.style.left = left + 'px';

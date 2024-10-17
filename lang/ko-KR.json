@@ -33,6 +33,7 @@
     "UI_MSG_SYSPLUG_REQUIRED": "이 기능은 시스템 플러그인 연동이 필요합니다.",
     "UI_MSG_NO_SYSPLUG": "시스템 플러그인이 실행 중이 아닙니다. 시스템 플러그인이 설치되어 있는지 확인해주세요.",
     "UI_MSG_SYSPLUG_ERROR": "오류가 발생하였습니다! 시스템 플러그인 응답: %s",
+    "UI_MSG_RUNNING_AS_BG": "이 페이지는 배경으로 실행할 수 없습니다. 새 창에서 열어주세요.",
     "UI_PROMPT_RUNJS": "실행할 JavaScript 코드 입력",
     "UI_PROMPT_ENTER_VALUE": "값 입력",
     "UI_PROMPT_ENTER_VALUE_RESETTABLE": "값 입력 (빈칸으로 두면 초기화)",
@@ -439,6 +440,7 @@
     "VISUALIZER_VIEW_MENUITEM_INFORMATION": "정보(&I)",
     "VISUALIZER_VIEW_MENUITEM_PLAYBACK_STATUS": "재생 상태(&P)",
     "VISUALIZER_VIEW_MENUITEM_ENABLE_MEDIA_CONTROLS": "미디어 제어 활성화(&E)",
+    "VISUALIZER_VIEW_MENUITEM_SHOW_AS_BG": "배경으로 표시(&B)",
 
     "VISUALIZER_OPT_MENUITEM_COLORS": "색상(&C)",
     "VISUALIZER_OPT_MENUITEM_TITLE": "창 제목(&T)",

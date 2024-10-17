@@ -10,10 +10,14 @@ if (!location.href.includes("about.html")) {
         alert("This page is not meant to be opened directly. Please open it from ModernActiveDesktop.");
     } else if (!frameElement) {
         alert("MADConf is being cross-origin restricted. Please run ModernActiveDesktop with a web server.");
+    } else if (window.madFallbackMode) {
+        top.madAlert(madGetString("UI_MSG_RUNNING_AS_BG"), null, "error");
+    } else {
+        parent.confDeskMover = madDeskMover;
     }
+} else {
+    parent.confDeskMover = madDeskMover;
 }
-
-parent.confDeskMover = madDeskMover;
 madDeskMover.isConfigurator = true;
 
 const tabs = document.querySelectorAll(".tab");

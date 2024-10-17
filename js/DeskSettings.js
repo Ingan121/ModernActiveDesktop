@@ -311,9 +311,7 @@
     }
 
     function changeAeroColor(color) {
-        if (localStorage.madesktopColorScheme === "7css4mad") {
-            document.documentElement.style.setProperty('--title-accent', color || '#4580c4');
-        }
+        document.documentElement.style.setProperty('--title-accent', color || '#4580c4');
     }
 
     function changeAeroGlass(noGlass) {
@@ -329,7 +327,7 @@
     }
 
     function changeWinAnim(noAnim) {
-        if (localStorage.madesktopColorScheme === "7css4mad") {
+        if (getComputedStyle(document.documentElement).getPropertyValue('--win-open-anim') && getComputedStyle(document.documentElement).getPropertyValue('--win-close-anim')) {
             if (noAnim) {
                 document.body.dataset.noAnim = true;
             } else {

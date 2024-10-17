@@ -40,6 +40,7 @@
     "UI_MSG_SYSPLUG_REQUIRED": "This feature requires system plugin integration.",
     "UI_MSG_NO_SYSPLUG": "System plugin is not running. Please make sure you have installed it properly.",
     "UI_MSG_SYSPLUG_ERROR": "An error occured!<br>System plugin response: %s",
+    "UI_MSG_RUNNING_AS_BG": "This page cannot run as background. Please open it in a new window.",
     "UI_PROMPT_RUNJS": "Enter JavaScript code to run.",
     "UI_PROMPT_ENTER_VALUE": "Enter value",
     "UI_PROMPT_ENTER_VALUE_RESETTABLE": "Enter value (leave empty to reset)",
@@ -490,6 +491,7 @@
     "VISUALIZER_VIEW_MENUITEM_INFORMATION": "&Information",
     "VISUALIZER_VIEW_MENUITEM_PLAYBACK_STATUS": "&Playback Status",
     "VISUALIZER_VIEW_MENUITEM_ENABLE_MEDIA_CONTROLS": "&Enable Media Controls",
+    "VISUALIZER_VIEW_MENUITEM_SHOW_AS_BG": "Show as &Background",
 
     "VISUALIZER_OPT_MENUITEM_COLORS": "&Colors",
     "VISUALIZER_OPT_MENUITEM_TITLE": "Window &Title",

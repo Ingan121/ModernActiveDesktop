@@ -1323,6 +1323,9 @@ async function fetchStyle() {
         case "7css4mad":
             themeStylesheet = await fetch(`stylesheets/${localStorage.madesktopColorScheme}.css`).then(res => res.text());
             break;
+        case "aerobasic":
+            themeStylesheet = await fetch(`stylesheets/7css4mad.css`).then(res => res.text());
+            break;
         default:
             themeStylesheet = "";
     }
