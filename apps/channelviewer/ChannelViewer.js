@@ -67,8 +67,8 @@ const border = document.getElementById("border");
 
 window.iframe = document.getElementById("iframe");
 
-let madBase = parent.location.href.split('/').slice(0, -1).join('/') + '/';
-if (parent === window) {
+let madBase = top.location.href.split('/').slice(0, -1).join('/') + '/';
+if (top === window) {
     madBase += '../../';
 }
 const cvBase = madBase + 'apps/channelviewer/';
@@ -486,7 +486,7 @@ printButton.addEventListener("click", function () {
 });
 
 openButton.addEventListener("click", function () {
-    parent.openExternalExternally(getCurrentUrl(true), false, true);
+    top.openExternalExternally(getCurrentUrl(true), false, true);
 });
 
 urlbar.addEventListener('click', async function (event) {
@@ -698,12 +698,12 @@ function hookIframeSize(iframe) {
     Object.defineProperties(iframe.contentWindow.screen, {
         width: {
             get: function () {
-                return parent.vWidth;
+                return top.vWidth || top.innerWidth;
             }
         },
         height: {
             get: function () {
-                return parent.vHeight;
+                return top.vHeight || top.innerHeight;
             }
         }
     });
@@ -1364,7 +1364,7 @@ function injectStyle() {
             svgStyleElement.id = "madChanView-svgStyle";
             iframe.contentDocument.head.insertBefore(svgStyleElement, iframe.contentDocument.head.firstChild);
         }
-        const parentStyleElement = parent.document.getElementById("style");
+        const parentStyleElement = top.document.getElementById("style");
         svgStyleElement.textContent = parentStyleElement.textContent;
 
         let styleElement = iframe.contentDocument.getElementById("madChanView-style");

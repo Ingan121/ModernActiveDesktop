@@ -11,12 +11,12 @@
     const author = "Ingan121";
     const channelViewer = "ChannelViewer";
 
-    window.madStrings = top.madStrings || {};
+    window.madStrings = !!frameElement ? (top.madStrings || {}) : {};
     let fallbackStrings = null;
 
     const supportedLanguages = ["en-US", "ko-KR"];
 
-    let lang = top.madLang || localStorage.madesktopLang || navigator.language || navigator.userLanguage;
+    let lang = (!!frameElement ? top.madLang : null) || localStorage.madesktopLang || navigator.language || navigator.userLanguage;
     window.madLang = lang;
 
     const localizableElements = [];

@@ -17,7 +17,9 @@
 // Dependencies: functions.js (required by the custom dropdown and theme functions)
 
 (function () {
-    if (!frameElement) {
+    if (!frameElement || // Not running in iframe, or running in cross-origin restricted mode
+        !top.madMainWindow // Top window is not MAD (SecurityError if cross-origin but should not reach here in that case)
+    ) {
         setupFallback();
         return;
     }
@@ -28,11 +30,6 @@
     const schemeElement = document.getElementById("scheme");
     const menuStyleElement = document.getElementById("menuStyle");
     const styleElement = document.getElementById("style");
-    if (frameElement.dataset.num === undefined) {
-        // bghtml, etc.
-        setupFallback();
-        return;
-    }
     const deskMoverNum = frameElement.dataset.num || 0;
     const deskMover = top.deskMovers[deskMoverNum];
     const config = deskMover.config;
@@ -236,6 +233,14 @@
         }
     };
 
+    if (top !== parent || // Running in a nested iframe (e.g. ChannelViewer sidebar)
+        frameElement.id === "bgHtmlView" || // Running as bgHtmlView (in madMainWindow or wp_preview)
+        frameElement.dataset.num === undefined // Running in a non-DeskMover iframe
+    ) {
+        setupFallback();
+        return; // Below requires the DeskMover interface
+    }
+
     // custom dropdown
     class MadSelect extends HTMLElement {
         constructor() {
@@ -379,8 +384,10 @@
     window.madPlaySound = top.playSound;
     window.madAnnounce = top.announce;
 
+    // minimal MAD APIs fallback for running without the DeskMover interface
     function setupFallback() {
-        // minimal MAD APIs fallback for non-MAD environments (or in cross-origin restricted mode)
+        const madStillAvailable = !!frameElement && top.madMainWindow;
+
         const noop = () => {};
         window.madDeskMover = {
             config: {
@@ -411,109 +418,125 @@
             } 
         });
 
-        window.madScaleFactor = 1;
-        window.madRunningMode = 0;
-        window.madKbdSupport = 1;
-        window.log = function (str, level, caller) {
-            if (!caller) {
-                caller = getCaller();
+        if (madStillAvailable) {
+            window.madIdb = top.madIdb;
+            window.madOpenWindow = top.openWindow;
+            window.madOpenConfig = top.openConfig;
+            window.madOpenExternal = top.openExternal;
+            window.madAlert = top.madAlert;
+            window.madConfirm = top.madConfirm;
+            window.madPrompt = top.madPrompt;
+            window.madPlaySound = top.playSound;
+            window.madAnnounce = top.announce;
+        } else {
+            window.madScaleFactor = 1;
+            window.madRunningMode = 0;
+            window.madKbdSupport = 1;
+
+            // window.madIdb: include DeskSettings.js if you need it in non-MAD environments
+            window.log = function (str, level, caller) {
+                if (!caller) {
+                    caller = getCaller();
+                }
+                if (typeof str === "object") {
+                    str = JSON.stringify(str);
+                }
+                console[level || 'log'](caller + ": " + str);
             }
-            if (typeof str === "object") {
-                str = JSON.stringify(str);
-            }
-            console[level || 'log'](caller + ": " + str);
-        }
-        window.madOpenWindow = function (url, temp, optionsOrWidth = {}, heightArg, style, centeredArg, topArg, leftArg) {
-            if (url.startsWith("apps/")) {
-                url = "../../" + url;
-            } else if (!url.endsWith(".html")) {
-                url = "../../docs/index.html?src=" + url;
-                optionsOrWidth = {
-                    width: optionsOrWidth.width || 800,
-                    height: optionsOrWidth.height || 600,
-                    top: optionsOrWidth.top || 200,
-                    left: optionsOrWidth.left || 250
+            window.madOpenWindow = function (url, temp, optionsOrWidth = {}, heightArg, style, centeredArg, topArg, leftArg) {
+                if (url.startsWith("apps/") && location.href.includes("/apps/")) {
+                    url = "../../" + url;
+                } else if (!url.endsWith(".html")) {
+                    url = "../../docs/index.html?src=" + url;
+                    optionsOrWidth = {
+                        width: optionsOrWidth.width || 800,
+                        height: optionsOrWidth.height || 600,
+                        top: optionsOrWidth.top || 200,
+                        left: optionsOrWidth.left || 250
+                    }
+                }
+                const width = optionsOrWidth.width || optionsOrWidth;
+                const height = optionsOrWidth.height || heightArg;
+                const centered = optionsOrWidth.centered || centeredArg;
+                const top = centered ? (screen.availHeight - parseInt(height)) / 2 : (optionsOrWidth.top || topArg);
+                const left = centered ? (screen.availWidth - parseInt(width)) / 2 : (optionsOrWidth.left || leftArg);
+                let specs = "";
+                if (width) {
+                    specs += `width=${width},`;
+                }
+                if (height) {
+                    specs += `height=${height},`;
+                }
+                if (top) {
+                    specs += `top=${top},`;
+                }
+                if (left) {
+                    specs += `left=${left},`;
+                }
+                const newWnd = window.open(url, "_blank", specs);
+                return {
+                    windowElement: {
+                        contentWindow: newWnd,
+                        addEventListener: newWnd.addEventListener.bind(newWnd),
+                    }
                 }
             }
-            const width = optionsOrWidth.width || optionsOrWidth;
-            const height = optionsOrWidth.height || heightArg;
-            const centered = optionsOrWidth.centered || centeredArg;
-            const top = centered ? (screen.availHeight - parseInt(height)) / 2 : (optionsOrWidth.top || topArg);
-            const left = centered ? (screen.availWidth - parseInt(width)) / 2 : (optionsOrWidth.left || leftArg);
-            let specs = "";
-            if (width) {
-                specs += `width=${width},`;
-            }
-            if (height) {
-                specs += `height=${height},`;
-            }
-            if (top) {
-                specs += `top=${top},`;
-            }
-            if (left) {
-                specs += `left=${left},`;
-            }
-            const newWnd = window.open(url, "_blank", specs);
-            return {
-                windowElement: {
-                    contentWindow: newWnd,
-                    addEventListener: newWnd.addEventListener.bind(newWnd),
+            window.madOpenConfig = function (page) {
+                if (page === "about") {
+                    madOpenWindow(`apps/madconf/about.html`, false, 398, 423, "wnd", false, 200, 250);
+                } else if (parent === window) {
+                    alert("This page cannot be opened when not running in ModernActiveDesktop. Please open it from ModernActiveDesktop.");
+                } else {
+                    alert("This page cannot be opened when cross-origin restricted. Please run ModernActiveDesktop with a web server.");
                 }
             }
-        }
-        window.madOpenConfig = function (page) {
-            if (page === "about") {
-                madOpenWindow(`apps/madconf/about.html`, false, 398, 423, "wnd", false, 200, 250);
-            } else if (parent === window) {
-                alert("This page cannot be opened when not running in ModernActiveDesktop. Please open it from ModernActiveDesktop.");
-            } else {
-                alert("This page cannot be opened when cross-origin restricted. Please run ModernActiveDesktop with a web server.");
+            window.madOpenExternal = function (url) {
+                window.open(url, "_blank");
             }
+            window.madAlert = async function (msg, callback, icon) {
+                return new Promise((resolve) => {
+                    alert(msg);
+                    if (callback) {
+                        callback();
+                    }
+                    resolve();
+                });
+            }
+            window.madConfirm = async function (msg, callback) {
+                return new Promise((resolve) => {
+                    const result = confirm(msg);
+                    if (callback) {
+                        callback(result);
+                    }
+                    resolve(result);
+                });
+            }
+            window.madPrompt = async function (msg, callback, hint, text) {
+                return new Promise((resolve) => {
+                    const result = prompt(msg, text);
+                    if (callback) {
+                        callback(result);
+                    }
+                    resolve(result);
+                });
+            }
+            window.madAnnounce = function (type) {
+                window.postMessage({ type }, "*");
+                if (window.opener) {
+                    window.opener.postMessage({ type }, "*");
+                }
+            }
+            window.madPlaySound = noop;
         }
-        window.madOpenExternal = function (url) {
-            window.open(url, "_blank");
-        }
+
         window.madOpenDropdown = function (elem) {
             return;
         }
         window.madLocReplace = function (url) {
-            if (url.startsWith("apps/")) {
+            if (url.startsWith("apps/") && location.href.includes("/apps/")) {
                 url = "../../" + url;
             }
             location.replace(url);
-        }
-        window.madAlert = top.madAlert || async function (msg, callback, icon) {
-            return new Promise((resolve) => {
-                alert(msg);
-                if (callback) {
-                    callback();
-                }
-                resolve();
-            });
-        }
-        window.madConfirm = top.madConfirm || async function (msg, callback) {
-            return new Promise((resolve) => {
-                const result = confirm(msg);
-                if (callback) {
-                    callback(result);
-                }
-                resolve(result);
-            });
-        }
-        window.madPrompt = top.madPrompt || async function (msg, callback, hint, text) {
-            return new Promise((resolve) => {
-                const result = prompt(msg, text);
-                if (callback) {
-                    callback(result);
-                }
-                resolve(result);
-            });
-        }
-        window.madAnnounce = function (type) {
-            window.postMessage({ type }, "*");
-            if (window.opener) {
-                window.opener.postMessage({ type }, "*");
-            }
         }
         window.madCloseWindow = window.close;
         window.madResizeTo = window.resizeTo;
@@ -537,7 +560,6 @@
         window.madChangeWndStyle = noop;
         window.madOpenMiniColorPicker = noop;
         window.madOpenColorPicker = noop;
-        window.madPlaySound = noop;
         window.madExtendMoveTarget = noop;
 
         window.madFallbackMode = true;

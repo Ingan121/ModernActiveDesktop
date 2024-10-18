@@ -5,6 +5,10 @@
 
 'use strict';
 
+if (!frameElement || !madDeskMover.isVisualizer || window.madFallbackMode || madRunningMode === 0) {
+    throw new Error("Initialization conditions not met.");
+}
+
 const visBarCtx = visBar.getContext('2d');
 const visTopCtx = visTop.getContext('2d');
 

@@ -976,7 +976,7 @@ function updateAlbumArtSize() {
 }
 
 function setupMediaListeners() {
-    if (madRunningMode === 1) {
+    if (madRunningMode === 1 && madDeskMover.isVisualizer) {
         if (!isWin10) {
             wallpaperMediaStatusListener({ enabled: false });
             return;
