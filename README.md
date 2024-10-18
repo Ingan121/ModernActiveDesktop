@@ -74,7 +74,7 @@
     * Wallpaper Engine is also used for testing. For debugging, follow [this guide](https://docs.wallpaperengine.io/en/web/debug/debug.html) but instead of going to `localhost:[port]` directly, go to `chrome://inspect`, add `localhost:[port]` in the target discovery settings, wait a bit, and click inspect in the remote target list. It works better for me
 
 ## Notes
-* ModernActiveDesktop is primarily optimized for Chromium 98 and higher. Some features may not work or look well on other browsers.
+* ModernActiveDesktop is primarily optimized for Chromium 124 and higher. Some features may not work or look well on other browsers.
     * The display scaling feature is currently buggy on Firefox (which is only supported on FF 126 and newer)
 
 ## Changelog

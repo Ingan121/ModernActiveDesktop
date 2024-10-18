@@ -846,11 +846,12 @@ body[data-no-win-shadow] {
 
 .os-window.maximized {
   padding: 7px !important;
-  margin-left: -7px !important;
+  margin-left: -8px !important;
   margin-top: -7px !important;
 
   .window-titlebar img {
     margin-top: -2px;
+    margin-left: 1px;
   }
 
   .window-title-area {
@@ -862,7 +863,7 @@ body[data-no-win-shadow] {
   }
 
   .window-close-button {
-    margin-right: 5px !important;
+    margin-right: 4px !important;
   }
 }
 

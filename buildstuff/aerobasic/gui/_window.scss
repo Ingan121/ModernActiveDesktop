@@ -4,7 +4,7 @@
   --window-border-radius: 6px;
   --window-border-color: rgba(0, 0, 0, 0.7);
 
-  --control-border-color: rgba(0, 0, 0, 0.3);
+  --control-border-color: rgba(0, 0, 0, 0.32);
   --control-border-radius: 1px;
   --control-inset-shadow: inset 0 0 0 1px #fff7;
   --control-background: linear-gradient(
@@ -132,6 +132,8 @@
 .os-window:not(#JustHereToGiveItPriority) {
   font: var(--font);
   background-color: rgb(185, 209, 234);
+  background-image: url('icon/bgtexture.png');
+  background-repeat: repeat-x;
   box-shadow: inset 0 0 0 1px #fffa !important;
   border: var(--window-border) var(--window-border-color) !important;
   border-top-left-radius: var(--window-border-radius);
@@ -234,6 +236,7 @@
 #msgbox[data-inactive],
 .os-window:not(.focused) {
   background-color: rgb(215, 228, 242) !important;
+  background-image: none !important;
 
   &::before {
     box-shadow: inset 0 0 0 1px #fffd !important;
@@ -279,15 +282,18 @@
     }
   }
 
+  .title-bar-controls:has(button:hover) {
+    border-color: rgb(114, 0, 0) !important;
+  }
+
   /* Active title-bar */
   :not(#inactiveWindow) &:not(.inactive),
   #activeWindow &:not(#JustHereToGiveItPriority),
   .os-window.focused & {
     .title-bar-controls {
-      border-color: var(--window-border-color) ;
+      border-color: rgb(67, 20, 34) !important;
 
       button {
-        border-color: var(--window-border-color);
         box-shadow: var(--control-inset-shadow);
 
         &::after {
@@ -410,7 +416,7 @@
 }
 
 #osk {
-  height: 205px !important;
+  height: 206px !important;
 }
 
 #oskWindow {
@@ -485,12 +491,11 @@
 }
 
 .window-titlebar img {
-  margin-top: -6px;
+  margin-left: 3px;
 }
 
 .window-title-area {
   position: unset;
-  margin-top: -6px;
   margin-left: 2px;
   height: 26px !important;
 }
@@ -511,6 +516,7 @@
   }
   .window-title-area {
     height: 26px !important;
+    margin-left: 4px !important;
   }
   .window-title {
     padding-top: 10px !important;
@@ -522,34 +528,34 @@
     border-radius: 3px !important;
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5) !important;
     box-sizing: border-box !important;
-    background: url("./icon/close-toolwindow.png") no-repeat center !important;
     width: 17px !important;
     height: 17px !important;
     margin-right: -1px !important;
     margin-bottom: 0 !important;
 
-    &::before {
-      content: "";
-      background: url("./icon/close-toolwindow.png") no-repeat center,
+    &:not(#JustHereToGiveItPriority) {
+      &:hover {
+        background: url("./icon/close-toolwindow.png") no-repeat center,
         var(--control-background), var(--control-background-close-hovered) !important;
-      opacity: 0 !important;
-      transition: opacity 0.3s linear;
-    }
-
-    &:hover::before,
-    &:focus-visible::before {
-      opacity: 1 !important;
-      transition: opacity 0.1s linear;
-    }
-
-    &:active::before {
-      background: url("./icon/close-toolwindow.png") no-repeat center,
-        var(--control-background), var(--control-background-close-active) !important;
+      }
+      &:active {
+        background: url("./icon/close-toolwindow.png") no-repeat center,
+          var(--control-background), var(--control-background-close-active) !important;
+      }
     }
   }
-  &::before,
-  &::after {
-    border-radius: 0 !important;
+  &.focused .window-button {
+    background: url("./icon/close-toolwindow.png") no-repeat center,
+      var(--control-background), var(--control-background-close) !important;
+    border-color: rgb(67, 20, 34) !important;
+  }
+  &:not(.focused) .window-button {
+    background: url("./icon/close-toolwindow.png") no-repeat center !important;
+    &:hover {
+      background: url("./icon/close-toolwindow.png") no-repeat center,
+        var(--control-background), var(--control-background-close-hovered) !important;
+      border-color: rgb(67, 20, 34) !important;
+    }
   }
 }
 
@@ -619,7 +625,14 @@
   background: url("./icon/close.png") no-repeat center;
 }
 
-.os-window.focused {
+.os-window.focused:not(#JustHereToGiveItPriority) {
+  .window-button:not(#JustHereToGiveItPriority) {
+    border-color: rgba(0, 0, 0, 0.45);
+    &:hover,
+    &:active {
+      border-color: rgba(0, 0, 0, 0.57) !important;
+    }
+  }
   .window-minimize-button:not(#JustHereToGiveItPriority) {
     background: url("./icon/minimize.png") no-repeat center 7px,
       var(--control-background);
@@ -640,21 +653,21 @@
     background: url("./icon/close.png") no-repeat center,
       var(--control-background), var(--control-background-close);
     box-shadow: var(--control-inset-shadow);
+    border-color: rgb(67, 20, 34) !important;
   }
-}
-
-.tool-window.focused {
-  .window-close-button:not(#JustHereToGiveItPriority) {
-    background: url("./icon/close-toolwindow.png") no-repeat center,
-      var(--control-background), var(--control-background-close) !important;
-    border: var(--window-border) rgba(0, 0, 0, 0.9) !important;
+  .window-content {
+    border-color: rgb(185, 209, 234) !important;
   }
 }
 
 .os-window:not(#JustHereToGiveItPriority) {
   .window-button:not(#JustHereToGiveItPriority) {
-    border-color: var(--window-border-color);
+    border-color: var(--control-border-color);
     box-shadow: var(--control-inset-shadow);
+
+    &:hover {
+      border-color: rgba(0, 0, 0, 0.5);
+    }
 
     &::after {
       content: none;
@@ -727,6 +740,10 @@
       opacity: 0 !important;
     }
 
+    &:hover {
+      border-color: rgb(114, 0, 0);
+    }
+
     &:hover::before,
     &:focus-visible::before {
       opacity: 1 !important;
@@ -745,23 +762,24 @@
 
 .os-window.maximized {
   padding: 7px !important;
-  margin-left: -7px !important;
-  margin-top: -9px !important;
+  margin-left: -8px !important;
+  margin-top: -12px !important;
 
   .window-titlebar img {
-    margin-top: -2px;
+    margin-top: 4px;
   }
 
   .window-title-area {
-    margin-top: -1px !important;
+    margin-top: 4px !important;
+    margin-left: 6px;
   }
 
   .window-button {
-    margin-top: 4px !important;
+    margin-top: 7px !important;
   }
 
   .window-close-button {
-    margin-right: 4px !important;
+    margin-right: 3px !important;
   }
 }
 

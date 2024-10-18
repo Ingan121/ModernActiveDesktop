@@ -25,43 +25,57 @@ const applyBtn = document.getElementById("applyBtn");
 
 let openColorPickerColor = null;
 
-const configColors = {
-    main: localStorage.madesktopClockMainColor || "#008080",
-    light: localStorage.madesktopClockLightColor || "#00ffff",
-    hilight: localStorage.madesktopClockHilightColor || "#ffffff",
-    shadow: localStorage.madesktopClockShadowColor || "#a0a0a0",
-    dkShadow: localStorage.madesktopClockDkShadowColor || "#000000",
-    background: localStorage.madesktopClockBackgroundColor || getComputedStyle(document.documentElement).getPropertyValue('--button-face')
-};
+const configColors = {};
 
-for (const colorPicker of colorPickers) {
-    const colorPickerColor = colorPicker.querySelector(".colorPicker-color");
-    colorPickerColor.style.backgroundColor = configColors[colorPicker.id.replace('ColorPicker', '')];
-    if (localStorage.madesktopClockDigital) {
-        colorPicker.disabled = true;
-        colorPicker.parentElement.classList.add("disabled");
-    } else {
-        colorPicker.addEventListener("click", function () {
-            openColorPickerColor = colorPickerColor;
-            madOpenMiniColorPicker(this, this.querySelector(".colorPicker-color").style.backgroundColor, changeColor, colorPicker.id !== "backgroundColorPicker");
-        });
+function init() {
+    configColors.main = window.targetDeskMover.config.clockMainColor || "#008080";
+    configColors.light = window.targetDeskMover.config.clockLightColor || "#00ffff";
+    configColors.hilight = window.targetDeskMover.config.clockHilightColor || "#ffffff";
+    configColors.shadow = window.targetDeskMover.config.clockShadowColor || "#a0a0a0";
+    configColors.dkShadow = window.targetDeskMover.config.clockDkShadowColor || "#000000";
+    configColors.background = window.targetDeskMover.config.clockBackgroundColor || getComputedStyle(document.documentElement).getPropertyValue('--button-face');
+
+    for (const colorPicker of colorPickers) {
+        const colorPickerColor = colorPicker.querySelector(".colorPicker-color");
+        colorPickerColor.style.backgroundColor = configColors[colorPicker.id.replace('ColorPicker', '')];
+        if (window.targetDeskMover.config.clockDigital) {
+            colorPicker.disabled = true;
+            colorPicker.parentElement.classList.add("disabled");
+        } else {
+            colorPicker.addEventListener("click", function () {
+                openColorPickerColor = colorPickerColor;
+                madOpenMiniColorPicker(this, this.querySelector(".colorPicker-color").style.backgroundColor, changeColor, colorPicker.id !== "backgroundColorPicker");
+            });
+        }
     }
+
+    if (window.targetDeskMover.config.clockDigital) {
+        fontSelector.disabled = false;
+        outlineModeChkBox.disabled = false;
+    }
+
+    FontDetective.each(font => {
+        const option = document.createElement("option");
+        option.textContent = font.name;
+        option.value = font.name;
+        fontSelector.appendChild(option);
+        fonts.push(font.name);
+    });
+
+    fontSelector.options[0].textContent = window.targetDeskMover.config.clockFont || "Microsoft Sans Serif";
+
+    if (window.targetDeskMover.config.clockNoOutline) {
+        outlineModeChkBox.checked = false;
+    }
+
+    if (!window.targetDeskMover.config.clockBackgroundColor) {
+        const buttonFace = getComputedStyle(document.documentElement).getPropertyValue('--button-face');
+        bgColorPickerColor.style.backgroundColor = buttonFace;
+        configColors.background = buttonFace;
+    }
+
+    madResizeTo(null, document.documentElement.offsetHeight);
 }
-
-if (localStorage.madesktopClockDigital) {
-    fontSelector.disabled = false;
-    outlineModeChkBox.disabled = false;
-}
-
-FontDetective.each(font => {
-    const option = document.createElement("option");
-    option.textContent = font.name;
-    option.value = font.name;
-    fontSelector.appendChild(option);
-    fonts.push(font.name);
-});
-
-fontSelector.options[0].textContent = localStorage.madesktopClockFont || "Microsoft Sans Serif";
 
 function changeColor(color) {
     openColorPickerColor.style.backgroundColor = color;
@@ -71,14 +85,14 @@ function changeColor(color) {
 resetBtn.addEventListener("click", () => {
     madConfirm(madGetString("CLOCKCONF_CONFIRM_RESET"), function (res) {
         if (res) {
-            delete localStorage.madesktopClockMainColor;
-            delete localStorage.madesktopClockLightColor;
-            delete localStorage.madesktopClockHilightColor;
-            delete localStorage.madesktopClockShadowColor;
-            delete localStorage.madesktopClockDkShadowColor;
-            delete localStorage.madesktopClockBackgroundColor;
-            delete localStorage.madesktopClockFont;
-            delete localStorage.madesktopClockNoOutline;
+            delete window.targetDeskMover.config.clockMainColor;
+            delete window.targetDeskMover.config.clockLightColor;
+            delete window.targetDeskMover.config.clockHilightColor;
+            delete window.targetDeskMover.config.clockShadowColor;
+            delete window.targetDeskMover.config.clockDkShadowColor;
+            delete window.targetDeskMover.config.clockBackgroundColor;
+            delete window.targetDeskMover.config.clockFont;
+            delete window.targetDeskMover.config.clockNoOutline;
             window.targetDeskMover.windowElement.contentWindow.location.reload();
             madCloseWindow();
         }
@@ -86,18 +100,18 @@ resetBtn.addEventListener("click", () => {
 });
 
 window.apply = function () {
-    localStorage.madesktopClockMainColor = configColors.main;
-    localStorage.madesktopClockLightColor = configColors.light;
-    localStorage.madesktopClockHilightColor = configColors.hilight;
-    localStorage.madesktopClockShadowColor = configColors.shadow;
-    localStorage.madesktopClockDkShadowColor = configColors.dkShadow;
-    localStorage.madesktopClockBackgroundColor = configColors.background;
-    localStorage.madesktopClockFont = fontSelector.value;
+    window.targetDeskMover.config.clockMainColor = configColors.main;
+    window.targetDeskMover.config.clockLightColor = configColors.light;
+    window.targetDeskMover.config.clockHilightColor = configColors.hilight;
+    window.targetDeskMover.config.clockShadowColor = configColors.shadow;
+    window.targetDeskMover.config.clockDkShadowColor = configColors.dkShadow;
+    window.targetDeskMover.config.clockBackgroundColor = configColors.background;
+    window.targetDeskMover.config.clockFont = fontSelector.value;
 
     if (!outlineModeChkBox.checked) {
-        localStorage.madesktopClockNoOutline = true;
+        window.targetDeskMover.config.clockNoOutline = true;
     } else {
-        delete localStorage.madesktopClockNoOutline;
+        delete window.targetDeskMover.config.clockNoOutline;
     }
     window.targetDeskMover.windowElement.contentWindow.configChanged(configColors);
 }
@@ -113,20 +127,6 @@ cancelBtn.addEventListener("click", () => {
 
 applyBtn.addEventListener("click", () => {
     window.apply();
-});
-
-if (localStorage.madesktopClockNoOutline) {
-    outlineModeChkBox.checked = false;
-}
-
-window.addEventListener('load', () => {
-    if (!localStorage.madesktopClockBackgroundColor) {
-        const buttonFace = getComputedStyle(document.documentElement).getPropertyValue('--button-face');
-        bgColorPickerColor.style.backgroundColor = buttonFace;
-        configColors.background = buttonFace;
-    }
-
-    madResizeTo(null, document.documentElement.offsetHeight);
 });
 
 madSetIcon(false);

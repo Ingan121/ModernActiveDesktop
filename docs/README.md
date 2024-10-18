@@ -56,7 +56,7 @@
 * Support multi-display background wallpaper configuration?
 
 ## Notes
-* ModernActiveDesktop is primarily optimized for Chromium 98 and higher. Some features may not work or look well on other browsers.
+* ModernActiveDesktop is primarily optimized for Chromium 124 and higher. Some features may not work or look well on other browsers.
     * The display scaling feature is currently buggy on Firefox (which is only supported on FF 126 and newer)
 
 ## Changelog

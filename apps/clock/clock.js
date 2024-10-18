@@ -31,6 +31,81 @@ let timeOptions = { timeStyle: 'medium' };
 
 madDeskMover.menu = new MadMenu(menuBar, ['settings']);
 
+// Config migration
+let migrated = false;
+if (localStorage.madesktopClockDigital) {
+    madDeskMover.config.clockDigital = true;
+    migrated = true;
+}
+if (localStorage.madesktopClock24H) {
+    madDeskMover.config.clock24H = true;
+    migrated = true;
+}
+if (localStorage.madesktopClockGMT) {
+    madDeskMover.config.clockGMT = true;
+    migrated = true;
+}
+if (localStorage.madesktopClockHideSeconds) {
+    madDeskMover.config.clockHideSeconds = true;
+    migrated = true;
+}
+if (localStorage.madesktopClockHideDate) {
+    madDeskMover.config.clockHideDate = true;
+    migrated = true;
+}
+if (localStorage.madesktopClockMainColor) {
+    madDeskMover.config.clockMainColor = localStorage.madesktopClockMainColor;
+    migrated = true;
+}
+if (localStorage.madesktopClockLightColor) {
+    madDeskMover.config.clockLightColor = localStorage.madesktopClockLightColor;
+    migrated = true;
+}
+if (localStorage.madesktopClockHilightColor) {
+    madDeskMover.config.clockHilightColor = localStorage.madesktopClockHilightColor;
+    migrated = true;
+}
+if (localStorage.madesktopClockShadowColor) {
+    madDeskMover.config.clockShadowColor = localStorage.madesktopClockShadowColor;
+    migrated = true;
+}
+if (localStorage.madesktopClockDkShadowColor) {
+    madDeskMover.config.clockDkShadowColor = localStorage.madesktopClockDkShadowColor;
+    migrated = true;
+}
+if (localStorage.madesktopClockBackgroundColor) {
+    madDeskMover.config.clockBackgroundColor = localStorage.madesktopClockBackgroundColor;
+    migrated = true;
+}
+if (localStorage.madesktopClockNoOutline) {
+    madDeskMover.config.clockNoOutline = true;
+    migrated = true;
+}
+if (localStorage.madesktopClockFont) {
+    madDeskMover.config.clockFont = localStorage.madesktopClockFont;
+    migrated = true;
+}
+if (migrated) {
+    // Let all running clocks migrate their settings
+    top.addEventListener('load', () => {
+        setTimeout(() => {
+            delete localStorage.madesktopClockDigital;
+            delete localStorage.madesktopClock24H;
+            delete localStorage.madesktopClockGMT;
+            delete localStorage.madesktopClockHideSeconds;
+            delete localStorage.madesktopClockHideDate;
+            delete localStorage.madesktopClockMainColor;
+            delete localStorage.madesktopClockLightColor;
+            delete localStorage.madesktopClockHilightColor;
+            delete localStorage.madesktopClockShadowColor;
+            delete localStorage.madesktopClockDkShadowColor;
+            delete localStorage.madesktopClockBackgroundColor;
+            delete localStorage.madesktopClockNoOutline;
+            delete localStorage.madesktopClockFont;
+        }, 1000);
+    });
+}
+
 settingsMenuItems[0].addEventListener('click', () => { // Analog button
     delete localStorage.madesktopClockDigital;
     settingsMenuItems[0].classList.add('activeStyle');
@@ -44,7 +119,7 @@ settingsMenuItems[0].addEventListener('click', () => { // Analog button
 });
 
 settingsMenuItems[1].addEventListener('click', () => { // Digital button
-    localStorage.madesktopClockDigital = true;
+    madDeskMover.config.clockDigital = true;
     settingsMenuItems[1].classList.add('activeStyle');
     settingsMenuItems[0].classList.remove('activeStyle');
     settingsMenuItems[4].classList.remove('disabled');
@@ -53,7 +128,7 @@ settingsMenuItems[1].addEventListener('click', () => { // Digital button
     digitalClock.style.display = 'table';
     updateSize();
 
-    if (localStorage.madesktopClock24H) {
+    if (madDeskMover.config.clock24H) {
         settingsMenuItems[4].classList.add('checkedItem');
     }
 });
@@ -68,31 +143,32 @@ settingsMenuItems[2].addEventListener('click', () => { // Set Font / Colors butt
     const configWindow = madOpenWindow('apps/clock/config.html', true, options);
     configWindow.windowElement.addEventListener('load', () => {
         configWindow.windowElement.contentWindow.targetDeskMover = madDeskMover;
+        configWindow.windowElement.contentWindow.init();
     });
 });
 
 settingsMenuItems[3].addEventListener('click', function () { // GMT button
-    if (localStorage.madesktopClockGMT) {
+    if (madDeskMover.config.clockGMT) {
         this.classList.remove('checkedItem');
-        delete localStorage.madesktopClockGMT;
+        delete madDeskMover.config.clockGMT;
     } else {
         this.classList.add('checkedItem');
-        localStorage.madesktopClockGMT = true;
+        madDeskMover.config.clockGMT = true;
     }
     drawClock();
 });
 
 settingsMenuItems[4].addEventListener('click', function () { // 24-Hours button
-    if (!localStorage.madesktopClockDigital) {
+    if (!madDeskMover.config.clockDigital) {
         return;
     }
 
-    if (localStorage.madesktopClock24H) {
+    if (madDeskMover.config.clock24H) {
         this.classList.remove('checkedItem');
-        delete localStorage.madesktopClock24H;
+        delete madDeskMover.config.clock24H;
     } else {
         this.classList.add('checkedItem');
-        localStorage.madesktopClock24H = true;
+        madDeskMover.config.clock24H = true;
     }
     updateClockOpts();
     drawClock();
@@ -103,24 +179,24 @@ settingsMenuItems[5].addEventListener('click', () => { // No Title button
 });
 
 settingsMenuItems[6].addEventListener('click', function () { // Seconds button
-    if (localStorage.madesktopClockHideSeconds) {
+    if (madDeskMover.config.clockHideSeconds) {
         this.classList.add('checkedItem');
-        delete localStorage.madesktopClockHideSeconds;
+        delete madDeskMover.config.clockHideSeconds;
     } else {
         this.classList.remove('checkedItem');
-        localStorage.madesktopClockHideSeconds = true;
+        madDeskMover.config.clockHideSeconds = true;
     }
     updateClockOpts();
     drawClock();
 });
 
 settingsMenuItems[7].addEventListener('click', function () { // Date button
-    if (localStorage.madesktopClockHideDate) {
+    if (madDeskMover.config.clockHideDate) {
         this.classList.add('checkedItem');
-        delete localStorage.madesktopClockHideDate;
+        delete madDeskMover.config.clockHideDate;
     } else {
         this.classList.remove('checkedItem');
-        localStorage.madesktopClockHideDate = true;
+        madDeskMover.config.clockHideDate = true;
     }
     drawClock();
 });
@@ -129,7 +205,7 @@ settingsMenuItems[8].addEventListener('click', () => { // About Clock button
     madOpenConfig('about');
 });
 
-if (localStorage.madesktopClockDigital) {
+if (madDeskMover.config.clockDigital) {
     settingsMenuItems[0].classList.remove('activeStyle');
     settingsMenuItems[1].classList.add('activeStyle');
     settingsMenuItems[4].classList.remove('disabled');
@@ -137,30 +213,30 @@ if (localStorage.madesktopClockDigital) {
     clockCanvas.style.display = 'none';
     digitalClock.style.display = 'table';
 
-    if (localStorage.madesktopClock24H) {
+    if (madDeskMover.config.clock24H) {
         settingsMenuItems[4].classList.add('checkedItem');
     }
 }
 
-if (localStorage.madesktopClockGMT) {
+if (madDeskMover.config.clockGMT) {
     settingsMenuItems[3].classList.add('checkedItem');
 }
 
-if (localStorage.madesktopClockHideSeconds) {
+if (madDeskMover.config.clockHideSeconds) {
     settingsMenuItems[6].classList.remove('checkedItem');
 }
 
-if (localStorage.madesktopClockHideDate) {
+if (madDeskMover.config.clockHideDate) {
     settingsMenuItems[7].classList.remove('checkedItem');
 }
 
 let colors = {
-    main: localStorage.madesktopClockMainColor || "#008080",
-    light: localStorage.madesktopClockLightColor || "#00ffff",
-    hilight: localStorage.madesktopClockHilightColor || "#ffffff",
-    shadow: localStorage.madesktopClockShadowColor || "#a0a0a0",
-    dkShadow: localStorage.madesktopClockDkShadowColor || "#000000",
-    background: localStorage.madesktopClockBackgroundColor || getComputedStyle(document.documentElement).getPropertyValue('--button-face')
+    main: madDeskMover.config.clockMainColor || "#008080",
+    light: madDeskMover.config.clockLightColor || "#00ffff",
+    hilight: madDeskMover.config.clockHilightColor || "#ffffff",
+    shadow: madDeskMover.config.clockShadowColor || "#a0a0a0",
+    dkShadow: madDeskMover.config.clockDkShadowColor || "#000000",
+    background: madDeskMover.config.clockBackgroundColor || getComputedStyle(document.documentElement).getPropertyValue('--button-face')
 };
 
 if (madDeskMover.config.noFrames) {
@@ -170,12 +246,12 @@ if (madDeskMover.config.noFrames) {
 updateSize();
 
 function updateSize() {
-    if (localStorage.madesktopClockDigital) {
+    if (madDeskMover.config.clockDigital) {
         // Unscale this to get consistent media query results
         // It's scaled appropriately with vw/vh anyway
         digitalClock.style.zoom = 1 / madScaleFactor;
         // And CSS doesn't allow variables in media queries, damn it
-        if (localStorage.madesktopClockNoOutline) {
+        if (madDeskMover.config.clockNoOutline) {
             dynQueryStyle.textContent = '';
         } else {
             dynQueryStyle.textContent = `
@@ -186,8 +262,8 @@ function updateSize() {
                     }
                 }`;
         }
-        if (localStorage.madesktopClockFont) {
-            digitalClock.style.fontFamily = `"${localStorage.madesktopClockFont}"`;
+        if (madDeskMover.config.clockFont) {
+            digitalClock.style.fontFamily = `"${madDeskMover.config.clockFont}"`;
         }
         updateClockOpts();
     } else {
@@ -201,7 +277,7 @@ function updateSize() {
         const clientRect = clockCanvas.getBoundingClientRect();
         clockCanvas.height = Math.round(clientRect.height * madScaleFactor * window.devicePixelRatio);
         clockCanvas.width = Math.round(clientRect.width * madScaleFactor * window.devicePixelRatio);
-        if (!localStorage.madesktopClockBackgroundColor) {
+        if (!madDeskMover.config.clockBackgroundColor) {
             colors.background = getComputedStyle(document.documentElement).getPropertyValue('--button-face');
         }
     }
@@ -210,8 +286,8 @@ function updateSize() {
 
 function updateClockOpts() {
     timeOptions = {};
-    timeOptions.hour12 = !localStorage.madesktopClock24H;
-    if (localStorage.madesktopClockHideSeconds) {
+    timeOptions.hour12 = !madDeskMover.config.clock24H;
+    if (madDeskMover.config.clockHideSeconds) {
         timeOptions.timeStyle = 'short';
     } else {
         timeOptions.timeStyle = 'medium';
@@ -368,16 +444,16 @@ function drawSecondHand(time) {
 
 function drawClock() {
     let time;
-    if (localStorage.madesktopClockGMT) {
+    if (madDeskMover.config.clockGMT) {
         const now = new Date();
         const offset = now.getTimezoneOffset() / 60;
         time = new Date(now.getTime() + offset * 60 * 60 * 1000);
     } else {
         time = new Date();
     }
-    if (localStorage.madesktopClockDigital) {
+    if (madDeskMover.config.clockDigital) {
         digitalClockTime.textContent = time.toLocaleTimeString(window.madLang, timeOptions);
-        if (localStorage.madesktopClockHideDate) {
+        if (madDeskMover.config.clockHideDate) {
             digitalClockDate.textContent = "";
         } else {
             digitalClockDate.textContent = time.toLocaleDateString(window.madLang);
@@ -389,10 +465,10 @@ function drawClock() {
         drawNumbers();
         drawHourHand(time);
         drawMinuteHand(time);
-        if (!localStorage.madesktopClockHideSeconds) {
+        if (!madDeskMover.config.clockHideSeconds) {
             drawSecondHand(time);
         }
-        if (localStorage.madesktopClockHideDate) {
+        if (madDeskMover.config.clockHideDate) {
             document.title = clockTitle;
         } else {
             document.title = clockTitle + " - " + time.toLocaleDateString(window.madLang);
@@ -410,8 +486,8 @@ setInterval(drawClock, 1000);
 window.addEventListener("message", (event) => {
     switch (event.data.type) {
         case "scheme-updated":
-            delete localStorage.madesktopClockBackgroundColor;
-            if (!localStorage.madesktopClockDigital && !['98', 'custom', 'sys', undefined].includes(localStorage.madesktopColorScheme)) {
+            delete madDeskMover.config.clockBackgroundColor;
+            if (!madDeskMover.config.clockDigital && !['98', 'custom', 'sys', undefined].includes(localStorage.madesktopColorScheme)) {
                 location.reload();
             } else {
                 colors.background = getComputedStyle(document.documentElement).getPropertyValue('--button-face');
@@ -427,7 +503,7 @@ window.addEventListener("message", (event) => {
 
 window.addEventListener('resize', updateSize);
 window.addEventListener('load', function () {
-    if (!localStorage.madesktopClockBackgroundColor) {
+    if (!madDeskMover.config.clockBackgroundColor) {
         colors.background = getComputedStyle(document.documentElement).getPropertyValue('--button-face');
     }
     updateSize();
@@ -456,7 +532,7 @@ function toggleTitle() {
     } else {
         menuBar.style.display = 'none';
         mainArea.style.marginTop = '0';
-        if (localStorage.madesktopClockDigital) {
+        if (madDeskMover.config.clockDigital) {
             document.body.classList.add('window');
         }
         madChangeWndStyle('noframes');
