@@ -218,6 +218,12 @@
         }[tag] || tag));
     }
 
+    // Get filename without extension
+    // Accepts both fileurl and filename with extension
+    function getFilename (str) {
+        return str.split('/').pop().split('.').slice(0, -1).join('.');
+    }
+
     window.getTextWidth = getTextWidth;
     window.scrollIntoView = scrollIntoView;
     window.rgbToHex = rgbToHex;
@@ -234,4 +240,5 @@
     window.base64ToArrayBuffer = base64ToArrayBuffer;
     window.blobToBase64 = blobToBase64;
     window.escapeHTML = escapeHTML;
+    window.getFilename = getFilename;
 })();

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title data-locid="CONFDL_TITLE">Preset Import Wizard</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../../css/98.css">
+    <link rel="stylesheet" href="main.css">
+    <link id="scheme" rel="stylesheet" href="data:text/css,">
+    <style id="langStyle"></style>
+    <style id="style"></style>
+</head>
+<body>
+    <div id="container">
+        <img id="sideImage" src="configimport.png">
+        <div id="mainArea">
+            <p>You have chosen a preset for ModernActiveDesktop. ModernActiveDesktop will now download the preset file from the following location:</p>
+            <p id="url">https://www.ingan121.com/mad/presets/nt4_16colors.json.gz_longnamelongname</p><br>
+            <p>Importing a preset will overwrite your current configuration. Please consider <a href="javascript:madOpenConfig('misc')">exporting your current configuration</a> before importing a new one.</p>
+            <p>Do you want to continue?</p>
+        </div>
+    </div>
+    <hr>
+    <section class="bottomButtons field-row">
+        <button id="okBtn"><mad-string data-locid="UI_OK">OK</mad-string></button>
+        <button id="cancelBtn"><mad-string data-locid="UI_CANCEL">Cancel</mad-string></button>
+    </section>
+    <script src="../../js/functions.js"></script>
+    <script src="../../js/MadStrings.js"></script>
+    <script src="../../js/libmad.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>

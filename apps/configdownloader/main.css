@@ -1,0 +1,30 @@
+#container {
+    display: flex;
+}
+
+#sideImage {
+    margin-top: 3px;
+    margin-left: 4px;
+    border: solid 1px;
+    border-color: var(--button-shadow) var(--button-hilight) var(--button-hilight) var(--button-shadow);
+}
+
+#mainArea {
+    font: var(--message-font);
+    margin-top: -7px;
+    margin-left: 17px;
+}
+
+#url {
+    word-break: break-all;
+}
+
+hr {
+    margin-top: 11px;
+    margin-bottom: 11px;
+}
+
+.bottomButtons {
+    margin-top: 5px;
+    justify-content: flex-end;
+}

@@ -1738,6 +1738,15 @@
                 delete this.config.jspaintHash;
                 delete this.config.unresizable;
                 delete this.config.unverified;
+
+                delete this.config.clockMainColor;
+                delete this.config.clockLightColor;
+                delete this.config.clockHilightColor;
+                delete this.config.clockShadowColor;
+                delete this.config.clockDkShadowColor;
+                delete this.config.clockBackgroundColor;
+                delete this.config.clockFont;
+                delete this.config.clockNoOutline;
                 clearTimeout(this.timeout);
             }
 

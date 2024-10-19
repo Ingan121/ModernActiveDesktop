@@ -185,19 +185,13 @@ body:not([data-no-sunken-menus]) .menuBtn[data-active] {
 
 .toolbarButton:hover:not([data-disabled]):not([data-enabled]),
 .toolbarButton[data-hover]:not([data-disabled]) {
-    border-top: solid 1px white;
-    border-left: solid 1px white;
-    border-bottom: solid 1px rgb(128, 128, 128);
-    border-right: solid 1px rgb(128, 128, 128);
+    border-color: var(--button-hilight) var(--button-shadow) var(--button-shadow) var(--button-hilight);
 }
 
 .toolbarButton:hover:active:not([data-disabled]),
 .toolbarButton[data-active]:not([data-disabled]),
 .toolbarButton[data-enabled] {
-    border-bottom: solid 1px white;
-    border-right: solid 1px white;
-    border-top: solid 1px rgb(128, 128, 128);
-    border-left: solid 1px rgb(128, 128, 128);
+    border-color: var(--button-shadow) var(--button-hilight) var(--button-hilight) var(--button-shadow);
 }
 
 .toolbarButton[data-enabled]:before {

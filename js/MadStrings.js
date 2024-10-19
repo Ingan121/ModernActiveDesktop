@@ -182,7 +182,7 @@
                 if (isInit) {
                     document.title = locTitle;
                 }
-            } else {
+            } else if (titleLocId !== locTitle) {
                 document.title = locTitle;
             }
         }

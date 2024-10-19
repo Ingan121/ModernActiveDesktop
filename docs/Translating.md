@@ -49,6 +49,10 @@ The localization files are located in the `lang/` directory. Each language is re
 
 2. **Edit the JSON File**: Update the strings as needed. Ensure that the JSON structure remains intact.
 
+## Translating the Wallpaper Engine Properties Panel
+* Open `project.json` and add the language to the `localization` array.
+* Please refer to the [Wallpaper Engine documentation](https://docs.wallpaperengine.io/en/web/customization/localization.html) for more information on translating the properties panel.
+
 ## Contributing Your Translations
 
 1. **Fork the Repository**: Fork the ModernActiveDesktop repository on GitHub.

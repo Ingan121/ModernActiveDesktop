@@ -75,12 +75,6 @@ if (applyBtn) {
 madSetIcon(false);
 okBtn.focus();
 
-// Get filename without extension
-// Accepts both fileurl and filename with extension
-window.getFilename = (str) => {
-    return str.split('/').pop().split('.').slice(0, -1).join('.');
-}
-
 window.copyText = (str) => {
     const tmp = document.createElement("textarea");
     document.body.appendChild(tmp);

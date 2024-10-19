@@ -1,0 +1,33 @@
+#transferAnim {
+    margin-top: -8px;
+    margin-left: 3px;
+}
+
+p {
+    font: var(--message-font);
+    margin-left: 3px;
+    margin-bottom: 0;
+}
+
+#progress {
+    width: 345px;
+    height: 11px;
+    margin-top: 3px;
+    margin-left: 2px;
+    border: solid 1px;
+    border-color: var(--button-shadow) var(--button-hilight) var(--button-hilight) var(--button-shadow);
+}
+
+.progressBox {
+    width: 6px;
+    height: 9px;
+    margin: 1px;
+    background-color: var(--hilight);
+    float: left;
+}
+
+#cancelBtn {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+}
