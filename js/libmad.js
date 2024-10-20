@@ -433,7 +433,7 @@
             window.madRunningMode = 0;
             window.madKbdSupport = 1;
 
-            // window.madIdb: include DeskSettings.js if you need it in non-MAD environments
+            // window.madIdb: include MadIdb.js if you need it in non-MAD environments
             window.log = function (str, level, caller) {
                 if (!caller) {
                     caller = getCaller();

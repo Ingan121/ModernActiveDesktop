@@ -8,6 +8,67 @@
 // Do these in a separate page, as DeskMovers make frequent changes to the localStorage
 // Otherwise some configs before the operation might persist after the operation, causing unexpected behavior
 
+const keysToNotDelete = [
+    'madesktopVisUnavailable',
+    'madesktopBgWeColor',
+    'madesktopBgWeImg',
+    'madesktopBgVideo',
+    'madesktopLastPresetUrl',
+];
+const keysToNotImport = [
+    // Configs to be overwritten after the import is done
+    'madesktopLastVer',
+    'madesktopMigrationProgress',
+    'madesktopForceRunStartup',
+    // Configs used for tracking the WPE properties panel
+    'madesktopVisUnavailable',
+    'madesktopBgWeColor',
+    'madesktopBgWeImg',
+    'madesktopBgVideo',
+    'madesktopLastPresetUrl',
+    // Device specific configs
+    'madesktopSysColorCache',
+    // Legacy configs that existed before config export was introduced
+    'madesktopLastCustomScale',
+    'madesktopPrevOWConfigRequest',
+    'madesktopDestroyedItems',
+    'madesktopNonADStyle',
+    'madesktopNoPixelFonts',
+    // Debug configs without an exposed config UI (prevent troll configs)
+    'madesktopDebugLangLoadDelay',
+    // Temporary configs
+    'madesktopFailCount',
+];
+const keysToIgnoreOnPreset = [
+    // Configs specific to the user's environment
+    'madesktopScaleFactor',
+    'madesktopChanViewTopMargin',
+    'madesktopChanViewBottomMargin',
+    'madesktopChanViewLeftMargin',
+    'madesktopChanViewRightMargin',
+    'madesktopLang',
+    'jspaint language',
+    'sysplugIntegration',
+    'madesktopCorsProxy',
+    // Aggregated configs
+    'madesktopSavedSchemes',
+    'madesktopUserPatterns',
+    'madesktopChanViewFavorites',
+    // Miscellanous user preferences that doesn't affect the appearance
+    'madesktopLinkOpenMode',
+    'madesktopChanViewHome',
+    'madesktopChanViewNoJs',
+    'madesktopChanViewNoAutoFullscrn',
+    'madesktopChanViewNoForceLoad',
+    'madesktopHideWelcome',
+    'madesktopCheckedChanges',
+    'madesktopCheckedConfigs',
+    'madesktopCheckedGitHub',
+    // Debug configs
+    'madesktopDebugMode',
+    'madesktopDebugLog',
+];
+
 const searchParams = new URLSearchParams(window.location.search);
 const action = searchParams.get('action');
 
@@ -20,6 +81,16 @@ let urlAppend = "";
         case 'reset':
             reset();
             break;
+        case 'resetsoft':
+            reset(true);
+            break;
+        case 'resethard':
+            localStorage.clear();
+            indexedDB.deleteDatabase('madesktop');
+            break;
+        case 'importpreset':
+            keysToNotDelete.push(...keysToIgnoreOnPreset);
+            keysToNotImport.push(...keysToIgnoreOnPreset);
         case 'import':
             const file = await madIdb.configToImport;
             if (!file) {
@@ -63,6 +134,9 @@ let urlAppend = "";
                     }
                     reset(true);
                     for (const key in parsed) {
+                        if (keysToNotImport.includes(key)) {
+                            continue;
+                        }
                         if (key === "madesktopBgImg") {
                             await madIdb.setItem("bgImg", new Blob([base64ToArrayBuffer(parsed[key])], { type: "image/png" }));
                         } else if (key === "madesktopChanViewFavorites") {
@@ -96,6 +170,8 @@ let urlAppend = "";
                         }
                     }
                     localStorage.madesktopLastVer = madVersion.toString();
+                    localStorage.madesktopMigrationProgress = 2;
+                    localStorage.madesktopForceRunStartup = true;
                 } catch (error) {
                     if (error.name === "QuotaExceededError") {
                         urlAppend = "#cmfail_full";
@@ -116,14 +192,15 @@ let urlAppend = "";
     if (urlAppend && typeof wallpaperOnVideoEnded === "function") {
         urlAppend = "?" + urlAppend;
     }
-    location.replace('index.html' + urlAppend);
+    //location.replace('index.html' + urlAppend);
 })();
 
 function reset(softIdbReset = false) {
     for (const key of keys) {
-        if (key.startsWith('madesktop') || key === 'sysplugIntegration' ||
-            key.startsWith('image#') || key.startsWith('jspaint '))
-        {
+        if ((key.startsWith('madesktop') || key === 'sysplugIntegration' ||
+            key.startsWith('image#') || key.startsWith('jspaint ')) &&
+            !keysToNotDelete.includes(key)
+        ) {
             console.log("Deleting " + key);
             localStorage.removeItem(key);
         } else {

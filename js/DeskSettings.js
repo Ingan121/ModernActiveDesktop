@@ -18,126 +18,6 @@
     const styleElement = document.getElementById("style");
     const mainMenuBg = document.getElementById("mainMenuBg");
 
-    // Use indexedDB for storing images and JSON
-    window.madIdb = window.madIdb || top.madIdb || new Proxy({}, {
-        get(target, prop) {
-            // handle it like localStorage
-            switch (prop) {
-                case "getItem":
-                    return madIdbGetItem;
-                case "setItem":
-                    return madIdbSetItem;
-                case "deleteItem":
-                    return madIdbDeleteItem;
-                case "itemExists":
-                    return madIdbItemExists;
-                default:
-                    return madIdbGetItem(prop);
-            }
-        },
-        // Using madIdb's setter is not recommended
-        // as it's hard to handle async operations
-        // Use madIdb.setItem() instead
-        set(target, prop, value) {
-            return madIdbSetItem(prop, value);
-        },
-        deleteProperty(target, prop) {
-            return madIdbDeleteItem(prop);
-        }
-    });
-
-    async function madIdbGetItem(key) {
-        return new Promise((resolve, reject) => {
-            const db = indexedDB.open("madesktop", 1);
-            db.onupgradeneeded = function () {
-                db.result.createObjectStore("config");
-            };
-            db.onsuccess = function () {
-                const transaction = db.result.transaction("config", "readwrite");
-                const store = transaction.objectStore("config");
-                const request = store.get(key);
-                request.onsuccess = function () {
-                    resolve(request.result);
-                };
-                request.onerror = function () {
-                    reject(request.error);
-                };
-            };
-            db.onerror = function () {
-                reject(db.error);
-            };
-        });
-    }
-
-    async function madIdbSetItem(key, value) {
-        return new Promise((resolve, reject) => {
-            const db = indexedDB.open("madesktop", 1);
-            db.onupgradeneeded = function () {
-                db.result.createObjectStore("config");
-            };
-            db.onsuccess = function () {
-                const transaction = db.result.transaction("config", "readwrite");
-                const store = transaction.objectStore("config");
-                store.put(value, key);
-                transaction.oncomplete = function () {
-                    resolve();
-                };
-                transaction.onerror = function () {
-                    reject(transaction.error);
-                };
-            };
-            db.onerror = function () {
-                reject(db.error);
-            };
-        });
-    }
-
-    async function madIdbDeleteItem(key) {
-        return new Promise((resolve, reject) => {
-            const db = indexedDB.open("madesktop", 1);
-            db.onupgradeneeded = function () {
-                db.result.createObjectStore("config");
-            };
-            db.onsuccess = function () {
-                const transaction = db.result.transaction("config", "readwrite");
-                const store = transaction.objectStore("config");
-                store.delete(key);
-                transaction.oncomplete = function () {
-                    resolve();
-                };
-                transaction.onerror = function () {
-                    reject(transaction.error);
-                };
-            };
-            db.onerror = function () {
-                reject(db.error);
-            };
-        });
-    }
-
-    async function madIdbItemExists(key) {
-        return new Promise((resolve, reject) => {
-            const db = indexedDB.open("madesktop", 1);
-            db.onupgradeneeded = function () {
-                db.result.createObjectStore("config");
-            };
-            db.onsuccess = function () {
-                const transaction = db.result.transaction("config", "readwrite");
-                const store = transaction.objectStore("config");
-                const request = store.getKey(key);
-                request.onsuccess = function () {
-                    resolve(request.result !== undefined);
-                };
-                request.onerror = function () {
-                    reject(request.error);
-                };
-            };
-            db.onerror = function () {
-                reject(db.error);
-            };
-        });
-    }
-
     function loadConfigs() {
         if (localStorage.madesktopBgColor) {
             document.documentElement.style.backgroundColor = localStorage.madesktopBgColor;
@@ -713,8 +593,106 @@
                     document.dispatchEvent(inputEvent);
                 }
             }
+            if (properties.preseteditmode && !isStartup) {
+                if (properties.preseteditmode.value) {
+                    openWindow("PresetEditing.md", true);
+                }
+            }
+            if (properties.copypreset && !isStartup) {
+                copyPreset();
+            }
+            if (properties.preseturl) {
+                if (properties.preseturl.value &&
+                    properties.preseturl.value.startsWith("http") &&
+                    properties.preseturl.value !== localStorage.madesktopLastPresetUrl
+                ) {
+                    const options = {
+                        width: "435px",
+                        height: "297px",
+                        centered: true,
+                        unresizable: true,
+                        aot: true,
+                        noIcon: true
+                    };
+                    openWindow("apps/configdownloader/index.html?url=" + encodeURIComponent(properties.preseturl.value), true, options);
+                }
+                localStorage.madesktopLastPresetUrl = properties.preseturl.value;
+            }
         }
     };
+
+    // @unexported
+    function copyPreset() {
+        const keysToIgnore = [
+            // Configs to be overwritten after the import is done
+            'madesktopLastVer',
+            'madesktopMigrationProgress',
+            'madesktopForceRunStartup',
+            // Configs used for tracking the WPE properties panel
+            'madesktopVisUnavailable',
+            'madesktopBgWeColor',
+            'madesktopBgWeImg',
+            'madesktopBgVideo',
+            'madesktopLastPresetUrl',
+            // Device specific configs
+            'madesktopSysColorCache',
+            // Legacy configs that existed before config export was introduced
+            'madesktopLastCustomScale',
+            'madesktopPrevOWConfigRequest',
+            'madesktopDestroyedItems',
+            'madesktopNonADStyle',
+            'madesktopNoPixelFonts',
+            // Debug configs without an exposed config UI (prevent troll configs)
+            'madesktopDebugLangLoadDelay',
+            // Temporary configs
+            'madesktopFailCount',
+            // Configs specific to the user's environment
+            'madesktopScaleFactor',
+            'madesktopChanViewTopMargin',
+            'madesktopChanViewBottomMargin',
+            'madesktopChanViewLeftMargin',
+            'madesktopChanViewRightMargin',
+            'madesktopLang',
+            'jspaint language',
+            'sysplugIntegration',
+            'madesktopCorsProxy',
+            // Aggregated configs
+            'madesktopSavedSchemes',
+            'madesktopUserPatterns',
+            // Miscellanous user preferences that doesn't affect the appearance
+            'madesktopLinkOpenMode',
+            'madesktopChanViewHome',
+            'madesktopChanViewNoJs',
+            'madesktopChanViewNoAutoFullscrn',
+            'madesktopChanViewNoForceLoad',
+            'madesktopHideWelcome',
+            'madesktopCheckedChanges',
+            'madesktopCheckedConfigs',
+            'madesktopCheckedGitHub',
+            // Debug configs
+            'madesktopDebugMode',
+            'madesktopDebugLog',
+        ];
+
+        const madConfig = {};
+
+        // Export MAD localStorage config
+        for (const key in localStorage) {
+            if ((key.startsWith("madesktop") || key === "sysplugIntegration" ||
+                key.startsWith('image#') || key.startsWith('jspaint '))
+                && !keysToIgnore.includes(key)
+            ) {
+                madConfig[key] = localStorage[key];
+            }
+        }
+        // Don't export IDB configs
+        // - bgImg: Don't include the image data in presets; just use the WPE properties panel and upload it as a preset
+        //     Path references are still included as localStorage.madesktopBgImg
+        // - cvFavorites: It's a aggregated user preference
+
+        copyText(JSON.stringify(madConfig));
+        madAlert(madGetString("MADCONF_CONF_COPIED"));
+    }
 
     window.loadConfigs = loadConfigs;
     window.changeBgType = changeBgType;

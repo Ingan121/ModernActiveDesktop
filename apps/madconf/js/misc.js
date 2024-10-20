@@ -361,6 +361,20 @@ async function exportConfig(minimal = false) {
         const base64 = await blobToBase64(await madIdb.bgImg);
         madConfig["madesktopBgImg"] = base64;
     }
+    if (await madIdb.itemExists("cvFavorites")) {
+        const cvFavorites = await madIdb.cvFavorites;
+        for (const favorite of cvFavorites) {
+            if (favorite.length === 3) {
+                if (minimal) {
+                    favorite.pop();
+                } else {
+                    const base64 = await blobToBase64(favorite[2]);
+                    favorite[2] = "data:" + favorite[2].type + ";base64," + base64;
+                }
+            }
+        }
+        madConfig["madesktopChanViewFavorites"] = JSON.stringify(cvFavorites);
+    }
 
     // Handle large files, compress if > 1 MB
     const json = JSON.stringify(madConfig);

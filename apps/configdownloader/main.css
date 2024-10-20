@@ -10,9 +10,13 @@
 }
 
 #mainArea {
-    font: var(--message-font);
+    font: 11px var(--ui-font);
     margin-top: -7px;
     margin-left: 17px;
+}
+
+mad-string {
+    white-space: initial;
 }
 
 #url {

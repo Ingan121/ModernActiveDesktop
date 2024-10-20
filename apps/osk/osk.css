@@ -75,5 +75,6 @@ button[data-key="left"] {
 }
 
 mad-string {
+    font: 11px var(--ui-font);
     white-space: inherit;
 }

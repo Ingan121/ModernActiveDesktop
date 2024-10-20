@@ -80,6 +80,7 @@
     "MAD_DEBUG_DEBUG_MODE": "디버그 모드",
     "MAD_DEBUG_INIT_NOT_COMPLETE": "시작이 완료되지 않음",
     "MAD_DEBUG_RESET_CONFIG": "설정값 초기화",
+    "MAD_DEBUG_RESET_HARD": "설정값 초기화 (전체)",
     "MAD_DEBUG_REFRESH": "새로고침",
     "MAD_DEBUG_RUNJS": "JavaScript 코드 실행",
     "MAD_DEBUG_SHOW_ERRORS": "오류 표시",
@@ -650,5 +651,13 @@
 
     "UNV_TITLE": "경고! 검증되지 않은 페이지!",
     "UNV_MSG": "마지막으로 가져온 설정 파일이 검증되지 않은 페이지를 불러오려고 합니다.<br><br>불러온 페이지는 %n과 같은 액세스 권한을 가질 수 있습니다. 이것은 시스템 플러그인을 포함합니다. (설치된 경우)<br><br>검증되지 않은 페이지를 불러오는 것은 위험할 수 있습니다. 확실하지 않은 경우 이 창을 닫으세요.",
-    "UNV_LOAD": "불러오기"
+    "UNV_LOAD": "불러오기",
+
+
+    "CONFDL_TITLE": "프리셋 가져오기 마법사",
+    "CONFDL_DESC_TOP": "%n에 대한 프리셋을 선택했습니다. %n 이제 다음 위치에서 프리셋 파일을 다운로드합니다:",
+    "CONFDL_DESC_BOTTOM": "<p>프리셋을 가져오면 현재 구성이 덮어씌워집니다. 새로 가져오기 전에 <a href=\"javascript:madOpenConfig('misc')\">현재 구성을 내보내는 것</a>을 고려하세요.</p><p>언어 및 디스플레이 배율과 같은 일부 개인 설정은 유지됩니다.</p><p>계속하시겠습니까?</p>",
+    "CONFDL_DL_TITLE": "%2s - %1s% 완료됨",
+    "CONFDL_DL_TITLE_INDETERMINATE": "%s 다운로드 중...",
+    "CONFDL_DL_INFO": "저장:<br>%1s(%2s)"
 }

@@ -14,10 +14,13 @@
     <div id="container">
         <img id="sideImage" src="configimport.png">
         <div id="mainArea">
-            <p>You have chosen a preset for ModernActiveDesktop. ModernActiveDesktop will now download the preset file from the following location:</p>
-            <p id="url">https://www.ingan121.com/mad/presets/nt4_16colors.json.gz_longnamelongname</p><br>
-            <p>Importing a preset will overwrite your current configuration. Please consider <a href="javascript:madOpenConfig('misc')">exporting your current configuration</a> before importing a new one.</p>
-            <p>Do you want to continue?</p>
+            <p><mad-string data-locid="CONFDL_DESC_TOP">You have chosen a preset for ModernActiveDesktop. ModernActiveDesktop will now download the preset file from the following location:</mad-string></p>
+            <p><a id="url" target="_cv"></a></p><br>
+            <mad-string data-locid="CONFDL_DESC_BOTTOM">
+                <p>Importing a preset will overwrite your current configuration. Please consider <a href="javascript:madOpenConfig('misc')">exporting your current configuration</a> before importing a new one.</p>
+                <p>Some personal preferences, such as the language and the display scaling factor, will be preserved.</p>
+                <p>Do you want to continue?</p>
+            </mad-string>
         </div>
     </div>
     <hr>

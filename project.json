@@ -1,6 +1,6 @@
 {
 	"contentrating" : "Everyone",
-	"description" : "Wallpaper for imitating the Windows 98 desktop experience\n\nThis wallpaper includes Windows 98's Channel Bar, the startup sound, a music visualizer, a web browser, and various apps like paint, solitaire, clock, and calculator.\n\nSome web pages won't behave correctly because of the iframe security restrictions.\n\nRight click this wallpaper and click 'Open in Explorer' to view the source code and the license (MIT.)\n\nVisit https://winclassic.boards.net to learn how to get the classic theme on modern Windows.\n\nSource code: https://github.com/Ingan121/ModernActiveDesktop",
+	"description" : "Wallpaper for imitating the Windows 98 desktop experience\n\nThis wallpaper includes Windows 98's Channel Bar, the startup sound, a music visualizer, a web browser, and various apps like paint, solitaire, clock, and calculator.\n\nSome web pages won't behave correctly because of the iframe security restrictions.\n\nRight click this wallpaper and click 'Open in Explorer' to view the source code and the license (MIT.)\n\nVisit https://winclassic.boards.net to learn how to get the classic theme on Windows 8+ or Windows 7 with Aero enabled.\n\nSource code: https://github.com/Ingan121/ModernActiveDesktop",
 	"file" : "index.html",
 	"general" : 
 	{
@@ -13,7 +13,10 @@
 				"ui_bgimg" : "BG image",
 				"ui_bgvideo" : "BG video",
 				"ui_inputpanel" : "Input box",
-				"ui_openproperties" : "Show more options"
+				"ui_openproperties" : "Show more options",
+				"ui_preseteditmode" : "Preset edit mode",
+				"ui_copypreset" : "Copy preset data",
+				"ui_preseturl" : "Preset URL"
 			},
 			"ko-kr" : 
 			{
@@ -22,7 +25,10 @@
 				"ui_bgimg" : "배경 이미지",
 				"ui_bgvideo" : "배경 비디오",
 				"ui_inputpanel" : "입력 창",
-				"ui_openproperties" : "더 많은 옵션 표시"
+				"ui_openproperties" : "더 많은 옵션 표시",
+				"ui_preseteditmode" : "프리셋 편집 모드",
+				"ui_copypreset" : "프리셋 데이터 복사",
+				"ui_preseturl" : "프리셋 URL"
 			}
 		},
 		"properties" : 
@@ -63,6 +69,15 @@
 				"type" : "file",
 				"value" : ""
 			},
+			"copypreset" : 
+			{
+				"condition" : "copypreset.value = false; preseteditmode.value",
+				"index" : 7,
+				"order" : 107,
+				"text" : "ui_copypreset",
+				"type" : "bool",
+				"value" : false
+			},
 			"inputpanel" : 
 			{
 				"condition" : "inputpanel.value = ''; true",
@@ -81,6 +96,23 @@
 				"type" : "bool",
 				"value" : false
 			},
+			"preseteditmode" : 
+			{
+				"index" : 6,
+				"order" : 106,
+				"text" : "ui_preseteditmode",
+				"type" : "bool",
+				"value" : false
+			},
+			"preseturl" : 
+			{
+				"condition" : "preseteditmode.value",
+				"index" : 8,
+				"order" : 108,
+				"text" : "ui_preseturl",
+				"type" : "textinput",
+				"value" : ""
+			},
 			"schemecolor" : 
 			{
 				"order" : 0,
@@ -96,7 +128,7 @@
 	"ratingviolence" : "none",
 	"tags" : [ "Retro" ],
 	"title" : "Windows 98 Desktop Experience",
-	"type" : "Web",
+	"type" : "web",
 	"version" : 20,
 	"visibility" : "public",
 	"workshopid" : "2278898637",

@@ -226,7 +226,7 @@
             if (localStorage.madesktopColorScheme === "xpcss4mad" && localStorage.madesktopLastVer.startsWith("3.0")) {
                 // 3.0 didn't have the menu style option but the XP theme had a hardcoded menu style
                 localStorage.madesktopMenuStyle = "mbcm";
-                changeMenuStyle(localStorage.madesktopMenuStyle);
+                changeMenuStyle("mbcm");
             }
             startup();
         }
@@ -1249,6 +1249,7 @@
             }
         }
         startupRan = true;
+        delete localStorage.madesktopForceRunStartup;
     }
 
     // @unexported
@@ -1295,6 +1296,9 @@
         // Dummy listener to make Wallpaper Engine recognize MAD supporting audio visualization
         window.wallpaperRegisterAudioListener(() => {});
         window.wallpaperRegisterMediaPropertiesListener(() => {});
+        if (localStorage.madesktopForceRunStartup) {
+            startup();
+        }
     } else {
         if (runningMode === 0) {
             // Konami code easter egg
@@ -1359,8 +1363,7 @@
             const msg = runningMode === 1 ? "locid:MAD_MSG_LOCALSTORAGE_FULL_ON_IMPORT_WPE" : "locid:MAD_MSG_LOCALSTORAGE_FULL_ON_IMPORT";
             madConfirm(msg, (res) => {
                 if (res) {
-                    localStorage.clear();
-                    location.replace("confmgr.html?action=reset");
+                    location.replace("confmgr.html?action=resethard");
                 }
             }, "error");
     }

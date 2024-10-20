@@ -6,18 +6,32 @@
 'use strict';
 
 const url = new URL(location.href).searchParams.get('url');// + "?nocache=" + Math.random();
+const info = document.getElementById('info');
 const progress = document.getElementById('progress');
 
 if (url) {
-    const filename = getFilename(url);
-    const origin = new URL(url).origin;
+    let filename = url.split('/').pop();
+    const hostname = new URL(url).hostname;
+    info.innerHTML = madGetString("CONFDL_DL_INFO").replace("%1s", escapeHTML(filename)).replace("%2s", hostname);
 
     const xhr = new XMLHttpRequest();
     xhr.open('GET', url);
     xhr.responseType = 'blob';
+    xhr.onreadystatechange = () => {
+        if (xhr.readyState === xhr.HEADERS_RECEIVED) {
+            const contentDisposition = xhr.getResponseHeader('Content-Disposition');
+            if (contentDisposition) {
+                let headerFilename = contentDisposition.split('filename=')[1]?.replace(/"/g, '');
+                if (headerFilename) {
+                    filename = headerFilename;
+                    info.innerHTML = madGetString("CONFDL_DL_INFO").replace("%1s", escapeHTML(filename)).replace("%2s", hostname);
+                }
+            }
+        }
+    };
     xhr.onprogress = (e) => {
         if (e.lengthComputable) {
-            document.title = `${Math.round(e.loaded / e.total * 100)}% of ${filename} Completed`;
+            document.title = madGetString("CONFDL_DL_TITLE").replace("%1s", Math.round(e.loaded / e.total * 100)).replace("%2s", filename);
             const currentPercent = e.loaded / e.total;
             const boxCnt = progress.getElementsByClassName('progressBox').length;
             const requiredBoxes = Math.ceil(currentPercent * progress.clientWidth / 8) - 1;
@@ -30,16 +44,24 @@ if (url) {
                 }
             }
         } else {
-            document.title = `Downloading ${filename}`;
+            document.title = madGetString("CONFDL_DL_TITLE_INDETERMINATE", filename);
         }
     };
-    xhr.onload = () => {
+    xhr.onload = async () => {
         if (xhr.status === 200) {
-            document.title = 'Done!';
+            if (madDeskMover.temp) {
+                await madIdb.setItem("configToImport", xhr.response);
+                top.location.replace("../../confmgr.html?action=importpreset");
+            }
+            // Otherwise there can be a import attempt loop
+            // Don't try importing if it's not a temp window, for debugging the window itself
         }
+    };
+    xhr.onerror = () => {
+        madAlert(madGetString("CONFDL_DL_ERROR"), madCloseWindow, "error");
     };
     xhr.send();
 }
 
 // index: 435 x 297
-// download: 367 x 160
+// download: 367 x 160s

@@ -75,15 +75,6 @@ if (applyBtn) {
 madSetIcon(false);
 okBtn.focus();
 
-window.copyText = (str) => {
-    const tmp = document.createElement("textarea");
-    document.body.appendChild(tmp);
-    tmp.value = str;
-    tmp.select();
-    document.execCommand('copy');
-    document.body.removeChild(tmp);
-}
-
 document.addEventListener('keydown', function (event) {
     if (event.key === 'Escape') {
         madCloseWindow();

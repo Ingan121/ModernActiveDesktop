@@ -4,7 +4,7 @@
 }
 
 p {
-    font: var(--message-font);
+    font: 11px var(--ui-font);
     margin-left: 3px;
     margin-bottom: 0;
 }

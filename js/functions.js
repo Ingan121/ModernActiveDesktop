@@ -224,6 +224,15 @@
         return str.split('/').pop().split('.').slice(0, -1).join('.');
     }
 
+    function copyText (str) {
+        const tmp = document.createElement("textarea");
+        document.body.appendChild(tmp);
+        tmp.value = str;
+        tmp.select();
+        document.execCommand('copy');
+        document.body.removeChild(tmp);
+    }
+
     window.getTextWidth = getTextWidth;
     window.scrollIntoView = scrollIntoView;
     window.rgbToHex = rgbToHex;
@@ -241,4 +250,5 @@
     window.blobToBase64 = blobToBase64;
     window.escapeHTML = escapeHTML;
     window.getFilename = getFilename;
+    window.copyText = copyText;
 })();

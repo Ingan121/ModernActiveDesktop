@@ -90,6 +90,7 @@
     "MAD_DEBUG_DEBUG_MODE": "Debug mode",
     "MAD_DEBUG_INIT_NOT_COMPLETE": "Initialization not complete",
     "MAD_DEBUG_RESET_CONFIG": "Reset config",
+    "MAD_DEBUG_RESET_HARD": "Reset config (hard)",
     "MAD_DEBUG_REFRESH": "Refresh",
     "MAD_DEBUG_RUNJS": "Run JavaScript code",
     "MAD_DEBUG_SHOW_ERRORS": "Show errors",
@@ -729,6 +730,16 @@
     // #region Unverified warning strings
     "UNV_TITLE": "Warning! Unverified Page!",
     "UNV_MSG": "The last configuration file you imported is trying to load an unverified page.<br><br>Loaded pages can have the same access as %n, including the system plugin (if installed).<br><br>Loading unverified pages can be dangerous. If you are not sure, close this window.",
-    "UNV_LOAD": "Load"
+    "UNV_LOAD": "Load",
+    // #endregion
+
+
+    // #region Preset importer strings
+    "CONFDL_TITLE": "Preset Import Wizard",
+    "CONFDL_DESC_TOP": "You have chosen a preset for %n. %n will now download the preset file from the following location:",
+    "CONFDL_DESC_BOTTOM": "<p>Importing a preset will overwrite your current configuration. Please consider <a href=\"javascript:madOpenConfig('misc')\">exporting your current configuration</a> before importing a new one.</p><p>Some personal preferences, such as the language and the display scaling factor, will be preserved.</p><p>Do you want to continue?</p>",
+    "CONFDL_DL_TITLE": "%1s% of %2s Completed",
+    "CONFDL_DL_TITLE_INDETERMINATE": "Downloading %s...",
+    "CONFDL_DL_INFO": "Saving:<br>%1s from %2s"
     // #endregion
 }
