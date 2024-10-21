@@ -487,6 +487,7 @@
             if (this.numStr !== "") {
                 this.windowContainer.style.display = "none";
                 this.windowContainer.innerHTML = "";
+                this.destroyed = true;
                 if (!this.temp) {
                     this.#clearConfig();
                     if (isResetting !== true) {

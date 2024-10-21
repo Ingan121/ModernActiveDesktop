@@ -780,3 +780,8 @@ body[data-debug-mode] #debugLabel {
 body[data-debug-mode] #debugLabel + br {
     display: inline;
 }
+
+::selection {
+    color: var(--hilight-text);
+    background-color: var(--hilight);
+}

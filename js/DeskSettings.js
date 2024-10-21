@@ -65,7 +65,11 @@
                 bgVideoView.style.display = "none";
                 bgVideoView.src = "";
                 if (localStorage.madesktopBgHtmlSrc) {
-                    bgHtmlView.src = localStorage.madesktopBgHtmlSrc;
+                    if (localStorage.madesktopBgHtmlUnverified) {
+                        bgHtmlView.src = "apps/unverifiedwarning/bghtml/index.html";
+                    } else {
+                        bgHtmlView.src = localStorage.madesktopBgHtmlSrc;
+                    }
                 }
                 break;
         }
@@ -606,15 +610,20 @@
                     properties.preseturl.value.startsWith("http") &&
                     properties.preseturl.value !== localStorage.madesktopLastPresetUrl
                 ) {
-                    const options = {
-                        width: "435px",
-                        height: "297px",
-                        centered: true,
-                        unresizable: true,
-                        aot: true,
-                        noIcon: true
-                    };
-                    openWindow("apps/configdownloader/index.html?url=" + encodeURIComponent(properties.preseturl.value), true, options);
+                    const url = "apps/configdownloader/index.html?url=" + encodeURIComponent(properties.preseturl.value);
+                    if (window.importDeskMover && !window.importDeskMover.destroyed) {
+                        window.importDeskMover.locReplace(url);
+                    } else {
+                        const options = {
+                            width: "435px",
+                            height: "297px",
+                            centered: true,
+                            unresizable: true,
+                            aot: true,
+                            noIcon: true
+                        };
+                        window.importDeskMover = openWindow(url, true, options);
+                    }
                 }
                 localStorage.madesktopLastPresetUrl = properties.preseturl.value;
             }
@@ -625,7 +634,6 @@
     function copyPreset() {
         const keysToIgnore = [
             // Configs to be overwritten after the import is done
-            'madesktopLastVer',
             'madesktopMigrationProgress',
             'madesktopForceRunStartup',
             // Configs used for tracking the WPE properties panel
@@ -646,6 +654,9 @@
             'madesktopDebugLangLoadDelay',
             // Temporary configs
             'madesktopFailCount',
+            'madesktopConfigToImport',
+            // Prevent security feature bypass
+            'madesktopBgHtmlUnverified',
             // Configs specific to the user's environment
             'madesktopScaleFactor',
             'madesktopChanViewTopMargin',
@@ -682,6 +693,12 @@
                 key.startsWith('image#') || key.startsWith('jspaint '))
                 && !keysToIgnore.includes(key)
             ) {
+                if (key === "madesktopBgImg") {
+                    if (localStorage.madesktopBgImg === localStorage.madesktopBgWeImg) {
+                        // Don't export the WPE image path; normalize it
+                        madConfig[key] = "!wpewall";
+                    }
+                }
                 madConfig[key] = localStorage[key];
             }
         }

@@ -232,6 +232,7 @@ window.apply = async function () {
         parent.document.documentElement.style.backgroundImage = 'none';
     }
 
+    delete localStorage.madesktopBgHtmlUnverified;
     localStorage.madesktopBgHtmlSrc = preview.contentWindow.bgHtmlView.src;
     parent.changeBgType(preview.contentWindow.bgType);
     localStorage.madesktopBgType = preview.contentWindow.bgType;

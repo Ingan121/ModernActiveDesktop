@@ -20,4 +20,5 @@ apps/channelviewer/aboutpages/NavigationCanceled.html
 apps/inetcpl/images
 apps/calc/icon*
 apps/configdownloader/download.gif
+apps/unverifiedwarning/bghtml
 buildstuff/systemplugin/src/images

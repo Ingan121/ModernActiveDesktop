@@ -36,6 +36,7 @@
     let msgboxMsgChangeDetector = null;
     let msgboxLoopCount = 0;
     let showedStorageFullAlert = false;
+    let lastTempDeskMoverNum = -1;
 
     window.soundScheme = {};
 
@@ -466,9 +467,9 @@
                 noIcon
             };
         }
-        const deskMover = createNewDeskItem(localStorage.madesktopItemCount, openDoc, temp, options);
-        activateWindow(localStorage.madesktopItemCount);
-        localStorage.madesktopItemCount++;
+        const num = temp ? lastTempDeskMoverNum-- : localStorage.madesktopItemCount++;
+        const deskMover = createNewDeskItem(num, openDoc, temp, options);
+        activateWindow(num);
         return deskMover;
     }
 

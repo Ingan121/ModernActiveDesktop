@@ -5,14 +5,16 @@
 
 'use strict';
 
-const url = new URL(location.href).searchParams.get('url');// + "?nocache=" + Math.random();
+const url = new URL(location.href).searchParams.get('url');
 const info = document.getElementById('info');
 const progress = document.getElementById('progress');
+const cancelBtn = document.getElementById('cancelBtn');
 
 if (url) {
     let filename = url.split('/').pop();
     const hostname = new URL(url).hostname;
-    info.innerHTML = madGetString("CONFDL_DL_INFO").replace("%1s", escapeHTML(filename)).replace("%2s", hostname);
+    document.title = madGetString("CONFDL_DL_TITLE_INDETERMINATE", filename);
+    info.innerHTML = madGetString("CONFDL_DL_INFO", escapeHTML(filename), hostname);
 
     const xhr = new XMLHttpRequest();
     xhr.open('GET', url);
@@ -24,7 +26,7 @@ if (url) {
                 let headerFilename = contentDisposition.split('filename=')[1]?.replace(/"/g, '');
                 if (headerFilename) {
                     filename = headerFilename;
-                    info.innerHTML = madGetString("CONFDL_DL_INFO").replace("%1s", escapeHTML(filename)).replace("%2s", hostname);
+                    info.innerHTML = madGetString("CONFDL_DL_INFO", escapeHTML(filename), hostname);
                 }
             }
         }
@@ -53,15 +55,20 @@ if (url) {
                 await madIdb.setItem("configToImport", xhr.response);
                 top.location.replace("../../confmgr.html?action=importpreset");
             }
-            // Otherwise there can be a import attempt loop
+            // Otherwise there can be a import attempt loop if the config is invalid
             // Don't try importing if it's not a temp window, for debugging the window itself
+        } else {
+            madAlert(madGetString("CONFDL_DL_ERROR"), madCloseWindow, "error");
         }
     };
     xhr.onerror = () => {
         madAlert(madGetString("CONFDL_DL_ERROR"), madCloseWindow, "error");
     };
+    cancelBtn.addEventListener('click', () => {
+        xhr.abort();
+        madCloseWindow();
+    });
     xhr.send();
+} else {
+    madCloseWindow();
 }
-
-// index: 435 x 297
-// download: 367 x 160s

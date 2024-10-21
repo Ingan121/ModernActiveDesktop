@@ -5,6 +5,10 @@
 
 'use strict';
 
+if (parent !== window) {
+    throw new Error("Refusing to load inside an iframe");
+}
+
 // Do these in a separate page, as DeskMovers make frequent changes to the localStorage
 // Otherwise some configs before the operation might persist after the operation, causing unexpected behavior
 
@@ -38,6 +42,9 @@ const keysToNotImport = [
     'madesktopDebugLangLoadDelay',
     // Temporary configs
     'madesktopFailCount',
+    'madesktopConfigToImport',
+    // Prevent security feature bypass
+    'madesktopBgHtmlUnverified',
 ];
 const keysToIgnoreOnPreset = [
     // Configs specific to the user's environment
@@ -138,7 +145,17 @@ let urlAppend = "";
                             continue;
                         }
                         if (key === "madesktopBgImg") {
-                            await madIdb.setItem("bgImg", new Blob([base64ToArrayBuffer(parsed[key])], { type: "image/png" }));
+                            if (parsed[key].startsWith("file:///") ||
+                                parsed[key].startsWith("wallpapers/")
+                            ) {
+                                localStorage.setItem("madesktopBgImg", parsed[key]);
+                            } else if (parsed[key] === !"wpewall") {
+                                if (localStorage.madesktopBgWeImg) {
+                                    localStorage.setItem("madesktopBgImg", localStorage.madesktopBgWeImg);
+                                }
+                            } else {
+                                await madIdb.setItem("bgImg", new Blob([base64ToArrayBuffer(parsed[key])], { type: "image/png" }));
+                            }
                         } else if (key === "madesktopChanViewFavorites") {
                             const favParsed = JSON.parse(parsed[key]);
                             for (const favorite of favParsed) {
@@ -165,6 +182,13 @@ let urlAppend = "";
                                 }
                             }
                             localStorage.setItem(key, src);
+                        } else if (key === "madesktopBgHtmlSrc") {
+                            if (!parsed[key].endsWith("bghtml/index.html")) {
+                                localStorage.madesktopBgHtmlUnverified = true;
+                                localStorage.setItem(key, parsed[key]);
+                            } else {
+                                localStorage.madesktopBgHtmlSrc = "bghtml/index.html"; // normalize it
+                            }
                         } else if (!key.startsWith("madesktopItemUnverified")) {
                             localStorage.setItem(key, parsed[key]);
                         }
@@ -192,7 +216,7 @@ let urlAppend = "";
     if (urlAppend && typeof wallpaperOnVideoEnded === "function") {
         urlAppend = "?" + urlAppend;
     }
-    //location.replace('index.html' + urlAppend);
+    location.replace('index.html' + urlAppend);
 })();
 
 function reset(softIdbReset = false) {

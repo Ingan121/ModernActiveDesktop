@@ -153,9 +153,11 @@
         // %c -> channelViewer
         str = str.replace(/%n/g, appName).replace(/%a/g, author).replace(/%c/g, channelViewer);
         // %s -> extraString
+        // %[n]s -> arguments[n]
         if (arguments.length > 1) {
             for (let i = 1; i < arguments.length; i++) {
                 str = str.replace(/%s/, arguments[i]);
+                str = str.replace(`%${i}s`, arguments[i]);
             }
         }
         return str;

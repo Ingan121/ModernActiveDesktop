@@ -344,15 +344,43 @@ async function checkSysplug() {
 // Export the MAD config to a file
 // minimal: Exclude images (custom wallpapers and JSPaint image storage) from the export
 async function exportConfig(minimal = false) {
+    const keysToIgnore = [
+        // Configs to be overwritten after the import is done
+        'madesktopMigrationProgress',
+        'madesktopForceRunStartup',
+        // Configs used for tracking the WPE properties panel
+        'madesktopVisUnavailable',
+        'madesktopBgWeColor',
+        'madesktopBgWeImg',
+        'madesktopBgVideo',
+        'madesktopLastPresetUrl',
+        // Device specific configs
+        'madesktopSysColorCache',
+        // Legacy configs that existed before config export was introduced
+        'madesktopLastCustomScale',
+        'madesktopPrevOWConfigRequest',
+        'madesktopDestroyedItems',
+        'madesktopNonADStyle',
+        'madesktopNoPixelFonts',
+        // Debug configs without an exposed config UI (prevent troll configs)
+        'madesktopDebugLangLoadDelay',
+        // Temporary configs
+        'madesktopFailCount',
+        'madesktopConfigToImport',
+        // Prevent security feature bypass
+        'madesktopBgHtmlUnverified',
+    ];
+
     const madConfig = {};
     let blob;
     let large = false;
 
     // Export MAD localStorage config
     for (const key in localStorage) {
-        if (key.startsWith("madesktop") || key === "sysplugIntegration" ||
-            (key.startsWith('image#') && !minimal) || key.startsWith('jspaint '))
-        {
+        if ((key.startsWith("madesktop") || key === "sysplugIntegration" ||
+            (key.startsWith('image#') && !minimal) || key.startsWith('jspaint ')) &&
+            !keysToIgnore.includes(key)
+        ) {
             madConfig[key] = localStorage[key];
         }
     }

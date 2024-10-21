@@ -11,6 +11,16 @@ const urlElem = document.getElementById('url');
 const okBtn = document.getElementById('okBtn');
 const cancelBtn = document.getElementById('cancelBtn');
 
+const links = document.querySelectorAll('a');
+
+for (const link of links) {
+    // Unset the alwaysOnTop flag when the user clicks on a link
+    link.addEventListener('click', () => {
+        delete madDeskMover.config.alwaysOnTop;
+        madBringToTop();
+    });
+}
+
 if (url) {
     urlElem.textContent = url;
     urlElem.href = url;

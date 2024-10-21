@@ -84,7 +84,7 @@
 
     "MAD_DEBUG_LOCATION": "Loaded from %s",
     "MAD_DEBUG_RUNMODE": "Running in %s",
-    "MAD_DEBUG_RUNMODE_SIMULATED": "Running in %s, simulating %s behavior",
+    "MAD_DEBUG_RUNMODE_SIMULATED": "Running in %1s, simulating %2s behavior",
     "MAD_DEBUG_BROWSER": "browser",
     "MAD_DEBUG_KBD_SUPPORT": "Keyboard support level",
     "MAD_DEBUG_DEBUG_MODE": "Debug mode",
@@ -245,6 +245,7 @@
     // #region Scheme names
     "MADCONF_CURRENT_SCHEME": "Current Scheme",
     "MADCONF_SCHEME_CLASSIC": "Windows Classic",
+    "MADCONF_SCHEME_CLASSIC_4BIT": "Windows Classic (16 colors)",
     "MADCONF_SCHEME_STANDARD": "Windows Standard",
     "MADCONF_SCHEME_LUNA": "Windows XP style",
     "MADCONF_SCHEME_SYSTEM": "System Scheme",
@@ -708,6 +709,11 @@
     "WELCOME_CUSTOMIZE_DESKTOP_CONTENT": "%n provides a variety of options to customize your experience.<br><br>You can change the color scheme, the wallpaper, and more.<br><br>Click to configure %n.",
     "WELCOME_SETUP_SYSPLUG_CONTENT": "For better usability, installing the system plugin is highly recommended.<br><br>It allows better integration between your system and the wallpaper, such as opening a new browser window from the wallpaper, receiving your keyboard input directly, or controlling the currently playing media.<br><br>Click for more information, including the setup instructions.",
     "WELCOME_GET_SUPPORT_CONTENT": "%n is an open-source project, and you can get help from the community.<br><br>If you have any problems, you can report them on the GitHub issues page.<br>You can also contribute to the project by submitting a pull request.<br><br>Click to open the GitHub repository.",
+    "WELCOME_UNSUPPORTED_WPE": "This version of Wallpaper Engine is no longer officially supported by %n. Please update Wallpaper Engine to the latest version.",
+    "WELCOME_UNSUPPORTED_CHROMIUM": "This version of Chrome/Chromium is no longer officially supported by %n. Please update Chrome/Chromium to the latest version.",
+    "WELCOME_UNSUPPORTED_WIN7": "Windows 7 is no longer officially supported by %n. Please upgrade to Windows 10 or higher.",
+    "WELCOME_UNSUPPORTED_WIN8": "Windows 8 is no longer officially supported by %n. Please upgrade to Windows 10 or higher.",
+    "WELCOME_UNSUPPORTED_WIN81": "Windows 8.1 is no longer officially supported by %n. Please upgrade to Windows 10 or higher.",
     // #endregion
 
 
@@ -740,6 +746,7 @@
     "CONFDL_DESC_BOTTOM": "<p>Importing a preset will overwrite your current configuration. Please consider <a href=\"javascript:madOpenConfig('misc')\">exporting your current configuration</a> before importing a new one.</p><p>Some personal preferences, such as the language and the display scaling factor, will be preserved.</p><p>Do you want to continue?</p>",
     "CONFDL_DL_TITLE": "%1s% of %2s Completed",
     "CONFDL_DL_TITLE_INDETERMINATE": "Downloading %s...",
-    "CONFDL_DL_INFO": "Saving:<br>%1s from %2s"
+    "CONFDL_DL_INFO": "Saving:<br>%1s from %2s",
+    "CONFDL_DL_ERROR": "An error occurred while downloading the preset file."
     // #endregion
 }

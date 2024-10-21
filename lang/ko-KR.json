@@ -74,7 +74,7 @@
 
     "MAD_DEBUG_LOCATION": "%s에서 로드됨",
     "MAD_DEBUG_RUNMODE": "%s에서 실행 중",
-    "MAD_DEBUG_RUNMODE_SIMULATED": "%s에서 실행 중, %s 동작 시뮬레이션 중",
+    "MAD_DEBUG_RUNMODE_SIMULATED": "%1s에서 실행 중, %2s 동작 시뮬레이션 중",
     "MAD_DEBUG_BROWSER": "브라우저",
     "MAD_DEBUG_KBD_SUPPORT": "키보드 지원 수준",
     "MAD_DEBUG_DEBUG_MODE": "디버그 모드",
@@ -214,6 +214,7 @@
 
     "MADCONF_CURRENT_SCHEME": "현재 색 구성표",
     "MADCONF_SCHEME_CLASSIC": "Windows 고전",
+    "MADCONF_SCHEME_CLASSIC_4BIT": "Windows 고전 (16색)",
     "MADCONF_SCHEME_STANDARD": "Windows 표준",
     "MADCONF_SCHEME_LUNA": "Windows XP 스타일",
     "MADCONF_SCHEME_SYSTEM": "시스템 색 구성표",
@@ -637,6 +638,11 @@
     "WELCOME_CUSTOMIZE_DESKTOP_CONTENT": "바탕 화면을 꾸미고 싶나요? %n은 여러분의 바탕 화면을 더욱 멋지게 꾸밀 수 있도록 도와줍니다.<br><br>배경화면과 색 구성표 등을 설정할 수 있습니다.<br><br>클릭하여 설정 창을 여세요.",
     "WELCOME_SETUP_SYSPLUG_CONTENT": "시스템 플러그인을 설치하면 %n이 여러분의 컴퓨터와 더욱 잘 연동됩니다.<br><br>시스템 플러그인을 설치하면 외부 브라우저 실행, 키보드 입력 지원, 미디어 제어 등 더 많은 기능을 사용할 수 있습니다.<br><br>클릭하여 설치 가이드를 보세요.",
     "WELCOME_GET_SUPPORT_CONTENT": "%n은 오픈 소스 프로젝트이며, 커뮤니티에서 도움을 받을 수 있습니다.<br><br>문제가 있으면 GitHub 이슈 페이지에 보고할 수 있습니다.<br>또한 프로젝트에 기여할 수도 있습니다.<br><br>클릭하여 GitHub 저장소를 여세요.",
+    "WELCOME_UNSUPPORTED_WPE": "이 버전의 Wallpaper Engine은 더 이상 %n에서 공식적으로 지원되지 않습니다. Wallpaper Engine을 최신 버전으로 업데이트하세요.",
+    "WELCOME_UNSUPPORTED_CHROMIUM": "이 버전의 Chrome/Chromium은 더 이상 %n에서 공식적으로 지원되지 않습니다. Chrome/Chromium을 최신 버전으로 업데이트하세요.",
+    "WELCOME_UNSUPPORTED_WIN7": "Windows 7은 더 이상 %n에서 공식적으로 지원되지 않습니다. Windows 10 이상으로 업그레이드하세요.",
+    "WELCOME_UNSUPPORTED_WIN8": "Windows 8은 더 이상 %n에서 공식적으로 지원되지 않습니다. Windows 10 이상으로 업그레이드하세요.",
+    "WELCOME_UNSUPPORTED_WIN81": "Windows 8.1은 더 이상 %n에서 공식적으로 지원되지 않습니다. Windows 10 이상으로 업그레이드하세요.",
 
 
     "JSPAINT_SAVE_SYSPLUG_REQUIRED": "죄송합니다. 이 기능을 사용하려면 시스템 플러그인 연동을 활성화해야 합니다.",
@@ -655,9 +661,10 @@
 
 
     "CONFDL_TITLE": "프리셋 가져오기 마법사",
-    "CONFDL_DESC_TOP": "%n에 대한 프리셋을 선택했습니다. %n 이제 다음 위치에서 프리셋 파일을 다운로드합니다:",
+    "CONFDL_DESC_TOP": "%n에 대한 프리셋을 선택했습니다. %n은 이제 다음 위치에서 프리셋 파일을 다운로드합니다:",
     "CONFDL_DESC_BOTTOM": "<p>프리셋을 가져오면 현재 구성이 덮어씌워집니다. 새로 가져오기 전에 <a href=\"javascript:madOpenConfig('misc')\">현재 구성을 내보내는 것</a>을 고려하세요.</p><p>언어 및 디스플레이 배율과 같은 일부 개인 설정은 유지됩니다.</p><p>계속하시겠습니까?</p>",
     "CONFDL_DL_TITLE": "%2s - %1s% 완료됨",
     "CONFDL_DL_TITLE_INDETERMINATE": "%s 다운로드 중...",
-    "CONFDL_DL_INFO": "저장:<br>%1s(%2s)"
+    "CONFDL_DL_INFO": "저장:<br>%1s(%2s)",
+    "CONFDL_DL_ERROR": "프리셋 파일을 다운로드하는 중 오류가 발생했습니다."
 }

@@ -267,6 +267,17 @@ mad-string {
     top: 200px;
 }
 
+#unsupportedWarning {
+    display: none;
+    white-space: initial;
+    position: absolute;
+    top: 210px;
+    left: 5px;
+    width: 170px;
+    font: bold 11px var(--ui-font);
+    animation: appear 1.9s;
+}
+
 .contents {
     position: absolute;
     top: 63px;

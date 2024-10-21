@@ -83,6 +83,7 @@ The localization files are located in the `lang/` directory. Each language is re
     * `%2v`: Medium version number (e.g., 3.4)
     * `%3v`: Short version number (e.g., 3)
     * `%s`: Extra strings provided by the application; make sure to include them in your translation. (e.g., `Loading page %s...`)
+    * `%1s`, `%2s`, etc.: Multiple extra strings. Please consider the order when translating.
     * Non-localizable strings:
     * `%n`: Application name (ModernActiveDesktop)
     * `%a`: Author name (Ingan121)

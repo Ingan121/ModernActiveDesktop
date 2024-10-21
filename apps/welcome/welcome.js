@@ -13,11 +13,31 @@ const closeBtn = document.getElementById("closeBtn");
 const itemsTitleImage = document.getElementById("itemsTitleImage");
 const itemsTitleText = document.getElementById("itemsTitleText");
 const checkmarks = document.querySelectorAll(".checkmark");
+const unsupportedWarning = document.getElementById("unsupportedWarning");
+const isUnsupportedChromium = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./)?.[2] < 124 || false;
 
 if (!localStorage.madesktopStartSndMuted) {
     const audio = new Audio("resources/WELCOM98.FLAC");
     audio.volume = 0.7;
     audio.play();
+}
+
+if (navigator.userAgent.match("Windows NT 6.1")) {
+    unsupportedWarning.style.display = "block";
+    unsupportedWarning.locId = "WELCOME_UNSUPPORTED_WIN7";
+} else if (navigator.userAgent.match("Windows NT 6.2")) {
+    unsupportedWarning.style.display = "block";
+    unsupportedWarning.locId = "WELCOME_UNSUPPORTED_WIN8";
+} else if (navigator.userAgent.match("Windows NT 6.3")) {
+    unsupportedWarning.style.display = "block";
+    unsupportedWarning.locId = "WELCOME_UNSUPPORTED_WIN81";
+} else if (isUnsupportedChromium) {
+    unsupportedWarning.style.display = "block";
+    if (madRunningMode === 1) {
+        unsupportedWarning.locId = "WELCOME_UNSUPPORTED_WPE";
+    } else {
+        unsupportedWarning.locId = "WELCOME_UNSUPPORTED_CHROMIUM";
+    }
 }
 
 for (const item of items) {

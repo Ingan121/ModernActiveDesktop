@@ -1,0 +1,47 @@
+/* Windows Classic (16 colors) */
+/* Based on a screenshot of Win2K and NT4 machine running in 16 colors in VMWare */
+/* And Win98 machine running in 16 colors in 86Box */
+:root {
+    --active-border: #c3c7cb;
+    --active-title: #0000aa;
+    --app-workspace: #868a8e;
+    --background: #55aaaa;
+    --button-alternate-face: #c3c7cb;
+    --button-dk-shadow: #000000;
+    --button-face: #c3c7cb;
+    --button-hilight: #ffffff;
+    --button-light: #c3c7cb;
+    --button-shadow: #868a8e;
+    --button-text: #000000;
+    --gradient-active-title: #0000aa;
+    --gradient-inactive-title: #868a8e;
+    --gray-text: #868a8e;
+    --hilight: #0000aa;
+    --hilight-text: #ffffff;
+    --hot-tracking-color: #0000aa;
+    --inactive-border: #c3c7cb;
+    --inactive-title: #868a8e;
+    --inactive-title-text: #c3c7cb;
+    --info-text: #000000;
+    --info-window: #ffffe1;
+    --menu: #c3c7cb;
+    --menu-bar: #c3c7cb;
+    --menu-hilight: #0000aa;
+    --menu-text: #000000;
+    --scrollbar: #c3c7cb;
+    --title-text: #ffffff;
+    --window: #ffffff;
+    --window-frame: #000000;
+    --window-text: #000000;
+    --flat-menus: mb;
+    --menu-animation: none;
+    --menu-shadow: false;
+    --scrollbar-size: 16px;
+    --menu-height: 18px;
+    --palette-title-height: 15px;
+    --sm-caption-font: bold 6pt var(--ui-font);
+}
+.window {
+    --extra-border-size: 1px;
+    --extra-title-height: -2px;
+}
