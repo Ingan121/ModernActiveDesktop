@@ -149,7 +149,7 @@ let urlAppend = "";
                                 parsed[key].startsWith("wallpapers/")
                             ) {
                                 localStorage.setItem("madesktopBgImg", parsed[key]);
-                            } else if (parsed[key] === !"wpewall") {
+                            } else if (parsed[key] === "!wpewall") {
                                 if (localStorage.madesktopBgWeImg) {
                                     localStorage.setItem("madesktopBgImg", localStorage.madesktopBgWeImg);
                                 }

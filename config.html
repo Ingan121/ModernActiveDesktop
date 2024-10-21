@@ -8,8 +8,10 @@
 <body>
     <script src="js/libmad.js"></script>
     <script>
+        // redirect old (2.2-2.3) config.html to MADConf
         madResizeTo(398, 423);
         madChangeWndStyle("wnd");
+        madSetResizable(false);
         madLocReplace("apps/madconf/background.html");
     </script>
 </body>

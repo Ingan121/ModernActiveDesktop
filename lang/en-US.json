@@ -736,7 +736,7 @@
     // #region Unverified warning strings
     "UNV_TITLE": "Warning! Unverified Page!",
     "UNV_MSG": "The last configuration file you imported is trying to load an unverified page.<br><br>Loaded pages can have the same access as %n, including the system plugin (if installed).<br><br>Loading unverified pages can be dangerous. If you are not sure, close this window.",
-    "UNV_LOAD": "Load",
+    "UNV_LOAD": "&Load",
     // #endregion
 
 

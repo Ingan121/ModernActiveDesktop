@@ -7,6 +7,7 @@
 
 let urlToLoad = madDeskMover.config.src;
 if (window.madFallbackMode) {
+    // bghtml
     urlToLoad = localStorage.madesktopBgHtmlSrc;
 }
 if (urlToLoad.startsWith('apps/channelviewer')) {
@@ -17,14 +18,12 @@ document.getElementById('url').textContent = urlToLoad;
 
 document.getElementById('loadBtn').addEventListener('click', async () => {
     if (document.body.dataset.compact) {
+        // Compact mode doesn't exist in bghtml
         if (await madConfirm(madGetString("UNV_MSG") + "<br><br>URL: " + escapeHTML(urlToLoad), null, 'warning')) {
-            if (window.madFallbackMode) {
-                delete localStorage.madesktopBgHtmlUnverified;
-                madLocReplace(localStorage.madesktopBgHtmlSrc);
-            } else {
-                delete madDeskMover.config.unverified;
-                madLocReplace(madDeskMover.config.src);
-            }
+            delete madDeskMover.config.unverified;
+            madLocReplace(madDeskMover.config.src);
+        } else {
+            madCloseWindow();
         }
     } else {
         if (window.madFallbackMode) {
@@ -37,7 +36,21 @@ document.getElementById('loadBtn').addEventListener('click', async () => {
     }
 });
 
+document.getElementById('closeBtn').addEventListener('click', () => {
+    if (window.madFallbackMode) {
+        delete localStorage.madesktopBgHtmlUnverified;
+        delete localStorage.madesktopBgHtmlSrc;
+        localStorage.madesktopBgType = "image";
+        top.changeBgType("image");
+    } else {
+        madCloseWindow();
+    }
+});
+
 window.addEventListener('resize', () => {
+    if (window.madFallbackMode) {
+        return;
+    }
     delete document.body.dataset.compact;
     if (window.innerWidth < 300 || document.body.offsetHeight + 40 > window.innerHeight) {
         document.body.dataset.compact = true;

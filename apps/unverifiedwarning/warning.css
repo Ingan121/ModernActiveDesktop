@@ -21,10 +21,14 @@ body {
     white-space: initial;
 }
 
-button {
+#buttons {
     position: absolute !important;
     left: 50%;
     transform: translateX(-50%);
+}
+
+#closeBtn {
+    margin-left: 5px;
 }
 
 body[data-compact] #msgbox-msg {
@@ -37,6 +41,9 @@ body[data-compact] #msgbox-icon {
     transform: translate(-50%, -50%);
     margin: 0;
 }
-body[data-compact] button {
+body[data-compact] #buttons {
     top: calc(50% + 20px);
+}
+body[data-compact] #closeBtn {
+    display: none;
 }
