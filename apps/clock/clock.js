@@ -107,7 +107,7 @@ if (migrated) {
 }
 
 settingsMenuItems[0].addEventListener('click', () => { // Analog button
-    delete localStorage.madesktopClockDigital;
+    delete madDeskMover.config.clockDigital;
     settingsMenuItems[0].classList.add('activeStyle');
     settingsMenuItems[1].classList.remove('activeStyle');
     settingsMenuItems[4].classList.add('disabled');
