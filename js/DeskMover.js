@@ -378,7 +378,6 @@
             this.adjustElements();
             this.#keepInside();
             this.closeContextMenu();
-            this.changeCmAnimation(localStorage.madesktopCmAnimation || "slide");
             if (!this.config.active && !localStorage.madesktopNoDeactivate) {
                 this.windowContainer.dataset.inactive = true;
                 this.windowTitlebar.classList.add("inactive");
@@ -408,8 +407,8 @@
                     }
 
                     let url = "placeholder.html";
-                    let defaultLeft = window.vWidth - (parseInt(localStorage.madesktopChanViewRightMargin) || 0) - 600 + 'px';
-                    let defaultTop = '200px';
+                    let defaultLeft = getRelativeWindowX(68.75) - (parseInt(localStorage.madesktopChanViewRightMargin) || 0) + 'px';
+                    let defaultTop = getRelativeWindowY(18.52) + 'px';
                     if ((typeof src === "string" || src instanceof String) && src != "placeholder.html") {
                         if (src.startsWith("apps/madconf/")) {
                             this.windowElement.width = width || '398px';
@@ -426,8 +425,8 @@
                                 this.setIcon(false);
                             }
                         }
-                        defaultLeft = left || (parseInt(localStorage.madesktopChanViewLeftMargin) || 75) + 250 + 'px';
-                        defaultTop = top || '150px';
+                        defaultLeft = left || getRelativeWindowX(13.02) + (parseInt(localStorage.madesktopChanViewLeftMargin) || 75) + 'px';
+                        defaultTop = top || getRelativeWindowY(13.38) + 'px';
                         url = src.includes(".html") ? src : `docs/index.html?src=${src}`;
                         if (aot) {
                             this.#toggleAoT();
@@ -824,14 +823,6 @@
             this.adjustElements();
         }
 
-        changeCmAnimation(type) {
-            if (type === "none") {
-                this.dropdownBg.style.animation = "none";
-            } else {
-                this.dropdownBg.style.animation = "cmDropdown 0.25s linear";
-            }
-        }
-
         openDropdown(elem, iframe) {
             // Suppress the original dropdown
             elem.blur();
@@ -894,7 +885,8 @@
                 optionCnt++;
             }
 
-            if (this.dropdownBg.style.animationName !== "none") {
+            const animationEnabled = localStorage.madesktopCmAnimation !== "none";
+            if (animationEnabled) {
                 this.dropdownBg.style.pointerEvents = "none";
                 this.dropdownBg.addEventListener("animationend", () => {
                     this.dropdownBg.style.pointerEvents = "";
@@ -903,21 +895,31 @@
 
             // Set these first to ensure the item height is retrieved correctly
             this.dropdownBg.style.display = "block";
+            this.dropdownBg.style.animation = "none";
 
             const clientRect = elem.getBoundingClientRect();
             let left = clientRect.left + 1;
-            let top = clientRect.top + elem.offsetHeight;
+            let top = clientRect.top + elem.offsetHeight + 1;
+            let bottom = this.windowElement.clientHeight - clientRect.top - 1;
             let width = elem.offsetWidth - 2;
             if (this.config.unscaled) {
                 left /= window.scaleFactor;
                 top /= window.scaleFactor;
+                bottom = this.windowElement.clientHeight - clientRect.top / window.scaleFactor - 1;
                 width /= window.scaleFactor;
             }
             if (iframe) {
                 const iframeRect = iframe.getBoundingClientRect();
                 const padding = parseInt(getComputedStyle(iframe).padding);
-                left += iframeRect.left + padding;
-                top += iframeRect.top + padding;
+                if (this.config.unscaled) {
+                    left += iframeRect.left / window.scaleFactor + padding;
+                    top += iframeRect.top / window.scaleFactor + padding;
+                    bottom -= iframeRect.top / window.scaleFactor + padding;
+                } else {
+                    left += iframeRect.left + padding;
+                    top += iframeRect.top + padding;
+                    bottom -= iframeRect.top + padding;
+                }
             }
             this.dropdownBg.style.left = left + "px";
             this.dropdownBg.style.top = top + "px";
@@ -925,7 +927,7 @@
             this.dropdown.style.width = this.dropdownBg.style.width;
 
             let height = 0;
-            for (let i = 1; i <= Math.min(optionCnt, 14); i++) {
+            for (let i = 1; i <= Math.min(optionCnt, 18); i++) {
                 let itemHeight = this.dropdown.children[i].getBoundingClientRect().height;
                 if (window.isIframeAutoScaled) {
                     itemHeight /= window.scaleFactor; // somehow the height is also wrongly scaled in recent browsers with iframe auto scaling
@@ -935,11 +937,19 @@
             this.dropdownBg.style.height = height + "px";
             this.dropdown.style.height = this.dropdownBg.style.height;
 
-            if (this.dropdownBg.getBoundingClientRect().bottom > window.innerHeight - parseInt(localStorage.madesktopChanViewBottomMargin || "48px")) {
-                this.dropdownBg.style.top = clientRect.top - height + 'px';
+            if (this.dropdownBg.getBoundingClientRect().bottom > window.vHeight - parseInt(localStorage.madesktopChanViewBottomMargin || "48px")) {
+                this.dropdownBg.style.top = 'auto'; //clientRect.top - height + 'px';
+                this.dropdownBg.style.bottom = bottom + 'px';
+                this.dropdown.dataset.reversed = true;
+            } else {
+                delete this.dropdown.dataset.reversed;
             }
 
-            if (selectedIndex > 7) {
+            if (animationEnabled) {
+                this.dropdownBg.style.animation = "cmDropdown 0.25s linear";
+            }
+
+            if (selectedIndex > 9) {
                 this.dropdown.scrollTop = (selectedIndex - 12) * this.dropdown.children[1].getBoundingClientRect().height;
             } else {
                 this.dropdown.scrollTop = 0;
@@ -1240,7 +1250,7 @@
                             windowOutline.style.padding = this.borderSize + "px";
                         }
                     }
-                    let extraOffset = +(localStorage.madesktopColorScheme === "7css4mad");
+                    let extraOffset = +(localStorage.madesktopColorScheme === "7css4mad" || localStorage.madesktopColorScheme === "aerobasic");
                     windowOutline.style.left = this.windowContainer.offsetLeft + extraOffset + "px";
                     windowOutline.style.top = this.windowContainer.offsetTop + extraOffset + "px";
                     windowOutline.style.width = this.windowContainer.offsetWidth - extraOffset * 2 + "px";
@@ -1263,7 +1273,7 @@
                     extraBorderSize = parseInt(getComputedStyle(this.windowContainer).getPropertyValue('--extra-border-size'));
                     extraBorderBottom = parseInt(getComputedStyle(this.windowContainer).getPropertyValue('--extra-border-bottom'));
                 }
-                let extraOffset = +(localStorage.madesktopColorScheme === "7css4mad");
+                let extraOffset = +(localStorage.madesktopColorScheme === "7css4mad" || localStorage.madesktopColorScheme === "aerobasic");
                 log({ extraBorderSize, extraBorderBottom, extraOffset });
                 this.windowContainer.style.left = parseInt(windowOutline.style.left) - extraOffset + "px";
                 this.windowContainer.style.top = parseInt(windowOutline.style.top) - extraOffset + "px";

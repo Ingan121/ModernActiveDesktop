@@ -256,9 +256,6 @@
             case "slide":
                 mainMenuBg.style.animation = "cmDropdownright 0.25s linear";
         }
-        for (const i in deskMovers) {
-            deskMovers[i].changeCmAnimation(type);
-        }
     }
 
     // Change context menu shadow
@@ -666,6 +663,7 @@
             'madesktopLang',
             'jspaint language',
             'sysplugIntegration',
+            'madesktopVisMediaControls',
             'madesktopCorsProxy',
             // Aggregated configs
             'madesktopSavedSchemes',

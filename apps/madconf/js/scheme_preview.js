@@ -85,14 +85,10 @@ function changeFont(isPixel) {
 function changeMenuStyle(style) {
     if (!style) {
         menuStyleElement.href = "";
-        if (localStorage.madesktopColorScheme === "7css4mad") {
-            document.body.dataset.noSunkenMenus = true;
-        } else {
-            delete document.body.dataset.noSunkenMenus;
-        }
+        delete document.body.dataset.noSunkenMenus;
     } else {
         menuStyleElement.href = `../../css/flatmenu-${style}.css`;
-        if (style.includes("mb") || localStorage.madesktopColorScheme === "7css4mad") {
+        if (style.includes("mb")) {
             document.body.dataset.noSunkenMenus = true;
         } else {
             delete document.body.dataset.noSunkenMenus;

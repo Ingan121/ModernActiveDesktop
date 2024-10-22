@@ -217,8 +217,6 @@ window.apply = async function () {
                 console.error(e);
                 madAlert(madGetString("MADCONF_MSG_SAVE_FAIL", e.name), null, 'error');
             }
-        } else {
-            return;
         }
     } else if (activeItem.id === 'weImgItem') {
         localStorage.madesktopBgImg = localStorage.madesktopBgWeImg;

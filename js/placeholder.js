@@ -12,22 +12,25 @@ if (madRunningMode === 0) {
 madSetResizeArea(false);
 
 function openApp(app) {
+    const leftMargin = parseInt(localStorage.madesktopChanViewLeftMargin) || 75;
+    const rightMargin = parseInt(localStorage.madesktopChanViewRightMargin) || 0;
+    const topMargin = parseInt(localStorage.madesktopChanViewTopMargin) || 0;
     switch(app) {
         case "channelbar":
             madResizeTo(84, 471);
-            madMoveTo(parent.vWidth - (parseInt(localStorage.madesktopChanViewRightMargin) || 0) - 184, 200);
+            madMoveTo(getRelativeWindowX(90.4) - rightMargin, getRelativeWindowY(18.52) + topMargin);
             madChangeWndStyle("ad");
             madLocReplace("ChannelBar.html");
             break;
         case "jspaint":
             madResizeTo(268, 355);
-            madMoveTo(250, 150);
+            madMoveTo(getRelativeWindowX(13.02) + leftMargin, getRelativeWindowY(13.38) + topMargin);
             madChangeWndStyle("wnd");
             madLocReplace("apps/jspaint/index.html");
             break;
         case "sol":
             madResizeTo(660, 440);
-            madMoveTo(250, 150);
+            madMoveTo(getRelativeWindowX(13.02) + leftMargin, getRelativeWindowY(13.38) + topMargin);
             madChangeWndStyle("wnd");
             madLocReplace("apps/solitaire/index.html");
             break;
@@ -40,25 +43,25 @@ function openApp(app) {
                 return;
             }
             madResizeTo(725, 380);
-            madMoveTo(500, 200);
+            madMoveTo(getRelativeWindowX(26.04) + leftMargin, getRelativeWindowY(18.52) + topMargin);
             madChangeWndStyle("wnd");
             madLocReplace("apps/visualizer/index.html");
             break;
         case "cv":
             madResizeTo(1024, 768);
-            madMoveTo(500, 200);
+            madMoveTo(getRelativeWindowX(26.04) + leftMargin, getRelativeWindowY(18.52) + topMargin);
             madChangeWndStyle("wnd");
             madLocReplace("apps/channelviewer/index.html");
             break;
         case "clock":
             madResizeTo(398, 417);
-            madMoveTo(500, 200);
+            madMoveTo(getRelativeWindowX(26.04) + leftMargin, getRelativeWindowY(18.52) + topMargin);
             madChangeWndStyle("wnd");
             madLocReplace("apps/clock/index.html");
             break;
         case "calc":
             madResizeTo(254, 227);
-            madMoveTo(500, 200);
+            madMoveTo(getRelativeWindowX(26.04) + leftMargin, getRelativeWindowY(18.52) + topMargin);
             madChangeWndStyle("wnd");
             madSetResizable(false);
             madLocReplace("apps/calc/index.html");
@@ -75,7 +78,7 @@ function openYoutube() {
             return;
         }
         madResizeTo(560, 315);
-        madMoveTo(250, 150);
+        madMoveTo(getRelativeWindowX(13.02) + leftMargin, getRelativeWindowY(13.38) + topMargin);
         madChangeWndStyle("wnd");
         madLocReplace("https://www.youtube.com/embed/" + id);
     }, 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', '');

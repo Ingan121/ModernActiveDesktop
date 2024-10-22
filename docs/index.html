@@ -72,6 +72,20 @@
             madCloseWindow();
         }
     });
+
+    window.addEventListener('resize', function () {
+        if (document.body.scrollHeight > window.innerHeight && document.body.scrollWidth > window.innerWidth) {
+            madSetResizeArea(2);
+        } else {
+            madSetResizeArea(false);
+        }
+    });
+
+    window.addEventListener('load', function () {
+        if (document.body.scrollHeight > window.innerHeight && document.body.scrollWidth > window.innerWidth) {
+            madSetResizeArea(2);
+        }
+    });
   </script>
 </body>
 

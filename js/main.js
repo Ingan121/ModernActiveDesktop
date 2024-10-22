@@ -341,7 +341,9 @@
 
     function openMainMenu (event) {
         if (isContextMenuOpen) return;
-        mainMenuBg.style.pointerEvents = "none";
+        if (localStorage.madesktopCmAnimation !== "none") {
+            mainMenuBg.style.pointerEvents = "none";
+        }
         mainMenuBg.style.left = event.clientX / window.scaleFactor + "px";
         mainMenuBg.style.top = event.clientY / window.scaleFactor + "px";
         mainMenuBg.style.display = "block";
@@ -360,7 +362,11 @@
         document.addEventListener("keydown", menuNavigationHandler);
     }
 
-    function closeMainMenu() {
+    function closeMainMenu(event) {
+        if (event?.type === "focusout" && window.ignoreFocusLoss) {
+            // Debug feature; set window.ignoreMenuFocusLoss to true to prevent closing the menu on focusout
+            return;
+        }
         mainMenuBg.style.display = "none";
         isContextMenuOpen = false;
         openedMenu = null;

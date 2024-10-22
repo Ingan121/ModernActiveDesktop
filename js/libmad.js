@@ -67,8 +67,14 @@
                     set: function (value) {
                         if (value) {
                             this.dataset.disabled = true;
+                            if (this.altSelect) {
+                                this.altSelect.disabled = true;
+                            }
                         } else {
                             delete this.dataset.disabled;
+                            if (this.altSelect) {
+                                this.altSelect.disabled = false;
+                            }
                         }
                     }
                 }
@@ -209,14 +215,14 @@
             const menuConfig = localStorage.madesktopMenuStyle;
             if (menuConfig) {
                 menuStyleElement.href = parentMenuStyleElement.href;
-                if (menuConfig.includes("mb") || localStorage.madesktopColorScheme === "7css4mad") {
+                if (menuConfig.includes("mb") || localStorage.madesktopColorScheme === "7css4mad" || localStorage.madesktopColorScheme === "aerobasic") {
                     document.body.dataset.noSunkenMenus = true;
                 } else {
                     delete document.body.dataset.noSunkenMenus;
                 }
             } else {
                 menuStyleElement.href = "";
-                if (localStorage.madesktopColorScheme === "7css4mad") {
+                if (localStorage.madesktopColorScheme === "7css4mad" || localStorage.madesktopColorScheme === "aerobasic") {
                     document.body.dataset.noSunkenMenus = true;
                 } else {
                     delete document.body.dataset.noSunkenMenus;
@@ -567,10 +573,10 @@
         window.madCloseWindow = window.close;
         window.madResizeTo = function (width, height) {
             if (!width) {
-                width = window.outerWidth;
+                width = window.innerWidth;
             }
             if (!height) {
-                height = window.outerHeight;
+                height = window.innerHeight;
             }
             width += window.outerWidth - window.innerWidth;
             height += window.outerHeight - window.innerHeight;
@@ -590,12 +596,23 @@
             document.exitFullscreen();
         }
 
+        window.madOpenColorPicker = function (initialColor, expand, callback, noDithering) {
+            const result = prompt(madGetString("COLORPICKER_PROMPT_CSS_COLOR"), initialColor || "");
+            if (result) {
+                callback(result);
+            }
+        }
+        window.madOpenMiniColorPicker = function (elem, initialColor, callback, noDithering) {
+            const result = prompt(madGetString("COLORPICKER_PROMPT_CSS_COLOR"), initialColor || "");
+            if (result) {
+                callback(result);
+            }
+        }
+
         window.madSetIcon = noop;
         window.madSetResizeArea = noop;
         window.madSetResizable = noop;
         window.madChangeWndStyle = noop;
-        window.madOpenMiniColorPicker = noop;
-        window.madOpenColorPicker = noop;
         window.madExtendMoveTarget = noop;
 
         window.madFallbackMode = true;

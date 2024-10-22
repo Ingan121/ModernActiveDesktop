@@ -100,7 +100,7 @@
             color = parent.normalizeColor(color);
         }
 
-        const c = color.substring(2);  // strip " #"
+        const c = color.substring(1);  // strip "#"
         const rgb = parseInt(c, 16);   // convert rrggbb to decimal
         const r = (rgb >> 16) & 0xff;  // extract red
         const g = (rgb >>  8) & 0xff;  // extract green
@@ -265,6 +265,14 @@
         }
     }
 
+    // Get the X and Y position in pixels relative to the window width and height
+    function getRelativeWindowX(percent) {
+        return Math.round((top.vWidth || window.innerWidth) * percent / 100);
+    }
+    function getRelativeWindowY(percent) {
+        return Math.round((top.vHeight || window.innerHeight) * percent / 100);
+    }
+
     window.getTextWidth = getTextWidth;
     window.scrollIntoView = scrollIntoView;
     window.rgbToHex = rgbToHex;
@@ -284,4 +292,6 @@
     window.getFilename = getFilename;
     window.copyText = copyText;
     window.getMadBase = getMadBase;
+    window.getRelativeWindowX = getRelativeWindowX;
+    window.getRelativeWindowY = getRelativeWindowY;
 })();
