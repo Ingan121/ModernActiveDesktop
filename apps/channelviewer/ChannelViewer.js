@@ -67,10 +67,7 @@ const border = document.getElementById("border");
 
 window.iframe = document.getElementById("iframe");
 
-let madBase = top.location.href.split('/').slice(0, -1).join('/') + '/';
-if (top === window) {
-    madBase += '../../';
-}
+let madBase = getMadBase();
 const cvBase = madBase + 'apps/channelviewer/';
 
 let title = "";

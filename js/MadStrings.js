@@ -63,8 +63,9 @@
                 readyAll();
                 languageReady = true;
                 window.madStrings.loaded = true;
-                if (window.announce) {
-                    announce("language-ready");
+                const announceFunc = window.announce || window.madAnnounce;
+                if (announceFunc) {
+                    announceFunc("language-ready");
                 }
 
                 const logFunc = (isInit && window.logTimed) ? window.logTimed : console.log;
@@ -128,7 +129,7 @@
     async function loadLanguageFile(lang) {
         let url = `lang/${lang}.json`;
         if (!window.madMainWindow) {
-            url = `../../${url}`;
+            url = getMadBase() + url;
         }
         const response = await fetch(url);
         const text = await response.text();

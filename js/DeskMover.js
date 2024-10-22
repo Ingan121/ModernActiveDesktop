@@ -925,7 +925,7 @@
             this.dropdown.style.width = this.dropdownBg.style.width;
 
             let height = 0;
-            for (let i = 1; i <= Math.min(optionCnt, 25); i++) {
+            for (let i = 1; i <= Math.min(optionCnt, 14); i++) {
                 let itemHeight = this.dropdown.children[i].getBoundingClientRect().height;
                 if (window.isIframeAutoScaled) {
                     itemHeight /= window.scaleFactor; // somehow the height is also wrongly scaled in recent browsers with iframe auto scaling
@@ -935,7 +935,11 @@
             this.dropdownBg.style.height = height + "px";
             this.dropdown.style.height = this.dropdownBg.style.height;
 
-            if (selectedIndex > 12) {
+            if (this.dropdownBg.getBoundingClientRect().bottom > window.innerHeight - parseInt(localStorage.madesktopChanViewBottomMargin || "48px")) {
+                this.dropdownBg.style.top = clientRect.top - height + 'px';
+            }
+
+            if (selectedIndex > 7) {
                 this.dropdown.scrollTop = (selectedIndex - 12) * this.dropdown.children[1].getBoundingClientRect().height;
             } else {
                 this.dropdown.scrollTop = 0;

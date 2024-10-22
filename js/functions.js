@@ -233,6 +233,38 @@
         document.body.removeChild(tmp);
     }
 
+    // Get the base URL of ModernActiveDesktop
+    // Don't assume it to be in the web root; MAD is designed to run well in fileurl too (if CORS is allowed)
+    function getMadBase() {
+        if (window.madMainWindow) {
+            return location.href.split('/').slice(0, -1).join('/') + '/';
+        } else if (frameElement && top.madMainWindow) {
+            return top.location.href.split('/').slice(0, -1).join('/') + '/';
+        // Easy handling is done; now for the hard part
+        } else if (location.href.includes("/apps/")) {
+            const appsSplit = location.pathname.split('/apps/');
+            let pathnameWithoutMadBase = appsSplit[1];
+            if (appsSplit.length > 1) {
+                // If there are more than one /apps/ in the URL
+                // E.g the user installed Steam in a folder named apps
+                // Felt the need to support this after seeing steamapps/ getting caught in split('apps/')
+                pathnameWithoutMadBase = appsSplit[appsSplit.length - 1];
+            }
+            const slashCnt = pathnameWithoutMadBase.split("/").length + 1
+            if (slashCnt > 6 && appsSplit.length <= 2) {
+                // Currently no that HTML files present that deeply nested
+                // Assume the caught /apps/ is not the MAD apps folder
+                // So assume its directly in a subfolder of the web root
+                return location.href.split('/').slice(0, -2).join('/') + '/';
+            }
+            return location.href.split('/').slice(0, -slashCnt).join('/') + '/';
+        } else {
+            // Currently not much HTML files outside apps/ folder
+            // Assume its directly in a subfolder of the web root
+            return location.href.split('/').slice(0, -2).join('/') + '/';
+        }
+    }
+
     window.getTextWidth = getTextWidth;
     window.scrollIntoView = scrollIntoView;
     window.rgbToHex = rgbToHex;
@@ -251,4 +283,5 @@
     window.escapeHTML = escapeHTML;
     window.getFilename = getFilename;
     window.copyText = copyText;
+    window.getMadBase = getMadBase;
 })();

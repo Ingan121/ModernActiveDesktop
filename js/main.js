@@ -484,7 +484,9 @@
         }
     }
 
+    // Open external links
     function openExternal(url, fullscreen, specs = "", temp = true, noExternal = false) {
+        // Don't use in-MAD ChannelViewer for data URLs, non-temporary windows, or if the link open mode not set to ChannelViewer
         if ((localStorage.madesktopLinkOpenMode || "1") !== "1" && temp && !specs && !url.startsWith("data:") && !noExternal) {
             openExternalExternally(url, fullscreen && !localStorage.madesktopChanViewNoAutoFullscrn);
             return null;
@@ -507,6 +509,8 @@
         return deskMover;
     }
 
+    // Open external links externally (system browser or SysPlug ChannelViewer, or just a new tab when running in a browser)
+    // If none of the above are available, fall back to in-MAD ChannelViewer, or copy the link to the clipboard if noInternal is true
     async function openExternalExternally(url, fullscreen, noInternal = false) {
         if (runningMode === 0 && (!localStorage.madesktopLinkOpenMode || localStorage.madesktopLinkOpenMode === "0")) {
             window.open(url, "_blank");
@@ -1106,7 +1110,7 @@
     // #region Global helper functions (Expects the top window so not suitable for functions.js)
     async function getFavicon(iframe) {
         try {
-            const madBase = location.href.split('/').slice(0, -1).join('/') + '/';
+            const madBase = getMadBase();
             const loc = iframe.contentWindow.location.href;
             const doc = iframe.contentDocument;
             const url = new URL(loc);

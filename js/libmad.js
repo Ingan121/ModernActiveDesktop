@@ -17,6 +17,149 @@
 // Dependencies: functions.js (required by the custom dropdown and theme functions)
 
 (function () {
+    // custom dropdown
+    class MadSelect extends HTMLElement {
+        constructor() {
+            super();
+            this.selectedIndexReal = 0;
+
+            Object.defineProperties(this, {
+                options: {
+                    get: function () {
+                        return this.querySelectorAll("option");
+                    }
+                },
+                selectedIndex: {
+                    get: function () {
+                        return this.selectedIndexReal;
+                    },
+                    set: function (value) {
+                        if (isNaN(value)) {
+                            return;
+                        }
+                        this.selectedIndexReal = parseInt(value);
+                        for (const option of this.options) {
+                            option.selected = false;
+                        }
+                        this.options[this.selectedIndexReal].selected = true;
+                        this.label.textContent = this.options[this.selectedIndexReal].textContent;
+                    }
+                },
+                value: {
+                    get: function () {
+                        return this.options[this.selectedIndex].value;
+                    },
+                    set: function (value) {
+                        for (const option of this.options) {
+                            if (option.value === value) {
+                                this.selectedIndex = Array.from(this.options).indexOf(option);
+                                this.label.textContent = option.textContent;
+                                return;
+                            }
+                        }
+                        this.label.textContent = this.options[this.selectedIndex].textContent;
+                    }
+                },
+                disabled: {
+                    get: function () {
+                        return this.dataset.disabled;
+                    },
+                    set: function (value) {
+                        if (value) {
+                            this.dataset.disabled = true;
+                        } else {
+                            delete this.dataset.disabled;
+                        }
+                    }
+                }
+            });
+        }
+
+        connectedCallback() {
+            this.label = document.createElement("span");
+            this.label.classList.add("label");
+
+            for (const option of this.options) {
+                if (option.selected) {
+                    this.selectedIndex = Array.from(this.options).indexOf(option);
+                }
+
+                new MutationObserver((mutations) => {
+                    if (this.value === option.value) {
+                        this.label.textContent = option.textContent;
+                    }
+                }).observe(
+                    option,
+                    { characterData: false, attributes: false, childList: true, subtree: false }
+                )
+            }
+
+            if (this.getAttribute('disabled') !== null) {
+                this.dataset.disabled = true;
+            }
+
+            this.label.textContent = this.options[this.selectedIndex].textContent;
+            this.insertAdjacentElement("afterbegin", this.label);
+
+            this.addEventListener("click", () => {
+                if (!this.disabled && window.madOpenDropdown) {
+                    madOpenDropdown(this);
+                }
+            });
+
+            this.addEventListener("pointerover", () => {
+                if (!window.madOpenDropdown && !this.altSelect && !this.disabled) {
+                    // Use native select when DeskMover.openDropdown is not available
+                    this.altSelect = document.createElement("select");
+                    this.altSelect.style.position = "absolute";
+                    this.altSelect.style.top = this.offsetTop + "px";
+                    this.altSelect.style.left = this.offsetLeft + "px";
+                    this.altSelect.style.width = this.offsetWidth + "px";
+                    this.altSelect.style.height = this.offsetHeight + "px";
+                    this.altSelect.style.zIndex = 1000;
+                    this.altSelect.style.display = "block";
+                    this.altSelect.style.opacity = 0;
+                    document.body.appendChild(this.altSelect);
+                    for (const option of this.options) {
+                        const newOption = document.createElement("option");
+                        newOption.textContent = option.textContent;
+                        newOption.value = option.value;
+                        newOption.style.display = "block";
+                        newOption.style.backgroundColor = "var(--window)";
+                        newOption.style.color = "var(--window-text)";
+                        this.altSelect.appendChild(newOption);
+                    }
+                    this.altSelect.addEventListener("change", () => {
+                        this.selectedIndex = this.altSelect.selectedIndex;
+                        this.dispatchEvent(new Event("change"));
+                    });
+                }
+            });
+
+            window.addEventListener("message", (event) => {
+                if (event.data.type === "language-ready") {
+                    this.label.textContent = this.options[this.selectedIndex].textContent;
+                    this.adjustMinWidth();
+                }
+            });
+
+            window.addEventListener("load", this.adjustMinWidth.bind(this));
+        }
+
+        adjustMinWidth() {
+            const scrollBarSize = parseInt(getComputedStyle(document.body).getPropertyValue("--scrollbar-size"));
+            let maxWidth = 0;
+            for (const option of this.options) {
+                const width = getTextWidth(option.textContent.trim(), "11px " + getComputedStyle(document.documentElement).getPropertyValue("--ui-font"));
+                if (width > maxWidth) {
+                    maxWidth = width;
+                }
+            }
+            this.style.minWidth = maxWidth + 20 + scrollBarSize + "px";
+        }
+    }
+    customElements.define("mad-select", MadSelect);
+
     if (!frameElement || // Not running in iframe, or running in cross-origin restricted mode
         !top.madMainWindow // Top window is not MAD (SecurityError if cross-origin but should not reach here in that case)
     ) {
@@ -241,120 +384,6 @@
         return; // Below requires the DeskMover interface
     }
 
-    // custom dropdown
-    class MadSelect extends HTMLElement {
-        constructor() {
-            super();
-            this.selectedIndexReal = 0;
-
-            Object.defineProperties(this, {
-                options: {
-                    get: function () {
-                        return this.querySelectorAll("option");
-                    }
-                },
-                selectedIndex: {
-                    get: function () {
-                        return this.selectedIndexReal;
-                    },
-                    set: function (value) {
-                        if (isNaN(value)) {
-                            return;
-                        }
-                        this.selectedIndexReal = parseInt(value);
-                        for (const option of this.options) {
-                            option.selected = false;
-                        }
-                        this.options[this.selectedIndexReal].selected = true;
-                        this.label.textContent = this.options[this.selectedIndexReal].textContent;
-                    }
-                },
-                value: {
-                    get: function () {
-                        return this.options[this.selectedIndex].value;
-                    },
-                    set: function (value) {
-                        for (const option of this.options) {
-                            if (option.value === value) {
-                                this.selectedIndex = Array.from(this.options).indexOf(option);
-                                this.label.textContent = option.textContent;
-                                return;
-                            }
-                        }
-                        this.label.textContent = this.options[this.selectedIndex].textContent;
-                    }
-                },
-                disabled: {
-                    get: function () {
-                        return this.dataset.disabled;
-                    },
-                    set: function (value) {
-                        if (value) {
-                            this.dataset.disabled = true;
-                        } else {
-                            delete this.dataset.disabled;
-                        }
-                    }
-                }
-            });
-        }
-
-        connectedCallback() {
-            this.label = document.createElement("span");
-            this.label.classList.add("label");
-
-            for (const option of this.options) {
-                if (option.selected) {
-                    this.selectedIndex = Array.from(this.options).indexOf(option);
-                }
-
-                new MutationObserver((mutations) => {
-                    if (this.value === option.value) {
-                        this.label.textContent = option.textContent;
-                    }
-                }).observe(
-                    option,
-                    { characterData: false, attributes: false, childList: true, subtree: false }
-                )
-            }
-
-            if (this.getAttribute('disabled') !== null) {
-                this.dataset.disabled = true;
-            }
-
-            this.label.textContent = this.options[this.selectedIndex].textContent;
-            this.insertAdjacentElement("afterbegin", this.label);
-
-            this.addEventListener("click", () => {
-                if (!this.disabled) {
-                    deskMover.openDropdown(this);
-                }
-            });
-
-            window.addEventListener("message", (event) => {
-                if (event.data.type === "language-ready") {
-                    this.label.textContent = this.options[this.selectedIndex].textContent;
-                    this.adjustMinWidth();
-                }
-            });
-
-            window.addEventListener("load", this.adjustMinWidth.bind(this));
-        }
-
-        adjustMinWidth() {
-            const scrollBarSize = parseInt(getComputedStyle(document.body).getPropertyValue("--scrollbar-size"));
-            let maxWidth = 0;
-            for (const option of this.options) {
-                const width = getTextWidth(option.textContent.trim(), "11px " + getComputedStyle(document.documentElement).getPropertyValue("--ui-font"));
-                if (width > maxWidth) {
-                    maxWidth = width;
-                }
-            }
-            this.style.minWidth = maxWidth + 20 + scrollBarSize + "px";
-        }
-    }
-    customElements.define("mad-select", MadSelect);
-
     // expose MAD APIs
     window.madIdb = top.madIdb;
     window.madDeskMover = deskMover;
@@ -444,10 +473,10 @@
                 console[level || 'log'](caller + ": " + str);
             }
             window.madOpenWindow = function (url, temp, optionsOrWidth = {}, heightArg, style, centeredArg, topArg, leftArg) {
-                if (url.startsWith("apps/") && location.href.includes("/apps/")) {
-                    url = "../../" + url;
+                if (url.startsWith("apps/")) {
+                    url = getMadBase() + url;
                 } else if (!url.endsWith(".html")) {
-                    url = "../../docs/index.html?src=" + url;
+                    url = getMadBase() + "docs/index.html?src=" + url;
                     optionsOrWidth = {
                         width: optionsOrWidth.width || 800,
                         height: optionsOrWidth.height || 600,
@@ -529,17 +558,24 @@
             window.madPlaySound = noop;
         }
 
-        window.madOpenDropdown = function (elem) {
-            return;
-        }
         window.madLocReplace = function (url) {
-            if (url.startsWith("apps/") && location.href.includes("/apps/")) {
-                url = "../../" + url;
+            if (url.startsWith("apps/")) {
+                url = getMadBase() + url;
             }
             location.replace(url);
         }
         window.madCloseWindow = window.close;
-        window.madResizeTo = window.resizeTo;
+        window.madResizeTo = function (width, height) {
+            if (!width) {
+                width = window.outerWidth;
+            }
+            if (!height) {
+                height = window.outerHeight;
+            }
+            width += window.outerWidth - window.innerWidth;
+            height += window.outerHeight - window.innerHeight;
+            window.resizeTo(width, height);
+        };
         window.madMoveTo = window.moveTo;
         window.madBringToTop = window.focus;
 

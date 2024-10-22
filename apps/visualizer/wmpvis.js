@@ -6,7 +6,7 @@
 'use strict';
 
 if (!frameElement || !madDeskMover.isVisualizer || window.madFallbackMode || madRunningMode === 0) {
-    throw new Error("Initialization conditions not met.");
+    throw new Error("MADVis: Initialization conditions not met.");
 }
 
 const visBarCtx = visBar.getContext('2d');
