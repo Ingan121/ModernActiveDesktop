@@ -1339,6 +1339,7 @@
                     localCorsMsg = "go to about:config and set security.fileuri.strict_origin_policy to false.";
                 }
                 madAlert("You are running ModernActiveDesktop as a local file. For the full functionality, please use a web server to host it or " + localCorsMsg, null, "warning");
+                window.madFileUriRestricted = true;
             });
         }
     }

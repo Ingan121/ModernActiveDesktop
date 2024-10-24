@@ -258,10 +258,12 @@
                 return location.href.split('/').slice(0, -2).join('/') + '/';
             }
             return location.href.split('/').slice(0, -slashCnt).join('/') + '/';
+        } else if (location.href.includes("/docs/")) {
+            return location.href.split('/').slice(0, -2).join('/') + '/';
         } else {
             // Currently not much HTML files outside apps/ folder
-            // Assume its directly in a subfolder of the web root
-            return location.href.split('/').slice(0, -2).join('/') + '/';
+            // Assume its in the root (ChannelBar.html, etc)
+            return location.href.split('/').slice(0, -1).join('/') + '/';
         }
     }
 

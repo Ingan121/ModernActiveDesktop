@@ -3,6 +3,8 @@
 // Licensed under the MIT License
 // SPDX-License-Identifier: MIT
 
+// Dependencies: functions.js (getMadBase, escapeHTML), MadVersion.js if using %v
+
 'use strict';
 
 (function () {
@@ -93,7 +95,7 @@
                     // Unless we're in a file:// context (main.js will show the alert in that case)
                     window.addEventListener("load", () => {
                         // Wait for window.madAlert to be defined (in main.js)
-                        if (!languageReady && !location.href.startsWith("file:")) {
+                        if (!languageReady && !window.madFileUriRestricted) {
                             // Avoid window.alert when running MAD normally, as it softlocks WPE 2.5+
                             const alertFunc = window.madMainWindow ? window.madAlert : window.alert;
                             alertFunc("ModernActiveDesktop failed to load the language file for en-US. Expect things to be broken. Check the console for more information.", null, "error");
@@ -127,10 +129,7 @@
     }
 
     async function loadLanguageFile(lang) {
-        let url = `lang/${lang}.json`;
-        if (!window.madMainWindow) {
-            url = getMadBase() + url;
-        }
+        const url = getMadBase() + `lang/${lang}.json`;
         const response = await fetch(url);
         const text = await response.text();
         if (localStorage.madesktopDebugMode && localStorage.madesktopDebugLangLoadDelay && window.asyncTimeout) {

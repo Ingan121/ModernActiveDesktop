@@ -82,6 +82,7 @@ let preCrashUrl = '';
 let pageSetStatusText = '';
 let loadedWithProxy = false;
 let loading = false;
+let loadingUrl = null;
 let favEditMode = false;
 let baseStylesheet = '';
 let themeStylesheet = '';
@@ -929,7 +930,7 @@ function expandUrl(url) {
 }
 
 function getCurrentUrl(expand) {
-    const url = isCrossOrigin ? iframe.src : historyItems[historyIndex - 1][0];
+    const url = isCrossOrigin ? iframe.src : loadingUrl ?? historyItems[historyIndex - 1][0];
     return expand ? expandUrl(url) : url;
 }
 
@@ -948,7 +949,9 @@ function appendHistoryItem(historyItem) {
 }
 
 async function loadFavorites() {
-    if (localStorage.madesktopChanViewFavorites) {
+    if (await madIdb.itemExists("cvFavorites")) {
+        window.favorites = await madIdb.cvFavorites;
+    } else if (localStorage.madesktopChanViewFavorites) {
         // Migrate localStorage favorites to IndexedDB
         const parsed = JSON.parse(localStorage.madesktopChanViewFavorites);
         for (const favorite of parsed) {
@@ -959,8 +962,6 @@ async function loadFavorites() {
         await madIdb.setItem("cvFavorites", parsed);
         delete localStorage.madesktopChanViewFavorites;
         window.favorites = parsed;
-    } else if (await madIdb.itemExists("cvFavorites")) {
-        window.favorites = await madIdb.cvFavorites;
     } else {
         // Default favorites
         window.favorites = [
@@ -1199,9 +1200,10 @@ function loadStart() {
         return;
     }
     loading = true;
+    loadingUrl = urlbar.value;
     throbber.dataset.busy = true;
     fullscreenThrobber.dataset.busy = true;
-    statusText.textContent = madGetString("CV_STATUS_OPENING", urlbar.value);
+    statusText.textContent = madGetString("CV_STATUS_OPENING", loadingUrl);
     madPlaySound("navStart");
     statusZone.style.backgroundImage = "";
     statusZoneText.locId = "CV_ZONE_INTERNET"
@@ -1209,6 +1211,7 @@ function loadStart() {
 
 function loadFinish() {
     loading = false;
+    loadingUrl = null;
     delete throbber.dataset.busy;
     delete fullscreenThrobber.dataset.busy;
     statusText.textContent = madGetString("CV_STATUS_DONE");
