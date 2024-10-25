@@ -108,6 +108,7 @@
 * Miscellaneous improvements
     * Clock configurations are now per-window
     * Dropdown lists will be displayed reversed if it's too close to the bottom of the screen
+    * Default window placement no longer assumes 1920x1080 or similar resolution; they will be placed relative to the screen size
 * Security improvements
     * Prevent displaying arbitrary HTML (XSS) through imported configuration files
     * Show a warning about loading an unverified page after importing a configuration file
