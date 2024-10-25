@@ -29,11 +29,7 @@ const pattern = [
 const userPatterns = JSON.parse(localStorage.madesktopUserPatterns);
 for (const pattern in userPatterns) {
     const option = document.createElement("option");
-    if (pattern.startsWith("locid:")) {
-        option.innerHTML = `<span><mad-string data-locid="${escapeHTML(pattern.substring(6))}"></mad-string></span>`;
-    } else {
-        option.innerHTML = `<span>${escapeHTML(pattern)}</span>`;
-    }
+    option.innerHTML = `<span>${madProcessString(pattern)}</span>`;
     option.value = userPatterns[pattern];
     patternChooser.appendChild(option);
 }
@@ -174,12 +170,32 @@ madDeskMover.beforeClose = async function () {
     if (!window.callback) {
         return;
     }
-    if (!changed || await madConfirm(madGetString("MADCONF_PATTERN_UNSAVED", escapeHTML(patternChooser.options[patternChooser.selectedIndex].textContent)))) {
-        if (changed) {
-            changeBtn.dispatchEvent(new Event("click"));
+    if (changed) {
+        const res = await madConfirm(
+            madGetString("MADCONF_PATTERN_UNSAVED", escapeHTML(patternChooser.options[patternChooser.selectedIndex].textContent)),
+            null,
+            {
+                icon: "question",
+                title: "locid:MADCONF_PATTERN_UNSAVED_TITLE",
+                btn1: "locid:UI_YES",
+                btn2: "locid:UI_NO",
+                btn3: "locid:UI_CANCEL",
+                defaultBtn: 1,
+                cancelBtn: 3
+            }
+        );
+
+        if (res === null) {
+            return false;
+        } else if (res === false) {
+            callback();
+        } else {
+            if (changed) {
+                changeBtn.dispatchEvent(new Event("click"));
+            }
+            callback(base64Output.textContent);
         }
-        callback(base64Output.textContent);
     } else {
-        callback();
+        callback(base64Output.textContent);
     }
 }

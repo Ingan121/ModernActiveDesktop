@@ -143,6 +143,10 @@
     }
 
     function processString(str) {
+        // locid:LOC_ID -> getString("LOC_ID")
+        if (str.startsWith("locid:")) {
+            return getString(escapeHTML(str.slice(6)));
+        }
         // &Apply -> <u>A</u>pply
         // \&Apply -> &Apply
         str = str.replace(/&([^&])/g, "<u>$1</u>").replace(/\\&/g, "&");

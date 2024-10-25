@@ -80,9 +80,11 @@ items[0].addEventListener("click", function () {
 
 items[1].addEventListener("click", async function () {
     // Show tutorial of how to open the properties menu
-    const flashElement = parent.flashElement, waitForAnim = parent.waitForAnim, asyncTimeout = parent.asyncTimeout;
     const menuBtn = madDeskMover.config.style === "wnd" ? madDeskMover.windowIcon : madDeskMover.windowMenuBtn;
     await flashElement(menuBtn);
+    madDeskMover.contextMenuBg.style.pointerEvents = "none";
+    madDeskMover.confMenuBg.style.pointerEvents = "none";
+    top.ignoreFocusLoss = true;
     madDeskMover.openContextMenu();
     await waitForAnim(madDeskMover.contextMenuBg);
     await asyncTimeout(300);
@@ -94,6 +96,9 @@ items[1].addEventListener("click", async function () {
     await asyncTimeout(100);
     madOpenConfig();
     madDeskMover.closeContextMenu();
+    madDeskMover.confMenuBg.style.pointerEvents = "auto";
+    madDeskMover.contextMenuBg.style.pointerEvents = "auto";
+    top.ignoreFocusLoss = false;
 
     checkmarks[1].style.display = "block";
     localStorage.madesktopCheckedConfigs = true;

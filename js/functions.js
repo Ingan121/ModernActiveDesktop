@@ -250,12 +250,16 @@
                 // Felt the need to support this after seeing steamapps/ getting caught in split('apps/')
                 pathnameWithoutMadBase = appsSplit[appsSplit.length - 1];
             }
+            // Counts from /apps; e.g. /apps/channelviewer/index.html -> 3
             const slashCnt = pathnameWithoutMadBase.split("/").length + 1
             if (slashCnt > 6 && appsSplit.length <= 2) {
                 // Currently no that HTML files present that deeply nested
                 // Assume the caught /apps/ is not the MAD apps folder
-                // So assume its directly in a subfolder of the web root
-                return location.href.split('/').slice(0, -2).join('/') + '/';
+                if (location.href.includes("/docs/")) {
+                    return location.href.split('/').slice(0, -2).join('/') + '/';
+                } else {
+                    return location.href.split('/').slice(0, -1).join('/') + '/';
+                }
             }
             return location.href.split('/').slice(0, -slashCnt).join('/') + '/';
         } else if (location.href.includes("/docs/")) {

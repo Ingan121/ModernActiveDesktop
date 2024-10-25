@@ -14,11 +14,13 @@
     const msgboxBg = document.getElementById("msgboxBg");
     const msgbox = document.getElementById("msgbox");
     const msgboxTitlebar = msgbox.getElementsByClassName("title-bar")[0];
+    const msgboxTitlebarText = msgboxTitlebar.getElementsByClassName("title-bar-text")[0];
     const msgboxMessage = document.getElementById("msgbox-msg");
     const msgboxIcon = document.getElementById("msgbox-icon");
     const msgboxCloseBtn = document.getElementById("msgbox-close");
     const msgboxBtn1 = document.getElementById("msgbox-btn1");
     const msgboxBtn2 = document.getElementById("msgbox-btn2");
+    const msgboxBtn3 = document.getElementById("msgbox-btn3");
     const osk = document.getElementById("osk");
     const oskTitlebar = osk.getElementsByClassName("title-bar")[0];
     const oskWindow = document.getElementById("oskWindow");
@@ -824,28 +826,34 @@
     // #endregion
 
     // #region Dialog functions
-    async function madAlert(msg, callback, icon = "info") {
+    // TODO: Refactor these - its pretty messy, especially regarding the event listeners
+    // Also its modal for everything, which is not good
+    // Finish buildstuff/MadDialog.js and use that instead
+    // Probably in 3.5
+    async function madAlert(msg, callback, icon = "info", options = {}) {
         return new Promise(resolve => {
             // Close the previous dialog if it's open
             if (msgbox.style.display === "block") {
-                if (msgboxBtn2.style.display === "block") {
-                    msgboxBtn2.click();
-                } else {
-                    msgboxBtn1.click();
-                }
+                msgboxCloseBtn.click();
             }
 
             playSound(icon);
 
-            if (msg.startsWith("locid:")) {
-                msg = `<mad-string data-locid="${msg.slice(6)}"></mad-string>`;
-            }
-            msgboxMessage.innerHTML = msg;
+            msgboxMessage.innerHTML = madProcessString(msg);
             msgboxIcon.style.display = "block";
             msgboxIcon.src = `images/${icon}.png`;
             msgboxBtn2.style.display = "none";
+            msgboxBtn3.style.display = "none";
             msgboxInput.style.display = "none";
             osk.style.display = "none";
+
+            msgboxTitlebarText.innerHTML = madProcessString(options.title || "%n");
+
+            if (options.btn1) {
+                msgboxBtn1.innerHTML = madProcessString(options.btn1);
+            } else {
+                msgboxBtn1.innerHTML = madGetString("UI_OK");
+            }
 
             document.addEventListener('keypress', keypress);
             document.addEventListener('keyup', keyup);
@@ -857,6 +865,12 @@
             function keypress(event) {
                 if (event.key === "Enter") {
                     close();
+                }
+                const accessKeys = msgbox.querySelectorAll("u");
+                for (const key of accessKeys) {
+                    if (event.key === key.textContent.toLowerCase()) {
+                        key.parentElement.click();
+                    }
                 }
             }
             function keyup(event) {
@@ -877,66 +891,119 @@
         });
     }
 
-    async function madConfirm(msg, callback, icon = "question") {
+    async function madConfirm(msg, callback, options = {}) {
         return new Promise(resolve => {
             // Close the previous dialog if it's open
             if (msgboxBg.style.display === "block") {
-                if (msgboxBtn2.style.display === "block") {
-                    msgboxBtn2.click();
-                } else {
-                    msgboxBtn1.click();
-                }
+                msgboxCloseBtn.click();
             }
 
+            const icon = options.icon || "question";
             playSound(icon);
 
-            if (msg.startsWith("locid:")) {
-                msg = `<mad-string data-locid="${msg.slice(6)}"></mad-string>`;
-            }
-            msgboxMessage.innerHTML = msg;
+            msgboxMessage.innerHTML = madProcessString(msg);
             msgboxIcon.style.display = "block";
             msgboxIcon.src = `images/${icon}.png`;
             msgboxBtn2.style.display = "block";
             msgboxInput.style.display = "none";
             osk.style.display = "none";
 
+            msgboxTitlebarText.innerHTML = madProcessString(options.title || "%n");
+
+            if (options.btn1) {
+                msgboxBtn1.innerHTML = madProcessString(options.btn1);
+            } else {
+                msgboxBtn1.innerHTML = madGetString("UI_OK");
+            }
+            if (options.btn2) {
+                msgboxBtn2.innerHTML = madProcessString(options.btn2);
+            } else {
+                msgboxBtn2.innerHTML = madGetString("UI_CANCEL");
+            }
+            if (options.btn3) {
+                msgboxBtn3.style.display = "block";
+                msgboxBtn3.innerHTML = madProcessString(options.btn3);
+            } else {
+                msgboxBtn3.style.display = "none";
+            }
+
+            let cancelBtn = btn2;
+            switch (options.cancelBtn) {
+                case 1:
+                    cancelBtn = btn1;
+                    break;
+                case 2:
+                    cancelBtn = btn2;
+                    break;
+                case 3:
+                    cancelBtn = btn3;
+                    break;
+                default:
+                    if (options.btn3) {
+                        cancelBtn = btn3;
+                    }
+            }
+
+            let defaultBtn = btn1;
+            switch (options.defaultBtn) {
+                case 2:
+                    defaultBtn = btn2;
+                    break;
+                case 3:
+                    defaultBtn = btn3;
+                    break;
+            }
+
             document.addEventListener('keypress', keypress);
             document.addEventListener('keyup', keyup);
-            msgboxBtn1.addEventListener('click', ok);
-            msgboxBtn2.addEventListener('click', close);
-            msgboxCloseBtn.addEventListener('click', close);
+            msgboxBtn1.addEventListener('click', btn1);
+            msgboxBtn2.addEventListener('click', btn2);
+            msgboxBtn3.addEventListener('click', btn3);
+            msgboxCloseBtn.addEventListener('click', cancelBtn);
 
             showDialog();
 
             function keypress(event) {
                 // Handle enter in keypress to prevent this from being triggered along with the context menu enter key
                 if (event.key === "Enter") {
-                    ok();
+                    defaultBtn();
+                }
+                const accessKeys = msgbox.querySelectorAll("u");
+                for (const key of accessKeys) {
+                    if (event.key === key.textContent.toLowerCase()) {
+                        key.parentElement.click();
+                    }
                 }
             }
             function keyup(event) {
                 // Aaand escape cannot be handled in keypress so it's here
                 if (event.key === "Escape") {
-                    close();
+                    cancelBtn();
                 }
             }
-            function ok() {
+            function btn1() {
                 removeEvents();
                 if (callback) callback(true);
                 resolve(true);
             }
-            function close() {
+            function btn2() {
                 removeEvents();
                 if (callback) callback(false);
                 resolve(false);
+            }
+            function btn3() {
+                removeEvents();
+                if (callback) callback(null);
+                resolve(null);
             }
             function removeEvents() {
                 hideDialog();
                 document.removeEventListener('keypress', keypress);
                 document.removeEventListener('keyup', keyup);
-                msgboxBtn1.removeEventListener('click', ok);
-                msgboxBtn2.removeEventListener('click', close);
-                msgboxCloseBtn.removeEventListener('click', close);
+                msgboxBtn1.removeEventListener('click', btn1);
+                msgboxBtn2.removeEventListener('click', btn2);
+                msgboxBtn3.removeEventListener('click', btn3);
+                msgboxCloseBtn.removeEventListener('click', cancelBtn);
                 deskMovers[activeWindow].windowTitlebar.classList.remove("inactive");
             }
         });
@@ -955,6 +1022,10 @@
             msgboxMessage.innerHTML = msg;
             msgboxIcon.style.display = "none";
             msgboxBtn2.style.display = "block";
+            msgboxBtn3.style.display = "none";
+            msgboxBtn1.innerHTML = madGetString("UI_OK");
+            msgboxBtn2.innerHTML = madGetString("UI_CANCEL");
+            msgboxTitlebarText.textContent = "ModernActiveDesktop";
             msgboxInput.style.display = "block";
             msgboxInput.placeholder = hint;
             msgboxInput.value = text;
@@ -1277,7 +1348,11 @@
     // @unexported
     async function handleStorageFull() {
         // Ask the user to fix the issue by deleting some images
-        if (!showedStorageFullAlert && await madConfirm("locid:MAD_MSG_LOCALSTORAGE_FULL", null, "error")) {
+        if (!showedStorageFullAlert && await madConfirm("locid:MAD_MSG_LOCALSTORAGE_FULL", null, {
+            icon: "error",
+            btn1: "locid:UI_YES",
+            btn2: "locid:UI_NO"
+        })) {
             // Temp windows still work to some extent even if localStorage is completely full
             openWindow("apps/jspaint/index.html", true);
             openConfig("background");
@@ -1377,7 +1452,11 @@
                 if (res) {
                     location.replace("confmgr.html?action=resethard");
                 }
-            }, "error");
+            }, {
+                icon: "error",
+                btn1: "locid:UI_YES",
+                btn2: "locid:UI_NO"
+            });
     }
     // Clear hash
     history.pushState("", document.title, window.location.pathname + window.location.search);

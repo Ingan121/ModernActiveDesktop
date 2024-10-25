@@ -468,8 +468,14 @@
         async closeWindow(isResetting) {
             if (this.beforeClose) {
                 try {
-                    await this.beforeClose(localStorage, window);
+                    const res = await this.beforeClose(localStorage, window);
+                    if (res === false) {
+                        // Cancel close
+                        return;
+                    }
                 } catch (error) {
+                    // Log error and continue closing
+                    // As window not closing will annoy the user
                     console.error(error);
                 }
             }

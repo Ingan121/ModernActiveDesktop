@@ -50,6 +50,8 @@
     * Hook fetch / XHR with fetchProxy to get AJAX sites working when force-loaded
     * Also deal with the origin header - Google, YT, etc. checks for it and returns 403. This also affects Wallpaper Engine or other environments with the same origin policy disabled.
 * WindowMetrics (`extra-border-size`) support for Active Desktop style DeskMovers
+* Refactor the dialog system
+    * Support being modal only to the parent window
 * More themes to add
     * Windows 3.x
         * I think it would be pretty easy, just give it flat title bars and buttons with border-radius
@@ -79,31 +81,48 @@
 
 ## Changelog
 
-## 3.3
-* Added support for desktop patterns
-    * Available in the background settings page
-<br><img src="docs/images/patterns.png" title="Patterns screenshot">
-* Reduced the volume of the welcome music
-* Fixed various bugs and improved the codebase
-    * Clock's second hand being invisible when it's 0, 15, 30, or 45 seconds
-    * Multiple instances of Visualizers being allowed under some conditions
-    * Background image set in the Wallpaper Engine properties panel not being applied immediately
-* Updated Electron
+## 3.4
+* **Wallpaper Engine 2.4 and below, and Chromium 123 and below are no longer officially supported since this release**
+    * While it may still work, not all features are guaranteed to work properly in these environments
+    * Please update Wallpaper Engine to the latest version to get the best experience
+    * Windows 7/8 users: why not update to Windows 10 LTSC and apply a Windows Classic / Aero / XP theme? Visit [WinClassic](https://winclassic.boards.net/) to learn more!
+* Added new themes: Windows Basic and Windows Classic (16 colors)
+* Added a preset system for Wallpaper Engine
+    * Click the 'Preset edit mode' in the Wallpaper Engine properties panel to learn more
+* Improved the configuration saving mechanism
+    * Configurations that can be large are now saved in bigger storage (IndexedDB)
+    * Can apply a large background image without a problem
+    * Exported configuration data is now compressed if it's large
+    * No longer loses information about the Wallpaper Engine properties panel when resetting configurations
+    * Handles cases when the storage is full
+* Visualizer improvements
+    * Several options are now accessible in the menu bar
+    * Added an option to change the size of the album art
+    * Added an option to change how the window title is displayed
+    * Support displaying the visualization as a background
+    * Added an option to ignore the wallpaper margins in the fullscreen or background mode
+    * Fixed the difference scale being affected by the window height
+* Localization improvements
+    * Now supports the language code with a region code (e.g., `en-US`)
+    * Added a guide document for translating ModernActiveDesktop
+* Miscellaneous improvements
+    * Clock configurations are now per-window
+    * Dropdown lists will be displayed reversed if it's too close to the bottom of the screen
+* Security improvements
+    * Prevent displaying arbitrary HTML (XSS) through imported configuration files
+    * Show a warning about loading an unverified page after importing a configuration file
+* Fixed several bugs
+    * The 'Add custom colors' button in the color picker showing in a weird position with the Aero theme
+    * Custom pattern saving not working properly
+    * On-screen keyboard window having weird frame height in XP and Aero themes
+    * Background image set in the Wallpaper Engine properties panel being applied on every startup
+    * Some windows behaving weirdly after being reset
+* Refactored the codebase
+    * Minimize the usage of global variables, and export only necessary functions
+    * Split the main script into multiple files for better maintainability
+    * Renamed some scripts to a shorter one
 
-Changes for Wallpaper Engine:
-* Fixed the broken keyboard input in Wallpaper Engine 2.5 and newer
-    * Tries to use the system plugin for directly receiving keyboard inputs (even in lower WPE versions)
-    * If the system plugin is unavailable, an on-screen keyboard will be shown as an alternative
-    * An input box in the Wallpaper Engine properties panel can also be used for typing and pasting things without the system plugin. Note that this doesn't support backspaces, ctrl key shortcuts, and arrow keys
-* Added a token verification to the system plugin to stop random wallpapers from accessing your system without your consent
-
-Changes for browsers:
-* Moved the official page to its own subdomain
-* Dialog icons are now preloaded to prevent the slow icon change
-* Added support for display scaling on Firefox 126 and newer
-* Fixed the display scaling feature broken on recent Chromium update
-
-(2024/9/1)
+(2024/11/1)
 
 ### Previous changelog
 Please see [here](docs/Updated.md) for the previous changes

@@ -111,23 +111,15 @@ function loadPatterns() {
     }
     userPatterns = JSON.parse(localStorage.madesktopUserPatterns);
     const sortedPatternNames = Object.keys(userPatterns).sort((a, b) => {
-        if (a.startsWith("locid:")) {
-            a = madGetString(a.substring(6));
-        }
-        if (b.startsWith("locid:")) {
-            b = madGetString(b.substring(6));
-        }
+        a = madProcessString(a);
+        b = madProcessString(b);
         return a.localeCompare(b);
     });
     for (const pattern of sortedPatternNames) {
         const option = document.createElement("li");
         option.dataset.pattern = userPatterns[pattern];
         option.dataset.index = Object.keys(userPatterns).indexOf(pattern);
-        if (pattern.startsWith("locid:")) {
-            option.innerHTML = `<span><mad-string data-locid="${escapeHTML(pattern.substring(6))}"></mad-string></span>`;
-        } else {
-            option.innerHTML = `<span>${escapeHTML(pattern)}</span>`;
-        }
+        option.innerHTML = `<span>${madProcessString(pattern)}</span>`;
         option.addEventListener("click", function () {
             for (const child of patternChooser.children) {
                 child.classList.remove("selected");

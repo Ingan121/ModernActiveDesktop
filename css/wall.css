@@ -628,6 +628,10 @@ body::after { /* preload images */
     justify-content: center;
 }
 
+#msgbox-btn3 {
+    display: none;
+}
+
 #osk {
     --extra-border-size: 0px;
     width: calc(370px + var(--extra-border-size) * 2);

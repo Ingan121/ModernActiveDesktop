@@ -314,9 +314,29 @@ langSelector.addEventListener('change', async function () {
 });
 
 resetBtn.addEventListener('click', async function () {
-    const res = await madConfirm(madGetString("MAD_CONFIRM_RESET"));
-    if (res) {
+    const res = await madConfirm(madGetString("MAD_CONFIRM_RESET"), null, {
+        icon: 'warning',
+        title: 'locid:MAD_CONFIRM_RESET_TITLE',
+        btn1: 'locid:UI_YES',
+        btn2: 'locid:UI_NO',
+        btn3: 'locid:MADCONF_CONFIG_RESET_HARD',
+        defaultBtn: 1,
+        cancelBtn: 2
+    });
+    if (res === true) {
         top.location.replace("../../confmgr.html?action=reset");
+    } else if (res === null) {
+        const msg = madRunningMode === 1 ? "MAD_CONFIRM_RESET_HARD_WPE" : "MAD_CONFIRM_RESET_HARD";
+        const res = await madConfirm(madGetString(msg), null, {
+            icon: 'warning',
+            title: 'locid:MAD_CONFIRM_RESET_HARD_TITLE',
+            btn1: 'locid:UI_YES',
+            btn2: 'locid:UI_NO',
+            defaultBtn: 1
+        });
+        if (res) {
+            top.location.replace("../../confmgr.html?action=resethard");
+        }
     }
 });
 

@@ -19,7 +19,7 @@ document.getElementById('url').textContent = urlToLoad;
 document.getElementById('loadBtn').addEventListener('click', async () => {
     if (document.body.dataset.compact) {
         // Compact mode doesn't exist in bghtml
-        if (await madConfirm(madGetString("UNV_MSG") + "<br><br>URL: " + escapeHTML(urlToLoad), null, 'warning')) {
+        if (await madConfirm(madGetString("UNV_MSG") + "<br><br>URL: " + escapeHTML(urlToLoad), null, { icon: 'warning' })) {
             delete madDeskMover.config.unverified;
             madLocReplace(madDeskMover.config.src);
         } else {

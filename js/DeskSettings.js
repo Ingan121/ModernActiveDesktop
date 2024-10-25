@@ -537,6 +537,11 @@
                     }
                     delete localStorage.madesktopBgWeImg;
                 }
+                if (window.confDeskMover) {
+                    if (window.confDeskMover.config.src === "apps/madconf/background.html") {
+                        window.confDeskMover.locReplace("apps/madconf/background.html");
+                    }
+                }
             }
             if (properties.bgvideo) {
                 if (properties.bgvideo.value) {
@@ -556,6 +561,11 @@
                     }
                     bgVideoView.src = "";
                     delete localStorage.madesktopBgVideo;
+                }
+                if (window.confDeskMover) {
+                    if (window.confDeskMover.config.src === "apps/madconf/background.html") {
+                        window.confDeskMover.locReplace("apps/madconf/background.html");
+                    }
                 }
             }
             if (properties.additem && !isStartup) {
