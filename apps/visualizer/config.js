@@ -312,6 +312,10 @@ window.addEventListener('load', () => {
         topColorPickerColor.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--button-text');
     }
     madResizeTo(null, document.documentElement.offsetHeight);
+    if (document.documentElement.offsetHeight > top.vHeight) {
+        document.body.dataset.smallScreen = true;
+        madResizeTo(null, document.documentElement.offsetHeight);
+    }
 });
 
 madSetIcon(false);

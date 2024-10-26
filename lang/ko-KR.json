@@ -83,6 +83,7 @@
     "MAD_DEBUG_RUNMODE_SIMULATED": "%1s에서 실행 중, %2s 동작 시뮬레이션 중",
     "MAD_DEBUG_BROWSER": "브라우저",
     "MAD_DEBUG_KBD_SUPPORT": "키보드 지원 수준",
+    "MAD_DEBUG_RESOLUTION": "해상도: %1sx%2s, MAD 배율: %3sx (%4sx%5s), 브라우저 배율: %6sx",
     "MAD_DEBUG_DEBUG_MODE": "디버그 모드",
     "MAD_DEBUG_INIT_NOT_COMPLETE": "시작이 완료되지 않음",
     "MAD_DEBUG_RESET_CONFIG": "설정값 초기화",

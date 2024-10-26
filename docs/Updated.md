@@ -28,6 +28,7 @@
     * Clock configurations are now per-window
     * Dropdown lists will be displayed reversed if it's too close to the bottom of the screen
     * Default window placement no longer assumes 1920x1080 or similar resolution; they will be placed relative to the screen size
+    * Also new windows will be prevented from being placed off-screen. After these changes, ModernActiveDesktop should now run decently on any resolution higher than 640x480
 * Security improvements
     * Prevent displaying arbitrary HTML (XSS) through imported configuration files
     * Show a warning about loading an unverified page after importing a configuration file
@@ -40,7 +41,8 @@
 * Refactored the codebase
     * Minimize the usage of global variables, and export only necessary functions
     * Split the main script into multiple files for better maintainability
-    * Renamed some scripts to a shorter one
+    * Renamed some scripts to a shorter name
+* Updated Electron
 
 (2024/11/1)
 

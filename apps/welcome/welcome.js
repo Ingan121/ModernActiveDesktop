@@ -84,7 +84,7 @@ items[1].addEventListener("click", async function () {
     await flashElement(menuBtn);
     madDeskMover.contextMenuBg.style.pointerEvents = "none";
     madDeskMover.confMenuBg.style.pointerEvents = "none";
-    top.ignoreFocusLoss = true;
+    madDeskMover.ignoreFocusLoss = true;
     madDeskMover.openContextMenu();
     await waitForAnim(madDeskMover.contextMenuBg);
     await asyncTimeout(300);
@@ -98,7 +98,7 @@ items[1].addEventListener("click", async function () {
     madDeskMover.closeContextMenu();
     madDeskMover.confMenuBg.style.pointerEvents = "auto";
     madDeskMover.contextMenuBg.style.pointerEvents = "auto";
-    top.ignoreFocusLoss = false;
+    madDeskMover.ignoreFocusLoss = false;
 
     checkmarks[1].style.display = "block";
     localStorage.madesktopCheckedConfigs = true;

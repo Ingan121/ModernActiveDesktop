@@ -93,6 +93,7 @@
     "MAD_DEBUG_RUNMODE_SIMULATED": "Running in %1s, simulating %2s behavior",
     "MAD_DEBUG_BROWSER": "browser",
     "MAD_DEBUG_KBD_SUPPORT": "Keyboard support level",
+    "MAD_DEBUG_RESOLUTION": "Resolution: %1sx%2s, MAD scale: %3sx (%4sx%5s), browser scale: %6sx",
     "MAD_DEBUG_DEBUG_MODE": "Debug mode",
     "MAD_DEBUG_INIT_NOT_COMPLETE": "Initialization not complete",
     "MAD_DEBUG_RESET_CONFIG": "Reset config",

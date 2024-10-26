@@ -18,7 +18,7 @@ function openApp(app) {
     switch(app) {
         case "channelbar":
             madResizeTo(84, 471);
-            madMoveTo(getRelativeWindowX(90.4) - rightMargin, getRelativeWindowY(18.52) + topMargin);
+            madMoveTo(getRelativeWindowX(94.78) - 84 - rightMargin, getRelativeWindowY(18.52) + topMargin);
             madChangeWndStyle("ad");
             madLocReplace("ChannelBar.html");
             break;

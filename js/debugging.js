@@ -15,6 +15,7 @@
     const locationLabel = document.getElementById("location");
     const runningModeLabel = document.getElementById("runmode");
     const kbdSupportLabel = document.getElementById("kbdsupport");
+    const resolutionLabel = document.getElementById("resolution");
     const debugMenu = document.getElementById("debug");
     const jsRunBtn = document.getElementById("jsRunBtn");
     const debugLogBtn = document.getElementById("debugLogBtn");
@@ -104,7 +105,13 @@
             }
             runningModeLabel.textContent = madGetString("MAD_DEBUG_RUNMODE_SIMULATED", origRunningModeStr, runningModeStr);
         }
+        resolutionLabel.textContent = madGetString("MAD_DEBUG_RESOLUTION", window.innerWidth, window.innerHeight, window.scaleFactor, window.vWidth, window.vHeight, window.devicePixelRatio);
     }
+
+    window.addEventListener('resize', () => {
+        // vWidth and vHeight are updated later than this code
+        resolutionLabel.textContent = madGetString("MAD_DEBUG_RESOLUTION", window.innerWidth, window.innerHeight, window.scaleFactor, window.innerWidth / window.scaleFactor, window.innerHeight / window.scaleFactor, window.devicePixelRatio);
+    });
 
     function toggleDebugLog() {
         debugLog = !debugLog;

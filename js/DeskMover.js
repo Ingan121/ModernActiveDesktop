@@ -407,8 +407,8 @@
                     }
 
                     let url = "placeholder.html";
-                    let defaultLeft = getRelativeWindowX(68.75) - (parseInt(localStorage.madesktopChanViewRightMargin) || 0) + 'px';
-                    let defaultTop = getRelativeWindowY(18.52) + 'px';
+                    let defaultLeft = getRelativeWindowX(84.38) - 300 - (parseInt(localStorage.madesktopChanViewRightMargin) || 0) + 'px';
+                    let defaultTop = getRelativeWindowY(18.52) + (parseInt(localStorage.madesktopChanViewTopMargin) || 0) + 'px';
                     if ((typeof src === "string" || src instanceof String) && src != "placeholder.html") {
                         if (src.startsWith("apps/madconf/")) {
                             this.windowElement.width = width || '398px';
@@ -426,7 +426,7 @@
                             }
                         }
                         defaultLeft = left || getRelativeWindowX(13.02) + (parseInt(localStorage.madesktopChanViewLeftMargin) || 75) + 'px';
-                        defaultTop = top || getRelativeWindowY(13.38) + 'px';
+                        defaultTop = top || getRelativeWindowY(13.38) + (parseInt(localStorage.madesktopChanViewTopMargin) || 0) + 'px';
                         url = src.includes(".html") ? src : `docs/index.html?src=${src}`;
                         if (aot) {
                             this.#toggleAoT();
@@ -446,7 +446,7 @@
                         this.windowContainer.style.top = (window.vHeight - this.windowContainer.offsetHeight) / 2 + 'px';
                     }
 
-                    this.#keepInside();
+                    this.#keepInside(true);
                     this.#saveConfig();
 
                     this.windowElement.src = url;
@@ -625,7 +625,7 @@
         }
 
         closeContextMenu(event) {
-            if (event?.type === "focusout" && window.ignoreFocusLoss) {
+            if (event?.type === "focusout" && (window.ignoreFocusLoss || this.ignoreFocusLoss)) {
                 // Debug feature; set window.ignoreMenuFocusLoss to true to prevent closing the menu on focusout
                 return;
             }
@@ -944,7 +944,7 @@
             this.dropdown.style.height = this.dropdownBg.style.height;
 
             if (this.dropdownBg.getBoundingClientRect().bottom > window.vHeight - parseInt(localStorage.madesktopChanViewBottomMargin || "48px")) {
-                this.dropdownBg.style.top = 'auto'; //clientRect.top - height + 'px';
+                this.dropdownBg.style.top = 'auto';
                 this.dropdownBg.style.bottom = bottom + 'px';
                 this.dropdown.dataset.reversed = true;
             } else {
@@ -966,7 +966,7 @@
         }
 
         closeDropdown(event) {
-            if (event?.type === "focusout" && window.ignoreFocusLoss) {
+            if (event?.type === "focusout" && (window.ignoreFocusLoss || this.ignoreFocusLoss)) {
                 // Debug feature; set window.ignoreFocusLoss to true to prevent closing the dropdown on focusout
                 return;
             }
@@ -1047,11 +1047,11 @@
             this.config.src = url;
         }
 
-        moveTo(x, y) {
+        moveTo(x, y, dontKeepInside) {
             [x, y] = cascadeWindow(x, y);
             this.windowContainer.style.left = x;
             this.windowContainer.style.top = y;
-            this.#keepInside();
+            this.#keepInside(!dontKeepInside);
             this.#saveConfig();
         }
 
@@ -1524,12 +1524,12 @@
                 }
                 return;
             }
-            madConfirm(madGetString("MAD_CONFIRM_WIN_RESET"), res => {
+            madConfirm(madGetString("MAD_CONFIRM_WIN_RESET"), async res => {
                 if (res) {
                     if (this.numStr) {
                         // Keep the window number when resetting DeskMovers
                         // Not much reason to keep it tho
-                        this.closeWindow(true);
+                        await this.closeWindow(true);
                         deskMovers[this.numStr || 0] = createNewDeskItem(this.numStr, undefined, false, undefined, true);
                         activateWindow(this.numStr || 0);
                     } else {
@@ -1666,18 +1666,44 @@
         }
 
         // Keep the deskMover inside the visible area
-        #keepInside() {
-            if (this.windowContainer.offsetLeft < -this.windowContainer.offsetWidth + 60) {
-                this.windowContainer.style.left = -this.windowTitlebar.offsetWidth + 60 + 'px';
-            }
-            if (this.windowContainer.offsetTop < 0) {
-                this.windowContainer.style.top = 0;
-            }
-            if (this.windowContainer.offsetLeft + 60 > window.vWidth) {
-                this.windowContainer.style.left = window.vWidth - 60 + 'px';
-            }
-            if (this.windowContainer.offsetTop + 50 > window.vHeight) {
-                this.windowContainer.style.top = window.vHeight - 50 + 'px';
+        #keepInside(hard) {
+            if (hard) {
+                // Ensure the window is fully inside the visible area
+                if (this.windowContainer.offsetLeft + this.windowContainer.offsetWidth > window.vWidth) {
+                    this.windowContainer.style.left = window.vWidth - this.windowContainer.offsetWidth + 'px';
+                }
+                if (this.windowContainer.offsetTop + this.windowContainer.offsetHeight > window.vHeight) {
+                    this.windowContainer.style.top = window.vHeight - this.windowContainer.offsetHeight + 'px';
+                }
+                if (this.windowContainer.offsetLeft < 0) {
+                    this.windowContainer.style.left = 0;
+                }
+                if (this.windowContainer.offsetTop < 0) {
+                    this.windowContainer.style.top = 0;
+                }
+                // Resize the window if still outside the visible area (if resizable)
+                if (!this.config.unresizable) {
+                    if (this.windowContainer.offsetLeft + this.windowContainer.offsetWidth > window.vWidth) {
+                        this.resizeTo(window.vWidth);
+                    }
+                    if (this.windowContainer.offsetTop + this.windowContainer.offsetHeight > window.vHeight) {
+                        this.resizeTo(null, window.vHeight);
+                    }
+                }
+            } else {
+                // Allow the window to be partially outside the visible area, as long as the titlebar is partially visible
+                if (this.windowContainer.offsetLeft < -this.windowContainer.offsetWidth + 60) {
+                    this.windowContainer.style.left = -this.windowTitlebar.offsetWidth + 60 + 'px';
+                }
+                if (this.windowContainer.offsetTop < 0) {
+                    this.windowContainer.style.top = 0;
+                }
+                if (this.windowContainer.offsetLeft + 60 > window.vWidth) {
+                    this.windowContainer.style.left = window.vWidth - 60 + 'px';
+                }
+                if (this.windowContainer.offsetTop + 50 > window.vHeight) {
+                    this.windowContainer.style.top = window.vHeight - 50 + 'px';
+                }
             }
             this.#updatePrevOffset();
         }

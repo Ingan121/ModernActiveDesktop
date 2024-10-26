@@ -133,3 +133,8 @@ fieldset {
     color: var(--button-shadow);
     text-shadow: 1px 1px 0 var(--button-hilight);
 }
+
+/* Hide options available in the menu bar when the screen is small (for 640x480 support) */
+body[data-small-screen] #albumArtFieldset {
+    display: none;
+}
