@@ -14,7 +14,7 @@ class MadVersion {
         this.major = parseInt(verSplit[0]);
         this.minor = parseInt(verSplit[1]);
         this.patch = parseInt(verSplit[2]);
-        this.extra = split[1] || "";
+        this.extra = split.length === 1 ? "" : split.slice(1).join(" ");
     }
 
     toString(level = 1) {

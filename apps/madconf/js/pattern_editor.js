@@ -29,7 +29,11 @@ const pattern = [
 const userPatterns = JSON.parse(localStorage.madesktopUserPatterns);
 for (const pattern in userPatterns) {
     const option = document.createElement("option");
-    option.innerHTML = `<span>${madProcessString(pattern)}</span>`;
+    if (pattern.startsWith("locid:")) {
+        option.innerHTML = `<span><mad-string data-locid="${escapeHTML(pattern.substring(6))}"></mad-string></span>`;
+    } else {
+        option.innerHTML = `<span>${escapeHTML(pattern)}</span>`;
+    }
     option.value = userPatterns[pattern];
     patternChooser.appendChild(option);
 }

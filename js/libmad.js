@@ -118,14 +118,14 @@
                     // Use native select when DeskMover.openDropdown is not available
                     this.altSelect = document.createElement("select");
                     this.altSelect.style.position = "absolute";
-                    this.altSelect.style.top = this.offsetTop + "px";
-                    this.altSelect.style.left = this.offsetLeft + "px";
-                    this.altSelect.style.width = this.offsetWidth + "px";
-                    this.altSelect.style.height = this.offsetHeight + "px";
+                    this.altSelect.style.top = 0
+                    this.altSelect.style.left = 0;
+                    this.altSelect.style.width = "100%";
+                    this.altSelect.style.height = "100%";
                     this.altSelect.style.zIndex = 1000;
                     this.altSelect.style.display = "block";
                     this.altSelect.style.opacity = 0;
-                    document.body.appendChild(this.altSelect);
+                    this.appendChild(this.altSelect);
                     for (const option of this.options) {
                         const newOption = document.createElement("option");
                         newOption.textContent = option.textContent;

@@ -113,7 +113,7 @@ fileMenuItems[3].addEventListener("click", function () { // Close button
 
 editMenuItems[0].addEventListener("click", function () { // Cut button
     if (isCrossOrigin) {
-        madAlert(madGetString("CV_MSG_NO_ADV"), null, "warning");
+        madAlert(madGetString("CV_MSG_NO_ADV"), null, "warning", { title: "%c" });
     } else {
         iframe.contentWindow.document.execCommand("cut");
     }
@@ -121,7 +121,7 @@ editMenuItems[0].addEventListener("click", function () { // Cut button
 
 editMenuItems[1].addEventListener("click", function () { // Copy button
     if (isCrossOrigin) {
-        madAlert(madGetString("CV_MSG_NO_ADV"), null, "warning");
+        madAlert(madGetString("CV_MSG_NO_ADV"), null, "warning", { title: "%c" });
     } else {
         iframe.contentWindow.document.execCommand("copy");
     }
@@ -129,7 +129,7 @@ editMenuItems[1].addEventListener("click", function () { // Copy button
 
 editMenuItems[2].addEventListener("click", function () { // Select all button
     if (isCrossOrigin) {
-        madAlert(madGetString("CV_MSG_NO_ADV"), null, "warning");
+        madAlert(madGetString("CV_MSG_NO_ADV"), null, "warning", { title: "%c" });
     } else {
         iframe.contentWindow.document.execCommand("selectAll");
     }
@@ -161,7 +161,7 @@ viewMenuItems[4].addEventListener("click", function () { // Refresh button
 
 viewMenuItems[5].addEventListener("click", function () { // Source button
     if (isCrossOrigin) {
-        madAlert(madGetString("CV_MSG_NO_ADV"), null, "warning");
+        madAlert(madGetString("CV_MSG_NO_ADV"), null, "warning", { title: "%c" });
     } else {
         madOpenExternal("about:srcview?page=" + encodeURIComponent(getCurrentUrl(true)), false, "popup");
     }
@@ -169,7 +169,7 @@ viewMenuItems[5].addEventListener("click", function () { // Source button
 
 viewMenuItems[6].addEventListener("click", function () { // Run JavaScript Code button
     if (isCrossOrigin) {
-        madAlert(madGetString("CV_MSG_NO_ADV"), null, "warning");
+        madAlert(madGetString("CV_MSG_NO_ADV"), null, "warning", { title: "%c" });
     } else {
         madPrompt(madGetString("UI_PROMPT_RUNJS"), function (code) {
             if (code === null) return;
@@ -491,19 +491,19 @@ urlbar.addEventListener('click', async function (event) {
     // Urlbar icon click
     if (event.offsetX <= 24 * madScaleFactor) {
         if (loading) {
-            madAlert(madGetString("CV_MSG_OPENTYPE_LOADING"), null, "info");
+            madAlert(madGetString("CV_MSG_OPENTYPE_LOADING"), null, "info", { title: "%c" });
         } else if (isCrossOrigin) {
             madAlert(madGetString("CV_MSG_OPENTYPE_CROSSORIGIN"));
         } else if (iframe.contentDocument.head.dataset.forceLoaded) {
             if (loadedWithProxy) {
-                madAlert(madGetString("CV_MSG_OPENTYPE_PROXIED"), null, "warning");
+                madAlert(madGetString("CV_MSG_OPENTYPE_PROXIED"), null, "warning", { title: "%c" });
             } else if (madRunningMode !== 1) {
-                madAlert(madGetString("CV_MSG_OPENTYPE_FORCELOADED"), null, "warning");
+                madAlert(madGetString("CV_MSG_OPENTYPE_FORCELOADED"), null, "warning", { title: "%c" });
             } else {
-                madAlert(madGetString("CV_MSG_OPENTYPE_FORCELOADED_WE"), null, "warning");
+                madAlert(madGetString("CV_MSG_OPENTYPE_FORCELOADED_WE"), null, "warning", { title: "%c" });
             }
         } else {
-            madAlert(madGetString("CV_MSG_OPENTYPE_NORMAL"));
+            madAlert(madGetString("CV_MSG_OPENTYPE_NORMAL"), null, "info", { title: "%c" });
         }
         return;
     }
@@ -570,7 +570,7 @@ toolbars.addEventListener('contextmenu', function (event) {
 
 sslIndicator.addEventListener('click', function () {
     if (this.dataset.secure) {
-        madAlert(madGetString("CV_MSG_SSL_SECURE"));
+        madAlert(madGetString("CV_MSG_SSL_SECURE"), null, "info", { title: "%c" });
     }
 });
 // #endregion
@@ -843,7 +843,7 @@ function hookIframeSize(iframe) {
             } else if (loadedWithProxy && activeElement.matches("input[type='password']")) {
                 madAlert(madGetString("CV_MSG_PROXY_INSECURE"), function () {
                     activeElement.focus();
-                }, "warning");
+                }, "warning", { title: "%c" });
             }
         } else if (activeElement.tagName === "SELECT") {
             madOpenDropdown(activeElement, iframe);
@@ -1232,7 +1232,7 @@ async function forceLoad(url) {
         // Check if window is not closed
         if (loadToken !== 0) {
             iframe.removeAttribute("srcdoc");
-            madAlert(madGetString("CV_MSG_LOAD_ERROR", encodeURI(url)), null, "error");
+            madAlert(madGetString("CV_MSG_LOAD_ERROR", encodeURI(url)), null, "error", { title: "%c" });
             go("about:NavigationCanceled");
         }
     });
@@ -1404,6 +1404,10 @@ function init() {
     let page = url.searchParams.get("page");
     if (!page) {
         return { page: null, doForceLoad: false };
+    }
+    if (page.startsWith("channels-")) {
+        // Prevent directory traversal for pages trusted by confmgr
+        page = page.replaceAll("..", "").replace(/%2e%2e/gi, "").replace(/%252e%252e/gi, "").replaceAll("..", "");
     }
     if (!page.startsWith('http') && !page.startsWith('about') && !page.startsWith('chrome') && !page.startsWith('data') && !page.startsWith('file') && !page.startsWith('ws') && !page.startsWith('wss') && !page.startsWith('blob') && !page.startsWith('javascript') && !page.startsWith('localfolder')) {
         page = madBase + page;

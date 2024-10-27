@@ -52,6 +52,13 @@
 * WindowMetrics (`extra-border-size`) support for Active Desktop style DeskMovers
 * Refactor the dialog system
     * Support being modal only to the parent window
+* Add customizable icon pack system
+    * Preload some icon packs such as 95, Plus!, 98, 2000, XP, Aero, 7, 10, and 11
+    * Allow users to add their own (and save in IndexedDB)
+    * Maybe resembling the Effects tab in the Display Properties control panel (and move the current Effects window to the bottom of the tab)
+* Add customizable sounds system
+    * Also add more default sounds: Plus!, Win7 theme sounds, etc.
+    * Resemble the Sounds control panel
 * More themes to add
     * Windows 3.x
         * I think it would be pretty easy, just give it flat title bars and buttons with border-radius
@@ -113,22 +120,24 @@
     * Dropdown lists will be displayed reversed if it's too close to the bottom of the screen
     * Default window placement no longer assumes 1920x1080 or similar resolution; they will be placed relative to the screen size
     * Also new windows will be prevented from being placed off-screen. After these changes, ModernActiveDesktop should now run decently on any resolution higher than 640x480
+    * Adjusted some font sizes to look better with the default pixelated font
 * Security improvements
     * Prevent displaying arbitrary HTML (XSS) through imported configuration files
     * Show a warning about loading an unverified page after importing a configuration file
 * Fixed several bugs
     * The 'Add custom colors' button in the color picker showing in a weird position with the Aero theme
     * Custom pattern saving not working properly
-    * On-screen keyboard window having weird frame height in XP and Aero themes
+    * On-screen keyboard window having incorrect frame height in XP and Aero themes
     * Background image set in the Wallpaper Engine properties panel being applied on every startup
     * Some windows behaving weirdly after being reset
+    * System colors not being applied to window contents when the system color scheme is changed on startup
 * Refactored the codebase
     * Minimize the usage of global variables, and export only necessary functions
     * Split the main script into multiple files for better maintainability
     * Renamed some scripts to a shorter name
 * Updated Electron
 
-(2024/11/1)
+(2024/11/3)
 
 ### Previous changelog
 Please see [here](docs/Updated.md) for the previous changes

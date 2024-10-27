@@ -839,7 +839,10 @@
 
             playSound(icon);
 
-            msgboxMessage.innerHTML = madProcessString(msg);
+            if (msg.startsWith("locid:")) {
+                msg = `<mad-string data-locid="${msg.slice(6)}"></mad-string>`;
+            }
+            msgboxMessage.innerHTML = msg;
             msgboxIcon.style.display = "block";
             msgboxIcon.src = `images/${icon}.png`;
             msgboxBtn2.style.display = "none";
@@ -901,7 +904,10 @@
             const icon = options.icon || "question";
             playSound(icon);
 
-            msgboxMessage.innerHTML = madProcessString(msg);
+            if (msg.startsWith("locid:")) {
+                msg = `<mad-string data-locid="${msg.slice(6)}"></mad-string>`;
+            }
+            msgboxMessage.innerHTML = msg;
             msgboxIcon.style.display = "block";
             msgboxIcon.src = `images/${icon}.png`;
             msgboxBtn2.style.display = "block";

@@ -29,22 +29,24 @@
     * Dropdown lists will be displayed reversed if it's too close to the bottom of the screen
     * Default window placement no longer assumes 1920x1080 or similar resolution; they will be placed relative to the screen size
     * Also new windows will be prevented from being placed off-screen. After these changes, ModernActiveDesktop should now run decently on any resolution higher than 640x480
+    * Adjusted some font sizes to look better with the default pixelated font
 * Security improvements
     * Prevent displaying arbitrary HTML (XSS) through imported configuration files
     * Show a warning about loading an unverified page after importing a configuration file
 * Fixed several bugs
     * The 'Add custom colors' button in the color picker showing in a weird position with the Aero theme
     * Custom pattern saving not working properly
-    * On-screen keyboard window having weird frame height in XP and Aero themes
+    * On-screen keyboard window having incorrect frame height in XP and Aero themes
     * Background image set in the Wallpaper Engine properties panel being applied on every startup
     * Some windows behaving weirdly after being reset
+    * System colors not being applied to window contents when the system color scheme is changed on startup
 * Refactored the codebase
     * Minimize the usage of global variables, and export only necessary functions
     * Split the main script into multiple files for better maintainability
     * Renamed some scripts to a shorter name
 * Updated Electron
 
-(2024/11/1)
+(2024/11/3)
 
 ## 3.3
 * Added support for desktop patterns

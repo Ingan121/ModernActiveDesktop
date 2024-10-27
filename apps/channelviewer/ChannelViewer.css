@@ -442,6 +442,7 @@ body::after { /* preload images */
     width: 100%;
     height: 21px;
     border-top: solid 2px var(--button-face);
+    font-size: 11px;
 }
 
 #statusMain {
@@ -495,7 +496,7 @@ body::after { /* preload images */
     background-size: 16px 16px;
     background-position: 3px 1px;
     background-repeat: no-repeat;
-    line-height: 16px;
+    line-height: 18px;
 }
 
 body:not([data-fullscreen]) #toolbar.bottomLabels {
