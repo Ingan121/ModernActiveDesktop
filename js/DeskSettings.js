@@ -223,19 +223,9 @@
 
     // Change the scaling factor
     function changeScale(scale) {
-        scaleFactor = scale || 1;
+        window.scaleFactor = scale || 1;
         window.vWidth = window.innerWidth / window.scaleFactor;
         window.vHeight = window.innerHeight / window.scaleFactor;
-        document.documentElement.style.backgroundSize = `${8 * window.scaleFactor}px ${8 * window.scaleFactor}px`;
-        document.body.style.zoom = scaleFactor;
-        updateIframeScale();
-        document.dispatchEvent(new Event("pointerup")); // Move all deskMovers inside the visible area
-        log({
-            scaleFactor: window.scaleFactor,
-            vWidth: window.vWidth,
-            vHeight: window.vHeight,
-            dpi: 96 * window.scaleFactor
-        });
 
         if ((window.vWidth < 640 || window.vHeight < 480) && window.scaleFactor > 1) {
             changeScale(1);
@@ -247,7 +237,19 @@
                     madAlert("locid:MAD_MSG_SCALE_RESET");
                 });
             }
+            return;
         }
+
+        document.documentElement.style.backgroundSize = `${8 * window.scaleFactor}px ${8 * window.scaleFactor}px`;
+        document.body.style.zoom = scaleFactor;
+        updateIframeScale();
+        document.dispatchEvent(new Event("pointerup")); // Move all deskMovers inside the visible area
+        log({
+            scaleFactor: window.scaleFactor,
+            vWidth: window.vWidth,
+            vHeight: window.vHeight,
+            dpi: 96 * window.scaleFactor
+        });
     }
 
     // @unexported
