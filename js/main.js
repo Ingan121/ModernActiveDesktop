@@ -1029,8 +1029,8 @@
             msgboxIcon.style.display = "none";
             msgboxBtn2.style.display = "block";
             msgboxBtn3.style.display = "none";
-            msgboxBtn1.innerHTML = madGetString("UI_OK");
-            msgboxBtn2.innerHTML = madGetString("UI_CANCEL");
+            msgboxBtn1.innerHTML = '<mad-string data-locid="UI_OK">OK</mad-string>';
+            msgboxBtn2.innerHTML = '<mad-string data-locid="UI_CANCEL">Cancel</mad-string>';
             msgboxTitlebarText.textContent = "ModernActiveDesktop";
             msgboxInput.style.display = "block";
             msgboxInput.placeholder = hint;
