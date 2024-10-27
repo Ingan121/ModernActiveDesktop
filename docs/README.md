@@ -51,6 +51,7 @@
 * Add customizable sounds system
     * Also add more default sounds: Plus!, Win7 theme sounds, etc.
     * Also resemble the Sounds control panel
+* Show menus outside the iframe
 * More themes to add
     * Windows 3.x
         * I think it would be pretty easy, just give it flat title bars and buttons with border-radius
