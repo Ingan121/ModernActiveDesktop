@@ -131,8 +131,8 @@ bottomIconArea.value = config.bottomIcon;
 langSelector.value = config.lang;
 
 window.apply = function () {
-    parent.changeScale(config.dpi);
     localStorage.madesktopScaleFactor = config.dpi;
+    parent.changeScale(config.dpi);
 
     if (config.sysplug) {
         localStorage.sysplugIntegration = true;
