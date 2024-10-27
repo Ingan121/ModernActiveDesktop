@@ -87,6 +87,7 @@
     "MAD_MSG_LOCALSTORAGE_FULL": "Local storage is full! This is likely due to the large amount of JS Paint images. Expect things to break until this is resolved.<br>Do you want to open JS Paint to review the images?",
     "MAD_MSG_LOCALSTORAGE_FULL_ON_IMPORT": "Config import failed because local storage is full. It seems that another application is using a lot of local storage. Do you want to completely clear the local storage? This will affect other applications on this domain.",
     "MAD_MSG_LOCALSTORAGE_FULL_ON_IMPORT_WPE": "Config import failed because local storage is full. It seems that other wallpapers are using a lot of local storage. Do you want to completely clear the local storage? This will affect other wallpapers' saved data too. (Won't affect things set in the Wallpaper Engine properties panel.)",
+    "MAD_MSG_SCALE_RESET": "The scale factor has reset as the screen size was too small.",
 
     "MAD_DEBUG_LOCATION": "Loaded from %s",
     "MAD_DEBUG_RUNMODE": "Running in %s",

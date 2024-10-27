@@ -855,7 +855,7 @@
             if (options.btn1) {
                 msgboxBtn1.innerHTML = madProcessString(options.btn1);
             } else {
-                msgboxBtn1.innerHTML = madGetString("UI_OK");
+                msgboxBtn1.innerHTML = '<mad-string data-locid="UI_OK">OK</mad-string>';
             }
 
             document.addEventListener('keypress', keypress);
@@ -919,12 +919,12 @@
             if (options.btn1) {
                 msgboxBtn1.innerHTML = madProcessString(options.btn1);
             } else {
-                msgboxBtn1.innerHTML = madGetString("UI_OK");
+                msgboxBtn1.innerHTML = '<mad-string data-locid="UI_OK">OK</mad-string>';
             }
             if (options.btn2) {
                 msgboxBtn2.innerHTML = madProcessString(options.btn2);
             } else {
-                msgboxBtn2.innerHTML = madGetString("UI_CANCEL");
+                msgboxBtn2.innerHTML = '<mad-string data-locid="UI_CANCEL">Cancel</mad-string>';
             }
             if (options.btn3) {
                 msgboxBtn3.style.display = "block";

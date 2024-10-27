@@ -20,7 +20,7 @@
     const jsRunBtn = document.getElementById("jsRunBtn");
     const debugLogBtn = document.getElementById("debugLogBtn");
 
-    let debugLog = false;
+    let debugLog = !!localStorage.madesktopDebugLog;
 
     function log(str, level, caller) {
         if (debugLog) {

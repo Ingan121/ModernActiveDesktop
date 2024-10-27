@@ -102,6 +102,7 @@
     * Default window placement no longer assumes 1920x1080 or similar resolution; they will be placed relative to the screen size
     * Also new windows will be prevented from being placed off-screen. After these changes, ModernActiveDesktop should now run decently on any resolution higher than 640x480
     * Adjusted some font sizes to look better with the default pixelated font
+    * Automatically reset the display scaling factor if the effective screen resolution is smaller than 640x480
 * Security improvements
     * Prevent displaying arbitrary HTML (XSS) through imported configuration files
     * Show a warning about loading an unverified page after importing a configuration file

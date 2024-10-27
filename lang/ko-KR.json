@@ -77,6 +77,7 @@
     "MAD_MSG_LOCALSTORAGE_FULL": "로컬 저장소가 가득 찼습니다! 이는 JS Paint 이미지가 많아서 발생한 것일 수 있습니다. 이 문제를 해결할 때까지 %n의 작동에 문제가 발생할 수 있습니다.<br>JS Paint를 열어 이미지를 확인하시겠습니까?",
     "MAD_MSG_LOCALSTORAGE_FULL_ON_IMPORT": "로컬 저장소가 가득 찼습니다! 다른 애플리케이션이 많은 로컬 저장소를 사용하고 있는 것 같습니다. 로컬 저장소를 완전히 지우시겠습니까? 이는 이 도메인의 다른 애플리케이션에 영향을 줍니다.",
     "MAD_MSG_LOCALSTORAGE_FULL_ON_IMPORT_WPE": "로컬 저장소가 가득 찼습니다! 다른 배경화면이 많은 로컬 저장소를 사용하고 있는 것 같습니다. 로컬 저장소를 완전히 지우시겠습니까? 이는 다른 배경화면의 저장된 데이터에도 영향을 줍니다. (Wallpaper Engine 속성 창에서 설정된 것에는 영향을 주지 않습니다.)",
+    "MAD_MSG_SCALE_RESET": "화면 크기가 너무 작아서 화면 배율이 초기화되었습니다.",
 
     "MAD_DEBUG_LOCATION": "%s에서 로드됨",
     "MAD_DEBUG_RUNMODE": "%s에서 실행 중",

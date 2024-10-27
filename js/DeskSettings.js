@@ -34,7 +34,6 @@
         changeWinAnim(localStorage.madesktopNoWinAnim);
         changeScale(localStorage.madesktopScaleFactor);
         if (localStorage.madesktopDebugMode) activateDebugMode();
-        if (localStorage.madesktopDebugLog) toggleDebugLog();
         changeFont(localStorage.madesktopNoPixelFonts);
         changeCmAnimation(localStorage.madesktopCmAnimation || "slide");
         changeCmShadow(localStorage.madesktopCmShadow);
@@ -225,13 +224,30 @@
     // Change the scaling factor
     function changeScale(scale) {
         scaleFactor = scale || 1;
-        vWidth = window.innerWidth / scaleFactor;
-        vHeight = window.innerHeight / scaleFactor;
-        document.documentElement.style.backgroundSize = `${8 * scaleFactor}px ${8 * scaleFactor}px`;
+        window.vWidth = window.innerWidth / window.scaleFactor;
+        window.vHeight = window.innerHeight / window.scaleFactor;
+        document.documentElement.style.backgroundSize = `${8 * window.scaleFactor}px ${8 * window.scaleFactor}px`;
         document.body.style.zoom = scaleFactor;
         updateIframeScale();
         document.dispatchEvent(new Event("pointerup")); // Move all deskMovers inside the visible area
-        log({scaleFactor, vWidth, vHeight, dpi: 96 * scaleFactor});
+        log({
+            scaleFactor: window.scaleFactor,
+            vWidth: window.vWidth,
+            vHeight: window.vHeight,
+            dpi: 96 * window.scaleFactor
+        });
+
+        if ((window.vWidth < 640 || window.vHeight < 480) && window.scaleFactor > 1) {
+            changeScale(1);
+            delete localStorage.madesktopScaleFactor;
+            if (window.madAlert) {
+                madAlert("locid:MAD_MSG_SCALE_RESET");
+            } else {
+                window.addEventListener("load", () => {
+                    madAlert("locid:MAD_MSG_SCALE_RESET");
+                });
+            }
+        }
     }
 
     // @unexported
