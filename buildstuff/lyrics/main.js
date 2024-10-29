@@ -20,10 +20,18 @@ function init() {
 
         let lastLyrics = null;
         let lastSyncedLyricsParsed = null;
+        let lastMusic = null;
 
         visDeskMover.addEventListener('mediaProperties', function () {
             //console.log('mediaProperties', visStatus.lastMusic);
-            loadLyrics();
+            if (visStatus.lastMusic.artist !== lastMusic.artist ||
+                visStatus.lastMusic.title !== lastMusic.title ||
+                visStatus.lastMusic.albumTitle !== lastMusic.albumTitle ||
+                visStatus.lastMusic.albumArtist !== lastMusic.albumArtist
+            ) {
+                loadLyrics();
+            }
+            lastMusic = visStatus.lastMusic;
         });
 
         visDeskMover.addEventListener('mediaTimeline', function () {
