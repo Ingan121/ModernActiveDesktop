@@ -24,10 +24,10 @@ function init() {
 
         visDeskMover.addEventListener('mediaProperties', function () {
             //console.log('mediaProperties', visStatus.lastMusic);
-            if (visStatus.lastMusic.artist !== lastMusic.artist ||
-                visStatus.lastMusic.title !== lastMusic.title ||
-                visStatus.lastMusic.albumTitle !== lastMusic.albumTitle ||
-                visStatus.lastMusic.albumArtist !== lastMusic.albumArtist
+            if (visStatus.lastMusic?.artist !== lastMusic?.artist ||
+                visStatus.lastMusic?.title !== lastMusic?.title ||
+                visStatus.lastMusic?.albumTitle !== lastMusic?.albumTitle ||
+                visStatus.lastMusic?.albumArtist !== lastMusic?.albumArtist
             ) {
                 loadLyrics();
             }
