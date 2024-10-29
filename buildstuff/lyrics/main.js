@@ -39,9 +39,9 @@ function init() {
                 if (lastLyrics.synced) {
                     const nearestIndex = getNearestLyricIndex(visStatus.timeline.position);
                     if (nearestIndex !== -1) {
+                        lyricsView.dataset.currentIndex = nearestIndex;
                         const nearestLyric = lyricsView.children[nearestIndex];
                         if (nearestLyric) {
-                            nearestLyric.dataset.active = true;
                             nearestLyric.scrollIntoView({
                                 behavior: 'smooth',
                                 block: 'center'
