@@ -2,7 +2,6 @@
 
 html, body {
     overflow: hidden;
-    background-color: var(--button-face);
     font-family: var(--ui-font);
     font-size: 11px;
     user-select: none;
@@ -10,6 +9,7 @@ html, body {
 
 body {
     margin: 0;
+    background-color: var(--button-face);
 }
 
 #desc {

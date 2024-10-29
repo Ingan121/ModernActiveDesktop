@@ -746,6 +746,7 @@ async function main() {
     });
 
     function changeColor(color) {
+        color = normalizeColor(color);
         appendModified();
         const option = selector.value;
         switch (openColorPicker.id) {

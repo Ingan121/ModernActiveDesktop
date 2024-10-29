@@ -2,6 +2,9 @@ html, body {
     height: 100%;
     overflow: hidden;
     user-select: none;
+}
+
+body {
     background-color: var(--button-face);
 }
 

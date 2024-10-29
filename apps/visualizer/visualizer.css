@@ -9,8 +9,11 @@ html, body {
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    background-color: var(--button-face);
     user-select: none;
+}
+
+body {
+    background-color: var(--button-face);
 }
 
 #mainArea {

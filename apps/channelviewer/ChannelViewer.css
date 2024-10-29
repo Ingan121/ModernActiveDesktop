@@ -2,17 +2,17 @@
     --sidebar-width: 196px;
 }
 
-html,body {
+html, body {
     height: 100%;
     user-select: none;
     margin: 0;
     overflow: hidden;
-    background-color: var(--button-face);
 }
 
 body {
     display: flex;
     flex-direction: column;
+    background-color: var(--button-face);
 }
 
 * {

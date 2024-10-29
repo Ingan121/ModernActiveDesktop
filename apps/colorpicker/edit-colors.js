@@ -178,6 +178,12 @@
 		$(result_canvas).on("click", () => {
 			madPrompt(madGetString("COLORPICKER_PROMPT_CSS_COLOR"), function (res) {
 				if (res === null) return;
+				if (res.startsWith("!")) {
+					// Just pass the color as-is, without any processing
+					callback(res.slice(1));
+					madCloseWindow();
+					return;
+				}
 				set_color(res);
 				update_inputs("hslrgb");
 				draw();

@@ -1,0 +1,48 @@
+/* Arc-Dark */
+/* Based on the color scheme of the Arc-dark msstyles theme by neiio / niivu */
+/* Which is based on the Arc-Dark GTK theme by horst3180 */
+:root {
+    --active-border: #404552;
+    --active-title: #313742;
+    --app-workspace: #404552;
+    --background: #404552;
+    --button-alternate-face: #404552;
+    --button-dk-shadow: #373C48;
+    --button-face: #404552;
+    --button-hilight: #5C6476;
+    --button-light: #636A7E;
+    --button-shadow: #282C35;
+    --button-text: #D3DAE3;
+    --gradient-active-title: #313742;
+    --gradient-inactive-title: #313742;
+    --gray-text: #7E838F;
+    --hilight: #5294E2;
+    --hilight-text: #FFFFFF;
+    --hot-tracking-color: #5294E2;
+    --inactive-border: #404552;
+    --inactive-title: #313742;
+    --inactive-title-text: #D3DAE3;
+    --info-text: #E6E9EE;
+    --info-window: #5294E2;
+    --menu: #373D48;
+    --menu-bar: #373D48;
+    --menu-hilight: #5294E2;
+    --menu-text: #D3DAE3;
+    --scrollbar: #404552;
+    --title-text: #D3DAE3;
+    --window: #404552;
+    --window-frame: #404552;
+    --window-text: #D3DAE3;
+    --menu-animation: fade;
+    --flat-menus: mbcm;
+    --ui-font: "Segoe UI", "SegoeUI", "Noto Sans", sans-serif;
+    --caption-font: 9pt/1.2 var(--ui-font);
+    --menu-font: 9pt/0.9 var(--ui-font);
+    --message-font: 9pt var(--ui-font);
+    --status-font: 9pt var(--ui-font);
+    --sm-caption-font: 9pt/0.9 var(--ui-font);
+}
+.window {
+    --extra-title-height: 1px;
+    --extra-border-size: 2px;
+}

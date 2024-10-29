@@ -1,0 +1,42 @@
+/* 96 */
+/* Inspired by https://windows96.net/ */
+:root {
+    --active-border: #c0c0c0;
+    --active-title: #01517D;
+    --app-workspace: #808080;
+    --background: #005762;
+    --button-alternate-face: #b4b4b4;
+    --button-dk-shadow: #000000;
+    --button-face: #c0c0c0;
+    --button-hilight: #ffffff;
+    --button-light: #dfdfdf;
+    --button-shadow: #808080;
+    --button-text: #000000;
+    --gradient-active-title: #539a64;
+    --gradient-inactive-title: #c0c0c0;
+    --gray-text: #808080;
+    --hilight: #000080;
+    --hilight-text: #ffffff;
+    --hot-tracking-color: #000080;
+    --inactive-border: #c0c0c0;
+    --inactive-title: #808080;
+    --inactive-title-text: #c0c0c0;
+    --info-text: #000000;
+    --info-window: #ffffe1;
+    --menu: #c0c0c0;
+    --menu-bar: #c0c0c0;
+    --menu-hilight: #000080;
+    --menu-text: #000000;
+    --scrollbar: #c0c0c0;
+    --title-text: #ffffff;
+    --window: #ffffff;
+    --window-frame: #000000;
+    --window-text: #000000;
+    --scrollbar-size: 16px;
+    --menu-height: 18px;
+    --palette-title-height: 15px;
+}
+.window {
+    --extra-title-height: -2px;
+    --extra-border-size: 1px;
+}

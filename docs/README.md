@@ -78,7 +78,13 @@
     * While it may still work, not all features are guaranteed to work properly in these environments
     * Please update Wallpaper Engine to the latest version to get the best experience
     * Windows 7/8 users: why not update to Windows 10 LTSC and apply a Windows Classic / Aero / XP theme? Visit [WinClassic](https://winclassic.boards.net/) to learn more!
-* Added new themes: Windows Basic and Windows Classic (16 colors)
+* Added new themes
+    * Windows Basic
+    * Windows Classic (16 colors)
+    * 93
+    * 96
+    * Arc-Dark
+    * Blur (beta)
 * Added a preset system for Wallpaper Engine
     * Click the 'Preset edit mode' in the Wallpaper Engine properties panel to learn more
 * Improved the configuration saving mechanism

@@ -1,0 +1,88 @@
+/* Blur (Beta) */
+/* Scheme partly based on the color scheme of the Dark7 msstyles theme included in 21H2to7 */
+:root {
+    --active-border: #00000000;
+    --active-title: #101010A0;
+    --app-workspace: #383838;
+    --background: #000000;
+    --button-alternate-face: #000000;
+    --button-dk-shadow: #202020;
+    --button-face: #10101080;
+    --button-hilight: #505050;
+    --button-light: #040404;
+    --button-shadow: #303030;
+    --button-text: #E0E4EC;
+    --gradient-active-title: #101010A0;
+    --gradient-inactive-title: #10101080;
+    --gray-text: #B0B0B0;
+    --hilight: #0066CC;
+    --hilight-text: #FFFFFF;
+    --hot-tracking-color: #3399FF;
+    --inactive-border: #00000000;
+    --inactive-title: #10101080;
+    --inactive-title-text: #A0A4AC;
+    --info-text: #FFFFFF;
+    --info-window: #282819;
+    --menu: #00000000;
+    --menu-bar: #00000000;
+    --menu-hilight: #0066CC;
+    --menu-text: #FFFFFF;
+    --scrollbar: #282828;
+    --title-text: #FFFFFF;
+    --window: #19191980;
+    --window-frame: #A0A0A0;
+    --window-text: #E0E4EC;
+    --flat-menus: cm;
+    --menu-animation: fade;
+    --menu-shadow: true;
+    --supports-colorization: true;
+    --scrollbar-size: 17px;
+    --menu-height: 19px;
+    --palette-title-height: 22px;
+    --ui-font: "Segoe UI", "SegoeUI", "Noto Sans", sans-serif;
+    --caption-font: 9pt/1.2 var(--ui-font);
+    --menu-font: 9pt/0.9 var(--ui-font);
+    --message-font: 9pt var(--ui-font);
+    --status-font: 9pt var(--ui-font);
+    --sm-caption-font: 9pt/0.9 var(--ui-font);
+}
+.window {
+    --extra-title-height: 2px;
+    --extra-border-size: 1px;
+}
+
+.windowContainer,
+.windowFrame {
+    background-color: transparent;
+}
+
+.window:not(.contextMenuBg) {
+    backdrop-filter: blur(10px);
+}
+
+body[data-init-complete] > .window::before,
+#msgbox::before,
+#osk::before,
+#activeWindow::before,
+#inactiveWindow::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    opacity: 0.2;
+    background-color: var(--title-accent);
+}
+
+.contextMenuBg,
+.menu-popup {
+    background-color: #101010a0 !important;
+}
+
+body:has(.jspaint) {
+    background-color: transparent;
+}
