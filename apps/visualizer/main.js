@@ -86,10 +86,21 @@ const albumArtSizeMenuItems = document.querySelectorAll('#albumArtSizeMenu .cont
 const titleOptMenuItems = document.querySelectorAll('#titleOptMenu .contextMenuItem');
 const chanSepMenuItems = document.querySelectorAll('#chanSepMenu .contextMenuItem');
 
+const mediaStatusEvent = new CustomEvent('mediaStatus');
+const mediaPropertiesEvent = new CustomEvent('mediaProperties');
+const mediaTimelineEvent = new CustomEvent('mediaTimeline');
+const mediaPlaybackEvent = new CustomEvent('mediaPlayback');
+const mediaThumbnailEvent = new CustomEvent('mediaThumbnail');
+
 const isWin10 = navigator.userAgent.includes('Windows NT 10.0');
 const NO_MEDINT_MSG = isWin10 ? "VISUALIZER_NO_MEDINT_MSG" : "VISUALIZER_MEDINT_UNSUPPORTED_MSG";
 
 let mouseOverMenu = false;
+let schemeBarColor = null;
+let schemeTopColor = null;
+
+const visStatus = {};
+madDeskMover.visStatus = visStatus;
 
 // Always start with true regardless of OS, to allow already enabled MedInt features to be disabled
 // (As it just clicks the menu item for disabling, if it starts with false, error messages will be shown constantly on non-Win10 systems)
@@ -97,12 +108,10 @@ let mouseOverMenu = false;
 // As of writing, I'm not caring that much about Win < 10 / WPE < 2.5 compatibility though
 // Early Win10 versions without MedInt support? That cannot be handled cuz CEF doesn't allow us to check the build version
 // Just let WPE handle it, although it will show instructions to enable MedInt which won't work
-let mediaIntegrationAvailable = true;
+visStatus.mediaIntegrationAvailable = true;
 
-let lastAlbumArt = null;
-let lastMusic = null;
-let schemeBarColor = null;
-let schemeTopColor = null;
+visStatus.lastAlbumArt = null;
+visStatus.lastMusic = null;
 // #endregion
 
 // #region Event listeners
@@ -139,7 +148,7 @@ window.addEventListener("message", (event) => {
         case "scheme-updated":
             if (!['98', 'custom', 'sys', undefined].includes(localStorage.madesktopColorScheme) &&
                 localStorage.madesktopVisUseSchemeColors &&
-                (!lastAlbumArt || !localStorage.madesktopVisFollowAlbumArt))
+                (!visStatus.lastAlbumArt || !localStorage.madesktopVisFollowAlbumArt))
             {
                 location.reload();
             } else {
@@ -158,7 +167,7 @@ window.addEventListener("message", (event) => {
                 }
             }
         case "language-ready":
-            if (lastMusic === null || localStorage.madesktopVisTitleMode === "static") {
+            if (visStatus.lastMusic === null || localStorage.madesktopVisTitleMode === "static") {
                 document.title = madGetString("VISUALIZER_TITLE");
             }
     }
@@ -231,7 +240,7 @@ if (localStorage.sysplugIntegration) {
 madDeskMover.menu = new MadMenu(menuBar, ['vis', 'view', 'opt', 'help'], ['color', 'albumArtSize', 'titleOpt', 'chanSep']);
 
 visMenuItems[0].addEventListener('click', () => { // Album Art button
-    if (!mediaIntegrationAvailable) {
+    if (!visStatus.mediaIntegrationAvailable) {
         madAlert(madGetString(NO_MEDINT_MSG), null, isWin10 ? 'info' : 'error');
         return;
     }
@@ -256,7 +265,7 @@ visMenuItems[1].addEventListener('click', () => { // WMP Bars button
     delete localStorage.madesktopVisOnlyAlbumArt;
     visMenuItems[0].classList.remove('activeStyle');
     visMenuItems[1].classList.add('activeStyle');
-    if (mediaIntegrationAvailable) {
+    if (visStatus.mediaIntegrationAvailable) {
         optMenuItems[2].classList.remove('disabled');
         if (localStorage.madesktopVisShowAlbumArt) {
             optMenuItems[3].classList.remove('disabled');
@@ -304,7 +313,7 @@ viewMenuItems[1].addEventListener('click', () => { // Fullscreen button
 });
 
 viewMenuItems[2].addEventListener('click', () => { // Information button
-    if (!mediaIntegrationAvailable) {
+    if (!visStatus.mediaIntegrationAvailable) {
         madAlert(madGetString(NO_MEDINT_MSG), null, isWin10 ? 'info' : 'error');
         return;
     }
@@ -352,7 +361,7 @@ viewMenuItems[2].addEventListener('click', () => { // Information button
 });
 
 viewMenuItems[3].addEventListener('click', () => { // Playback Status button
-    if (!mediaIntegrationAvailable) {
+    if (!visStatus.mediaIntegrationAvailable) {
         madAlert(madGetString(NO_MEDINT_MSG), null, isWin10 ? 'info' : 'error');
         return;
     }
@@ -409,7 +418,7 @@ viewMenuItems[3].addEventListener('click', () => { // Playback Status button
 });
 
 viewMenuItems[4].addEventListener('click', () => { // Enable Media Controls button
-    if (!mediaIntegrationAvailable) {
+    if (!visStatus.mediaIntegrationAvailable) {
         madAlert(madGetString(NO_MEDINT_MSG), null, isWin10 ? 'info' : 'error');
         return;
     }
@@ -455,14 +464,14 @@ viewMenuItems[5].addEventListener('click', () => { // Show as Background button
 });
 
 optMenuItems[1].addEventListener('click', () => { // Window Title button
-    if (!mediaIntegrationAvailable) {
+    if (!visStatus.mediaIntegrationAvailable) {
         madAlert(madGetString(NO_MEDINT_MSG), null, isWin10 ? 'info' : 'error');
     }
     // Submenu will be opened by MadMenu if this item is not disabled
 });
 
 optMenuItems[3].addEventListener('click', () => { // Show Album Art button
-    if (!mediaIntegrationAvailable) {
+    if (!visStatus.mediaIntegrationAvailable) {
         madAlert(madGetString(NO_MEDINT_MSG), null, isWin10 ? 'info' : 'error');
         return;
     }
@@ -479,7 +488,7 @@ optMenuItems[3].addEventListener('click', () => { // Show Album Art button
 });
 
 optMenuItems[4].addEventListener('click', () => { // Dim Album Art button
-    if (!mediaIntegrationAvailable) {
+    if (!visStatus.mediaIntegrationAvailable) {
         madAlert(madGetString(NO_MEDINT_MSG), null, isWin10 ? 'info' : 'error');
         return;
     }
@@ -496,7 +505,7 @@ optMenuItems[4].addEventListener('click', () => { // Dim Album Art button
 });
 
 optMenuItems[5].addEventListener('click', () => { // Album Art Size button
-    if (!mediaIntegrationAvailable) {
+    if (!visStatus.mediaIntegrationAvailable) {
         madAlert(madGetString(NO_MEDINT_MSG), null, isWin10 ? 'info' : 'error');
     }
     // Submenu will be opened by MadMenu if this item is not disabled
@@ -545,7 +554,7 @@ colorMenuItems[2].addEventListener('click', () => { // Custom Color button
 });
 
 colorMenuItems[3].addEventListener('click', () => { // Follow Album Art button
-    if (!mediaIntegrationAvailable) {
+    if (!visStatus.mediaIntegrationAvailable) {
         madAlert(madGetString(NO_MEDINT_MSG), null, isWin10 ? 'info' : 'error');
         return;
     }
@@ -586,7 +595,7 @@ async function mediaControl(action) {
     if (!localStorage.sysplugIntegration || !localStorage.madesktopVisMediaControls) {
         return;
     }
-    const title = lastMusic ? lastMusic.title : '';
+    const title = visStatus.lastMusic ? visStatus.lastMusic.title : '';
     try {
         const response = await madSysPlug.mediaControl(action, title);
         if (response !== 'OK') {
@@ -640,7 +649,8 @@ function wallpaperMediaStatusListener(event) {
         }
         colorMenuItems[3].classList.remove('disabled');
     }
-    mediaIntegrationAvailable = event.enabled;
+    visStatus.mediaIntegrationAvailable = event.enabled;
+    document.dispatchEvent(mediaStatusEvent);
 }
 
 function wallpaperMediaPropertiesListener(event) {
@@ -665,7 +675,7 @@ function wallpaperMediaPropertiesListener(event) {
         seekBar.style.backgroundColor = 'transparent';
         seekHandle.style.display = 'none';
         timeText.parentElement.style.display = 'none';
-        lastMusic = null;
+        visStatus.lastMusic = null;
         return;
     }
 
@@ -712,7 +722,8 @@ function wallpaperMediaPropertiesListener(event) {
     seekHandle.style.display = 'none';
     timeText.parentElement.style.display = 'none';
 
-    lastMusic = event;
+    visStatus.lastMusic = event;
+    document.dispatchEvent(mediaPropertiesEvent);
 }
 
 function wallpaperMediaTimelineListener(event) {
@@ -728,6 +739,9 @@ function wallpaperMediaTimelineListener(event) {
     seekHandle.style.display = 'block';
     timeText.textContent = `${formatTime(event.position)} / ${formatTime(event.duration)}`;
     timeText.parentElement.style.display = 'block';
+
+    visStatus.timeline = event;
+    document.dispatchEvent(mediaTimelineEvent);
 }
 
 function formatTime(sec) {
@@ -763,11 +777,14 @@ function wallpaperMediaPlaybackListener(event) {
             pauseIcon.dataset.disabled = true;
             statusText.locId = "VISUALIZER_STATUS_STOPPED";
     }
+
+    visStatus.state = event.state;
+    document.dispatchEvent(mediaPlaybackEvent);
 }
 
 function wallpaperMediaThumbnailListener(event) {
     if (event.thumbnail === 'data:image/png;base64,') {
-        lastAlbumArt = null;
+        visStatus.lastAlbumArt = null;
         configChanged();
         return;
     }
@@ -778,7 +795,7 @@ function wallpaperMediaThumbnailListener(event) {
     if (localStorage.madesktopVisFollowAlbumArt) {
         document.body.style.backgroundColor = event.primaryColor;
     }
-    lastAlbumArt = event;
+    visStatus.lastAlbumArt = event;
     const image = new Image();
     image.onload = () => {
         event.width = image.width;
@@ -786,6 +803,7 @@ function wallpaperMediaThumbnailListener(event) {
         updateAlbumArtSize();
     }
     image.src = event.thumbnail;
+    document.dispatchEvent(mediaThumbnailEvent);
 }
 
 function configChanged() {
@@ -802,16 +820,16 @@ function configChanged() {
         delete document.body.dataset.noFsMargin;
     }
 
-    if (localStorage.madesktopVisShowAlbumArt && lastAlbumArt) {
+    if (localStorage.madesktopVisShowAlbumArt && visStatus.lastAlbumArt) {
         albumArt.style.display = 'block';
-        albumArt.src = lastAlbumArt.thumbnail;
+        albumArt.src = visStatus.lastAlbumArt.thumbnail;
     } else {
         albumArt.style.display = 'none';
         albumArt.src = '';
     }
 
-    if (localStorage.madesktopVisFollowAlbumArt && lastAlbumArt) {
-        document.body.style.backgroundColor = lastAlbumArt.primaryColor;
+    if (localStorage.madesktopVisFollowAlbumArt && visStatus.lastAlbumArt) {
+        document.body.style.backgroundColor = visStatus.lastAlbumArt.primaryColor;
     } else if (localStorage.madesktopVisUseSchemeColors) {
         updateSchemeColor();
     } else {
@@ -820,7 +838,7 @@ function configChanged() {
 
     if (localStorage.madesktopVisShowAlbumArt) {
         optMenuItems[3].classList.add('checkedItem');
-        if (mediaIntegrationAvailable) {
+        if (visStatus.mediaIntegrationAvailable) {
             if (!localStorage.madesktopVisOnlyAlbumArt) {
                 optMenuItems[4].classList.remove('disabled');
             }
@@ -881,12 +899,12 @@ function configChanged() {
 function updateSchemeColor() {
     schemeBarColor = getComputedStyle(document.documentElement).getPropertyValue('--hilight');
     schemeTopColor = getComputedStyle(document.documentElement).getPropertyValue('--button-text');
-    if (localStorage.madesktopVisUseSchemeColors && (!lastAlbumArt || !localStorage.madesktopVisFollowAlbumArt)) {
+    if (localStorage.madesktopVisUseSchemeColors && (!visStatus.lastAlbumArt || !localStorage.madesktopVisFollowAlbumArt)) {
         document.body.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--button-face');
     }
 }
 
-function updateTitle(musicInfo = lastMusic) {
+function updateTitle(musicInfo = visStatus.lastMusic) {
     const titleMode = localStorage.madesktopVisTitleMode;
     if (!musicInfo || titleMode === "static") {
         document.title = madGetString("VISUALIZER_TITLE");
@@ -900,11 +918,11 @@ function updateTitle(musicInfo = lastMusic) {
 }
 
 function updateAlbumArtSize() {
-    if (!lastAlbumArt) {
+    if (!visStatus.lastAlbumArt) {
         return;
     }
-    const width = lastAlbumArt.width;
-    const height = lastAlbumArt.height;
+    const width = visStatus.lastAlbumArt.width;
+    const height = visStatus.lastAlbumArt.height;
     switch (localStorage.madesktopVisAlbumArtSize) {
         case "auto2x":
             albumArt.style.width = width * 2 + 'px';

@@ -1859,6 +1859,40 @@
                 this.windowTitlebar.style.display = this.config.style === "wnd" ? "flex" : "block";
             }
         }
+
+        addEventListener(event, func, third, target) {
+            switch (target) {
+                case "window":
+                    if (this.windowElement.contentDocument) {
+                        this.windowElement.contentWindow.addEventListener(event, func, third);
+                    }
+                    break;
+                case "iframe":
+                    this.windowElement.addEventListener(event, func, third);
+                    break;
+                default: // "document"
+                    if (this.windowElement.contentDocument) {
+                        this.windowElement.contentDocument.addEventListener(event, func, third);
+                    }
+            }
+        }
+
+        removeEventListener(event, func, third, target) {
+            switch (target) {
+                case "window":
+                    if (this.windowElement.contentDocument) {
+                        this.windowElement.contentWindow.removeEventListener(event, func, third);
+                    }
+                    break;
+                case "iframe":
+                    this.windowElement.removeEventListener(event, func, third);
+                    break;
+                default: // "document"
+                    if (this.windowElement.contentDocument) {
+                        this.windowElement.contentDocument.removeEventListener(event, func, third);
+                    }
+            }
+        }
     }
 
     function initSimpleMover(container, titlebar, exclusions) {
