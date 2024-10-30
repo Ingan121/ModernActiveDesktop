@@ -504,6 +504,7 @@
                 if (this.isVisualizer) {
                     window.visDeskMover = null;
                     window.livelyAudioListener = () => {};
+                    delete this.visStatus;
                 }
                 if (this.isConfigurator) {
                     window.confDeskMover = null;
@@ -1615,6 +1616,7 @@
                     this.#clearConfig(true);
                     this.isVisualizer = false;
                     window.visDeskMover = null;
+                    delete this.visStatus;
                 }
                 if (this.isConfigurator && !url.startsWith("apps/madconf/")) {
                     this.isConfigurator = false;

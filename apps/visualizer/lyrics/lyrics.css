@@ -1,0 +1,20 @@
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    background-color: var(--button-face);
+    font: 11px var(--ui-font);
+    user-select: none;
+}
+
+#lyricsView {
+    height: calc(100% - 50px);
+    overflow-y: scroll;
+    text-align: center;
+}
+
+#lyricsView p {
+    color: var(--gray-text);
+}

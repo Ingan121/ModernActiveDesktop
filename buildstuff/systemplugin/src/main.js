@@ -44,6 +44,14 @@ let pendingRes = null;
 let ignoreToken = args['ignore-token'];
 let denyUnknown = false;
 
+// Spotify API
+// Only for fetching currently playing track by default, to comply with Spotify's ToS and design guidelines
+// Provide your own Spotify Client ID with --spotify and set localStorage.madesktopVisUseSpotify to true in MAD to enable media integration and control in MADVis
+const spotifyClientId = args.spotify || '98a0e605349f416bbac718ce4d3c30c2';
+let spotifyCodeVerifier = null;
+let spotifyCsrfToken = null;
+let spotifyPendingRes = null;
+
 const metrics = {
   // Windows 10 default metrics
   borderSize: 8,
@@ -509,7 +517,12 @@ function onRequest(req, res) {
     return;
   }
 
-  switch (req.url) {
+  const urlParsed = new URL(req.url, `http://${req.headers.host}`);
+  switch (urlParsed.pathname) {
+    // Open a URL in the default browser
+    // Usage: POST /open with a URL in the request body
+    // If X-Use-ChannelViewer is set, the URL will be opened in MADSysPlug ChannelViewer (deprecated)
+    // If X-Fullscreen is set, the ChannelViewer will be opened in fullscreen
     case '/open':
       if (req.method === 'POST') {
         processPost(req, res, function (body) {
@@ -533,6 +546,10 @@ function onRequest(req, res) {
       }
       break;
 
+    // Save a file to the disk
+    // Usage: POST /save with a file in the request body
+    // X-File-Name and X-File-Path can be set to specify the file name and path in the file picker (X-File-Path must be a value supported by Electron's app.getPath)
+    // X-Format-Name and X-Format-Extension can be set to specify the file format in the file picker
     case '/save':
       if (req.method === 'POST') {
         try {
@@ -554,10 +571,11 @@ function onRequest(req, res) {
               return;
             }
             fs.copyFileSync(tempFilePath, savePath);
+            fs.unlinkSync(tempFilePath);
             res.end(path.basename(savePath));
           });
         } catch (e) {
-          res.writeHead(500)
+          res.writeHead(500);
           res.end(e);
         }
       } else {
@@ -566,15 +584,18 @@ function onRequest(req, res) {
       }
       break;
 
+    // Get the system color scheme
     case '/systemscheme':
       res.writeHead(200, {'Content-Type':'text/css'});
       res.end(generateCssScheme());
       break;
 
+    // Get the clipboard contents
     case '/clipboard':
       res.end(clipboard.readText());
       break;
 
+    // Media controls
     case '/play':
     case '/pause':
     case '/playpause':
@@ -584,6 +605,7 @@ function onRequest(req, res) {
       processMediaControl(req.url, req, res);
       break;
 
+    // MadInput for getting user input in Wallpaper Engine
     case '/begininput':
       cleanInputPanel();
       inputPanel = openInputPanel(req.headers['x-no-timeout']);
@@ -627,6 +649,86 @@ function onRequest(req, res) {
       res.end('OK');
       break;
 
+    // Authorization Code with PKCE Flow
+    // https://developer.spotify.com/documentation/web-api/tutorials/code-pkce-flow
+    case '/spotify/auth':
+      if (args.port && args.port !== 3031 && !args.spotify) {
+        res.writeHead(500);
+        res.end('Custom port not supported with default Spotify Client ID!', 'utf-8');
+        return;
+      }
+      spotifyCodeVerifier = crypto.randomBytes(64).toString('hex');
+      console.log('Spotify Code Verifier:', spotifyCodeVerifier);
+      const codeChallenge = crypto.createHash('sha256').update(spotifyCodeVerifier).digest('base64').replaceAll('+', '-').replaceAll('/', '_').replaceAll('=', '');
+      spotifyCsrfToken = crypto.randomBytes(16).toString('base64');
+
+      const authUrl = new URL('https://accounts.spotify.com/authorize');
+      const authParams = {
+        client_id: spotifyClientId,
+        response_type: 'code',
+        redirect_uri: `http://localhost:${args.port || 3031}/spotify/callback`,
+        code_challenge_method: 'S256',
+        code_challenge: codeChallenge,
+        state: spotifyCsrfToken,
+        scope: 'user-read-playback-state user-modify-playback-state'
+      };
+      authUrl.search = new URLSearchParams(authParams).toString();
+
+      shell.openExternal(authUrl.toString());
+      spotifyPendingRes = res;
+      break;
+
+    // Spotify auth callback
+    case '/spotify/callback':
+      if (req.headers.origin) {
+        res.writeHead(403);
+        res.end('This page is not meant to be accessed via AJAX.', 'utf-8');
+        return;
+      }
+      const code = urlParsed.searchParams.get('code');
+      const error = urlParsed.searchParams.get('error');
+      const state = urlParsed.searchParams.get('state');
+      if (!state && !(code || error)) {
+        res.writeHead(400);
+        res.end('400 Bad Request', 'utf-8');
+        if (spotifyPendingRes) {
+          spotifyPendingRes.writeHead(400, {'Content-Type':'application/json'});
+          spotifyPendingRes.end('{"error":"400 Bad Request"}');
+          spotifyPendingRes = null;
+        }
+        return;
+      }
+      if (state !== spotifyCsrfToken) {
+        res.writeHead(403);
+        res.end('CSRF token mismatch', 'utf-8');
+        if (spotifyPendingRes) {
+          spotifyPendingRes.writeHead(403, {'Content-Type':'application/json'});
+          spotifyPendingRes.end('{"error":"CSRF token mismatch"}');
+          spotifyPendingRes = null;
+        }
+        return;
+      }
+      if (error) {
+        res.writeHead(500);
+        res.end('Spotify auth error: ' + error, 'utf-8');
+        if (spotifyPendingRes) {
+          spotifyPendingRes.writeHead(500, {'Content-Type':'application/json'});
+          spotifyPendingRes.end('{"error":"' + error + '"}');
+          spotifyPendingRes = null;
+        }
+        return;
+      }
+      res.writeHead(200, {'Content-Type':'text/html'});
+      res.end('You can now close this tab.<script>window.close()</script>');
+
+      if (spotifyPendingRes) {
+        spotifyPendingRes.writeHead(200, {'Content-Type':'application/json'});
+        spotifyPendingRes.end(JSON.stringify({ code, verifier: spotifyCodeVerifier, clientId: spotifyClientId }));
+        spotifyPendingRes = null;
+      }
+      break;
+
+    // Connection test, returns the version of the plugin
     case '/connecttest':
       res.writeHead(200, {'Content-Type':'text/html'});
       res.end(app.getVersion());
@@ -645,24 +747,41 @@ function onRequest(req, res) {
 
     case '/':
       res.writeHead(200, {'Content-Type':'text/html'});
-      res.end(`<h1>ModernActiveDesktop System Plugin ${app.getVersion()} Web Interface</h1>
-      <p>Available pages:<br>
-      <a href="/open">/open</a><br>
-      <a href="/save">/save</a><br>
-      <a href="/systemscheme">/systemscheme</a><br>
-      <a href="/clipboard">/clipboard</a><br><br>
-      <a href="/play">/play</a><br>
-      <a href="/pause">/pause</a><br>
-      <a href="/playpause">/playpause</a><br>
-      <a href="/stop">/stop</a><br>
-      <a href="/prev">/prev</a><br>
-      <a href="/next">/next</a><br><br>
-      <a href="/begininput">/begininput</a><br>
-      <a href="/getinput">/getinput</a><br>
-      <a href="/focusinput">/focusinput</a><br>
-      <a href="/endinput">/endinput</a><br><br>
-      <a href="/connecttest">/connecttest</a><br>
-      <a href="/debugger">/debugger</a></p>`)
+      res.end(`
+        <!DOCTYPE html>
+          <html>
+          <head>
+            <title>ModernActiveDesktop System Plugin ${app.getVersion()} Web Interface</title>
+            <meta charset="utf-8">
+          </head>
+          <body>
+            <h1>ModernActiveDesktop System Plugin ${app.getVersion()} Web Interface</h1>
+            <p>
+              Available pages:<br>
+              <a href="/open">/open</a><br>
+              <a href="/save">/save</a><br>
+              <a href="/systemscheme">/systemscheme</a><br>
+              <a href="/clipboard">/clipboard</a><br>
+              <br>
+              <a href="/play">/play</a><br>
+              <a href="/pause">/pause</a><br>
+              <a href="/playpause">/playpause</a><br>
+              <a href="/stop">/stop</a><br>
+              <a href="/prev">/prev</a><br>
+              <a href="/next">/next</a><br><br>
+              <a href="/begininput">/begininput</a><br>
+              <a href="/getinput">/getinput</a><br>
+              <a href="/focusinput">/focusinput</a><br>
+              <a href="/endinput">/endinput</a><br><br>
+              <a href="/spotify/auth">/spotify/auth</a><br>
+              <a href="/spotify/callback">/spotify/callback</a><br>
+              <br>
+              <a href="/connecttest">/connecttest</a><br>
+              <a href="/debugger">/debugger</a>
+            </p>
+          </body>
+        </html>
+      `);
       break;
 
     default:

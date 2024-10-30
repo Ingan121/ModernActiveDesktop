@@ -18,6 +18,7 @@
         focusInput,
         endInput,
         getClipboard,
+        spotifyLogin,
         inputStatus: false
     };
 
@@ -214,6 +215,25 @@
     // Get the clipboard content
     async function getClipboard() {
         return await request("clipboard") || "";
+    }
+
+    // Open the Spotify login page and get the authorization token and the code verifier
+    // https://developer.spotify.com/documentation/web-api/tutorials/code-pkce-flow
+    // Returns: { code, verifier, clientId } if successful
+    // Continue getting the access token with the returned values
+    // Returns { error: "error message" } if failed
+    async function spotifyLogin() {
+        if (!localStorage.sysplugIntegration) {
+            return;
+        }
+        const response = await request("spotify/auth", null, {}, true);
+        if (response.headers.get("Content-Type") !== "application/json") {
+            if (response.status === 403) {
+                return { error: "System plugin has denied the connection" };
+            }
+            return { error: "Invalid response" };
+        }
+        return await response.json();
     }
 
     // input[type="number"] doesn't work well with MadInput, so we need to convert it to text
