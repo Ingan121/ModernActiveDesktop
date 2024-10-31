@@ -7,6 +7,21 @@
 
 const lyricsView = document.getElementById('lyricsView');
 
+const menuBar = document.getElementById('menuBar');
+const lrcMenuItems = document.querySelectorAll('#lrcMenu .contextMenuItem');
+
+let inited = 0;
+
+madDeskMover.menu = new MadMenu(menuBar, ['lrc']);
+
+lrcMenuItems[3].addEventListener('click', function () { // Provieder info button
+    madOpenExternal('https://lrclib.net/');
+});
+
+lrcMenuItems[4].addEventListener('click', function () { // Close button
+    madCloseWindow();
+});
+
 top.addEventListener('load', init);
 
 if (top.document.readyState === 'complete') {
@@ -14,41 +29,48 @@ if (top.document.readyState === 'complete') {
 }
 
 function init() {
+    inited = 1;
     if (top.visDeskMover) {
+        inited = 2;
         const visDeskMover = top.visDeskMover;
         const visStatus = visDeskMover.visStatus;
 
         let lastLyrics = null;
         let lastSyncedLyricsParsed = null;
         let lastMusic = null;
+        let autoScroll = true;
+        let autoScrolling = false;
 
         visDeskMover.addEventListener('mediaProperties', async function () {
+            // Make sure the music has changed, as the event can be triggered multiple times
+            // E.g. when the WPE media listeners got invalidated by closing an iframe and listners got re-registered
             if (visStatus.lastMusic &&
                 (visStatus.lastMusic?.artist !== lastMusic?.artist ||
                 visStatus.lastMusic?.title !== lastMusic?.title ||
                 visStatus.lastMusic?.albumTitle !== lastMusic?.albumTitle ||
                 visStatus.lastMusic?.albumArtist !== lastMusic?.albumArtist)
             ) {
-                loadLyrics();
-            }
-
-            if (localStorage.madesktopVisSpotifyInfo) {
-                const spotifyNowPlaying = await getSpotifyNowPlaying();
-                console.log(spotifyNowPlaying);
-                if (spotifyNowPlaying && spotifyNowPlaying.item) {
-                    if (spotifyNowPlaying.item.album.artists.length > 0) {
-                        const artist = spotifyNowPlaying.item.album.artists[0].name;
-                        const title = spotifyNowPlaying.item.name;
-                        const albumTitle = spotifyNowPlaying.item.album.name;
-                        const duration = spotifyNowPlaying.item.duration_ms / 1000;
-                        if (visStatus.lastMusic &&
-                            (artist !== visStatus.lastMusic.artist ||
-                            title !== visStatus.lastMusic.title ||
-                            albumTitle !== visStatus.lastMusic.albumTitle)
-                        ) {
+                autoScroll = true;
+                lrcMenuItems[1].classList.add('checkedItem');
+                if (localStorage.madesktopVisSpotifyInfo) {
+                    const spotifyNowPlaying = await getSpotifyNowPlaying();
+                    if (spotifyNowPlaying && spotifyNowPlaying.item) {
+                        if (spotifyNowPlaying.item.album.artists.length > 0) {
+                            const artist = spotifyNowPlaying.item.artists[0].name;
+                            const title = spotifyNowPlaying.item.name;
+                            const albumTitle = spotifyNowPlaying.item.album.name;
+                            const duration = spotifyNowPlaying.item.duration_ms / 1000;
                             loadLyrics(artist, title, albumTitle, duration);
+                            visStatus.lastSpotifyMusic = {
+                                artist: artist,
+                                title: title,
+                                albumTitle: albumTitle,
+                                duration: duration
+                            };
                         }
                     }
+                } else {
+                    loadLyrics();
                 }
             }
 
@@ -56,6 +78,37 @@ function init() {
         });
 
         visDeskMover.addEventListener('mediaTimeline', processTimeline);
+
+        visDeskMover.addEventListener('load', function () {
+            // MADVis has been reloaded; setup listeners again
+            location.reload();
+        }, null, 'iframe');
+
+        lrcMenuItems[0].addEventListener('click', function () { // Load Lyrics button
+            if (localStorage.madesktopVisSpotifyInfo && visStatus.lastSpotifyMusic) {
+                loadLyrics(visStatus.lastSpotifyMusic.artist, visStatus.lastSpotifyMusic.title, visStatus.lastSpotifyMusic.albumTitle, visStatus.lastSpotifyMusic.duration);
+            } else {
+                loadLyrics();
+            }
+        });
+
+        lrcMenuItems[1].addEventListener('click', function () { // Auto Scroll button
+            autoScroll = !autoScroll;
+            if (autoScroll) {
+                lrcMenuItems[1].classList.add('checkedItem');
+            } else {
+                lrcMenuItems[1].classList.remove('checkedItem');
+            }
+        });
+
+        lyricsView.addEventListener('scroll', function () {
+            if (!autoScrolling) {
+                autoScroll = false;
+                lrcMenuItems[1].classList.remove('checkedItem');
+            } else {
+                autoScrolling = false;
+            }
+        });
 
         async function findLyrics(artist, title, albumTitle, duration) {
             const url = new URL('https://lrclib.net/api/get');
@@ -65,8 +118,7 @@ function init() {
                 album_name: albumTitle || visStatus.lastMusic.albumTitle
             }
             if (duration) {
-                // Don't use visStatus.lastMusic.duration because it can be inaccurate and cause lyric fetching to fail
-                params.duration = duration;
+                params.duration = duration || visStatus.timeline.duration;
             }
             url.search = new URLSearchParams(params).toString();
 
@@ -77,7 +129,6 @@ function init() {
                 }
             });
             const json = await response.json();
-            console.log(json);
             
             if (response.ok) {
                 if (json.syncedLyrics) {
@@ -122,7 +173,7 @@ function init() {
                     lastSyncedLyricsParsed = null;
                 }
             } else {
-                lyricsView.textContent = 'No lyrics found.';
+                lyricsView.innerHTML = '<mad-string data-locid="VISLRC_STATUS_NOT_FOUND"></mad-string>';
                 lastSyncedLyricsParsed = null;
             }
         }
@@ -158,14 +209,17 @@ function init() {
                             const lyric = lyricsView.children[i];
                             if (i <= nearestIndex) {
                                 lyric.style.color = 'var(--button-text)';
-                                lyric.scrollIntoView({
-                                    behavior: 'smooth',
-                                    block: 'center'
-                                });
+                                if (autoScroll && i === nearestIndex) {
+                                    autoScrolling = true;
+                                    lyric.scrollIntoView({ block: 'center' });
+                                }
                             } else {
                                 lyric.style.color = 'var(--gray-text)';
                             }
                         }
+                    } else {
+                        autoScrolling = true;
+                        lyricsView.scrollTop = 0;
                     }
                 }
             }
@@ -190,64 +244,10 @@ function init() {
                 return -1;
             }
         }
-        
-        document.getElementById('findLyricsBtn').addEventListener('click', function () {
-            loadLyrics();
-        });
     } else {
-        lyricsView.textContent = 'No running instance of ModernActiveDesktop Visualizer found. Open the Visualizer first then reload this window.';
+        lyricsView.innerHTML = '<mad-string data-locid="VISLRC_STATUS_NO_MADVIS"></mad-string>';
     }
 }
-
-document.getElementById('spotifyLoginBtn').addEventListener('click', async function () {
-    if (!localStorage.sysplugIntegration) {
-        madAlert("System plugin is required to sign in to Spotify.<br><br>Note that you don't need it anymore once you finish signing in.", null, "warning");
-        return;
-    }
-    try {
-        const result = await madSysPlug.spotifyLogin();
-        if (result.code && result.verifier && result.clientId) {
-            const response = await fetch('https://accounts.spotify.com/api/token', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: new URLSearchParams({
-                    grant_type: 'authorization_code',
-                    code: result.code,
-                    redirect_uri: 'http://localhost:3031/spotify/callback',
-                    code_verifier: result.verifier,
-                    client_id: result.clientId
-                })
-            });
-            const json = await response.json();
-            if (response.ok) {
-                localStorage.madesktopVisSpotifyInfo = JSON.stringify({
-                    accessToken: json.access_token,
-                    expiresIn: json.expires_in,
-                    fetchedAt: Date.now() / 1000,
-                    refreshToken: json.refresh_token,
-                    clientId: result.clientId
-                });
-                madAlert("Spotify login successful!", null, "info");
-            } else if (json.error) {
-                madAlert("Spotify login failed! (Failed to fetch access token)<br>" + json.error_description, null, "error");
-            } else {
-                madAlert("Spotify login failed! (Failed to fetch access token)<br>Unknown error", null, "error");
-            }
-        } else if (result.error) {
-            madAlert("Spotify login failed!<br>" + result.error, null, "error");
-        } else {
-            madAlert("Spotify login failed!<br>Unknown error", null, "error");
-        }
-    } catch (error) {
-        if (error.message === "Failed to fetch") {
-            madAlert(madGetString("UI_MSG_NO_SYSPLUG"), null, "error");
-        } else {
-            madAlert("Spotify login failed!<br>" + error.message, null, "error");
-        }
-    }
-});
 
 async function getSpotifyNowPlaying() {
     if (!localStorage.madesktopVisSpotifyInfo) {
@@ -303,3 +303,18 @@ async function getSpotifyToken() {
         return null;
     }
 }
+
+setInterval(() => {
+    if (!top.visDeskMover && inited) {
+        if (inited === 2) {
+            lyricsView.innerHTML = '<mad-string data-locid="VISLRC_STATUS_NO_MADVIS"></mad-string>';
+            inited = -1;
+        }
+    } else if (top.visDeskMover) {
+        if (inited === 1) {
+            init();
+        } else if (inited === -1) {
+            location.reload();
+        }
+    }
+}, 2000);

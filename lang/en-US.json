@@ -481,6 +481,7 @@
     "VISUALIZER_TITLE": "Visualization",
     "VISUALIZER_MENU_VIS": "Vi&sualizer",
     "VISUALIZER_MENU_OPT": "&Options",
+    "VISUALIZER_IDLE": "Idle",
 
     "VISUALIZER_PAUSED_ALERT": "Update has been paused. Click here to resume.",
     "VISUALIZER_EXTRA_ALERT": "Having problems? Please try the following:<ul><li>1. Make sure 'Audio recording' is enabled in the Wallpaper Engine properties panel.</li><li>2. Try <a href=\"javascript:top.location.reload()\">reloading %n</a>.</li><li>3. Try restarting Wallpaper Engine.</li></ul>",
@@ -503,7 +504,9 @@
     "VISUALIZER_VIEW_MENUITEM_INFORMATION": "&Information",
     "VISUALIZER_VIEW_MENUITEM_PLAYBACK_STATUS": "&Playback Status",
     "VISUALIZER_VIEW_MENUITEM_ENABLE_MEDIA_CONTROLS": "&Enable Media Controls",
+    "VISUALIZER_VIEW_MENUITEM_GUESS_TIMELINE": "&Guess Timeline",
     "VISUALIZER_VIEW_MENUITEM_SHOW_AS_BG": "Show as &Background",
+    "VISUALIZER_VIEW_MENUITEM_LYRICS": "&Lyrics",
 
     "VISUALIZER_OPT_MENUITEM_COLORS": "&Colors",
     "VISUALIZER_OPT_MENUITEM_TITLE": "Window &Title",
@@ -567,6 +570,30 @@
     "VISCONF_CHAN_SEP_DISABLE": "No processing (pre-3.2 behavior)",
     "VISCONF_CHAN_SEP_REVERSE": "Reverse the right channel (default)",
     "VISCONF_CHAN_SEP_COMBINE": "Combine left and right channels",
+    // #endregion
+
+    // #region Visualizer Lyrics strings
+    "VISLRC_TITLE": "Lyrics",
+    "VISLRC_MENU_LRC": "&Lyrics",
+    "VISLRC_LRC_MENUITEM_LOAD": "Load &Lyrics",
+    "VISLRC_LRC_MENUITEM_AUTO_SCROLL": "Auto &Scroll",
+    "VISLRC_LRC_MENUITEM_VISLRCCONF": "&Options",
+    "VISLRC_LRC_MENUITEM_PROVIDER_INFO": "Lyrics &provided by LRCLIB",
+
+    "VISLRC_STATUS_LOADING": "Loading...",
+    "VISLRC_STATUS_NOT_FOUND": "No lyrics found.",
+    "VISLRC_STATUS_NO_MADVIS": "No running instance of %n Visualizer found. Please open the Visualizer.",
+
+    // #region Visualizer Lyrics Configuration strings
+    "VISLRCCONF_TITLE": "Lyrics Properties",
+    "VISLRCCONF_SPOTIFY_TITLE": "Spotify integration",
+    "VISLRCCONF_SPOTIFY_ENABLE": "Enable extended Spotify integration",
+    "VISLRCCONF_SPOTIFY_LOGIN": "Sign in to &Spotify",
+    "VISLRCCONF_SPOTIFY_LOGOUT": "Sign out from &Spotify",
+    "VISLRCCONF_SPOTIFY_INFO": "<li>Enable extended Spotify integration if you think there are too many missing lyrics, and if your Spotify client uses a non-English language.</li><li>ModernActiveDesktop will fetch the English name of the song and artist from Spotify, and use it to search for lyrics. This will increase the chance of finding the correct lyrics.</li><li>You need to sign in to Spotify to enable this feature.</li><li>To sign in, you need to have the system plugin installed. See <a href=\"javascript:madOpenWindow('SysplugSetupGuide.md',true)\">this guide</a> to install the system plugin.</li>",
+    "VISLRCCONF_FONT_TITLE": "Fonts",
+    "VISLRCCONF_FORCE_UNSYNCED": "Force &unsynced lyrics",
+    "VISLRCCONF_LYRICS_PROVIDER": "Lyrics provider",
     // #endregion
     // #endregion
 

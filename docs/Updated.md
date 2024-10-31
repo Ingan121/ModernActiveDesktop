@@ -47,7 +47,7 @@
     * Renamed some scripts to a shorter name
 * Updated Electron
 
-(2024/11/3)
+(2024/11/)
 
 ## 3.3
 * Added support for desktop patterns

@@ -1,6 +1,12 @@
+@charset "utf-8";
+
+@import '../../../css/libmad.css';
+
 html, body {
     height: 100%;
     overflow: hidden;
+    margin: 0;
+    padding: 0;
 }
 
 body {
@@ -10,11 +16,20 @@ body {
 }
 
 #lyricsView {
-    height: calc(100% - 50px);
+    height: calc(100% - var(--menu-height) - 6px);
     overflow-y: scroll;
     text-align: center;
+    white-space: pre-wrap;
 }
 
 #lyricsView p {
     color: var(--gray-text);
+}
+
+#lyricsView mad-string {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    white-space: initial;
 }

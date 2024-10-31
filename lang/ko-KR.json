@@ -430,6 +430,7 @@
     "VISUALIZER_TITLE": "시각화",
     "VISUALIZER_MENU_VIS": "시각화(&S)",
     "VISUALIZER_MENU_OPT": "옵션(&O)",
+    "VISUALIZER_IDLE": "대기 중",
 
     "VISUALIZER_PAUSED_ALERT": "업데이트가 중단되었습니다. 여기를 클릭하여 재개하세요.",
     "VISUALIZER_EXTRA_ALERT": "문제가 있습니까? 다음을 시도해보세요:<ul><li>1. Wallpaper Engine 속성 패널에서 '오디오 녹음'이 활성화되어 있는지 확인하세요.</li><li>2. <a href=\"javascript:top.location.reload()\">%n을 다시 불러와 보세요</a>.</li><li>3. Wallpaper Engine을 다시 시작하세요.</li></ul>",
@@ -452,7 +453,9 @@
     "VISUALIZER_VIEW_MENUITEM_INFORMATION": "정보(&I)",
     "VISUALIZER_VIEW_MENUITEM_PLAYBACK_STATUS": "재생 상태(&P)",
     "VISUALIZER_VIEW_MENUITEM_ENABLE_MEDIA_CONTROLS": "미디어 제어 활성화(&E)",
+    "VISUALIZER_VIEW_MENUITEM_GUESS_TIMELINE": "재생 시간 추정(&G)",
     "VISUALIZER_VIEW_MENUITEM_SHOW_AS_BG": "배경으로 표시(&B)",
+    "VISUALIZER_VIEW_MENUITEM_LYRICS": "가사(&L)",
 
     "VISUALIZER_OPT_MENUITEM_COLORS": "색상(&C)",
     "VISUALIZER_OPT_MENUITEM_TITLE": "창 제목(&T)",
@@ -515,6 +518,17 @@
     "VISCONF_CHAN_SEP_DISABLE": "처리 안함 (3.2 이전 작동 방식)",
     "VISCONF_CHAN_SEP_REVERSE": "우측 채널 반전 (기본값)",
     "VISCONF_CHAN_SEP_COMBINE": "좌우 채널 합치기",
+
+    "VISLRC_TITLE": "가사",
+    "VISLRC_MENU_LRC": "가사(&L)",
+    "VISLRC_LRC_MENUITEM_LOAD": "가사 불러오기(&L)",
+    "VISLRC_LRC_MENUITEM_AUTO_SCROLL": "자동 스크롤(&S)",
+    "VISLRC_LRC_MENUITEM_VISLRCCONF": "옵션(&O)",
+    "VISLRC_LRC_MENUITEM_PROVIDER_INFO": "가사 제공자: LRCLIB(&P)",
+
+    "VISLRC_STATUS_LOADING": "불러오는 중...",
+    "VISLRC_STATUS_NOT_FOUND": "가사를 찾을 수 없습니다.",
+    "VISLRC_STATUS_NO_MADVIS": "%n 시각화가 실행 중이 아닙니다. 시각화를 실행해주세요.",
 
 
     "CALC_TITLE": "계산기",

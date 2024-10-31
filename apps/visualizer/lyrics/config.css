@@ -1,0 +1,119 @@
+@import url("../../../css/libmad.css");
+
+body {
+    margin: 0;
+    overflow: hidden;
+    background-color: var(--button-face);
+    user-select: none;
+}
+
+p, legend, label,
+:not(button):not([data-disabled]):not(.disabled) > span:not(.label):not(.disabled) {
+    color: var(--window-text);
+}
+
+#madVisLrcConf {
+    -webkit-font-smoothing: none;
+    font-family: var(--ui-font);
+    font-size: 11px;
+}
+
+#spotifyLoginBtn {
+    margin-left: 5px;
+}
+
+#spotifyInfo {
+    margin: 5px 0;
+    padding-left: 15px;
+}
+
+#spotifyInfo mad-string {
+    white-space: initial;
+}
+
+#fontEditorGroup {
+    margin: -5px 8px -2px 0;
+}
+
+.groupLabel {
+    position: relative;
+    top: 2px;
+    margin-left: 5px;
+}
+
+mad-select {
+    width: 197px;
+    margin-left: 4px;
+    min-width: 0 !important;
+}
+
+#fontEditorGroup mad-select {
+    margin-top: 3px;
+}
+
+#textColor {
+    margin-top: -11px;
+    margin-left: -3px;
+}
+
+#boldToggle,
+#italicToggle {
+    position: relative;
+    left: -5px;
+    min-width: 0;
+    min-height: 21px;
+    margin: 0;
+    margin-top: 16px;
+    padding: 0 9px 0 7px;
+}
+
+#italicToggle {
+    padding: 0 9px 0 8px;
+}
+
+#boldToggle span,
+#italicToggle span {
+    position: relative;
+    top: -1px;
+}
+
+button[data-active] {
+    box-shadow: var(--border-sunken-outer), var(--border-sunken-inner);
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdib3g9IjAgMCAyIDIiIHdpZHRoPSIyIiBoZWlnaHQ9IjIiPjxyZWN0IGZpbGw9IndoaXRlIiB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIi8+PHJlY3QgZmlsbD0idHJhbnNwYXJlbnQiIHg9IjEiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiLz48cmVjdCBmaWxsPSJ3aGl0ZSIgeD0iMSIgeT0iMSIgd2lkdGg9IjEiIGhlaWdodD0iMSIvPjxyZWN0IGZpbGw9InRyYW5zcGFyZW50IiB4PSIwIiB5PSIxIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIi8+PC9zdmc+');
+}
+
+#fontSize {
+    width: 57px;
+    height: 21px;
+    margin-left: -1px;
+    -moz-appearance: textfield !important;
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    appearance: none;
+    margin: 0;
+}
+
+fieldset p {
+    margin: 3px 0;
+}
+
+fieldset {
+    margin-top: 5px;
+}
+
+.bottomButtons {
+    margin-top: 5px;
+    justify-content: flex-end;
+}
+
+.disabled {
+    color: var(--button-shadow);
+    text-shadow: 1px 1px 0 var(--button-hilight);
+}
+
+/* Hide options available in the menu bar when the screen is small (for 640x480 support) */
+body[data-small-screen] #albumArtFieldset {
+    display: none;
+}

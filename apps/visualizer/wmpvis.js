@@ -56,7 +56,7 @@ function wallpaperAudioListener(audioArray) {
             return;
         }
         idle = false;
-        log("Active", "log", "MADVis");
+        idleIndicator.style.display = 'none';
     }
 
     // Clear the canvas
@@ -147,7 +147,9 @@ function wallpaperAudioListener(audioArray) {
     }
     if (allZero) {
         idle = true;
-        log("Idle", "log", "MADVis");
+        if (localStorage.madesktopDebugMode) {
+            idleIndicator.style.display = 'block';
+        }
     }
 }
 

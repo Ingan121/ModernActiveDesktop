@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title data-locid="VISLRCCONF_TITLE">Lyrics Properties</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../../../css/98.css">
+    <link rel="stylesheet" href="config.css">
+    <link id="scheme" rel="stylesheet" href="data:text/css,">
+    <style id="style"></style>
+</head>
+<body id="madVisLrcConf">
+    <div class="window-body">
+        <fieldset>
+            <legend><mad-string data-locid="VISLRCCONF_SPOTIFY_TITLE">Spotify integration</mad-string></legend>
+            <input id="enableSpotifyChkBox" type="checkbox" name="enableSpotify" accesskey="i">
+            <label for="enableSpotifyChkBox"><mad-string data-locid="VISLRCCONF_SPOTIFY_ENABLE">Enable extended Spotify <u>i</u>ntegration</mad-string></label>
+            <button id="spotifyLoginBtn" accesskey="s"><mad-string data-locid="VISLRCCONF_SPOTIFY_LOGIN">Sign in to <u>S</u>potify</mad-string></button>
+            <ul id="spotifyInfo">
+                <mad-string data-locid="VISLRCCONF_SPOTIFY_INFO">
+                    <li>Enable extended Spotify integration if you think there are too many missing lyrics, and if your Spotify client uses a non-English language.</li>
+                    <li>ModernActiveDesktop will fetch the English name of the song and artist from Spotify, and use it to search for lyrics. This will increase the chance of finding the correct lyrics.</li>
+                    <li>You need to sign in to Spotify to enable this feature.</li>
+                    <li>To sign in, you need to have the system plugin installed. See <a href="javascript:madOpenWindow('SysplugSetupGuide.md',true)">this guide</a> to install the system plugin.</li>
+                </mad-string>
+            </ul>
+        </fieldset>
+        <fieldset>
+            <legend><mad-string data-locid="VISLRCCONF_FONT_TITLE">Fonts</mad-string></legend>
+            <section id="fontEditorGroup" class="field-row">
+                <p id="fontSelectorWrap">
+                    <span class="groupLabel"><mad-string data-locid="MADCONF_FONT_TITLE"><u>F</u>ont:</mad-string></span>
+                    <mad-select id="fontSelector">
+                        <option hidden selected></option>
+                        <option value="Pixelated MS Sans Serif">Pixelated MS Sans Serif</option>
+                        <option value="Fixedsys Excelsior">Fixedsys Excelsior</option>
+                        <option value="custom"><mad-string data-locid="UI_CUSTOM">Custom</mad-string></option>
+                    </mad-select>
+                </p>
+                <p id="fontSizeWrap">
+                    <span class="label"><mad-string data-locid="MADCONF_FONT_SIZE_TITLE">Siz<u>e</u>:</mad-string></span>
+                    <input id="fontSize" type="number" min="0" max="100" value="">
+                </p>
+                <button id="boldToggle"><span><b>B</b></span></button>
+                <button id="italicToggle"><span>/</span></button>
+            </section>
+        </fieldset>
+        <fieldset>
+            <legend><mad-string data-locid="VISCONF_MISC_TITLE">Miscellaneous</mad-string></legend>
+            <input id="forceUnsyncedChkBox" type="checkbox" name="forceUnsynced" accesskey="u">
+            <label for="forceUnsyncedChkBox"><mad-string data-locid="VISLRCCONF_FORCE_UNSYNCED">Force <u>u</u>nsynced lyrics</mad-string></label>
+        </fieldset>
+        <p><mad-string data-locid="VISLRCCONF_LYRICS_PROVIDER">Lyrics provider</mad-string>: <a href="https://lrclib.net/" target="_cv">LRCLIB</a></p>
+        <section class="bottomButtons field-row">
+            <button id="okBtn"><mad-string data-locid="UI_OK">OK</mad-string></button>
+            <button id="cancelBtn"><mad-string data-locid="UI_CANCEL">Cancel</mad-string></button>
+            <button id="applyBtn" accesskey="a"><mad-string data-locid="UI_APPLY"><u>A</u>pply</mad-string></button>
+        </section>
+    </div>
+
+    <script src="../../../js/functions.js"></script>
+    <script src="../../../js/MadStrings.js"></script>
+    <script src="../../../js/libmad.js"></script>
+    <script src="../../jspaint/lib/font-detective.js"></script>
+    <script src="../../../js/MadSysPlug.js"></script>
+    <script src="../../../js/MadInput.js"></script>
+    <script src="config.js"></script>
+</body>
+</html>

@@ -23,8 +23,8 @@
     --inactive-title-text: #A0A4AC;
     --info-text: #FFFFFF;
     --info-window: #282819;
-    --menu: #00000000;
-    --menu-bar: #00000000;
+    --menu: #101010a0;
+    --menu-bar: #101010a0;
     --menu-hilight: #0066CC;
     --menu-text: #FFFFFF;
     --scrollbar: #282828;
@@ -78,9 +78,8 @@ body[data-init-complete] > .window::before,
     background-color: var(--title-accent);
 }
 
-.contextMenuBg,
-.menu-popup {
-    background-color: #101010a0 !important;
+.menu, .menus, .menu-button {
+    background-color: transparent;
 }
 
 body:has(.jspaint) {

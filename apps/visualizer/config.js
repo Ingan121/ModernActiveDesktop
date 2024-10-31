@@ -94,7 +94,7 @@ defaultRadBtn.addEventListener("click", () => {
 
 schemeRadBtn.addEventListener("click", () => {
     bgColorPickerColor.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--button-face');
-    barColorPickerColor.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--hilight');
+    barColorPickerColor.style.backgroundColor = localStorage.madesktopAeroColor || getComputedStyle(document.documentElement).getPropertyValue('--hilight');
     topColorPickerColor.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--button-text');
     bgColorPicker.disabled = true;
     barColorPicker.disabled = true;
@@ -308,7 +308,7 @@ if (localStorage.madesktopVisOnlyAlbumArt) {
 window.addEventListener('load', () => {
     if (localStorage.madesktopVisUseSchemeColors) {
         bgColorPickerColor.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--button-face');
-        barColorPickerColor.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--hilight');
+        barColorPickerColor.style.backgroundColor = localStorage.madesktopAeroColor || getComputedStyle(document.documentElement).getPropertyValue('--hilight');
         topColorPickerColor.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--button-text');
     }
     madResizeTo(null, document.documentElement.offsetHeight);

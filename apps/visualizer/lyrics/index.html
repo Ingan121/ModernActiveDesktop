@@ -1,20 +1,34 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>MADVis Lyrics Test</title>
+    <title data-locid="VISLRC_TITLE">Lyrics</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="../../../css/98.css">
     <link rel="stylesheet" href="lyrics.css">
+    <link rel="shortcut icon" href="../icon.png">
     <link id="scheme" rel="stylesheet" href="data:text/css,">
     <link id="menuStyle" rel="stylesheet" href="">
     <style id="langStyle"></style>
     <style id="style"></style>
 </head>
-<body>
-    <button id="findLyricsBtn">Find lyrics</button>
-    <button id="spotifyLoginBtn">Sign in to Spotify</button>
-    <div id="lyricsView" class="clientEdge"></div>
+<body id="madVisLrc">
+    <div id="menuBar" class="menu">
+        <div id="lrcMenuBtn" class="menuBtn"><span><mad-string data-locid="VISLRC_MENU_LRC"><u>L</u>yrics</mad-string></span></div>
+    </div>
+    <div id="lyricsView" class="clientEdge borderedScrollBar">
+        <mad-string data-locid="VISLRC_STATUS_LOADING">Loading...</mad-string>
+    </div>
+
+    <div id="lrcMenuBg" class="contextMenuBg window" tabindex="-1">
+        <div id="lrcMenu" class="contextMenu window-body">
+            <div class="contextMenuItem"><p><mad-string data-locid="VISLRC_LRC_MENUITEM_LOAD">Load <u>L</u>yrics</mad-string></p></div>
+            <div class="contextMenuItem checkedItem"><p><mad-string data-locid="VISLRC_LRC_MENUITEM_AUTO_SCROLL">Auto <u>S</u>croll</mad-string></p></div>
+            <div class="contextMenuItem"><p><mad-string data-locid="VISLRC_LRC_MENUITEM_VISLRCCONF"><u>O</u>ptions</mad-string></p></div>
+            <div class="contextMenuItem"><p><mad-string data-locid="VISLRC_LRC_MENUITEM_PROVIDER_INFO">Lyrics <u>p</u>rovided by LRCLIB</mad-string></p></div>
+            <div class="contextMenuItem"><p><mad-string data-locid="UI_CLOSE"><u>C</u>lose</mad-string></p></div>
+        </div>
+    </div>
     <script src="../../../js/functions.js"></script>
     <script src="../../../js/MadStrings.js"></script>
     <script src="../../../js/libmad.js"></script>

@@ -36,6 +36,7 @@ if (parent === window) {
 // #region Constants and variables
 const schemeElement = document.getElementById("scheme");
 const menuBar = document.getElementById('menuBar');
+const idleIndicator = document.getElementById('idleIndicator');
 
 const mainArea = document.getElementById('mainArea');
 const albumArt = document.getElementById('albumArt');
@@ -101,6 +102,7 @@ let schemeTopColor = null;
 
 const visStatus = {};
 madDeskMover.visStatus = visStatus;
+let timelineGuesserTick = null;
 
 // Always start with true regardless of OS, to allow already enabled MedInt features to be disabled
 // (As it just clicks the menu item for disabling, if it starts with false, error messages will be shown constantly on non-Win10 systems)
@@ -196,7 +198,7 @@ if (localStorage.madesktopVisFullscreen) {
     viewMenuItems[1].classList.add('checkedItem');
 
     if (localStorage.madesktopVisBgMode) {
-        viewMenuItems[5].classList.add('checkedItem');
+        viewMenuItems[6].classList.add('checkedItem');
         madDeskMover.bottomMost = true;
         madBringToTop(); // Trigger z-index update
     }
@@ -223,6 +225,10 @@ if (localStorage.madesktopVisStatusShown) {
         infoMainArea.style.display = 'none';
         infoAreaSeparator.style.display = 'none';
     }
+}
+
+if (localStorage.madesktopVisGuessTimeline) {
+    viewMenuItems[5].classList.add('checkedItem');
 }
 
 if (localStorage.sysplugIntegration) {
@@ -302,7 +308,7 @@ viewMenuItems[1].addEventListener('click', () => { // Fullscreen button
         viewMenuItems[1].classList.remove('checkedItem');
         delete localStorage.madesktopVisFullscreen;
         if (localStorage.madesktopVisBgMode) {
-            viewMenuItems[5].click();
+            viewMenuItems[6].click();
         }
     } else {
         madEnterFullscreen();
@@ -443,10 +449,31 @@ viewMenuItems[4].addEventListener('click', () => { // Enable Media Controls butt
     }
 });
 
-viewMenuItems[5].addEventListener('click', () => { // Show as Background button
+viewMenuItems[5].addEventListener('click', () => { // Guess Timeline button
+    if (!visStatus.mediaIntegrationAvailable) {
+        madAlert(madGetString(NO_MEDINT_MSG), null, isWin10 ? 'info' : 'error');
+    }
+
+    if (localStorage.madesktopVisGuessTimeline) {
+        delete localStorage.madesktopVisGuessTimeline;
+        viewMenuItems[5].classList.remove('checkedItem');
+        if (timelineGuesserTick) {
+            clearInterval(timelineGuesserTick);
+            timelineGuesserTick = null;
+        }
+    } else {
+        localStorage.madesktopVisGuessTimeline = true;
+        viewMenuItems[5].classList.add('checkedItem');
+        if (visStatus.timeline) {
+            timelineGuesserTick
+        }
+    }
+});
+
+viewMenuItems[6].addEventListener('click', () => { // Show as Background button
     if (localStorage.madesktopVisBgMode) {
         delete localStorage.madesktopVisBgMode;
-        viewMenuItems[5].classList.remove('checkedItem');
+        viewMenuItems[6].classList.remove('checkedItem');
         madDeskMover.bottomMost = false;
         madBringToTop(); // Trigger z-index update
         if (madDeskMover.isFullscreen) {
@@ -454,13 +481,25 @@ viewMenuItems[5].addEventListener('click', () => { // Show as Background button
         }
     } else {
         localStorage.madesktopVisBgMode = true;
-        viewMenuItems[5].classList.add('checkedItem');
+        viewMenuItems[6].classList.add('checkedItem');
         madDeskMover.bottomMost = true;
         madBringToTop(); // Trigger z-index update
         if (!madDeskMover.isFullscreen) {
             viewMenuItems[1].click();
         }
     }
+});
+
+viewMenuItems[7].addEventListener('click', () => { // Lyrics button
+    const options = {
+        left: parseInt(madDeskMover.config.xPos) + 25 + 'px',
+        top: parseInt(madDeskMover.config.yPos) + 50 + 'px',
+        width: '400px', height: '502px'
+    }
+    const lyricsDeskMover = madOpenWindow('apps/visualizer/lyrics/index.html', false, options);
+    lyricsDeskMover.addEventListener('load', () => {
+        document.dispatchEvent(mediaPropertiesEvent);
+    }, null, "window");
 });
 
 optMenuItems[1].addEventListener('click', () => { // Window Title button
@@ -731,6 +770,8 @@ function wallpaperMediaTimelineListener(event) {
         seekBar.style.backgroundColor = 'transparent';
         seekHandle.style.display = 'none';
         timeText.parentElement.style.display = 'none';
+        visStatus.timelineOrig = null;
+        visStatus.timeline = null;
         return;
     }
     const percent = event.position / event.duration * 100;
@@ -740,8 +781,19 @@ function wallpaperMediaTimelineListener(event) {
     timeText.textContent = `${formatTime(event.position)} / ${formatTime(event.duration)}`;
     timeText.parentElement.style.display = 'block';
 
-    visStatus.timeline = event;
+    visStatus.timelineOrig = event;
+    visStatus.timeline = {
+        position: event.position,
+        duration: event.duration
+    };
     document.dispatchEvent(mediaTimelineEvent);
+
+    if (localStorage.madesktopVisGuessTimeline && visStatus.state === window.wallpaperMediaIntegration.PLAYBACK_PLAYING) {
+        if (timelineGuesserTick) {
+            clearInterval(timelineGuesserTick);
+        }
+        timelineGuesserTick = setInterval(timelineGuesser, 1000);
+    }
 }
 
 function formatTime(sec) {
@@ -752,6 +804,27 @@ function formatTime(sec) {
         return formatted.slice(3);
     }
     return formatted;
+}
+
+function timelineGuesser() {
+    if (!visStatus.timeline || !visStatus.lastMusic || !localStorage.madesktopVisGuessTimeline) {
+        if (timelineGuesserTick) {
+            clearInterval(timelineGuesserTick);
+            timelineGuesserTick = null;
+        }
+        return;
+    }
+    if (visStatus.state === window.wallpaperMediaIntegration.PLAYBACK_PLAYING) {
+        if (visStatus.timeline.position <= visStatus.timeline.duration) {
+            visStatus.timeline.position += 1;
+            seekHandle.style.left = `calc(${visStatus.timeline.position / visStatus.timeline.duration * 100}% - 6px)`;
+            timeText.textContent = `${formatTime(visStatus.timeline.position)} / ${formatTime(visStatus.timeline.duration)}`;
+        } else {
+            clearInterval(timelineGuesserTick);
+            timelineGuesserTick = null;
+        }
+        document.dispatchEvent(mediaTimelineEvent);
+    }
 }
 
 function wallpaperMediaPlaybackListener(event) {
@@ -897,7 +970,7 @@ function configChanged() {
 }
 
 function updateSchemeColor() {
-    schemeBarColor = getComputedStyle(document.documentElement).getPropertyValue('--hilight');
+    schemeBarColor = localStorage.madesktopAeroColor || getComputedStyle(document.documentElement).getPropertyValue('--hilight');
     schemeTopColor = getComputedStyle(document.documentElement).getPropertyValue('--button-text');
     if (localStorage.madesktopVisUseSchemeColors && (!visStatus.lastAlbumArt || !localStorage.madesktopVisFollowAlbumArt)) {
         document.body.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--button-face');

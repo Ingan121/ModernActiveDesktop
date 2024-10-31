@@ -80,6 +80,12 @@ a {
     opacity: 1 !important;
 }
 
+#idleIndicator {
+    margin-left: auto;
+    pointer-events: none;
+    display: none;
+}
+
 .contextMenuBg {
     z-index: 6;
 }

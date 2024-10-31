@@ -1815,6 +1815,7 @@
                 delete localStorage.madesktopVisInfoShown;
                 delete localStorage.madesktopVisStatusShown;
                 delete localStorage.madesktopVisMediaControls;
+                delete localStorage.madesktopVisGuessTimeline;
                 delete localStorage.madesktopVisTitleMode;
                 delete localStorage.madesktopVisChannelSeparation;
                 delete localStorage.madesktopVisBarWidth;
