@@ -1057,7 +1057,7 @@
                 // (can't even close the dialog)
                 // If the system plugin is available, use that for receiving input
                 // Otherwise, use the on-screen keyboard
-                if (!await madSysPlug.beginInput(true)) {
+                if (!madSysPlug.inputStatus && !await madSysPlug.beginInput(true)) {
                     if (kbdSupport === -1) {
                         if (!oskWindow.src) {
                             oskWindow.src = "apps/osk/index.html";

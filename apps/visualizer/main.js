@@ -449,7 +449,7 @@ viewMenuItems[4].addEventListener('click', () => { // Enable Media Controls butt
     }
 });
 
-viewMenuItems[5].addEventListener('click', () => { // Guess Timeline button
+viewMenuItems[5].addEventListener('click', () => { // Estimate Timeline button
     if (!visStatus.mediaIntegrationAvailable) {
         madAlert(madGetString(NO_MEDINT_MSG), null, isWin10 ? 'info' : 'error');
     }
@@ -496,10 +496,7 @@ viewMenuItems[7].addEventListener('click', () => { // Lyrics button
         top: parseInt(madDeskMover.config.yPos) + 50 + 'px',
         width: '400px', height: '502px'
     }
-    const lyricsDeskMover = madOpenWindow('apps/visualizer/lyrics/index.html', false, options);
-    lyricsDeskMover.addEventListener('load', () => {
-        document.dispatchEvent(mediaPropertiesEvent);
-    }, null, "window");
+    madOpenWindow('apps/visualizer/lyrics/index.html', false, options);
 });
 
 optMenuItems[1].addEventListener('click', () => { // Window Title button

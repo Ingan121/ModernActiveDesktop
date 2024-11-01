@@ -1,4 +1,4 @@
-// config.js for ModernActiveDesktop Visualizer
+// config.js for ModernActiveDesktop Visualizer Lyrics
 // Made by Ingan121
 // Licensed under the MIT License
 // SPDX-License-Identifier: MIT
@@ -25,7 +25,7 @@ let fonts = [
     "Pixelated MS Sans Serif",
     "Fixedsys Excelsior",
 ];
-let fontShorthand = localStorage.madesktopVisLyricsFont || "11px " + getComputedStyle(document.documentElement).getPropertyValue("--ui-font");
+let fontShorthand = localStorage.madesktopVisLyricsFont || "11px var(--ui-font)";
 
 FontDetective.each(font => {
     const option = document.createElement("option");
@@ -58,7 +58,7 @@ for (const textbox of textboxes) {
 spotifyLoginBtn.addEventListener("click", async function () {
     if (!localStorage.madesktopVisSpotifyInfo) {
         if (!localStorage.sysplugIntegration) {
-            madAlert("System plugin is required to sign in to Spotify.<br><br>Note that you don't need it anymore once you finish signing in.", null, "warning");
+            madAlert(madGetString("VISLRCCONF_SPOTIFY_SYSPLUG_REQUIRED"), null, "warning");
             return;
         }
         try {
@@ -86,28 +86,40 @@ spotifyLoginBtn.addEventListener("click", async function () {
                         refreshToken: json.refresh_token,
                         clientId: result.clientId
                     });
-                    madAlert("Spotify login successful!", null, "info");
+                    madAlert(madGetString("VISLRCCONF_SPOTIFY_LOGIN_SUCCESS"), null, "info");
                     spotifyLoginBtn.innerHTML = madGetString("VISLRCCONF_SPOTIFY_LOGOUT");
                 } else if (json.error) {
-                    madAlert("Spotify login failed! (Failed to fetch access token)<br>" + json.error_description, null, "error");
+                    if (json.error_description) {
+                        madAlert(madGetString("VISLRCCONF_SPOTIFY_LOGIN_FAIL_TOKEN") + "<br>" + json.error_description, null, "error");
+                    } else {
+                        madAlert(madGetString("VISLRCCONF_SPOTIFY_LOGIN_FAIL_TOKEN"), null, "error");
+                    }
                 } else {
-                    madAlert("Spotify login failed! (Failed to fetch access token)<br>Unknown error", null, "error");
+                    madAlert(madGetString("VISLRCCONF_SPOTIFY_LOGIN_FAIL_TOKEN"), null, "error");
                 }
             } else if (result.error) {
-                madAlert("Spotify login failed!<br>" + result.error, null, "error");
+                if (result.error === "access_denied") {
+                    madAlert(madGetString("VISLRCCONF_SPOTIFY_LOGIN_USER_CANCEL"), null, "info");
+                } else if (result.error === "Timeout") {
+                    madAlert(madGetString("VISLRCCONF_SPOTIFY_LOGIN_TIMEOUT"), null, "error");
+                } else if (result.error === "System plugin has denied the connection") {
+                    madAlert(madGetString("VISLRCCONF_SPOTIFY_LOGIN_SYSPLUG_DENIED"), null, "error");
+                } else {
+                    madAlert(madGetString("VISLRCCONF_SPOTIFY_LOGIN_FAIL") + "<br>" + result.error, null, "error");
+                }
             } else {
-                madAlert("Spotify login failed!<br>Unknown error", null, "error");
+                madAlert(madGetString("VISLRCCONF_SPOTIFY_LOGIN_FAIL"), null, "error");
             }
         } catch (error) {
             if (error.message === "Failed to fetch") {
                 madAlert(madGetString("UI_MSG_NO_SYSPLUG"), null, "error");
             } else {
-                madAlert("Spotify login failed!<br>" + error.message, null, "error");
+                madAlert(madGetString("VISLRCCONF_SPOTIFY_LOGIN_FAIL") + "<br>" + error.message, null, "error");
             }
         }
     } else {
         delete localStorage.madesktopVisSpotifyInfo;
-        madAlert("Signed out from Spotify!", null, "info");
+        madAlert(madGetString("VISLRCCONF_SPOTIFY_LOGOUT_SUCCESS"), null, "info");
         spotifyLoginBtn.innerHTML = madGetString("VISLRCCONF_SPOTIFY_LOGIN");
     }
 });
@@ -170,6 +182,8 @@ function setFont(customFamily) {
         fontShorthand += customFamily;
     } else if (fontSelector.value.includes(" ")) {
         fontShorthand += `"${fontSelector.value}", var(--ui-font)`;
+    } else if (fontSelector.value === "uifont") {
+        fontShorthand += 'var(--ui-font)';
     } else {
         fontShorthand += fontSelector.value + ', var(--ui-font)';
     }
@@ -190,15 +204,10 @@ function getFontInfo() {
         fontInfo.size = split[0];
         fontInfo.family = split.slice(1).join(" ");
     }
-    let i = 0;
-    while (fonts.indexOf(fontInfo.primaryFamily) === -1 && i < fontInfo.family.split(",").length) {
-        fontInfo.primaryFamily = fontInfo.family.split(",")[i++].trim();
-        if (fontInfo.primaryFamily.startsWith('"') || fontInfo.primaryFamily.startsWith("'")) {
-            fontInfo.primaryFamily = fontInfo.primaryFamily.slice(1, -1);
-        }
-    }
-    if (!fontInfo.primaryFamily) {
-        fontInfo.primaryFamily = "Unknown Font";
+    // Don't check for the existence here as FD load is quite slow
+    fontInfo.primaryFamily = fontInfo.family.split(",")[0].trim();
+    if (fontInfo.primaryFamily.startsWith('"') || fontInfo.primaryFamily.startsWith("'")) {
+        fontInfo.primaryFamily = fontInfo.primaryFamily.slice(1, -1);
     }
     return fontInfo;
 }
@@ -211,12 +220,12 @@ window.apply = function () {
     }
     localStorage.madesktopVisLyricsFont = fontShorthand;
     if (forceUnsyncedChkBox.checked) {
-        localStorage.madesktopVisForceUnsynced = true;
+        localStorage.madesktopVisLyricsForceUnsynced = true;
     } else {
-        delete localStorage.madesktopVisForceUnsynced;
+        delete localStorage.madesktopVisLyricsForceUnsynced;
     }
 
-    window.targetDeskMover.windowElement.contentWindow.configChanged();
+    window.configChanged();
 }
 
 okBtn.addEventListener("click", () => {
@@ -242,8 +251,12 @@ if (localStorage.madesktopVisSpotifyInfo) {
 const fontInfo = getFontInfo();
 fontSize.dataset.fullValue = fontInfo.size;
 fontSize.value = parseInt(fontInfo.size);
-fontSelector.value = fontInfo.primaryFamily;
-fontSelector.label.textContent = fontInfo.primaryFamily;
+if (fontInfo.primaryFamily === "var(--ui-font)") {
+    fontSelector.value = "uifont";
+} else {
+    fontSelector.value = fontInfo.primaryFamily;
+    fontSelector.label.textContent = fontInfo.primaryFamily;
+}
 if (fontInfo.bold) {
     boldToggle.dataset.active = true;
 }
@@ -251,14 +264,14 @@ if (fontInfo.italic) {
     italicToggle.dataset.active = true;
 }
 
-if (localStorage.madesktopVisForceUnsynced) {
+if (localStorage.madesktopVisLyricsForceUnsynced) {
     forceUnsyncedChkBox.checked = true;
 }
 
 window.addEventListener('load', () => {
-    madResizeTo(null, document.documentElement.offsetHeight);
-    if (document.documentElement.offsetHeight > top.vHeight) {
-        document.body.dataset.smallScreen = true;
+    if (madScaleFactor !== 1) {
+        madResizeTo(null, document.documentElement.offsetHeight + 40);
+    } else {
         madResizeTo(null, document.documentElement.offsetHeight);
     }
 });

@@ -28,7 +28,8 @@ if (args.help) {
   console.log("--listen: IP address to listen on (default: 127.0.0.1)");
   console.log("--cors: CORS origin to allow (default: https://madesktop.ingan121.com)");
   console.log("--ignore-token: Don't check for a token in the request");
-  console.log("--metrics: Get window metrics (border size, title height), for internal use only")
+  console.log("--spotify: Custom Spotify Client ID for Spotify API integration");
+  console.log("--metrics: Get window metrics (border size, title height), for internal use only");
   console.log("--help: Show this help message\n");
   console.log("Warning: Using --cors=*, --listen=0.0.0.0, or --ignore-token is considered insecure. Please only use these options for testing.\n");
   process.exit();
@@ -45,12 +46,12 @@ let ignoreToken = args['ignore-token'];
 let denyUnknown = false;
 
 // Spotify API
-// Only for fetching currently playing track by default, to comply with Spotify's ToS and design guidelines
-// Provide your own Spotify Client ID with --spotify and set localStorage.madesktopVisUseSpotify to true in MAD to enable media integration and control in MADVis
+// Only for fetching currently playing track in MADVis Lyrics, to comply with Spotify's ToS and design guidelines
 const spotifyClientId = args.spotify || '98a0e605349f416bbac718ce4d3c30c2';
 let spotifyCodeVerifier = null;
 let spotifyCsrfToken = null;
 let spotifyPendingRes = null;
+let spotifyTimeout = null;
 
 const metrics = {
   // Windows 10 default metrics
@@ -654,7 +655,7 @@ function onRequest(req, res) {
     case '/spotify/auth':
       if (args.port && args.port !== 3031 && !args.spotify) {
         res.writeHead(500);
-        res.end('Custom port not supported with default Spotify Client ID!', 'utf-8');
+        res.end('Custom port is not supported with the default Spotify Client ID!', 'utf-8');
         return;
       }
       spotifyCodeVerifier = crypto.randomBytes(64).toString('hex');
@@ -670,12 +671,20 @@ function onRequest(req, res) {
         code_challenge_method: 'S256',
         code_challenge: codeChallenge,
         state: spotifyCsrfToken,
-        scope: 'user-read-playback-state user-modify-playback-state'
+        scope: 'user-read-playback-state'
       };
       authUrl.search = new URLSearchParams(authParams).toString();
 
       shell.openExternal(authUrl.toString());
       spotifyPendingRes = res;
+
+      spotifyTimeout = setTimeout(() => {
+        if (spotifyPendingRes) {
+          spotifyPendingRes.writeHead(500, {'Content-Type':'application/json'});
+          spotifyPendingRes.end('{"error":"Timeout"}');
+          spotifyPendingRes = null;
+        }
+      }, 180000); // 3 minutes
       break;
 
     // Spotify auth callback
@@ -695,6 +704,7 @@ function onRequest(req, res) {
           spotifyPendingRes.writeHead(400, {'Content-Type':'application/json'});
           spotifyPendingRes.end('{"error":"400 Bad Request"}');
           spotifyPendingRes = null;
+          clearTimeout(spotifyTimeout);
         }
         return;
       }
@@ -705,6 +715,7 @@ function onRequest(req, res) {
           spotifyPendingRes.writeHead(403, {'Content-Type':'application/json'});
           spotifyPendingRes.end('{"error":"CSRF token mismatch"}');
           spotifyPendingRes = null;
+          clearTimeout(spotifyTimeout);
         }
         return;
       }
@@ -715,6 +726,7 @@ function onRequest(req, res) {
           spotifyPendingRes.writeHead(500, {'Content-Type':'application/json'});
           spotifyPendingRes.end('{"error":"' + error + '"}');
           spotifyPendingRes = null;
+          clearTimeout(spotifyTimeout);
         }
         return;
       }
@@ -725,6 +737,7 @@ function onRequest(req, res) {
         spotifyPendingRes.writeHead(200, {'Content-Type':'application/json'});
         spotifyPendingRes.end(JSON.stringify({ code, verifier: spotifyCodeVerifier, clientId: spotifyClientId }));
         spotifyPendingRes = null;
+        clearTimeout(spotifyTimeout);
       }
       break;
 
@@ -875,6 +888,9 @@ function openInputPanel(noTimeout) {
   inputPanel.on('show', () => {
     // Ensure the window is focused when opened
     setTimeout(() => {
+      if (inputPanel.isDestroyed()) {
+        return;
+      }
       inputPanel.minimize();
       inputPanel.restore();
       inputPanel.focus();

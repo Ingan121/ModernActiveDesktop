@@ -30,6 +30,8 @@ const keysToNotImport = [
     'madesktopBgWeImg',
     'madesktopBgVideo',
     'madesktopLastPresetUrl',
+    // Sensitive account information
+    'madesktopVisSpotifyInfo',
     // Device specific configs
     'madesktopSysColorCache',
     // Legacy configs that existed before config export was introduced
@@ -57,6 +59,7 @@ const keysToIgnoreOnPreset = [
     'jspaint language',
     'sysplugIntegration',
     'madesktopVisMediaControls',
+    'madesktopVisSpotifyEnabled',
     'madesktopCorsProxy',
     // Aggregated configs
     'madesktopSavedSchemes',
@@ -72,6 +75,8 @@ const keysToIgnoreOnPreset = [
     'madesktopCheckedChanges',
     'madesktopCheckedConfigs',
     'madesktopCheckedGitHub',
+    'madesktopVisGuessTimeline',
+    'madesktopVisLyricsForceUnsynced',
     // Debug configs
     'madesktopDebugMode',
     'madesktopDebugLog',

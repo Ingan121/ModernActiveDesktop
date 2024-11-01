@@ -135,7 +135,6 @@
             const headers = noTimeout ? { "X-No-Timeout": "true" } : {};
             const response = await request("begininput", null, headers);
             waitingForBeginInput = false;
-            console.log(response);
             if (response !== "OK") {
                 return false;
             } else {

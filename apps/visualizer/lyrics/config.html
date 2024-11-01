@@ -31,6 +31,7 @@
                     <span class="groupLabel"><mad-string data-locid="MADCONF_FONT_TITLE"><u>F</u>ont:</mad-string></span>
                     <mad-select id="fontSelector">
                         <option hidden selected></option>
+                        <option value="uifont"><mad-string data-locid="MADCONF_ITEM_USER_INTERFACE">UI Font</mad-string></option>
                         <option value="Pixelated MS Sans Serif">Pixelated MS Sans Serif</option>
                         <option value="Fixedsys Excelsior">Fixedsys Excelsior</option>
                         <option value="custom"><mad-string data-locid="UI_CUSTOM">Custom</mad-string></option>
@@ -48,8 +49,14 @@
             <legend><mad-string data-locid="VISCONF_MISC_TITLE">Miscellaneous</mad-string></legend>
             <input id="forceUnsyncedChkBox" type="checkbox" name="forceUnsynced" accesskey="u">
             <label for="forceUnsyncedChkBox"><mad-string data-locid="VISLRCCONF_FORCE_UNSYNCED">Force <u>u</u>nsynced lyrics</mad-string></label>
+            <ul id="syncInfo">
+                <mad-string data-locid="VISLRCCONF_FORCE_UNSYNCED_INFO">
+                    <li>Enable this option if your music player does not provide timeline information, or if your player provides unreliable timeline information (e.g. browsers).</li>
+                    <li>Enable Visualizer -> View -> Estimate Timeline if your player provides reliable timeline info but doesn't update it every seconds (e.g. Spotify).</li>
+                </mad-string>
+            </ul>
         </fieldset>
-        <p><mad-string data-locid="VISLRCCONF_LYRICS_PROVIDER">Lyrics provider</mad-string>: <a href="https://lrclib.net/" target="_cv">LRCLIB</a></p>
+        <p><mad-string data-locid="VISLRCCONF_LYRICS_PROVIDER">Lyrics provided by</mad-string> <a href="https://lrclib.net/" target="_cv">LRCLIB</a></p>
         <section class="bottomButtons field-row">
             <button id="okBtn"><mad-string data-locid="UI_OK">OK</mad-string></button>
             <button id="cancelBtn"><mad-string data-locid="UI_CANCEL">Cancel</mad-string></button>

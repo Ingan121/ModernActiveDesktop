@@ -74,7 +74,7 @@ function init() {
         configColors.background = buttonFace;
     }
 
-    madResizeTo(null, document.documentElement.offsetHeight);
+    madResizeTo(null, document.documentElement.offsetHeight / madScaleFactor);
 }
 
 function changeColor(color) {

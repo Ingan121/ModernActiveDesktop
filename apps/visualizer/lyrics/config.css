@@ -22,12 +22,14 @@ p, legend, label,
     margin-left: 5px;
 }
 
-#spotifyInfo {
+#spotifyInfo,
+#syncInfo {
     margin: 5px 0;
     padding-left: 15px;
 }
 
-#spotifyInfo mad-string {
+#spotifyInfo mad-string,
+#syncInfo mad-string {
     white-space: initial;
 }
 
