@@ -5,8 +5,6 @@
 
 'use strict';
 
-const textboxes = document.querySelectorAll("input[type='text'], input[type='number']");
-
 const enableSpotifyChkBox = document.getElementById("enableSpotifyChkBox");
 const spotifyLoginBtn = document.getElementById("spotifyLoginBtn");
 
@@ -21,6 +19,16 @@ const okBtn = document.getElementById("okBtn");
 const cancelBtn = document.getElementById("cancelBtn");
 const applyBtn = document.getElementById("applyBtn");
 
+const links = document.querySelectorAll('a');
+
+for (const link of links) {
+    // Unset the alwaysOnTop flag when the user clicks on a link
+    link.addEventListener('click', () => {
+        delete madDeskMover.config.alwaysOnTop;
+        madBringToTop();
+    });
+}
+
 let fonts = [
     "Pixelated MS Sans Serif",
     "Fixedsys Excelsior",
@@ -34,26 +42,6 @@ FontDetective.each(font => {
     fontSelector.appendChild(option);
     fonts.push(font.name);
 });
-
-for (const textbox of textboxes) {
-    textbox.addEventListener("click", async function () {
-        if (madKbdSupport !== 1) {
-            if (madSysPlug.inputStatus) {
-                madSysPlug.focusInput();
-            } else if (!await madSysPlug.beginInput()) {
-                const msg = textbox.placeholder ? "UI_PROMPT_ENTER_VALUE_RESETTABLE" : "UI_PROMPT_ENTER_VALUE";
-                const res = await madPrompt(madGetString(msg), null, textbox.placeholder, textbox.value, true);
-                if (res === null) return;
-                if (res === '') {
-                    textbox.value = textbox.placeholder;
-                } else {
-                    textbox.value = res;
-                }
-                textbox.dispatchEvent(new Event('change'));
-            }
-        }
-    });
-}
 
 spotifyLoginBtn.addEventListener("click", async function () {
     if (!localStorage.madesktopVisSpotifyInfo) {

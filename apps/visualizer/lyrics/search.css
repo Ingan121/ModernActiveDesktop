@@ -1,0 +1,49 @@
+@import url("../../../css/libmad.css");
+
+body {
+    overflow: hidden;
+    background-color: var(--button-face);
+    user-select: none;
+}
+
+p, legend, label,
+:not(button):not([data-disabled]):not(.disabled) > span:not(.label):not(.disabled) {
+    color: var(--window-text);
+}
+
+#madVisLrcFind {
+    -webkit-font-smoothing: none;
+    font-family: var(--ui-font);
+    font-size: 11px;
+}
+
+#searchBar {
+    width: 100%;
+}
+
+#searchResults {
+    width: 100%;
+    margin: 5px 0;
+}
+
+label[for="addOverrideChkBox"] {
+    margin-bottom: 4px;
+}
+
+fieldset p {
+    margin: 3px 0;
+}
+
+fieldset {
+    margin-top: 5px;
+}
+
+.bottomButtons {
+    margin-top: 8px;
+    justify-content: flex-end;
+}
+
+.disabled {
+    color: var(--button-shadow);
+    text-shadow: 1px 1px 0 var(--button-hilight);
+}

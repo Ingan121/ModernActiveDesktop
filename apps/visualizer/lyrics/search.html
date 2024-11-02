@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title data-locid="VISLRCFIND_TITLE">Search Lyrics</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../../../css/98.css">
+    <link rel="stylesheet" href="search.css">
+    <link id="scheme" rel="stylesheet" href="data:text/css,">
+    <link id="menuStyle" rel="stylesheet" href="">
+    <style id="langStyle"></style>
+    <style id="style"></style>
+</head>
+<body id="madVisLrcFind">
+    <section class="field-row">
+        <label for="searchBar"><mad-string data-locid="VISLRCFIND_SEARCH_LABEL">Search lyrics:</mad-string></label>
+        <input id="searchBar" type="text">
+        <button id="searchBtn" class="button" accesskey="s"><mad-string data-locid="VISLRCFIND_SEARCH"><u>S</u>earch</mad-string></button>
+    </section>
+    <mad-select id="searchResults" disabled></mad-select>
+    <input id="addOverrideChkBox" type="checkbox" name="addOverride">
+    <label for="addOverrideChkBox"><mad-string data-locid="VISLRCFIND_ADD_OVERRIDE">Always use this lyrics for this song</mad-string></label><br>
+    <mad-string id="overrideInfo" data-locid="VISLRCFIND_OVERRIDE_INFO">Click Lyrics -> Load Lyrics to remove the override.</mad-string>
+    <section class="bottomButtons field-row">
+        <button id="okBtn" class="button"><mad-string data-locid="UI_OK">OK</mad-string></button>
+        <button id="cancelBtn" class="button"><mad-string data-locid="UI_CANCEL">Cancel</mad-string></button>
+        <button id="applyBtn" class="button"><mad-string data-locid="UI_APPLY"><u>A</u>pply</mad-string></button>
+    </section>
+    <script src="../../../js/functions.js"></script>
+    <script src="../../../js/MadStrings.js"></script>
+    <script src="../../../js/libmad.js"></script>
+    <script src="../../../js/MadSysPlug.js"></script>
+    <script src="../../../js/MadInput.js"></script>
+    <script src="search.js"></script>
+</body>
+</html>

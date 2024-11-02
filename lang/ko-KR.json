@@ -65,7 +65,7 @@
     "MAD_CONFIRM_RESET": "%n의 모든 설정 변경 사항이 삭제됩니다. 계속하시겠습니까?<br><br>전체 초기화를 눌러 로컬 저장소를 완전히 지울 수 있습니다.",
     "MAD_CONFIRM_RESET_TITLE": "%n 초기화",
     "MAD_CONFIRM_RESET_HARD": "이 도메인의 다른 애플리케이션에도 영향을 줍니다. 계속하시겠습니까?",
-    "MAD_CONFIRM_RESET_HARD_WPE": "다른 배경화면의 저장된 데이터에도 영향을 줍니다. (Wallpaper Engine 속성 창에서 설정된 것에는 영향을 주지 않습니다.) 계속하시겠습니까?",
+    "MAD_CONFIRM_RESET_HARD_WPE": "다른 배경화면의 저장된 데이터에도 영향을 줍니다. (Wallpaper Engine 속성 창에서 설정된 것에는 영향을 주지 않습니다.)<br><br>계속하시겠습니까?",
     "MAD_CONFIRM_RESET_HARD_TITLE": "전체 초기화",
     "MAD_MSG_TEMP_WINDOW": "이 창은 임시 창이므로 초기화할 수 없습니다. 그냥 닫으세요.",
     "MAD_PROMPT_ENTER_URL": "URL 입력 (빈칸으로 두면 초기화)",
@@ -522,13 +522,18 @@
     "VISLRC_TITLE": "가사",
     "VISLRC_MENU_LRC": "가사(&L)",
     "VISLRC_LRC_MENUITEM_LOAD": "가사 불러오기(&L)",
-    "VISLRC_LRC_MENUITEM_AUTO_SCROLL": "자동 스크롤(&S)",
+    "VISLRC_LRC_MENUITEM_SEARCH": "가사 검색(&S)",
+    "VISLRC_LRC_MENUITEM_OPENFILE": "가사 파일 열기(&F)",
+    "VISLRC_LRC_MENUITEM_AUTO_SCROLL": "자동 스크롤(&A)",
     "VISLRC_LRC_MENUITEM_VISLRCCONF": "옵션(&O)",
 
     "VISLRC_STATUS_LOADING": "불러오는 중...",
     "VISLRC_STATUS_NOT_FOUND": "가사를 찾을 수 없습니다.",
     "VISLRC_STATUS_NO_MUSIC": "음악이 재생 중이 아닙니다.",
+    "VISLRC_STATUS_NO_MEDINT": "미디어 통합 지원이 비활성화되어 있습니다.",
     "VISLRC_STATUS_NO_MADVIS": "%n 시각화가 실행 중이 아닙니다. 시각화를 실행해주세요.",
+
+    "VISLRC_CONFIRM_SAVE_LYRICS": "이 노래에 대해 가사를 기억하시겠습니까?<br><br>가사 -> 가사 불러오기를 클릭하여 저장된 가사를 제거할 수 있습니다.",
 
     "VISLRCCONF_TITLE": "가사 등록 정보",
     "VISLRCCONF_SPOTIFY_TITLE": "Spotify 통합",
@@ -548,6 +553,13 @@
     "VISLRCCONF_FORCE_UNSYNCED": "항상 비동기 가사 사용(&L)",
     "VISLRCCONF_FORCE_UNSYNCED_INFO": "<li>음악 플레이어가 재생 시간 정보를 제공하지 않거나 신뢰할 수 없는 시간 정보를 제공하는 경우(예: 브라우저) 이 옵션을 활성화하세요.</li><li>플레이어가 신뢰할 수 있는 타임라인 정보를 제공하지만 매초 업데이트하지 않는 경우(예: Spotify), 시각화 -> 보기 -> 재생 시간 추정을 활성화하세요.</li>",
     "VISLRCCONF_LYRICS_PROVIDER": "가사 제공자:",
+
+    "VISLRCFIND_TITLE": "가사 검색",
+    "VISLRCFIND_SEARCH_LABEL": "가사 검색:",
+    "VISLRCFIND_SEARCH": "검색(&S)",
+    "VISLRCFIND_SEARCHING": "검색 중...",
+    "VISLRCFIND_ADD_OVERRIDE": "이 노래에 항상 이 가사 사용",
+    "VISLRCFIND_OVERRIDE_INFO": "가사 -> 가사 불러오기를 클릭하여 이 설정을 제거하세요",
 
 
     "CALC_TITLE": "계산기",

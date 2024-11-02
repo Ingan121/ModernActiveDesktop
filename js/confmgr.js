@@ -77,6 +77,7 @@ const keysToIgnoreOnPreset = [
     'madesktopCheckedGitHub',
     'madesktopVisGuessTimeline',
     'madesktopVisLyricsForceUnsynced',
+    'madesktopVisLyricsOverrides',
     // Debug configs
     'madesktopDebugMode',
     'madesktopDebugLog',
@@ -170,6 +171,8 @@ let urlAppend = "";
                                 }
                             }
                             await madIdb.setItem("cvFavorites", favParsed);
+                        } else if (key === "madesktopVisLyricsOverrides") {
+                            await madIdb.setItem("visLyricsOverrides", JSON.parse(parsed[key]));
                         } else if (key.startsWith("madesktopItemSrc")) {
                             // Prevent loading unverified URL after import
                             const src = parsed[key];

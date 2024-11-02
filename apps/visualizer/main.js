@@ -452,6 +452,7 @@ viewMenuItems[4].addEventListener('click', () => { // Enable Media Controls butt
 viewMenuItems[5].addEventListener('click', () => { // Estimate Timeline button
     if (!visStatus.mediaIntegrationAvailable) {
         madAlert(madGetString(NO_MEDINT_MSG), null, isWin10 ? 'info' : 'error');
+        return;
     }
 
     if (localStorage.madesktopVisGuessTimeline) {
@@ -656,9 +657,13 @@ function wallpaperMediaStatusListener(event) {
         if (localStorage.madesktopVisMediaControls) {
             viewMenuItems[4].click();
         }
+        if (localStorage.madesktopVisGuessTimeline) {
+            viewMenuItems[5].click();
+        }
         viewMenuItems[2].classList.add('disabled');
         viewMenuItems[3].classList.add('disabled');
         viewMenuItems[4].classList.add('disabled');
+        viewMenuItems[5].classList.add('disabled');
 
         if (localStorage.madesktopVisOnlyAlbumArt) {
             visMenuItems[1].click();
@@ -676,6 +681,7 @@ function wallpaperMediaStatusListener(event) {
         if (localStorage.sysplugIntegration) {
             viewMenuItems[4].classList.remove('disabled');
         }
+        viewMenuItems[5].classList.remove('disabled');
         visMenuItems[0].classList.remove('disabled');
         optMenuItems[1].classList.remove('disabled');
         optMenuItems[3].classList.remove('disabled');

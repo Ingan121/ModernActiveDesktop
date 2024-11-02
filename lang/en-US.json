@@ -577,13 +577,18 @@
     "VISLRC_TITLE": "Lyrics",
     "VISLRC_MENU_LRC": "&Lyrics",
     "VISLRC_LRC_MENUITEM_LOAD": "Load &Lyrics",
-    "VISLRC_LRC_MENUITEM_AUTO_SCROLL": "Auto &Scroll",
+    "VISLRC_LRC_MENUITEM_SEARCH": "&Search Lyrics",
+    "VISLRC_LRC_MENUITEM_OPENFILE": "Open Lyrics &File",
+    "VISLRC_LRC_MENUITEM_AUTO_SCROLL": "&Auto Scroll",
     "VISLRC_LRC_MENUITEM_VISLRCCONF": "&Options",
 
     "VISLRC_STATUS_LOADING": "Loading...",
     "VISLRC_STATUS_NOT_FOUND": "No lyrics found.",
     "VISLRC_STATUS_NO_MUSIC": "No music is playing.",
+    "VISLRC_STATUS_NO_MEDINT": "Media integration support is disabled.",
     "VISLRC_STATUS_NO_MADVIS": "No running instance of %n Visualizer found. Please open the Visualizer.",
+
+    "VISLRC_CONFIRM_SAVE_LYRICS": "Remember these lyrics for this song?<br><br>You can click Lyrics -> Load Lyrics to remove the override.",
 
     // #region Visualizer Lyrics Configuration strings
     "VISLRCCONF_TITLE": "Lyrics Properties",
@@ -604,6 +609,15 @@
     "VISLRCCONF_FORCE_UNSYNCED": "Force &unsynced lyrics",
     "VISLRCCONF_FORCE_UNSYNCED_INFO": "<li>Enable this option if your music player does not provide timeline information, or if your player provides unreliable timeline information (e.g. browsers).</li><li>Enable Visualizer -> View -> Estimate Timeline if your player provides reliable timeline info but doesn't update it every seconds (e.g. Spotify).</li>",
     "VISLRCCONF_LYRICS_PROVIDER": "Lyrics provided by",
+    // #endregion
+
+    // #region Visualizer Lyrics Search strings
+    "VISLRCFIND_TITLE": "Search Lyrics",
+    "VISLRCFIND_SEARCH_LABEL": "Search lyrics:",
+    "VISLRCFIND_SEARCH": "&Search",
+    "VISLRCFIND_SEARCHING": "Searching...",
+    "VISLRCFIND_ADD_OVERRIDE": "Always use this lyrics for this song",
+    "VISLRCFIND_OVERRIDE_INFO": "Click Lyrics -> Load Lyrics to remove the override",
     // #endregion
     // #endregion
     // #endregion

@@ -104,7 +104,7 @@
                 this.dataset.disabled = true;
             }
 
-            this.label.textContent = this.options[this.selectedIndex].textContent;
+            this.label.textContent = this.options[this.selectedIndex]?.textContent;
             this.insertAdjacentElement("afterbegin", this.label);
 
             this.addEventListener("click", () => {
@@ -279,7 +279,7 @@
     function processTheme() {
         styleElement.textContent = parentStyleElement.textContent;
 
-        if (isDarkColor(getComputedStyle(top.document.documentElement).getPropertyValue('--button-face'))) {
+        if (!isDarkColor(getComputedStyle(top.document.documentElement).getPropertyValue('--button-text'))) {
             if (window.osguiCompatRequired) {
                 styleElement.textContent += `
                     .tool-icon {

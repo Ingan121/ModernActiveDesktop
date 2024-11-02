@@ -423,6 +423,9 @@ async function exportConfig(minimal = false) {
         }
         madConfig["madesktopChanViewFavorites"] = JSON.stringify(cvFavorites);
     }
+    if (await madIdb.itemExists("lyricsOverrides")) {
+        madConfig["madesktopVisLyricsOverrides"] = JSON.stringify(await madIdb.lyricsOverrides);
+    }
 
     // Handle large files, compress if > 1 MB
     const json = JSON.stringify(madConfig);

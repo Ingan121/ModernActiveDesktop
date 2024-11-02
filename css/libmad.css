@@ -214,3 +214,8 @@ button[disabled] u,
 [data-disabled] u {
     border-bottom-color: var(--underline-disabled);
 }
+
+::selection {
+    color: var(--hilight-text);
+    background-color: var(--hilight);
+}
