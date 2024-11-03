@@ -63,7 +63,7 @@ async function init() {
             const hash = await getSongHash(visStatus.lastMusic?.artist, visStatus.lastMusic?.title, visStatus.lastMusic?.albumTitle);
             if (overrides[hash]) {
                 delete overrides[hash];
-                madIdb.setItem('lyricsOverrides', overrides); // Doens't need to wait for the promise to resolve
+                madIdb.setItem('lyricsOverrides', overrides); // Doesn't need to wait for the promise to resolve
             }
             processProperties(true);
         });
