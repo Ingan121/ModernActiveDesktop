@@ -56,8 +56,8 @@ function wallpaperAudioListener(audioArray) {
             return;
         }
         idle = false;
-        idleIndicator.style.display = 'none';
     }
+    idleIndicator.style.display = 'none';
 
     // Clear the canvas
     visBarCtx.clearRect(0, 0, visBar.width, visBar.height);

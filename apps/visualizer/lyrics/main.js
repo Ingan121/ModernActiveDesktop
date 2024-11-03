@@ -120,6 +120,7 @@ async function init() {
             autoScroll = !autoScroll;
             if (autoScroll) {
                 lrcMenuItems[3].classList.add('checkedItem');
+                processTimeline();
             } else {
                 lrcMenuItems[3].classList.remove('checkedItem');
             }
@@ -230,9 +231,19 @@ async function init() {
                     urlsToTry.push(url.toString());
                 }
 
+                // YTM has these stuff EVEN FOR ARTISTS in ENGLISH MODE, so try stripping them too (seen "IZ*ONE (아이즈원)", "Apink(에이핑크)", and even "WJSN(Cosmic Girls)(우주소녀)")
+                const strippedArtist = stripNonAlphaNumeric(artist);
+                if (strippedArtist) {
+                    params.artist_name = strippedArtist;
+                    url.search = new URLSearchParams(params).toString();
+                    urlsToTry.push(url.toString());
+                }
+
                 // Spotify Web Player reports all artists to SMTC as a single string, so try splitting it
-                if (artist.includes(', ')) {
-                    params.artist_name = artist.split(', ')[0];
+                // Same for YT Music, and it also uses ', & ' (or localized variant) for the last artist
+                // Or just ' & ' (or localized variant) if there are only two artists
+                if (artist.includes(', ') || artist.includes(' & ')) {
+                    params.artist_name = artist.split(', ')[0].split(' & ')[0];
                     url.search = new URLSearchParams(params).toString();
                     urlsToTry.push(url.toString());
 
@@ -258,30 +269,42 @@ async function init() {
                 }
             }
             if (lastUnsyncedLyrics) {
-                const searchResult = await searchFallback();
-                if (searchResult.synced) {
-                    // If the search fallback found a synced result, return that instead of the unsynced one
-                    // Example of get not finding the best result that the search api does: "STAYC - Flexing On My Ex"
-                    return searchResult
+                // Don't fall back to search if the album title is not present and unsynced lyrics exist, as it may find a completely different song. Test case: "IVE - I WANT"
+                if (visStatus.lastSpotifyMusic?.albumTitle || visStatus.lastMusic?.albumTitle) {
+                    const searchResult = await searchFallback();
+                    if (searchResult.synced) {
+                        // If the search fallback found a synced result, return that instead of the unsynced one
+                        // Example of get not finding the best result that the search api does: "STAYC - Flexing On My Ex" (maybe because of the duration)
+                        return searchResult
+                    }
                 }
+                // If the search result is unsynced, return the get result instead as that's more accurate
                 return lastUnsyncedLyrics;
             } else {
                 // May work in weird cases like instrumental tracks getting returned above, test case: "GFRIEND - Glass Bead"
                 // Or if the get api just doesn't find the result that the search api does, test case: "QWER - 고민중독" (get works fine with Spotify data though)
+                // Or some complicated cases like "Jay Park - All I Wanna Do (K) (Feat. Hoody & Loco)"
+                // Also it works surprisingly well with YT (not YTM) duplicated titles. Even artificailly duplicated titles like "tripleS - Girls Never Die (Girls Never Die (Girls Never Die (Girls Never Die)))" work fine
                 return await searchFallback();
             }
         }
 
-        async function searchFallback() {
+        async function searchFallback(stripParens) {
             const artist = visStatus.lastSpotifyMusic?.artist || visStatus.lastMusic?.artist || '';
-            const title = visStatus.lastSpotifyMusic?.title || visStatus.lastMusic?.title || '';
+            let title = visStatus.lastSpotifyMusic?.title || visStatus.lastMusic?.title || '';
+            if (stripParens) {
+                title = stripNonAlphaNumeric(title);
+                if (!title) {
+                    return null;
+                }
+            }
             const albumTitle = visStatus.lastSpotifyMusic?.albumTitle || visStatus.lastMusic?.albumTitle || '';
             const query = artist + ' ' + title + ' ' + albumTitle;
 
             const response = await fetch(`https://lrclib.net/api/search?q=${query}`, {
                 method: 'GET',
                 headers: {
-                    'Lrclib-Client': 'ModernActiveDesktop/' + top.madVersion.toString(1) + (madRunningMode === 1 ? ' (Wallpaper Engine)' : '') + ' (https://madesktop.ingan121.com/)'
+                    'Lrclib-Client': 'ModernActiveDesktop/' + top.madVersion.toString(1) + (madRunningMode === 1 ? ' (Wallpaper Engine)' : ' (Lively Wallpaper)') + ' (https://madesktop.ingan121.com/)'
                 }
             });
             const result = await response.json();
@@ -308,14 +331,18 @@ async function init() {
                     return lastUnsyncedLyrics;
                 }
             }
-            return null;
+            if (stripParens) {
+                return null;
+            } else {
+                return await searchFallback(true);
+            }
         }
 
         async function fetchLyrics(url) {
             const response = await fetch(url, {
                 method: 'GET',
                 headers: {
-                    'Lrclib-Client': 'ModernActiveDesktop/' + top.madVersion.toString(1) + (madRunningMode === 1 ? ' (Wallpaper Engine)' : '') + ' (https://madesktop.ingan121.com/)'
+                    'Lrclib-Client': 'ModernActiveDesktop/' + top.madVersion.toString(1) + (madRunningMode === 1 ? ' (Wallpaper Engine)' : ' (Lively Wallpaper)') + ' (https://madesktop.ingan121.com/)'
                 }
             });
             const json = await response.json();
@@ -457,8 +484,15 @@ async function init() {
                                 albumTitle: albumTitle,
                                 duration: duration
                             };
-                            loadLyrics();
                         }
+                        loadLyrics();
+                    } else if (visStatus.lastMusic) {
+                        delete visStatus.lastSpotifyMusic;
+                        loadLyrics();
+                    } else if (!visStatus.mediaIntegrationAvailable) {
+                        lyricsView.innerHTML = '<mad-string data-locid="VISLRC_STATUS_NO_MEDINT"></mad-string>';
+                    } else {
+                        lyricsView.innerHTML = '<mad-string data-locid="VISLRC_STATUS_NO_MUSIC"></mad-string>';
                     }
                 } else if (visStatus.lastMusic) {
                     delete visStatus.lastSpotifyMusic;
@@ -518,18 +552,48 @@ async function init() {
             }
         }
 
+        // Crazy tricks regarding Spotify and YT Music title formatting
         function stripNonAlphaNumeric(str) {
-            // Test targets: "해야 (HEYA)", "녹아내려요 Melt Down", "花になって - Be a flower" (last one actually doesn't work in stripped form though)
-            // These songs do not provide English titles so the Spotify API returns titles like these
+            // Spotify test cases: "IVE - 해야 (HEYA)", "DAY6 - 녹아내려요 Melt Down", "Ryokuoushoku Shakai - 花になって - Be a flower" (this one actually doesn't work in stripped form. Aaand in YTM: it only returns the English part to SMTC so have to use the search fallback)
+            // These songs do not provide English titles so the Spotify API returns titles like these            
+            // Other weird formats I found: "NCT 127 - Fact Check (불가사의; 不可思議)", "SHINee - Sherlock · 셜록 (Clue+Note)" - these two work fine with Spotify data so was not going to handle them but it turns out they work nicely in the finished form of this function (lol)
+
+            // YTM English mode test cases: "YOUNHA - 사건의 지평선 (EVENT HORIZON)" (actually works fine in non-stripped form), "Weki Meki - Whatever U Want (너 하고 싶은 거 다 해 (너.하.다))"
             const replaced = str.replace(/[^\x20-\x7E]/g, '').trim(); // Remove non-ASCII characters
+            const replacedHard = replaced.replace(/[^a-zA-Z0-9\s]/g, ''); // Remove non-alphanumeric characters (preserve spaces)
+
+            // Check if the title is a duplicated English title (YTM somehow has these even in English mode)
+            // Test case: "IVE - MINE (MINE)", "KWON EUNBI - Underwater (Underwater)" (this actually works fine in non-stripped form in both get and search), "OH MY GIRL - Dun Dun Dance (Dun Dun Dance)"
+            // And "IVE - MINE (MINE)" returns a completely different song in the search fallback, so this is necessary
+            if (replacedHard.length % 2 === 1) {
+                const split = replacedHard.split(' ');
+                const half = split.slice(0, split.length / 2).join(' ');
+                if (replacedHard === half + ' ' + half) {
+                    return half;
+                }
+            }
             if (replaced === '' || replaced === str) {
                 return null;
             } else if (replaced.startsWith('(') && replaced.endsWith(')')) {
                 return replaced.slice(1, -1);
-            } else if (replaced.includes('-')) {
-                return replaced.split('-')[1].trim();
+            } else if (replaced.includes(' - ')) {
+                return replaced.split(' - ')[1].trim();
+            } else if (replaced.endsWith(')')) {
+                // This may remove parentheses that are not a 'duplicated localized title' format, but it can also help with some weird cases like "ASHGRAY - Hello Mr. my yesterday (From 애니메이션 \"명탐정 코난\" 10기) (한국어버젼)" (watafak)
+                const split = replaced.split('(')[0].trim();
+                const splitReplacedHard = split.replace(/[^a-zA-Z0-9\s]/g, '');
+                if (splitReplacedHard === '') {
+                    // This surprisingly works fine with some complicated examples in YTM English mode
+                    // Tested with "PRODUCE 48 - 반해버리잖아? (好きになっちゃうだろう？) (Suki ni Nacchaudarou?)", and "AKMU - 어떻게 이별까지 사랑하겠어, 널 사랑하는 거지(How can I love the heartbreak, you're the one I love)"
+                    // LRCLIB doesn't seem to care about punctuation or special characters
+                    return replacedHard;
+                } else if (split === '') {
+                    return null;
+                } else {
+                    return split;
+                }
             } else {
-                return replaced;
+                return replacedHard;
             }
         }
 
@@ -580,7 +644,7 @@ async function getSpotifyNowPlaying() {
             'Authorization': 'Bearer ' + info.accessToken
         }
     });
-    if (response.ok) {
+    if (response.status === 200) {
         const json = await response.json();
         return json;
     } else {

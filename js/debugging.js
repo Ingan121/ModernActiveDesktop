@@ -105,6 +105,11 @@
             }
             runningModeLabel.textContent = madGetString("MAD_DEBUG_RUNMODE_SIMULATED", origRunningModeStr, runningModeStr);
         }
+        if (debugLog) {
+            debugLogBtn.locId = "MAD_DEBUG_DISABLE_LOGGING";
+        } else {
+            debugLogBtn.locId = "MAD_DEBUG_ENABLE_LOGGING";
+        }
         resolutionLabel.textContent = madGetString("MAD_DEBUG_RESOLUTION", window.innerWidth, window.innerHeight, window.scaleFactor, window.vWidth, window.vHeight, window.devicePixelRatio);
     }
 

@@ -258,6 +258,7 @@ function processNewWindow(childWindow, details) {
       }
     });
     childWindow.setBrowserView(view);
+    // When these deprecated APIs gets removed, I'll just remove the deprecated SysPlug ChannelViewer altogether
     view.setBounds({ x: 0, y: 26, width: childWindow.getBounds().width, height: childWindow.getBounds().height - 26 });
     view.setAutoResize({ width: true, height: true });
     view.setBackgroundColor('#fff');
@@ -654,8 +655,8 @@ function onRequest(req, res) {
     // https://developer.spotify.com/documentation/web-api/tutorials/code-pkce-flow
     case '/spotify/auth':
       if (args.port && args.port !== 3031 && !args.spotify) {
-        res.writeHead(500);
-        res.end('Custom port is not supported with the default Spotify Client ID!', 'utf-8');
+        res.writeHead(500, {'Content-Type':'application/json'});
+        res.end('{"error":"Custom port is not supported with the default Spotify Client ID!"}');
         return;
       }
       spotifyCodeVerifier = crypto.randomBytes(64).toString('hex');
@@ -700,12 +701,7 @@ function onRequest(req, res) {
       if (!state && !(code || error)) {
         res.writeHead(400);
         res.end('400 Bad Request', 'utf-8');
-        if (spotifyPendingRes) {
-          spotifyPendingRes.writeHead(400, {'Content-Type':'application/json'});
-          spotifyPendingRes.end('{"error":"400 Bad Request"}');
-          spotifyPendingRes = null;
-          clearTimeout(spotifyTimeout);
-        }
+        // Just ignore this request if it's not a callback
         return;
       }
       if (state !== spotifyCsrfToken) {

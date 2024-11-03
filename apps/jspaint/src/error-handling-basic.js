@@ -7,17 +7,17 @@ window.onerror = function (msg, url, lineNo, columnNo, error) {
 	var string = msg.toLowerCase();
 	var substring = "script error";
 	if (string.indexOf(substring) > -1) {
-		alert('Script Error: See Browser Console for Detail');
+		top.madAlert('Script Error: See Browser Console for Detail', null, 'error', { title: 'Paint' });
 	} else {
 		// try {
 		// 	// try-catch in case of circular references or old browsers without JSON.stringify
 		// 	error = JSON.stringify(error);
 		// } catch (e) {}
-		alert('Internal application error: ' + msg + '\n\n' + 'URL: ' + url + '\n' + 'Line: ' + lineNo + '\n' + 'Column: ' + columnNo);
+		top.madAlert('Internal application error: ' + msg + '\n\n' + 'URL: ' + url + '\n' + 'Line: ' + lineNo + '\n' + 'Column: ' + columnNo, null, 'error', { title: 'Paint' });
 	}
 	return false;
 };
 
 window.onunhandledrejection = function (event) {
-	alert('Unhandled Rejection: ' + event.reason);
+	top.madAlert('Unhandled Rejection: ' + event.reason, null, 'error', { title: 'Paint' });
 }

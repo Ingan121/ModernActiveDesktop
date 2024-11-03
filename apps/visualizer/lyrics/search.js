@@ -63,7 +63,7 @@ async function search() {
     const response = await fetch(`https://lrclib.net/api/search?q=${searchBar.value}`, {
         method: 'GET',
         headers: {
-            'Lrclib-Client': 'ModernActiveDesktop/' + top.madVersion.toString(1) + (madRunningMode === 1 ? ' (Wallpaper Engine)' : '') + ' (https://madesktop.ingan121.com/)'
+            'Lrclib-Client': 'ModernActiveDesktop/' + top.madVersion.toString(1) + (madRunningMode === 1 ? ' (Wallpaper Engine)' : ' (Lively Wallpaper)') + ' (https://madesktop.ingan121.com/)'
         }
     });
     const result = await response.json();

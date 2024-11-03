@@ -85,6 +85,15 @@
     * 96
     * Arc-Dark
     * Blur (beta)
+* Visualizer improvements
+    * Added a lyrics viewer! Click View -> Lyrics to open it
+    * Several options are now accessible in the menu bar
+    * Added an option to change the size of the album art
+    * Added an option to change how the window title is displayed
+    * Support displaying the visualization as a background
+    * Added an option to ignore the wallpaper margins in the fullscreen or background mode
+    * Will use the accent color as a bar color in 'Follow color scheme' mode if the current theme supports accent colors (Aero and Blur)
+    * Fixed the difference scale being affected by the window height
 * Added a preset system for Wallpaper Engine
     * Click the 'Preset edit mode' in the Wallpaper Engine properties panel to learn more
 * Improved the configuration saving mechanism
@@ -93,13 +102,6 @@
     * Exported configuration data is now compressed if it's large
     * No longer loses information about the Wallpaper Engine properties panel when resetting configurations
     * Handles cases when the storage is full
-* Visualizer improvements
-    * Several options are now accessible in the menu bar
-    * Added an option to change the size of the album art
-    * Added an option to change how the window title is displayed
-    * Support displaying the visualization as a background
-    * Added an option to ignore the wallpaper margins in the fullscreen or background mode
-    * Fixed the difference scale being affected by the window height
 * Localization improvements
     * Now supports the language code with a region code (e.g., `en-US`)
     * Added a guide document for translating ModernActiveDesktop
@@ -120,6 +122,7 @@
     * Background image set in the Wallpaper Engine properties panel being applied on every startup
     * Some windows behaving weirdly after being reset
     * System colors not being applied to window contents when the system color scheme is changed on startup
+    * Textboxes not automatically scrolling when using the arrow keys with the system plugin input or the on-screen keyboard
 * Refactored the codebase
     * Minimize the usage of global variables, and export only necessary functions
     * Split the main script into multiple files for better maintainability

@@ -27,19 +27,24 @@
         }
         changeBgType(localStorage.madesktopBgType || "image");
         changeBgImgMode(localStorage.madesktopBgImgMode || "center");
-        if (localStorage.madesktopBgVideoMuted) bgVideoView.muted = true;
+        if (localStorage.madesktopBgVideoMuted) {
+            bgVideoView.muted = true;
+        }
+        if (localStorage.madesktopDebugMode) {
+            activateDebugMode();
+        }
         changeColorScheme(localStorage.madesktopColorScheme || "98");
         changeAeroColor(localStorage.madesktopAeroColor);
         changeAeroGlass(localStorage.madesktopAeroNoGlass);
         changeWinAnim(localStorage.madesktopNoWinAnim);
         changeScale(localStorage.madesktopScaleFactor);
-        if (localStorage.madesktopDebugMode) activateDebugMode();
         changeFont(localStorage.madesktopNoPixelFonts);
         changeCmAnimation(localStorage.madesktopCmAnimation || "slide");
         changeCmShadow(localStorage.madesktopCmShadow);
         changeWinShadow(localStorage.madesktopNoWinShadow);
         changeMenuStyle(localStorage.madesktopMenuStyle);
         changeSoundScheme(localStorage.madesktopSoundScheme || "98");
+
     }
 
     function changeBgType(type, loadBgImg = window.madMainWindow) {

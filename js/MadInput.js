@@ -61,15 +61,21 @@ document.addEventListener('madinput', async (event) => {
             break;
         case "ArrowLeft":
             textbox.selectionStart = textbox.selectionEnd = Math.max(0, origCursorPos - 1);
+            textbox.blur();
+            textbox.focus();
             break;
         case "ArrowRight":
             textbox.selectionStart = textbox.selectionEnd = Math.min(textbox.value.length, origCursorPos + 1);
+            textbox.blur();
+            textbox.focus();
             break;
         case "ArrowUp":
             if (textbox.dataset.origType === "number") {
                 textbox.value = Math.min(Number(textbox.value) + (textbox.step ? Number(textbox.step) : 1), Number(textbox.max || Number.MAX_SAFE_INTEGER)).toString();
             } else {
                 textbox.selectionStart = textbox.selectionEnd = 0;
+                textbox.blur();
+                textbox.focus();
             }
             break;
         case "ArrowDown":
@@ -77,6 +83,8 @@ document.addEventListener('madinput', async (event) => {
                 textbox.value = Math.max(Number(textbox.value) - (textbox.step ? Number(textbox.step) : 1), Number(textbox.min || Number.MIN_SAFE_INTEGER)).toString();
             } else {
                 textbox.selectionStart = textbox.selectionEnd = textbox.value.length;
+                textbox.blur();
+                textbox.focus();
             }
             break;
         case "^a":

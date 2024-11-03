@@ -82,6 +82,7 @@ const viewMenuItems = document.querySelectorAll('#viewMenu .contextMenuItem');
 const optMenuItems = document.querySelectorAll('#optMenu .contextMenuItem');
 const helpMenuItems = document.querySelectorAll('#helpMenu .contextMenuItem');
 
+const estimateMenuItems = document.querySelectorAll('#estimateMenu .contextMenuItem');
 const colorMenuItems = document.querySelectorAll('#colorMenu .contextMenuItem');
 const albumArtSizeMenuItems = document.querySelectorAll('#albumArtSizeMenu .contextMenuItem');
 const titleOptMenuItems = document.querySelectorAll('#titleOptMenu .contextMenuItem');
@@ -227,8 +228,12 @@ if (localStorage.madesktopVisStatusShown) {
     }
 }
 
-if (localStorage.madesktopVisGuessTimeline) {
-    viewMenuItems[5].classList.add('checkedItem');
+if (localStorage.madesktopVisGuessTimeline === '2') {
+    estimateMenuItems[2].classList.add('checkedItem');
+} else if (localStorage.madesktopVisGuessTimeline) {
+    estimateMenuItems[1].classList.add('checkedItem');
+} else {
+    estimateMenuItems[0].classList.add('checkedItem');
 }
 
 if (localStorage.sysplugIntegration) {
@@ -243,7 +248,7 @@ if (localStorage.sysplugIntegration) {
 // #endregion
 
 // #region Menu bar
-madDeskMover.menu = new MadMenu(menuBar, ['vis', 'view', 'opt', 'help'], ['color', 'albumArtSize', 'titleOpt', 'chanSep']);
+madDeskMover.menu = new MadMenu(menuBar, ['vis', 'view', 'opt', 'help'], ['estimate', 'color', 'albumArtSize', 'titleOpt', 'chanSep']);
 
 visMenuItems[0].addEventListener('click', () => { // Album Art button
     if (!visStatus.mediaIntegrationAvailable) {
@@ -452,23 +457,8 @@ viewMenuItems[4].addEventListener('click', () => { // Enable Media Controls butt
 viewMenuItems[5].addEventListener('click', () => { // Estimate Timeline button
     if (!visStatus.mediaIntegrationAvailable) {
         madAlert(madGetString(NO_MEDINT_MSG), null, isWin10 ? 'info' : 'error');
-        return;
     }
-
-    if (localStorage.madesktopVisGuessTimeline) {
-        delete localStorage.madesktopVisGuessTimeline;
-        viewMenuItems[5].classList.remove('checkedItem');
-        if (timelineGuesserTick) {
-            clearInterval(timelineGuesserTick);
-            timelineGuesserTick = null;
-        }
-    } else {
-        localStorage.madesktopVisGuessTimeline = true;
-        viewMenuItems[5].classList.add('checkedItem');
-        if (visStatus.timeline) {
-            timelineGuesserTick
-        }
-    }
+    // Submenu will be opened by MadMenu if this item is not disabled
 });
 
 viewMenuItems[6].addEventListener('click', () => { // Show as Background button
@@ -560,6 +550,42 @@ optMenuItems[6].addEventListener('click', () => { // Advanced Options button
 
 helpMenuItems[0].addEventListener('click', () => { // About Visualizer button
     madOpenConfig('about');
+});
+
+estimateMenuItems[0].addEventListener('click', () => { // Disable button
+    delete localStorage.madesktopVisGuessTimeline;
+    estimateMenuItems[0].classList.add('checkedItem');
+    estimateMenuItems[1].classList.remove('checkedItem');
+    estimateMenuItems[2].classList.remove('checkedItem');
+    if (timelineGuesserTick) {
+        clearInterval(timelineGuesserTick);
+        timelineGuesserTick = null;
+    }
+});
+
+estimateMenuItems[1].addEventListener('click', () => { // Enable button
+    localStorage.madesktopVisGuessTimeline = true;
+    estimateMenuItems[0].classList.remove('checkedItem');
+    estimateMenuItems[1].classList.add('checkedItem');
+    estimateMenuItems[2].classList.remove('checkedItem');
+});
+
+estimateMenuItems[2].addEventListener('click', () => { // Ignore Original Duration button
+    localStorage.madesktopVisGuessTimeline = '2';
+    estimateMenuItems[0].classList.remove('checkedItem');
+    estimateMenuItems[1].classList.remove('checkedItem');
+    estimateMenuItems[2].classList.add('checkedItem');
+
+    if (timelineGuesserTick) {
+        clearInterval(timelineGuesserTick);
+    }
+    if (visStatus.timeline) {
+        timelineGuesserTick = setInterval(timelineGuesser, 1000);
+    }
+});
+
+estimateMenuItems[3].addEventListener('click', () => { // Help button
+    madAlert(madGetString("VISUALIZER_ESTIMATE_TIMELINE_HELP_MSG"), null, 'info');
 });
 
 colorMenuItems[0].addEventListener('click', () => { // Default button
@@ -658,7 +684,7 @@ function wallpaperMediaStatusListener(event) {
             viewMenuItems[4].click();
         }
         if (localStorage.madesktopVisGuessTimeline) {
-            viewMenuItems[5].click();
+            estimateMenuItems[0].click();
         }
         viewMenuItems[2].classList.add('disabled');
         viewMenuItems[3].classList.add('disabled');
@@ -684,10 +710,12 @@ function wallpaperMediaStatusListener(event) {
         viewMenuItems[5].classList.remove('disabled');
         visMenuItems[0].classList.remove('disabled');
         optMenuItems[1].classList.remove('disabled');
-        optMenuItems[3].classList.remove('disabled');
-        if (localStorage.madesktopVisShowAlbumArt) {
-            optMenuItems[4].classList.remove('disabled');
-            optMenuItems[5].classList.remove('disabled');
+        if (!localStorage.madesktopVisOnlyAlbumArt) {
+            optMenuItems[3].classList.remove('disabled');
+            if (localStorage.madesktopVisShowAlbumArt) {
+                optMenuItems[4].classList.remove('disabled');
+                optMenuItems[5].classList.remove('disabled');
+            }
         }
         colorMenuItems[3].classList.remove('disabled');
     }
@@ -718,11 +746,14 @@ function wallpaperMediaPropertiesListener(event) {
         seekHandle.style.display = 'none';
         timeText.parentElement.style.display = 'none';
         visStatus.lastMusic = null;
+        visStatus.timelineOrig = null;
+        visStatus.timeline = null;
+        document.dispatchEvent(mediaPropertiesEvent);
         return;
     }
 
     if (event.artist.endsWith(' - Topic')) { // YT auto-generated stuff
-        event.artist = artist.slice(0, -7);
+        event.artist = event.artist.slice(0, -7);
     }
     updateTitle(event);
 
@@ -760,9 +791,19 @@ function wallpaperMediaPropertiesListener(event) {
     }
 
     // New music; consider we might not get a timeline event
-    seekBar.style.backgroundColor = 'transparent';
-    seekHandle.style.display = 'none';
-    timeText.parentElement.style.display = 'none';
+    if (visStatus.lastMusic &&
+        (visStatus.lastMusic.title !== event.title ||
+        visStatus.lastMusic.artist !== event.artist ||
+        visStatus.lastMusic.albumTitle !== event.albumTitle ||
+        visStatus.lastMusic.albumArtist !== event.albumArtist ||
+        visStatus.lastMusic.genres !== event.genres)
+    ) {
+        seekBar.style.backgroundColor = 'transparent';
+        seekHandle.style.display = 'none';
+        timeText.parentElement.style.display = 'none';
+        visStatus.timelineOrig = null;
+        visStatus.timeline = null;
+    }
 
     visStatus.lastMusic = event;
     document.dispatchEvent(mediaPropertiesEvent);
@@ -777,21 +818,27 @@ function wallpaperMediaTimelineListener(event) {
         visStatus.timeline = null;
         return;
     }
-    const percent = event.position / event.duration * 100;
-    seekBar.style.backgroundColor = 'var(--window)';
-    seekHandle.style.left = `calc(${percent}% - 6px)`;
-    seekHandle.style.display = 'block';
-    timeText.textContent = `${formatTime(event.position)} / ${formatTime(event.duration)}`;
-    timeText.parentElement.style.display = 'block';
+
+    // If the estimated timeline setting is set to "Ignore Original Duration",
+    // only update the timeline here if this is a new music
+    if (localStorage.madesktopVisGuessTimeline !== '2' || !visStatus.timeline) {
+        const percent = event.position / event.duration * 100;
+        seekBar.style.backgroundColor = 'var(--window)';
+        seekHandle.style.left = `calc(${percent}% - 6px)`;
+        seekHandle.style.display = 'block';
+        timeText.textContent = `${formatTime(event.position)} / ${formatTime(event.duration)}`;
+        timeText.parentElement.style.display = 'block';
+
+        visStatus.timeline = {
+            position: event.position,
+            duration: event.duration
+        };
+    }
 
     visStatus.timelineOrig = event;
-    visStatus.timeline = {
-        position: event.position,
-        duration: event.duration
-    };
     document.dispatchEvent(mediaTimelineEvent);
 
-    if (localStorage.madesktopVisGuessTimeline && visStatus.state === window.wallpaperMediaIntegration.PLAYBACK_PLAYING) {
+    if (localStorage.madesktopVisGuessTimeline) {
         if (timelineGuesserTick) {
             clearInterval(timelineGuesserTick);
         }
@@ -859,7 +906,7 @@ function wallpaperMediaPlaybackListener(event) {
 }
 
 function wallpaperMediaThumbnailListener(event) {
-    if (event.thumbnail === 'data:image/png;base64,') {
+    if (event.thumbnail === 'data:image/png;base64,' || !event.thumbnail) {
         visStatus.lastAlbumArt = null;
         configChanged();
         return;
