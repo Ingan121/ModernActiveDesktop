@@ -140,6 +140,7 @@ async function init() {
         });
 
         lyricsView.addEventListener('scroll', function () {
+            // If the user scrolls, disable auto-scrolling
             if (!autoScrolling) {
                 autoScroll = false;
                 lrcMenuItems[3].classList.remove('checkedItem');
@@ -284,7 +285,7 @@ async function init() {
                 // May work in weird cases like instrumental tracks getting returned above, test case: "GFRIEND - Glass Bead"
                 // Or if the get api just doesn't find the result that the search api does, test case: "QWER - 고민중독" (get works fine with Spotify data though)
                 // Or some complicated cases like "Jay Park - All I Wanna Do (K) (Feat. Hoody & Loco)"
-                // Also it works surprisingly well with YT (not YTM) duplicated titles. Even artificailly duplicated titles like "tripleS - Girls Never Die (Girls Never Die (Girls Never Die (Girls Never Die)))" work fine
+                // Also it works surprisingly well with YT/YTM duplicated titles. Even artificailly duplicated titles like "tripleS - Girls Never Die (Girls Never Die (Girls Never Die (Girls Never Die)))" work fine
                 return await searchFallback();
             }
         }
