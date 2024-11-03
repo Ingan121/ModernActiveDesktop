@@ -50,9 +50,9 @@ for (const textbox of textboxes) {
 }
 
 if (okBtn) {
-    okBtn.addEventListener("click", function () {
+    okBtn.addEventListener("click", async function () {
         if (window.apply && !location.href.includes("about.html")) {
-            window.apply();
+            await window.apply();
         }
         madCloseWindow();
     });
