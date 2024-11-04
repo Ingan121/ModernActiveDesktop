@@ -570,7 +570,7 @@ estimateMenuItems[1].addEventListener('click', () => { // Enable button
     estimateMenuItems[2].classList.remove('checkedItem');
 });
 
-estimateMenuItems[2].addEventListener('click', () => { // Ignore Original Duration button
+estimateMenuItems[2].addEventListener('click', () => { // Ignore Original Timeline button
     localStorage.madesktopVisGuessTimeline = '2';
     estimateMenuItems[0].classList.remove('checkedItem');
     estimateMenuItems[1].classList.remove('checkedItem');
@@ -819,7 +819,7 @@ function wallpaperMediaTimelineListener(event) {
         return;
     }
 
-    // If the estimated timeline setting is set to "Ignore Original Duration",
+    // If the estimated timeline setting is set to "Ignore Original Timeline",
     // only update the timeline here if this is a new music
     if (localStorage.madesktopVisGuessTimeline !== '2' || !visStatus.timeline) {
         const percent = event.position / event.duration * 100;

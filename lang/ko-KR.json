@@ -558,6 +558,8 @@
     "VISLRCCONF_FONT_TITLE": "글꼴",
     "VISLRCCONF_FORCE_UNSYNCED": "항상 비동기 가사 사용(&L)",
     "VISLRCCONF_FORCE_UNSYNCED_INFO": "<li>미디어 플레이어가 재생 시간 정보를 제공하지 않는 경우 이 옵션을 활성화하세요.</li><li>플레이어가 재생 시간 정보를 제공하지만 정확하지 않거나 자주 업데이트되지 않는 경우, 시각화 -> 보기 -> 재생 시간 추정을 활성화하세요.</li>",
+    "VISLRCCONF_TIPS_TITLE": "팁",
+    "VISLRCCONF_TIPS": "<li>Spotify 사용자:<ul><li>최상의 경험을 위해 데스크톱 클라이언트를 사용하세요.</li><li>더 나은 가사 검색 결과를 위해 Spotify 클라이언트 언어를 영어로 설정하세요.</li><li>시각화 -> 보기에서 '재생 시간 추정'을 '활성화'로 설정하세요.</li></ul></li><li>YouTube 사용자:<ul><li>가능하다면 YouTube Music을 사용하여 최상의 경험을 누리세요.</li><li>더 나은 가사 검색 결과를 위해 YouTube Music의 UI 언어를 영어로 설정하세요.</li><li>시각화 -> 보기에서 '재생 시간 추정'을 '원 재생 시간 무시'로 설정하세요.</li></ul></li>",
     "VISLRCCONF_LYRICS_PROVIDER": "가사 제공자:",
 
     "VISLRCFIND_TITLE": "가사 검색",

@@ -318,6 +318,14 @@ window.addEventListener('load', () => {
     }
 });
 
+new MutationObserver(function (mutations) {
+    madResizeTo(null, document.documentElement.offsetHeight / madScaleFactor);
+}).observe(
+    document.body,
+    { attributes: true, attributeFilter: ["style"] }
+);
+
+
 madSetIcon(false);
 
 document.addEventListener('keydown', function (event) {

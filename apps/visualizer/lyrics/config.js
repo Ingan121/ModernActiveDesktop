@@ -5,6 +5,8 @@
 
 'use strict';
 
+const showSpotifyBtn = document.getElementById("showSpotifyBtn");
+const spotifyFieldset = document.getElementById("spotifyFieldset");
 const enableSpotifyChkBox = document.getElementById("enableSpotifyChkBox");
 const spotifyLoginBtn = document.getElementById("spotifyLoginBtn");
 
@@ -14,6 +16,8 @@ const boldToggle = document.getElementById("boldToggle");
 const italicToggle = document.getElementById("italicToggle");
 
 const forceUnsyncedChkBox = document.getElementById("forceUnsyncedChkBox");
+
+const tipsFieldset = document.getElementById("tipsFieldset");
 
 const okBtn = document.getElementById("okBtn");
 const cancelBtn = document.getElementById("cancelBtn");
@@ -41,6 +45,17 @@ FontDetective.each(font => {
     option.value = font.name;
     fontSelector.appendChild(option);
     fonts.push(font.name);
+});
+
+if (localStorage.madesktopDebugMode) {
+    showSpotifyBtn.style.display = "block";
+}
+
+showSpotifyBtn.addEventListener("click", function () {
+    spotifyFieldset.style.display = "block";
+    showSpotifyBtn.style.display = "none";
+    tipsFieldset.style.display = "none";
+    madResizeTo(null, document.documentElement.offsetHeight / madScaleFactor);
 });
 
 spotifyLoginBtn.addEventListener("click", async function () {
@@ -257,12 +272,15 @@ if (localStorage.madesktopVisLyricsForceUnsynced) {
 }
 
 window.addEventListener('load', () => {
-    if (madScaleFactor !== 1) {
-        madResizeTo(null, document.documentElement.offsetHeight + 40);
-    } else {
-        madResizeTo(null, document.documentElement.offsetHeight);
-    }
+    madResizeTo(null, document.documentElement.offsetHeight);
 });
+
+new MutationObserver(function (mutations) {
+    madResizeTo(null, document.documentElement.offsetHeight / madScaleFactor);
+}).observe(
+    document.body,
+    { attributes: true, attributeFilter: ["style"] }
+);
 
 madSetIcon(false);
 

@@ -521,9 +521,9 @@
 
     "VISUALIZER_ESTIMATE_MENUITEM_DISABLED": "&Disabled",
     "VISUALIZER_ESTIMATE_MENUITEM_ENABLED": "&Enabled",
-    "VISUALIZER_ESTIMATE_MENUITEM_IGNORE_ORIGINAL": "&Ignore Original Duration",
+    "VISUALIZER_ESTIMATE_MENUITEM_IGNORE_ORIGINAL": "&Ignore Original Timeline",
     "VISUALIZER_ESTIMATE_MENUITEM_HELP": "&Help",
-    "VISUALIZER_ESTIMATE_TIMELINE_HELP_MSG": "This feature tries to fill the gap between the timeline events provided by the media player.<br>It estimates the timeline based on the last known position supplied by the player and the playback status.<br><br>Select 'Enabled' if your media player provides reliable timeline events but doesn't update it every second. (e.g. Spotify)<br><br>Select 'Ignore Original Duration' if the provided timeline is unreliable. (e.g. browsers)<br>Visualizer will not keep track of the original timeline in this case, so manually seeking the track will cause the estimated position to go out of sync.<br><br>Do note that this feature might not work as expected with all media players.<br>This feature will not work if the media player does not provide the total playback duration.<br><br>The estimated timeline is also used to display synchronized lyrics.",
+    "VISUALIZER_ESTIMATE_TIMELINE_HELP_MSG": "This feature tries to fill the gap between the timeline events provided by the media player.<br>It estimates the timeline based on the last known position supplied by the player and the playback status.<br><br>Select 'Enabled' if your media player provides reliable timeline events but doesn't update it every second. (e.g. Spotify)<br><br>Select 'Ignore Original Timeline' if the provided timeline is unreliable. (e.g. browsers)<br>Visualizer will not keep track of the original timeline in this case, so manually seeking the track will cause the estimated position to go out of sync.<br><br>Do note that this feature might not work as expected with all media players.<br>This feature will not work if the media player does not provide the total playback duration.<br><br>The estimated timeline is also used to display synchronized lyrics.",
 
     "VISUALIZER_UNSUPPORTED_MSG": "Sorry, but the visualizer is only available for Wallpaper Engine and Lively Wallpaper.",
     "VISUALIZER_MULTI_INSTANCE_MSG": "Only one instance of the visualizer can be open at a time.",
@@ -614,6 +614,8 @@
     "VISLRCCONF_FONT_TITLE": "Fonts",
     "VISLRCCONF_FORCE_UNSYNCED": "Force &unsynced lyrics",
     "VISLRCCONF_FORCE_UNSYNCED_INFO": "<li>Enable this option if your media player does not provide timeline information.</li><li>Enable Visualizer -> View -> Estimate Timeline if your media player provides timeline information but it's inaccurate or not updated frequently.</li>",
+    "VISLRCCONF_TIPS_TITLE": "Tips",
+    "VISLRCCONF_TIPS": "<li>Spotify users:<ul><li>Use the desktop client for the best experience.</li><li>Set your Spotify client language to English for better lyric search results.</li><li>Set 'Estimate Timeline' to 'Enabled' in Visualizer -> View.</li></ul></li><li>YouTube users:<ul><li>Use YouTube Music for the best experience, if available.</li><li>Set your YouTube Music's UI language to English for better lyric search results.</li><li>Set 'Estimate Timeline' to 'Ignore Original Timeline' in Visualizer -> View.</li></ul></li>",
     "VISLRCCONF_LYRICS_PROVIDER": "Lyrics provided by",
     // #endregion
 

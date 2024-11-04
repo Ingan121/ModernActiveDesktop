@@ -9,8 +9,11 @@
     <style id="style"></style>
 </head>
 <body id="madVisLrcConf">
+    <!-- This is definitely longer than 640x480 when the Spotify section is visible -->
+    <!-- but gotta keep it this way till the Spotify integration is approved -->
     <div class="window-body">
-        <fieldset>
+        <button id="showSpotifyBtn">Show Spotify integration options</button>
+        <fieldset id="spotifyFieldset">
             <legend><mad-string data-locid="VISLRCCONF_SPOTIFY_TITLE">Spotify integration</mad-string></legend>
             <input id="enableSpotifyChkBox" type="checkbox" name="enableSpotify" accesskey="i">
             <label for="enableSpotifyChkBox"><mad-string data-locid="VISLRCCONF_SPOTIFY_ENABLE">Enable extended Spotify <u>i</u>ntegration</mad-string></label>
@@ -22,6 +25,10 @@
                     <li>You need to sign in to Spotify to enable this feature.</li>
                     <li>To sign in, you need to have the system plugin installed. See <a href="javascript:madOpenWindow('SysplugSetupGuide.md',true)">this guide</a> to install the system plugin.</li>
                 </mad-string>
+                <br>
+                <li>Currently hidden as the Spotify client ID has not yet been approved for the extended quota mode by Spotify, unless the debug mode is enabled.</li>
+                <li>If you wish to use this feature right now, exit the ModernActiveDesktop System Plugin, and run systemplugin\MADSysPlug.exe with the --spotify &lt;client_id&gt; argument.</li>
+                <li>Go to the dashboard in developer.spotify.com, create a new app, put http://localhost:3031/spotify/callback in the Redirect URIs, and get the client ID there.</li>
             </ul>
         </fieldset>
         <fieldset>
@@ -53,6 +60,30 @@
                 <mad-string data-locid="VISLRCCONF_FORCE_UNSYNCED_INFO">
                     <li>Enable this option if your media player does not provide timeline information.</li>
                     <li>Enable Visualizer -> View -> Estimate Timeline if your media player provides timeline information but it's inaccurate or not updated frequently.</li>
+                </mad-string>
+            </ul>
+        </fieldset>
+        <fieldset id="tipsFieldset">
+            <legend><mad-string data-locid="VISLRCCONF_TIPS_TITLE">Tips</mad-string></legend>
+            <ul id="tipsList">
+                <mad-string data-locid="VISLRCCONF_TIPS">
+                    <li>Spotify users:
+                        <ul>
+                            <li>Use the desktop client for the best experience.</li>
+                            <li>Set your Spotify client language to English for better lyric search results.</li>
+                            <!-- hide this for now
+                            <li>Or, enable the extended Spotify integration above.</li>
+                            -->
+                            <li>Set 'Estimate Timeline' to 'Enabled' in Visualizer -> View.</li>
+                        </ul>
+                    </li>
+                    <li>YouTube users:
+                        <ul>
+                            <li>Use YouTube Music for the best experience, if available.</li>
+                            <li>Set your YouTube Music's UI language to English for better lyric search results.</li>
+                            <li>Set 'Estimate Timeline' to 'Ignore Original Timeline' in Visualizer -> View.</li>
+                        </ul>
+                    </li>
                 </mad-string>
             </ul>
         </fieldset>

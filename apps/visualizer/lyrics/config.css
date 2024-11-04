@@ -18,18 +18,33 @@ p, legend, label,
     font-size: 11px;
 }
 
+#showSpotifyBtn {
+    display: none;
+}
+
+#spotifyFieldset {
+    display: none;
+}
+
 #spotifyLoginBtn {
     margin-left: 5px;
 }
 
 #spotifyInfo,
-#syncInfo {
+#syncInfo,
+#tipsList,
+#tipsList li ul {
     margin: 5px 0;
     padding-left: 15px;
 }
 
+#tipsList {
+    margin: 2px 0;
+}
+
 #spotifyInfo mad-string,
-#syncInfo mad-string {
+#syncInfo mad-string,
+#tipsList mad-string {
     white-space: initial;
 }
 

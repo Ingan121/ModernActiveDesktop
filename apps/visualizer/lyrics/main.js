@@ -42,6 +42,7 @@ async function init() {
         let autoScroll = true;
         let autoScrolling = false;
         let overrides = await madIdb.lyricsOverrides;
+        let abortController = new AbortController();
 
         if (!overrides) {
             overrides = {};
@@ -103,8 +104,8 @@ async function init() {
             const text = await file.text();
             loadLyrics(text);
 
-            if (await madConfirm(madGetString('VISLRC_CONFIRM_SAVE_LYRICS'))) {
-                const hash = await getSongHash(visStatus.lastMusic?.artist, visStatus.lastMusic?.title, visStatus.lastMusic?.albumTitle);
+            const hash = await getSongHash(visStatus.lastMusic?.artist, visStatus.lastMusic?.title, visStatus.lastMusic?.albumTitle);
+            if (hash && await madConfirm(madGetString('VISLRC_CONFIRM_SAVE_LYRICS'))) {
                 overrides[hash] = {
                     lrc: text
                 };
@@ -271,6 +272,7 @@ async function init() {
             }
             if (lastUnsyncedLyrics) {
                 // Don't fall back to search if the album title is not present and unsynced lyrics exist, as it may find a completely different song. Test case: "IVE - I WANT"
+                // In fact, "IVE" easily causes the search fallback to return a completely different song, as LRCLIB doesn't care about punctuation so songs with "I've" in titles, albums, ... gets returned
                 if (visStatus.lastSpotifyMusic?.albumTitle || visStatus.lastMusic?.albumTitle) {
                     const searchResult = await searchFallback();
                     if (searchResult.synced) {
@@ -302,11 +304,13 @@ async function init() {
             const albumTitle = visStatus.lastSpotifyMusic?.albumTitle || visStatus.lastMusic?.albumTitle || '';
             const query = artist + ' ' + title + ' ' + albumTitle;
 
+            abortController = new AbortController();
             const response = await fetch(`https://lrclib.net/api/search?q=${query}`, {
                 method: 'GET',
                 headers: {
                     'Lrclib-Client': 'ModernActiveDesktop/' + top.madVersion.toString(1) + (madRunningMode === 1 ? ' (Wallpaper Engine)' : ' (Lively Wallpaper)') + ' (https://madesktop.ingan121.com/)'
-                }
+                },
+                signal: abortController.signal
             });
             const result = await response.json();
 
@@ -335,16 +339,19 @@ async function init() {
             if (stripParens) {
                 return null;
             } else {
+                // Attempt to get "CHUU - Confession (Ditto X Chuu (LOONA)) (고백 (영화 '동감' X 츄 (이달의 소녀)))" (YT/YTM) to work with the search fallback
                 return await searchFallback(true);
             }
         }
 
         async function fetchLyrics(url) {
+            abortController = new AbortController();
             const response = await fetch(url, {
                 method: 'GET',
                 headers: {
                     'Lrclib-Client': 'ModernActiveDesktop/' + top.madVersion.toString(1) + (madRunningMode === 1 ? ' (Wallpaper Engine)' : ' (Lively Wallpaper)') + ' (https://madesktop.ingan121.com/)'
-                }
+                },
+                signal: abortController.signal
             });
             const json = await response.json();
             
@@ -371,6 +378,13 @@ async function init() {
         }
 
         async function loadLyrics(idOrLrc, addOverride) {
+            // Abort the previous request if it's still running
+            // On early startup, 'undefined undefined undefined' might be used for the song hash (before receiving the first mediaProperties/SMTC event)
+            // and cause finding the appropriate override to fail
+            // This function is called both on startup and mediaProperties events, and if the former uses fetch instead of the override, the fetch might finish after the latter gets the override
+            // So the fetch should be aborted to prevent the loaded override from being overwritten by the fetch result (likely "No lyrics found")
+            abortController.abort();
+
             let lyrics = null;
             if (idOrLrc?.length >= 10) {
                 if (isTextLrc(idOrLrc)) {
@@ -388,7 +402,14 @@ async function init() {
                     }
                 }
             } else {
-                lyrics = await findLyrics(idOrLrc);
+                try {
+                    lyrics = await findLyrics(idOrLrc);
+                } catch (error) {
+                    if (error.name === 'AbortError') {
+                        // New request was made, ignore the old one
+                        return;
+                    }
+                }
             }
 
             lastLyrics = lyrics;
@@ -419,6 +440,9 @@ async function init() {
                 }
                 if (addOverride && idOrLrc && idOrLrc.length <= 10) {
                     const hash = await getSongHash(visStatus.lastMusic?.artist, visStatus.lastMusic?.title, visStatus.lastMusic?.albumTitle);
+                    if (!hash) {
+                        return;
+                    }
                     overrides[hash] = {
                         id: lyrics.id
                     };
@@ -599,6 +623,11 @@ async function init() {
         }
 
         async function getSongHash(artist, title, albumTitle) {
+            if (!artist && !title && !albumTitle) {
+                // undefined + undefined + undefined = NaN, sha1("NaN") = 9/2caPgErNpmXSqwgiF7sVgzGPI=
+                // what the fuck
+                return null;
+            }
             const data = new TextEncoder().encode(artist + title + albumTitle);
             const hashBuffer = await crypto.subtle.digest('SHA-1', data);
             const hashArray = Array.from(new Uint8Array(hashBuffer));
