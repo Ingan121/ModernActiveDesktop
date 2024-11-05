@@ -587,6 +587,7 @@
     "VISLRC_LRC_MENUITEM_OPENFILE": "Open Lyrics &File",
     "VISLRC_LRC_MENUITEM_AUTO_SCROLL": "&Auto Scroll",
     "VISLRC_LRC_MENUITEM_VISLRCCONF": "&Options",
+    "VISLRC_LRC_MENUITEM_DEBUG_INFO": "&Debug Info",
 
     "VISLRC_STATUS_LOADING": "Loading...",
     "VISLRC_STATUS_NOT_FOUND": "No lyrics found.",
@@ -614,6 +615,8 @@
     "VISLRCCONF_FONT_TITLE": "Fonts",
     "VISLRCCONF_FORCE_UNSYNCED": "Force &unsynced lyrics",
     "VISLRCCONF_FORCE_UNSYNCED_INFO": "<li>Enable this option if your media player does not provide timeline information.</li><li>Enable Visualizer -> View -> Estimate Timeline if your media player provides timeline information but it's inaccurate or not updated frequently.</li>",
+    "VISLRCCONF_SMOOTH_SCROLL": "Smooth s&crolling",
+    "VISLRCCONF_SMOOTH_SCROLL_DISABLED": "Smooth s&crolling (system animations are disabled)",
     "VISLRCCONF_TIPS_TITLE": "Tips",
     "VISLRCCONF_TIPS": "<li>Spotify users:<ul><li>Use the desktop client for the best experience.</li><li>Set your Spotify client language to English for better lyric search results.</li><li>Set 'Estimate Timeline' to 'Enabled' in Visualizer -> View.</li></ul></li><li>YouTube users:<ul><li>Use YouTube Music for the best experience, if available.</li><li>Set your YouTube Music's UI language to English for better lyric search results.</li><li>Set 'Estimate Timeline' to 'Ignore Original Timeline' in Visualizer -> View.</li></ul></li>",
     "VISLRCCONF_LYRICS_PROVIDER": "Lyrics provided by",

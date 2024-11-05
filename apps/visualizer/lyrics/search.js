@@ -77,6 +77,9 @@ async function search() {
     searchResults.disabled = false;
     let currentIdFound = false;
     for (const item of result) {
+        if (!item.syncedLyrics && !item.plainLyrics) {
+            continue;
+        }
         const option = document.createElement('option');
         option.value = item.id;
         option.textContent = item.artistName + ' - ' + item.trackName + ' (' + item.albumName + ')';

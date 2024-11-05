@@ -14,7 +14,16 @@ let inited = 0; // 0: Not initialized at all, 1: Initialized but MADVis not load
 
 madDeskMover.menu = new MadMenu(menuBar, ['lrc']);
 
-lrcMenuItems[5].addEventListener('click', function () { // Close button
+for (let i = 0; i < lrcMenuItems.length - 1; i++) {
+    // Setup basic click events for use before initialization and MADVis load
+    lrcMenuItems[i].addEventListener('click', function () {
+        if (inited === 0 || inited === 1) {
+            madAlert(madGetString('VISLRC_STATUS_NO_MADVIS'));
+        }
+    });
+}
+
+lrcMenuItems[6].addEventListener('click', function () { // Close button
     madCloseWindow();
 });
 
@@ -39,8 +48,8 @@ async function init() {
         let lastSyncedLyricsParsed = null;
         let lastLyricsId = null;
         let lastMusic = null;
+        let lastFetchInfo = {};
         let autoScroll = true;
-        let autoScrolling = false;
         let overrides = await madIdb.lyricsOverrides;
         let abortController = new AbortController();
 
@@ -140,13 +149,18 @@ async function init() {
             }, null, "window");
         });
 
-        lyricsView.addEventListener('scroll', function () {
-            // If the user scrolls, disable auto-scrolling
-            if (!autoScrolling) {
+        lrcMenuItems[5].addEventListener('click', function () { // Debug Info button
+            showDebugInfo();
+        });
+
+        lyricsView.addEventListener('pointerdown', function (event) {
+            const computed = getComputedStyle(lyricsView);
+            const scrollbarSize = parseInt(computed.getPropertyValue('--scrollbar-size'));
+            const padding = parseInt(computed.paddingRight);
+            if (event.clientX >= window.innerWidth - scrollbarSize - padding) {
+                // scrollbar clicked
                 autoScroll = false;
                 lrcMenuItems[3].classList.remove('checkedItem');
-            } else {
-                autoScrolling = false;
             }
         });
 
@@ -157,9 +171,11 @@ async function init() {
             }
 
             const hash = await getSongHash(visStatus.lastMusic?.artist, visStatus.lastMusic?.title, visStatus.lastMusic?.albumTitle);
+            lastFetchInfo = { hash };
             const override = overrides[hash];
             if (override) {
                 if (override.lrc) {
+                    lastFetchInfo.override = -1;
                     if (isTextLrc(override.lrc)) {
                         return {
                             synced: true,
@@ -175,6 +191,7 @@ async function init() {
                         };
                     }
                 } else if (override.id) {
+                    lastFetchInfo.override = override.id;
                     return await fetchLyrics('https://lrclib.net/api/get/' + override.id);
                 }
             }
@@ -258,6 +275,7 @@ async function init() {
             }
             urlsToTry = [...new Set(urlsToTry)];
             log(urlsToTry, 'log', 'MADVisLrc');
+            lastFetchInfo.urls = urlsToTry;
 
             let lastUnsyncedLyrics = null;
             for (const url of urlsToTry) {
@@ -293,6 +311,7 @@ async function init() {
         }
 
         async function searchFallback(stripParens) {
+            lastFetchInfo.searchFallback = true;
             const artist = visStatus.lastSpotifyMusic?.artist || visStatus.lastMusic?.artist || '';
             let title = visStatus.lastSpotifyMusic?.title || visStatus.lastMusic?.title || '';
             if (stripParens) {
@@ -541,8 +560,17 @@ async function init() {
                         if (i <= nearestIndex) {
                             lyric.style.color = 'var(--button-text)';
                             if (autoScroll && i === nearestIndex) {
-                                autoScrolling = true;
-                                lyric.scrollIntoView({ block: 'center' });
+                                console.log(lyric.offsetTop, lyricsView.offsetHeight / 2, lyric.textContent);
+                                if (lyric.offsetTop < lyricsView.offsetHeight / 2) {
+                                    // scrolling to the top of the lyricsView
+                                    // don't use scrollIntoView with behavior: 'smooth' here as it causes jittering
+                                    lyricsView.scrollTop = 0;
+                                } else {
+                                    lyric.scrollIntoView({
+                                        block: 'center', 
+                                        behavior: localStorage.madesktopVisLyricsSmoothScroll ? 'smooth' : 'instant'
+                                    });
+                                }
                             }
                         } else {
                             lyric.style.color = 'var(--gray-text)';
@@ -550,7 +578,6 @@ async function init() {
                     }
                 } else {
                     if (autoScroll) {
-                        autoScrolling = true;
                         lyricsView.scrollTop = 0;
                     }
                 }
@@ -657,6 +684,54 @@ async function init() {
             };
             processProperties(true, true);
             console.log('Hash:', await getSongHash(artist, title, album));
+        }
+
+        function showDebugInfo() {
+            let msg = '';
+
+            const msgInLyricsView = lyricsView.querySelector('mad-string');
+            if (msgInLyricsView) {
+                msg = madGetString(msgInLyricsView.locId);
+            } else {
+                msg += 'Current track: ' + visStatus.lastMusic?.artist + ' - ' + visStatus.lastMusic?.title + ' (' + visStatus.lastMusic?.albumTitle + ')<br>';
+                msg += 'Current lyrics ID: ' + (lastLyricsId ?? 'Local lyrics') + '<br>';
+                msg += 'Song hash: ' + lastFetchInfo.hash + '<br>';
+                msg += 'Timeline: ' + visStatus.timeline?.position + 's / ' + visStatus.timeline?.duration + 's<br><br>';
+                if (lastFetchInfo.override === -1) {
+                    msg += 'Override: Local lyrics<br>';
+                } else if (lastFetchInfo.override) {
+                    msg += 'Override ID: ' + lastFetchInfo.override + '<br>';
+                } else if (lastFetchInfo.urls) {
+                    msg += 'URLs tried:<br>';
+                    for (const url of lastFetchInfo.urls) {
+                        msg += '- ' + url + '<br>';
+                    }
+                    msg += '<br>';
+                }
+                if (lastFetchInfo.searchFallback) {
+                    msg += 'Search fallback used<br>';
+                }
+                if (lastSyncedLyricsParsed) {
+                    msg += 'Loaded lyrics are synced<br>';
+                } else if (lastLyrics.synced) {
+                    msg += 'Loaded lyrics are not synced, synced lyrics available<br>';
+                } else {
+                    msg += 'Loaded lyrics are not synced, no synced lyrics available<br>';
+                }
+
+                if (localStorage.madesktopVisSpotifyEnabled && localStorage.madesktopVisSpotifyInfo) {
+                    const info = JSON.parse(localStorage.madesktopVisSpotifyInfo);
+                    msg += '<br>';
+                    msg += 'Current Spotify track: ' + visStatus.lastSpotifyMusic?.artist + ' - ' + visStatus.lastSpotifyMusic?.title + ' (' + visStatus.lastSpotifyMusic?.albumTitle + ')<br>';
+                    msg += 'Spotify duration: ' + visStatus.lastSpotifyMusic?.duration + 's<br><br>';
+                    msg += 'Spotify client ID: ' + info.clientId + '<br>';
+                    const fetchedAtDate = new Date(info.fetchedAt * 1000).toLocaleString(window.madLang);
+                    const expiryDate = new Date((info.fetchedAt + info.expiresIn - 60) * 1000).toLocaleString(window.madLang);
+                    msg += 'Spotify token fetched at: ' + fetchedAtDate + '<br>';
+                    msg += 'Spotify token expiry: ' + expiryDate + '<br>';
+                }
+            }
+            madAlert(msg);
         }
     } else {
         lyricsView.innerHTML = '<mad-string data-locid="VISLRC_STATUS_NO_MADVIS"></mad-string>';

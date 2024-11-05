@@ -267,6 +267,7 @@ visMenuItems[0].addEventListener('click', () => { // Album Art button
     visBar.style.opacity = '0';
     visTop.style.opacity = '0';
     albumArt.style.opacity = '1';
+    idleIndicator.style.display = 'none';
     localStorage.madesktopVisShowAlbumArt = true;
     delete localStorage.madesktopVisDimAlbumArt;
     configChanged();
@@ -578,6 +579,7 @@ estimateMenuItems[2].addEventListener('click', () => { // Ignore Original Timeli
 
     if (timelineGuesserTick) {
         clearInterval(timelineGuesserTick);
+        timelineGuesserTick = null;
     }
     if (visStatus.timeline) {
         timelineGuesserTick = setInterval(timelineGuesser, 1000);
@@ -838,7 +840,15 @@ function wallpaperMediaTimelineListener(event) {
     visStatus.timelineOrig = event;
     document.dispatchEvent(mediaTimelineEvent);
 
-    if (localStorage.madesktopVisGuessTimeline) {
+    if (localStorage.madesktopVisGuessTimeline === '2') {
+        // If the estimated timeline setting is set to "Ignore Original Timeline",
+        // start the timeline guesser only if it's not already running
+        if (!timelineGuesserTick) {
+            timelineGuesserTick = setInterval(timelineGuesser, 1000);
+        }
+    } else if (localStorage.madesktopVisGuessTimeline) {
+        // If the estimated timeline setting is set to "Enable" or "Disable",
+        // restart the timeline guesser
         if (timelineGuesserTick) {
             clearInterval(timelineGuesserTick);
         }
@@ -864,6 +874,7 @@ function timelineGuesser() {
         }
         return;
     }
+
     if (visStatus.state === window.wallpaperMediaIntegration.PLAYBACK_PLAYING) {
         if (visStatus.timeline.position <= visStatus.timeline.duration) {
             visStatus.timeline.position += 1;

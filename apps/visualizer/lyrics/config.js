@@ -16,6 +16,8 @@ const boldToggle = document.getElementById("boldToggle");
 const italicToggle = document.getElementById("italicToggle");
 
 const forceUnsyncedChkBox = document.getElementById("forceUnsyncedChkBox");
+const smoothScrollChkBox = document.getElementById("smoothScrollChkBox");
+const smoothScrollChkBoxLabel = document.querySelector("label[for=smoothScrollChkBox] mad-string");
 
 const tipsFieldset = document.getElementById("tipsFieldset");
 
@@ -24,6 +26,8 @@ const cancelBtn = document.getElementById("cancelBtn");
 const applyBtn = document.getElementById("applyBtn");
 
 const links = document.querySelectorAll('a');
+
+const animationsDisabled = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 for (const link of links) {
     // Unset the alwaysOnTop flag when the user clicks on a link
@@ -141,6 +145,9 @@ fontSelector.addEventListener("change", function () {
 fontSize.addEventListener("click", function () {
     madPrompt(madGetString("MADCONF_PROMPT_FONT_SIZE"), function (res) {
         if (res === null) return;
+        if (res === "") {
+            res = "11px";
+        }
         if (parseFloat(res).toString() === res) {
             res += "pt";
         }
@@ -215,6 +222,15 @@ function getFontInfo() {
     return fontInfo;
 }
 
+forceUnsyncedChkBox.addEventListener("click", function () {
+    if (this.checked) {
+        smoothScrollChkBox.disabled = true;
+        smoothScrollChkBox.checked = false;
+    } else if (!animationsDisabled) {
+        smoothScrollChkBox.disabled = false;
+    }
+});
+
 window.apply = function () {
     if (enableSpotifyChkBox.checked) {
         localStorage.madesktopVisSpotifyEnabled = true;
@@ -226,6 +242,11 @@ window.apply = function () {
         localStorage.madesktopVisLyricsForceUnsynced = true;
     } else {
         delete localStorage.madesktopVisLyricsForceUnsynced;
+    }
+    if (smoothScrollChkBox.checked) {
+        localStorage.madesktopVisLyricsSmoothScroll = true;
+    } else {
+        delete localStorage.madesktopVisLyricsSmoothScroll;
     }
 
     window.configChanged();
@@ -269,6 +290,16 @@ if (fontInfo.italic) {
 
 if (localStorage.madesktopVisLyricsForceUnsynced) {
     forceUnsyncedChkBox.checked = true;
+}
+
+// scrollIntoView({ behavior: 'smooth' }) doesn't work if system animation is disabled (e.g. RDP by default)
+if (animationsDisabled) {
+    smoothScrollChkBox.disabled = true;
+    smoothScrollChkBoxLabel.locId = "VISLRCCONF_SMOOTH_SCROLL_DISABLED";
+} else if (localStorage.madesktopVisLyricsForceUnsynced) {
+    smoothScrollChkBox.disabled = true;
+} else if (localStorage.madesktopVisLyricsSmoothScroll) {
+    smoothScrollChkBox.checked = true;
 }
 
 window.addEventListener('load', () => {
