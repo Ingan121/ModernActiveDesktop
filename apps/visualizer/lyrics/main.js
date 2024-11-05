@@ -560,7 +560,7 @@ async function init() {
                         if (i <= nearestIndex) {
                             lyric.style.color = 'var(--button-text)';
                             if (autoScroll && i === nearestIndex) {
-                                console.log(lyric.offsetTop, lyricsView.offsetHeight / 2, lyric.textContent);
+                                //console.log(lyric.offsetTop, lyricsView.offsetHeight / 2, lyric.textContent);
                                 if (lyric.offsetTop < lyricsView.offsetHeight / 2) {
                                     // scrolling to the top of the lyricsView
                                     // don't use scrollIntoView with behavior: 'smooth' here as it causes jittering
@@ -704,7 +704,7 @@ async function init() {
                 } else if (lastFetchInfo.urls) {
                     msg += 'URLs tried:<br>';
                     for (const url of lastFetchInfo.urls) {
-                        msg += '- ' + url + '<br>';
+                        msg += '- ' + decodeURIComponent(url) + '<br>';
                     }
                     msg += '<br>';
                 }
