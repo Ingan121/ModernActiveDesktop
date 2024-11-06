@@ -36,6 +36,8 @@
     --menu-animation: fade;
     --menu-shadow: true;
     --supports-colorization: true;
+    --win-open-anim: 0.4s winOpenAnim;
+    --win-close-anim: 0.4s winCloseAnim;
     --scrollbar-size: 17px;
     --menu-height: 19px;
     --palette-title-height: 22px;
@@ -49,6 +51,30 @@
 .window {
     --extra-title-height: 2px;
     --extra-border-size: 1px;
+}
+
+@keyframes winOpenAnim {
+    0% {
+        transform: scale(0);
+    }
+    80% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes winCloseAnim {
+    0% {
+        transform: scale(1);
+    }
+    35% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(0);
+    }
 }
 
 .windowContainer,

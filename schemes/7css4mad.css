@@ -37,8 +37,9 @@
     --menu-shadow: true;
     --supports-win-shadow: true;
     --supports-colorization: true;
-    --win-open-anim: aeroWinOpen;
-    --win-close-anim: aeroWinClose;
+    --supports-transparency: true;
+    --win-open-anim: 0.22s aeroWinOpen linear;
+    --win-close-anim: 0.2s aeroWinClose linear;
     --scrollbar-size: 17px;
     --menu-height: 19px;
     --palette-title-height: 22px;

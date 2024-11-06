@@ -96,6 +96,8 @@
     "MAD_DEBUG_DISABLE_LOGGING": "디버그 로깅 비활성화",
     "MAD_DEBUG_SIMULATE": "다른 환경 시뮬레이션",
     "MAD_DEBUG_CHANGE_KBD_SUPPORT": "키보드 지원 수준 변경",
+    "MAD_DEBUG_RELOAD_SCHEME": "색 구성표 다시 로드",
+    "MAD_DEBUG_RELOAD_LANG": "언어 다시 로드",
     "MAD_DEBUG_DEACTIVATE": "디버그 모드 비활성화",
 
 
@@ -567,10 +569,15 @@
 
     "VISLRCFIND_TITLE": "가사 검색",
     "VISLRCFIND_SEARCH_LABEL": "가사 검색:",
+    "VISLRCFIND_ARTIST_LABEL": "아티스트:",
+    "VISLRCFIND_TITLE_LABEL": "제목:",
+    "VISLRCFIND_ALBUM_LABEL": "앨범:",
     "VISLRCFIND_SEARCH": "검색(&S)",
     "VISLRCFIND_SEARCHING": "검색 중...",
     "VISLRCFIND_ADD_OVERRIDE": "이 노래에 항상 이 가사 사용",
     "VISLRCFIND_OVERRIDE_INFO": "가사 -> 가사 불러오기를 클릭하여 이 설정을 제거하세요",
+    "VISLRCFIND_ADVANCED_EXPAND": "고급(&D) >>",
+    "VISLRCFIND_ADVANCED_COLLAPSE": "고급(&D) <<",
 
 
     "CALC_TITLE": "계산기",

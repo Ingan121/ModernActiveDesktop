@@ -106,6 +106,8 @@
     "MAD_DEBUG_DISABLE_LOGGING": "Disable debug logging",
     "MAD_DEBUG_SIMULATE": "Simulate other environment",
     "MAD_DEBUG_CHANGE_KBD_SUPPORT": "Change keyboard support level",
+    "MAD_DEBUG_RELOAD_SCHEME": "Reload color scheme",
+    "MAD_DEBUG_RELOAD_LANG": "Reload language",
     "MAD_DEBUG_DEACTIVATE": "Deactivate debug mode",
     // #endregion
 
@@ -625,10 +627,15 @@
     // #region Visualizer Lyrics Search strings
     "VISLRCFIND_TITLE": "Search Lyrics",
     "VISLRCFIND_SEARCH_LABEL": "Search lyrics:",
+    "VISLRCFIND_ARTIST_LABEL": "Artist:",
+    "VISLRCFIND_TITLE_LABEL": "Title:",
+    "VISLRCFIND_ALBUM_LABEL": "Album:",
     "VISLRCFIND_SEARCH": "&Search",
     "VISLRCFIND_SEARCHING": "Searching...",
     "VISLRCFIND_ADD_OVERRIDE": "Always use this lyrics for this song",
     "VISLRCFIND_OVERRIDE_INFO": "Click Lyrics -> Load Lyrics to remove the override",
+    "VISLRCFIND_ADVANCED_EXPAND": "A&dvanced >>",
+    "VISLRCFIND_ADVANCED_COLLAPSE": "A&dvanced <<",
     // #endregion
     // #endregion
     // #endregion

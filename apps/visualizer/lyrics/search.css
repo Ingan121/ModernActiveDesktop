@@ -17,13 +17,45 @@ p, legend, label,
     font-size: 11px;
 }
 
-#searchBar {
+.normalSearch {
+    margin-bottom: 5px;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.row label {
+    flex: 0 0 auto;
+    margin-right: 10px;
+}
+
+.row input {
+    flex: 1;
+}
+
+.row button {
+    flex: 0 0 auto;
+}
+
+.advancedSearch {
+    display: none;
+}
+
+.searchBar {
     width: 100%;
+}
+
+#searchBtnAdvanced {
+    margin-left: 5px;
 }
 
 #searchResults {
     width: 100%;
-    margin: 5px 0;
+    margin-bottom: 5px;
 }
 
 label[for="addOverrideChkBox"] {

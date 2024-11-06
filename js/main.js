@@ -863,7 +863,7 @@
             msgboxBtn1.addEventListener('click', close);
             msgboxCloseBtn.addEventListener('click', close);
 
-            showDialog();
+            showDialog(1);
 
             function keypress(event) {
                 if (event.key === "Enter") {
@@ -967,7 +967,7 @@
             msgboxBtn3.addEventListener('click', btn3);
             msgboxCloseBtn.addEventListener('click', cancelBtn);
 
-            showDialog();
+            showDialog(options.defaultBtn);
 
             function keypress(event) {
                 // Handle enter in keypress to prevent this from being triggered along with the context menu enter key
@@ -1049,7 +1049,7 @@
             msgboxBtn2.addEventListener('click', close);
             msgboxCloseBtn.addEventListener('click', close);
 
-            showDialog();
+            showDialog(1);
             msgboxInput.focus();
             if (kbdSupport !== 1) {
                 // WPE 2.5 broke the native JS alert/confirm/prompt,
@@ -1116,7 +1116,7 @@
     }
 
     // @unexported
-    function showDialog() {
+    function showDialog(focus = 1) {
         if (msgboxLoopCount++ > 5) {
             return;
         }
@@ -1127,7 +1127,7 @@
 
         const winOpenAnim = getComputedStyle(msgbox).getPropertyValue('--win-open-anim');
         if (winOpenAnim && !localStorage.madesktopNoWinAnim) {
-            msgbox.style.animation = `0.22s ${winOpenAnim} linear`;
+            msgbox.style.animation = winOpenAnim;
             msgbox.addEventListener('animationend', function () {
                 msgbox.style.animation = "";
             }, { once: true });
@@ -1139,7 +1139,19 @@
         msgboxBg.style.display = "block";
         msgbox.style.top = (vHeight - msgbox.offsetHeight) / 2 + "px";
         msgbox.style.left = (vWidth - msgbox.offsetWidth) / 2 + "px";
-        msgboxBtn1.focus();
+        switch (focus) {
+            case 1:
+                msgboxBtn1.focus();
+                break;
+            case 2:
+                msgboxBtn2.focus();
+                break;
+            case 3:
+                msgboxBtn3.focus();
+                break;
+            default:
+                msgboxInput.focus();
+        }
 
         // Detect changes in the message content
         // For centering the dialog when MadString is loaded lately
@@ -1155,9 +1167,12 @@
         msgboxMsgChangeDetector.disconnect();
         const winCloseAnim = getComputedStyle(msgbox).getPropertyValue('--win-close-anim');
         if (winCloseAnim && !localStorage.madesktopNoWinAnim) {
-            msgbox.style.animation = `0.2s ${winCloseAnim} linear`;
+            msgbox.style.animation = winCloseAnim;
             msgbox.addEventListener('animationend', function () {
-                if (msgbox.style.animationName !== winCloseAnim.trim()) {
+                const tester = document.createElement("div");
+                tester.style.animation = winCloseAnim;
+                const animationName = tester.style.animationName;
+                if (msgbox.style.animationName !== animationName) {
                     return;
                 }
                 msgbox.style.animation = "";

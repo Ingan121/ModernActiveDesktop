@@ -235,6 +235,8 @@ async function main() {
             secondColorPickerWrap.classList.remove("disabled");
             secondColorPicker.disabled = false;
             secondColorPickerColor.style.backgroundColor = "#4580c4";
+        }
+        if (scheme["supports-transparency"]) {
             transparencyChkBox.disabled = false;
             transparencyChkBox.checked = true;
         } else {
@@ -664,12 +666,17 @@ async function main() {
             selector.disabled = true;
             preview.style.pointerEvents = "none";
             colorPickerColor.style.backgroundColor = localStorage.madesktopBgColor;
-            if (getComputedStyle(parent.document.documentElement).getPropertyValue("--supports-colorization")) {
+            const docComputedStyle = getComputedStyle(parent.document.documentElement);
+            if (docComputedStyle.getPropertyValue("--supports-colorization")) {
                 secondColorPickerWrap.classList.remove("disabled");
                 secondColorPicker.disabled = false;
                 secondColorPickerColor.style.backgroundColor = localStorage.madesktopAeroColor || "#4580c4";
+            }
+            if (docComputedStyle.getPropertyValue("--supports-transparency")) {
                 transparencyChkBox.disabled = false;
                 transparencyChkBox.checked = !localStorage.madesktopAeroNoGlass;
+            }
+            if (docComputedStyle.getPropertyValue("--win-open-anim") && docComputedStyle.getPropertyValue("--win-close-anim")) {
                 animChkBox.disabled = false;
                 animChkBox.checked = !localStorage.madesktopNoWinAnim;
             }

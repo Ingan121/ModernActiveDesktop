@@ -9,6 +9,11 @@ const lyricsView = document.getElementById('lyricsView');
 
 const menuBar = document.getElementById('menuBar');
 const lrcMenuItems = document.querySelectorAll('#lrcMenu .contextMenuItem');
+const loadingIndicator = document.getElementById('loadingIndicator');
+
+const headers = {
+    'Lrclib-Client': 'ModernActiveDesktop/' + top.madVersion.toString(1) + (madRunningMode === 1 ? ' (Wallpaper Engine)' : ' (Lively Wallpaper)') + ' (https://madesktop.ingan121.com/)'
+};
 
 let inited = 0; // 0: Not initialized at all, 1: Initialized but MADVis not loaded, 2: Fully initialized, -1: MADVis unloaded while running
 
@@ -18,7 +23,7 @@ for (let i = 0; i < lrcMenuItems.length - 1; i++) {
     // Setup basic click events for use before initialization and MADVis load
     lrcMenuItems[i].addEventListener('click', function () {
         if (inited === 0 || inited === 1) {
-            madAlert(madGetString('VISLRC_STATUS_NO_MADVIS'));
+            madAlert(madGetString('VISLRC_STATUS_NO_MADVIS'), null, 'error', { title: 'locid:VISLRC_TITLE' });
         }
     });
 }
@@ -48,7 +53,7 @@ async function init() {
         let lastSyncedLyricsParsed = null;
         let lastLyricsId = null;
         let lastMusic = null;
-        let lastFetchInfo = {};
+        let lastFetchInfo = {}; // For debugging
         let autoScroll = true;
         let overrides = await madIdb.lyricsOverrides;
         let abortController = new AbortController();
@@ -82,7 +87,12 @@ async function init() {
             const artist = visStatus.lastSpotifyMusic?.artist || visStatus.lastMusic?.artist || '';
             const title = visStatus.lastSpotifyMusic?.title || visStatus.lastMusic?.title || '';
             const albumTitle = visStatus.lastSpotifyMusic?.albumTitle || visStatus.lastMusic?.albumTitle || '';
-            const query = artist + ' ' + title + ' ' + albumTitle;
+            const params = {
+                artist: artist,
+                title: title,
+                albumTitle: albumTitle
+            };
+            const query = new URLSearchParams(params).toString();
 
             const left = parseInt(madDeskMover.config.xPos) + 25 + 'px';
             const top = parseInt(madDeskMover.config.yPos) + 50 + 'px';
@@ -90,7 +100,7 @@ async function init() {
                 left, top, width: '520px', height: '132px',
                 aot: true, unresizable: true, noIcon: true
             }
-            const searchDeskMover = madOpenWindow('apps/visualizer/lyrics/search.html?query=' + encodeURIComponent(query) + "&current=" + lastLyricsId, true, options);
+            const searchDeskMover = madOpenWindow('apps/visualizer/lyrics/search.html?' + query + "&current=" + lastLyricsId, true, options);
             searchDeskMover.addEventListener('load', () => {
                 searchDeskMover.windowElement.contentWindow.loadLyrics = loadLyrics;
             }, null, "window");
@@ -276,6 +286,9 @@ async function init() {
             urlsToTry = [...new Set(urlsToTry)];
             log(urlsToTry, 'log', 'MADVisLrc');
             lastFetchInfo.urls = urlsToTry;
+            lastFetchInfo.attempt = new Array(urlsToTry.length).fill(0);
+            lastFetchInfo.attempted = 0;
+            lastFetchInfo.searchFallback = 0;
 
             let lastUnsyncedLyrics = null;
             for (const url of urlsToTry) {
@@ -289,15 +302,11 @@ async function init() {
                 }
             }
             if (lastUnsyncedLyrics) {
-                // Don't fall back to search if the album title is not present and unsynced lyrics exist, as it may find a completely different song. Test case: "IVE - I WANT"
-                // In fact, "IVE" easily causes the search fallback to return a completely different song, as LRCLIB doesn't care about punctuation so songs with "I've" in titles, albums, ... gets returned
-                if (visStatus.lastSpotifyMusic?.albumTitle || visStatus.lastMusic?.albumTitle) {
-                    const searchResult = await searchFallback();
-                    if (searchResult.synced) {
-                        // If the search fallback found a synced result, return that instead of the unsynced one
-                        // Example of get not finding the best result that the search api does: "STAYC - Flexing On My Ex" (maybe because of the duration)
-                        return searchResult
-                    }
+                const searchResult = await searchFallbackAccurate();
+                if (searchResult.synced) {
+                    // If the search fallback found a synced result, return that instead of the unsynced one
+                    // Example of get not finding the best result that the search api does: "STAYC - Flexing On My Ex" (maybe because of the duration)
+                    return searchResult
                 }
                 // If the search result is unsynced, return the get result instead as that's more accurate
                 return lastUnsyncedLyrics;
@@ -305,16 +314,95 @@ async function init() {
                 // May work in weird cases like instrumental tracks getting returned above, test case: "GFRIEND - Glass Bead"
                 // Or if the get api just doesn't find the result that the search api does, test case: "QWER - 고민중독" (get works fine with Spotify data though)
                 // Or some complicated cases like "Jay Park - All I Wanna Do (K) (Feat. Hoody & Loco)"
-                // Also it works surprisingly well with YT/YTM duplicated titles. Even artificailly duplicated titles like "tripleS - Girls Never Die (Girls Never Die (Girls Never Die (Girls Never Die)))" work fine
-                return await searchFallback();
+                return await searchFallbackAccurate();
             }
         }
 
+        // More tolerant than get, but still tries to get the most accurate result (besides album title matters here)
+        // Less tolerant than searchFallback (e.g. duplicated titles don't work here)
+        async function searchFallbackAccurate(noAlbum) {
+            lastFetchInfo.searchFallback = 1;
+            let artist = visStatus.lastSpotifyMusic?.artist || visStatus.lastMusic?.artist || '';
+            if (artist.includes(', ') || artist.includes(' & ')) {
+                artist = artist.split(', ')[0].split(' & ')[0];
+            }
+            const strippedArtist = stripNonAlphaNumeric(artist);
+            if (strippedArtist) {
+                artist = strippedArtist;
+            }
+            let title = visStatus.lastSpotifyMusic?.title || visStatus.lastMusic?.title || '';
+            const strippedTitle = stripNonAlphaNumeric(title);
+            if (strippedTitle) {
+                title = strippedTitle;
+            }
+            const albumTitle = visStatus.lastSpotifyMusic?.albumTitle || visStatus.lastMusic?.albumTitle || '';
+
+            const url = new URL('https://lrclib.net/api/search');
+            const params = {
+                track_name: title,
+                artist_name: artist
+            };
+            if (!noAlbum) {
+                // This matters here, unlike in the get api
+                // So try without album title too
+                params.album_name = albumTitle;
+            } else {
+                lastFetchInfo.searchFallback = 2;
+            }
+            url.search = new URLSearchParams(params).toString();
+
+            abortController = new AbortController();
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: headers,
+                signal: abortController.signal
+            });
+            const result = await response.json();
+
+            let lastUnsyncedLyrics = null;
+            if (result.length > 0) {
+                for (const item of result) {
+                    if (item.syncedLyrics) {
+                        return {
+                            synced: true,
+                            id: item.id,
+                            syncedLyrics: item.syncedLyrics,
+                            plainLyrics: item.plainLyrics || lrcToPlain(item.syncedLyrics)
+                        };
+                    } else if (item.plainLyrics) {
+                        lastUnsyncedLyrics = {
+                            synced: false,
+                            id: item.id,
+                            plainLyrics: item.plainLyrics
+                        };
+                    }
+                }
+                if (lastUnsyncedLyrics) {
+                    return lastUnsyncedLyrics;
+                }
+            }
+            if (noAlbum) {
+                return await searchFallback();
+            } else {
+                return await searchFallbackAccurate(true);
+            }
+        }
+
+        // Inaccurate but more tolerant search fallback
+        // Surprisingly it also works surprisingly well with YT/YTM duplicated titles. Even artificailly duplicated titles like "tripleS - Girls Never Die (Girls Never Die (Girls Never Die (Girls Never Die)))" work fine
+        // (though that case is already handled in stripNonAlphaNumeric)
         async function searchFallback(stripParens) {
-            lastFetchInfo.searchFallback = true;
+            // Don't fall back to (inaccurate) search if the album title is not present and unsynced lyrics exist, as it may find a completely different song. Test case: "IVE - I WANT"
+            // In fact, "IVE" easily causes the search fallback to return a completely different song, as LRCLIB doesn't care about punctuation so songs with "I've" in titles, albums, ... gets returned
+            if (!visStatus.lastSpotifyMusic?.albumTitle && !visStatus.lastMusic?.albumTitle) {
+                return null;
+            }
+
+            lastFetchInfo.searchFallback = 3;
             const artist = visStatus.lastSpotifyMusic?.artist || visStatus.lastMusic?.artist || '';
             let title = visStatus.lastSpotifyMusic?.title || visStatus.lastMusic?.title || '';
             if (stripParens) {
+                lastFetchInfo.searchFallback = 4;
                 title = stripNonAlphaNumeric(title);
                 if (!title) {
                     return null;
@@ -326,9 +414,7 @@ async function init() {
             abortController = new AbortController();
             const response = await fetch(`https://lrclib.net/api/search?q=${query}`, {
                 method: 'GET',
-                headers: {
-                    'Lrclib-Client': 'ModernActiveDesktop/' + top.madVersion.toString(1) + (madRunningMode === 1 ? ' (Wallpaper Engine)' : ' (Lively Wallpaper)') + ' (https://madesktop.ingan121.com/)'
-                },
+                headers: headers,
                 signal: abortController.signal
             });
             const result = await response.json();
@@ -364,35 +450,58 @@ async function init() {
         }
 
         async function fetchLyrics(url) {
-            abortController = new AbortController();
-            const response = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Lrclib-Client': 'ModernActiveDesktop/' + top.madVersion.toString(1) + (madRunningMode === 1 ? ' (Wallpaper Engine)' : ' (Lively Wallpaper)') + ' (https://madesktop.ingan121.com/)'
-                },
-                signal: abortController.signal
-            });
-            const json = await response.json();
-            
-            if (response.ok) {
-                if (json.syncedLyrics) {
-                    return {
-                        synced: true,
-                        id: json.id,
-                        syncedLyrics: json.syncedLyrics,
-                        plainLyrics: json.plainLyrics || lrcToPlain(json.syncedLyrics)
-                    }
-                } else if (json.plainLyrics) {
-                    return {
-                        synced: false,
-                        id: json.id,
-                        plainLyrics: json.plainLyrics
+            try {
+                if (lastFetchInfo.attempted !== undefined) {
+                    lastFetchInfo.attempted++;
+                }
+                abortController = new AbortController();
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: headers,
+                    signal: abortController.signal
+                });
+                const json = await response.json();
+                
+                if (response.ok) {
+                    if (json.syncedLyrics) {
+                        if (lastFetchInfo.attempt) {
+                            lastFetchInfo.attempt[lastFetchInfo.attempted - 1] = 1;
+                        }
+                        return {
+                            synced: true,
+                            id: json.id,
+                            syncedLyrics: json.syncedLyrics,
+                            plainLyrics: json.plainLyrics || lrcToPlain(json.syncedLyrics)
+                        }
+                    } else if (json.plainLyrics) {
+                        if (lastFetchInfo.attempt) {
+                            lastFetchInfo.attempt[lastFetchInfo.attempted - 1] = 2;
+                        }
+                        return {
+                            synced: false,
+                            id: json.id,
+                            plainLyrics: json.plainLyrics
+                        }
+                    } else {
+                        if (lastFetchInfo.attempt) {
+                            lastFetchInfo.attempt[lastFetchInfo.attempted - 1] = -1;
+                        }
+                        return null;
                     }
                 } else {
+                    lastFetchInfo.attempt[lastFetchInfo.attempted - 1] = -1;
                     return null;
                 }
-            } else {
-                return null;
+            } catch (error) {
+                if (error.name === 'AbortError') {
+                    throw error;
+                } else {
+                    if (lastFetchInfo.attempt) {
+                        lastFetchInfo.attempt[lastFetchInfo.attempted - 1] = -2;
+                    }
+                    console.error(error);
+                    return null;
+                }
             }
         }
 
@@ -405,6 +514,11 @@ async function init() {
             abortController.abort();
 
             let lyrics = null;
+            if (idOrLrc) {
+                lastFetchInfo = {
+                    hash: lastFetchInfo.hash
+                };
+            }
             if (idOrLrc?.length >= 10) {
                 if (isTextLrc(idOrLrc)) {
                     lyrics = {
@@ -422,6 +536,11 @@ async function init() {
                 }
             } else {
                 try {
+                    if (lyricsView.querySelector('mad-string')) {
+                        lyricsView.innerHTML = `<mad-string data-locid="VISLRC_STATUS_LOADING">Loading...</mad-string>`;
+                    } else {
+                        loadingIndicator.style.display = 'block';
+                    }
                     lyrics = await findLyrics(idOrLrc);
                 } catch (error) {
                     if (error.name === 'AbortError') {
@@ -433,6 +552,7 @@ async function init() {
 
             lastLyrics = lyrics;
             if (lyrics) {
+                loadingIndicator.style.display = 'none';
                 lastLyricsId = lyrics.id;
                 if (lyrics.synced && !localStorage.madesktopVisLyricsForceUnsynced && visStatus.mediaIntegrationAvailable && madRunningMode === 1) {
                     lyricsView.innerHTML = '';
@@ -514,6 +634,11 @@ async function init() {
                 visStatus.lastMusic?.albumTitle !== lastMusic?.albumTitle ||
                 visStatus.lastMusic?.albumArtist !== lastMusic?.albumArtist))
             ) {
+                if (lyricsView.querySelector('mad-string')) {
+                    lyricsView.innerHTML = `<mad-string data-locid="VISLRC_STATUS_LOADING">Loading...</mad-string>`;
+                } else {
+                    loadingIndicator.style.display = 'block';
+                }
                 if (localStorage.madesktopVisSpotifyEnabled && localStorage.madesktopVisSpotifyInfo && !simulating) {
                     const spotifyNowPlaying = await getSpotifyNowPlaying();
                     if (spotifyNowPlaying && spotifyNowPlaying.item) {
@@ -609,13 +734,14 @@ async function init() {
             // Spotify test cases: "IVE - 해야 (HEYA)", "DAY6 - 녹아내려요 Melt Down", "Ryokuoushoku Shakai - 花になって - Be a flower" (this one actually doesn't work in stripped form. Aaand in YTM: it only returns the English part to SMTC so have to use the search fallback)
             // These songs do not provide English titles so the Spotify API returns titles like these            
             // Other weird formats I found: "NCT 127 - Fact Check (불가사의; 不可思議)", "SHINee - Sherlock · 셜록 (Clue+Note)" - these two work fine with Spotify data so was not going to handle them but it turns out they work nicely in the finished form of this function (lol)
+            // Also: "NCT 127 - 영웅 (英雄; Kick It)" - semicolon is left in the stripped form, but it works fine in both get and search cuz LRCLIB doesn't care about punctuation
 
-            // YTM English mode test cases: "YOUNHA - 사건의 지평선 (EVENT HORIZON)" (actually works fine in non-stripped form), "Weki Meki - Whatever U Want (너 하고 싶은 거 다 해 (너.하.다))"
+            // YTM English mode test cases: "YOUNHA - EVENT HORIZON (사건의 지평선)" (actually works fine in non-stripped form), "Weki Meki - Whatever U Want (너 하고 싶은 거 다 해 (너.하.다))"
             const replaced = str.replace(/[^\x20-\x7E]/g, '').trim(); // Remove non-ASCII characters
             const replacedHard = replaced.replace(/[^a-zA-Z0-9\s]/g, ''); // Remove non-alphanumeric characters (preserve spaces)
 
             // Check if the title is a duplicated English title (YTM somehow has these even in English mode)
-            // Test case: "IVE - MINE (MINE)", "KWON EUNBI - Underwater (Underwater)" (this actually works fine in non-stripped form in both get and search), "OH MY GIRL - Dun Dun Dance (Dun Dun Dance)"
+            // Test case: "IVE - MINE (MINE)", "KWON EUNBI - Underwater (Underwater)", "OH MY GIRL - Dun Dun Dance (Dun Dun Dance)" (this actually works fine in non-stripped form in both get and search)
             // And "IVE - MINE (MINE)" returns a completely different song in the search fallback, so this is necessary
             if (replacedHard.length % 2 === 1) {
                 const split = replacedHard.split(' ');
@@ -627,6 +753,8 @@ async function init() {
             if (replaced === '' || replaced === str) {
                 return null;
             } else if (replaced.startsWith('(') && replaced.endsWith(')')) {
+                // This may return something like "Feat. whatever" but surprisingly only giving the feat stuff as artist works fine with LRCLIB (searchFallbackAccurate)
+                // Test case: "SUNMI - 보름달 (Feat. Lena)"
                 return replaced.slice(1, -1);
             } else if (replaced.includes(' - ')) {
                 return replaced.split(' - ')[1].trim();
@@ -638,7 +766,7 @@ async function init() {
                     // This surprisingly works fine with some complicated examples in YTM English mode
                     // Tested with "PRODUCE 48 - 반해버리잖아? (好きになっちゃうだろう？) (Suki ni Nacchaudarou?)", and "AKMU - 어떻게 이별까지 사랑하겠어, 널 사랑하는 거지(How can I love the heartbreak, you're the one I love)"
                     // LRCLIB doesn't seem to care about punctuation or special characters
-                    return replacedHard;
+                    return replacedHard.trim();
                 } else if (split === '') {
                     return null;
                 } else {
@@ -686,7 +814,7 @@ async function init() {
             console.log('Hash:', await getSongHash(artist, title, album));
         }
 
-        function showDebugInfo() {
+        async function showDebugInfo() {
             let msg = '';
 
             const msgInLyricsView = lyricsView.querySelector('mad-string');
@@ -703,25 +831,59 @@ async function init() {
                     msg += 'Override ID: ' + lastFetchInfo.override + '<br>';
                 } else if (lastFetchInfo.urls) {
                     msg += 'URLs tried:<br>';
-                    for (const url of lastFetchInfo.urls) {
-                        msg += '- ' + decodeURIComponent(url) + '<br>';
+                    for (let i = 0; i < lastFetchInfo.urls.length; i++) {
+                        msg += '- ' + decodeURIComponent(lastFetchInfo.urls[i]) + ' (';
+                        switch (lastFetchInfo.attempt[i]) {
+                            case 1:
+                                msg += 'Synced';
+                                break;
+                            case 2:
+                                msg += 'Unsynced';
+                                break;
+                            case 0:
+                                msg += 'Not tried';
+                                break;
+                            case -1:
+                                msg += 'No lyrics';
+                                break;
+                            case -2:
+                                msg += 'Error';
+                                break;
+                            default:
+                                msg += 'Unknown';
+                                break;
+                        }
+                        msg += ')<br>';
                     }
                     msg += '<br>';
                 }
                 if (lastFetchInfo.searchFallback) {
-                    msg += 'Search fallback used<br>';
+                    switch (lastFetchInfo.searchFallback) {
+                        case 1:
+                            msg += 'Search fallback: Accurate<br>';
+                            break;
+                        case 2:
+                            msg += 'Search fallback: Accurate (no album)<br>';
+                            break;
+                        case 3:
+                            msg += 'Search fallback: Normal<br>';
+                            break;
+                        case 4:
+                            msg += 'Search fallback: Normal (stripped)<br>';
+                            break;
+                    }
                 }
                 if (lastSyncedLyricsParsed) {
-                    msg += 'Loaded lyrics are synced<br>';
+                    msg += 'Loaded lyrics are synced';
                 } else if (lastLyrics.synced) {
-                    msg += 'Loaded lyrics are not synced, synced lyrics available<br>';
+                    msg += 'Loaded lyrics are not synced, synced lyrics available';
                 } else {
-                    msg += 'Loaded lyrics are not synced, no synced lyrics available<br>';
+                    msg += 'Loaded lyrics are not synced, no synced lyrics available';
                 }
 
                 if (localStorage.madesktopVisSpotifyEnabled && localStorage.madesktopVisSpotifyInfo) {
                     const info = JSON.parse(localStorage.madesktopVisSpotifyInfo);
-                    msg += '<br>';
+                    msg += '<br><br>';
                     msg += 'Current Spotify track: ' + visStatus.lastSpotifyMusic?.artist + ' - ' + visStatus.lastSpotifyMusic?.title + ' (' + visStatus.lastSpotifyMusic?.albumTitle + ')<br>';
                     msg += 'Spotify duration: ' + visStatus.lastSpotifyMusic?.duration + 's<br><br>';
                     msg += 'Spotify client ID: ' + info.clientId + '<br>';
@@ -731,7 +893,17 @@ async function init() {
                     msg += 'Spotify token expiry: ' + expiryDate + '<br>';
                 }
             }
-            madAlert(msg);
+            const res = await madConfirm(msg, null, {
+                icon: 'info',
+                title: 'locid:VISLRC_TITLE',
+                btn1: 'locid:UI_COPY',
+                btn2: 'locid:UI_OK',
+                defaultBtn: 2,
+                cancelBtn: 2
+            });
+            if (res === true) {
+                copyText(msg.replaceAll('<br>', '\n'));
+            }
         }
     } else {
         lyricsView.innerHTML = '<mad-string data-locid="VISLRC_STATUS_NO_MADVIS"></mad-string>';

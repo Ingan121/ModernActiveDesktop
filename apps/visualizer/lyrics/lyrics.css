@@ -15,6 +15,12 @@ body {
     user-select: none;
 }
 
+#loadingIndicator {
+    margin-left: auto;
+    pointer-events: none;
+    display: none;
+}
+
 #lyricsView {
     height: calc(100% - var(--menu-height) - 6px);
     overflow-y: scroll;

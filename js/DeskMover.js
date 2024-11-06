@@ -400,7 +400,7 @@
 
                     const winOpenAnim = getComputedStyle(this.windowContainer).getPropertyValue('--win-open-anim');
                     if (winOpenAnim && !localStorage.madesktopNoWinAnim && this.config.style === "wnd" && !isResetting) {
-                        this.windowContainer.style.animation = `0.22s ${winOpenAnim} linear`;
+                        this.windowContainer.style.animation = winOpenAnim;
                         this.windowContainer.addEventListener("animationend", () => {
                             this.windowContainer.style.animation = "";
                         }, {once: true});
@@ -484,7 +484,7 @@
             }
             const winCloseAnim = getComputedStyle(this.windowContainer).getPropertyValue('--win-close-anim');
             if (winCloseAnim && !localStorage.madesktopNoWinAnim && this.config.style === "wnd" && isResetting !== true) {
-                this.windowContainer.style.animation = `0.2s ${winCloseAnim} linear`;
+                this.windowContainer.style.animation = winCloseAnim;
                 await waitForAnim(this.windowContainer);
             }
             document.removeEventListener('pointerup', this.boundDocMouseUp);

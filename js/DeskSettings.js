@@ -44,7 +44,6 @@
         changeWinShadow(localStorage.madesktopNoWinShadow);
         changeMenuStyle(localStorage.madesktopMenuStyle);
         changeSoundScheme(localStorage.madesktopSoundScheme || "98");
-
     }
 
     function changeBgType(type, loadBgImg = window.madMainWindow) {

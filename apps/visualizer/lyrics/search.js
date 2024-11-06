@@ -6,18 +6,42 @@
 'use strict';
 
 const urlParsed = new URLSearchParams(window.location.search);
-const query = urlParsed.get('query');
+const artist = urlParsed.get('artist');
+const title = urlParsed.get('title');
+const albumTitle = urlParsed.get('albumTitle');
+const query = artist + ' ' + title + ' ' + albumTitle;
 const currentId = parseInt(urlParsed.get('current'));
 
+const headers = {
+    'Lrclib-Client': 'ModernActiveDesktop/' + top.madVersion.toString(1) + (madRunningMode === 1 ? ' (Wallpaper Engine)' : ' (Lively Wallpaper)') + ' (https://madesktop.ingan121.com/)'
+}
+
+const normalSearchSection = document.querySelector('.normalSearch');
+const advancedSections = document.querySelectorAll('.advancedSearch');
+const advancedSearchLabels = document.querySelectorAll('.advancedSearch label');
+
+const artistBar = document.getElementById('artistBar');
+const titleBar = document.getElementById('titleBar');
+const albumBar = document.getElementById('albumBar');
 const searchBar = document.getElementById('searchBar');
 const searchBtn = document.getElementById('searchBtn');
+const searchBtnAdvanced = document.getElementById('searchBtnAdvanced');
 const searchResults = document.getElementById('searchResults');
 const addOverrideChkBox = document.getElementById('addOverrideChkBox');
 
 const okBtn = document.getElementById('okBtn');
 const cancelBtn = document.getElementById('cancelBtn');
 const applyBtn = document.getElementById('applyBtn');
+const advancedBtn = document.getElementById('advancedBtn');
+const advancedBtnLabel = advancedBtn.querySelector('mad-string');
 
+const textboxes = document.querySelectorAll("input[type=text], input[type=number]:not(#fontSize)");
+
+let advancedMode = false;
+
+artistBar.value = artist;
+titleBar.value = title;
+albumBar.value = albumTitle;
 searchBar.value = query;
 
 searchBar.addEventListener('keydown', (e) => {
@@ -26,50 +50,92 @@ searchBar.addEventListener('keydown', (e) => {
     }
 });
 
-searchBar.addEventListener('click', async function () {
-    if (madKbdSupport !== 1) {
-        if (madSysPlug.inputStatus) {
-            madSysPlug.focusInput();
-        } else if (!await madSysPlug.beginInput(true)) {
-            const res = await madPrompt(madGetString("UI_PROMPT_ENTER_VALUE"), null, "", searchBar.value, true);
-            if (res === null) return;
-            searchBar.value = res;
-            searchBar.dispatchEvent(new Event('change'));
+for (const textbox of textboxes) {
+    textbox.addEventListener("click", async function () {
+        if (madKbdSupport !== 1) {
+            if (madSysPlug.inputStatus) {
+                madSysPlug.focusInput();
+            } else if (!await madSysPlug.beginInput()) {
+                madPrompt(madGetString("UI_PROMPT_ENTER_VALUE"), function (res) {
+                    if (res === null) return;
+                    textbox.value = res;
+                    textbox.dispatchEvent(new Event('change'));
+                }, '', textbox.value, true);
+            }
         }
-    }
-});
+    });
+}
 
 document.addEventListener('madinput', function (e) {
     if (e.key === 'Enter') {
-        search();
+        if (advancedMode) {
+            advancedSearch();
+        } else {
+            search();
+        }
     } else if (e.key === 'Escape') {
         madCloseWindow();
     }
 });
 
-searchBtn.addEventListener('click', () => {
-    search();
+searchBtn.addEventListener('click', search);
+searchBtnAdvanced.addEventListener('click', advancedSearch);
+
+advancedBtn.addEventListener('click', () => {
+    advancedMode = !advancedMode;
+    advancedBtnLabel.locId = advancedMode ? 'VISLRCFIND_ADVANCED_COLLAPSE' : 'VISLRCFIND_ADVANCED_EXPAND';
+    if (advancedMode) {
+        normalSearchSection.style.display = 'none';
+        for (const section of advancedSections) {
+            section.style.display = 'flex';
+        }
+        calcLabelWidth();
+    } else {
+        normalSearchSection.style.display = 'flex';
+        for (const section of advancedSections) {
+            section.style.display = 'none';
+        }
+    }
+    madResizeTo(null, document.documentElement.offsetHeight);
 });
 
 search();
 
 async function search() {
     searchResults.disabled = true;
-    searchResults.label.textContent = madGetString("VISLRCFIND_SEARCHING");
+    searchResults.label.innerHTML = `<mad-string data-locid="VISLRCFIND_SEARCHING"></mad-string>`;
     for (const option of searchResults.options) {
         option.remove();
     }
 
     const response = await fetch(`https://lrclib.net/api/search?q=${searchBar.value}`, {
         method: 'GET',
-        headers: {
-            'Lrclib-Client': 'ModernActiveDesktop/' + top.madVersion.toString(1) + (madRunningMode === 1 ? ' (Wallpaper Engine)' : ' (Lively Wallpaper)') + ' (https://madesktop.ingan121.com/)'
-        }
+        headers: headers
     });
     const result = await response.json();
 
+    processResults(result);
+}
+
+async function advancedSearch() {
+    searchResults.disabled = true;
+    searchResults.label.innerHTML = `<mad-string data-locid="VISLRCFIND_SEARCHING"></mad-string>`;
+    for (const option of searchResults.options) {
+        option.remove();
+    }
+
+    const response = await fetch(`https://lrclib.net/api/search?artist_name=${artistBar.value}&track_name=${titleBar.value}&album_name=${albumBar.value}`, {
+        method: 'GET',
+        headers: headers
+    });
+    const result = await response.json();
+
+    processResults(result);
+}
+
+function processResults(result) {
     if (result.length === 0) {
-        searchResults.label.textContent = madGetString("VISLRC_STATUS_NOT_FOUND");
+        searchResults.label.innerHTML = `<mad-string data-locid="VISLRC_STATUS_NOT_FOUND"></mad-string>`;
         searchResults.disabled = true;
         return;
     }
@@ -97,6 +163,17 @@ async function search() {
     }
 }
 
+function calcLabelWidth() {
+    const widths = [];
+    for (const label of advancedSearchLabels) {
+        widths.push(getTextWidth(label.textContent, '11px var(--ui-font)'));
+    }
+    const width = Math.max(...widths);
+    for (const label of advancedSearchLabels) {
+        label.style.width = width + 'px';
+    }
+}
+
 window.apply = function () {
     window.loadLyrics(searchResults.value, addOverrideChkBox.checked);
 };
@@ -115,7 +192,14 @@ applyBtn.addEventListener('click', () => {
 });
 
 window.addEventListener('load', () => {
+    calcLabelWidth();
     madResizeTo(null, document.documentElement.offsetHeight);
+});
+
+window.addEventListener('message', (event) => {
+    if (event.data.type === 'language-ready') {
+        calcLabelWidth();
+    }
 });
 
 madSetIcon(false);

@@ -12,10 +12,23 @@
     <style id="style"></style>
 </head>
 <body id="madVisLrcFind">
-    <section class="field-row">
+    <section class="field-row normalSearch">
         <label for="searchBar"><mad-string data-locid="VISLRCFIND_SEARCH_LABEL">Search lyrics:</mad-string></label>
-        <input id="searchBar" type="text">
+        <input id="searchBar" type="text" class="searchBar">
         <button id="searchBtn" class="button" accesskey="s"><mad-string data-locid="VISLRCFIND_SEARCH"><u>S</u>earch</mad-string></button>
+    </section>
+    <section class="row advancedSearch">
+        <label for="artistBar"><mad-string data-locid="VISLRCFIND_ARTIST_LABEL">Artist:</mad-string></label>
+        <input id="artistBar" type="text" class="searchBar">
+    </section>
+    <section class="row advancedSearch">
+        <label for="titleBar"><mad-string data-locid="VISLRCFIND_TITLE_LABEL">Title:</mad-string></label>
+        <input id="titleBar" type="text" class="searchBar">
+    </section>
+    <section class="row advancedSearch">
+        <label for="albumBar"><mad-string data-locid="VISLRCFIND_ALBUM_LABEL">Album:</mad-string></label>
+        <input id="albumBar" type="text" class="searchBar">
+        <button id="searchBtnAdvanced" class="button" accesskey="s"><mad-string data-locid="VISLRCFIND_SEARCH"><u>S</u>earch</mad-string></button>
     </section>
     <mad-select id="searchResults" disabled></mad-select>
     <input id="addOverrideChkBox" type="checkbox" name="addOverride">
@@ -25,6 +38,7 @@
         <button id="okBtn" class="button"><mad-string data-locid="UI_OK">OK</mad-string></button>
         <button id="cancelBtn" class="button"><mad-string data-locid="UI_CANCEL">Cancel</mad-string></button>
         <button id="applyBtn" class="button"><mad-string data-locid="UI_APPLY"><u>A</u>pply</mad-string></button>
+        <button id="advancedBtn" class="button"><mad-string data-locid="VISLRCFIND_ADVANCED_EXPAND">A<u>d</u>vanced &gt;&gt;</mad-string></button>
     </section>
     <script src="../../../js/functions.js"></script>
     <script src="../../../js/MadStrings.js"></script>
