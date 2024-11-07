@@ -37,6 +37,7 @@
     --menu-shadow: true;
     --supports-win-shadow: true;
     --supports-colorization: true;
+    --default-colorization-color: #4580c4;
     --supports-transparency: true;
     --win-open-anim: 0.22s aeroWinOpen linear;
     --win-close-anim: 0.2s aeroWinClose linear;

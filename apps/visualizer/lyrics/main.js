@@ -9,6 +9,8 @@ const lyricsView = document.getElementById('lyricsView');
 
 const menuBar = document.getElementById('menuBar');
 const lrcMenuItems = document.querySelectorAll('#lrcMenu .contextMenuItem');
+const syncMenuItems = document.querySelectorAll('#syncMenu .contextMenuItem');
+const syncDelayDisplay = document.getElementById('syncDelayDisplay');
 const loadingIndicator = document.getElementById('loadingIndicator');
 
 const headers = {
@@ -17,7 +19,7 @@ const headers = {
 
 let inited = 0; // 0: Not initialized at all, 1: Initialized but MADVis not loaded, 2: Fully initialized, -1: MADVis unloaded while running
 
-madDeskMover.menu = new MadMenu(menuBar, ['lrc']);
+madDeskMover.menu = new MadMenu(menuBar, ['lrc'], ['sync']);
 
 for (let i = 0; i < lrcMenuItems.length - 1; i++) {
     // Setup basic click events for use before initialization and MADVis load
@@ -28,7 +30,7 @@ for (let i = 0; i < lrcMenuItems.length - 1; i++) {
     });
 }
 
-lrcMenuItems[6].addEventListener('click', function () { // Close button
+lrcMenuItems[7].addEventListener('click', function () { // Close button
     madCloseWindow();
 });
 
@@ -55,6 +57,7 @@ async function init() {
         let lastMusic = null;
         let lastFetchInfo = {}; // For debugging
         let autoScroll = true;
+        let syncDelay = parseFloat(localStorage.madesktopVisLyricsSyncDelay) || 0;
         let overrides = await madIdb.lyricsOverrides;
         let abortController = new AbortController();
 
@@ -62,6 +65,8 @@ async function init() {
             overrides = {};
             madIdb.setItem('lyricsOverrides', overrides);
         }
+
+        syncDelayDisplay.textContent = syncDelay + 's';
 
         processProperties(true);
 
@@ -73,6 +78,16 @@ async function init() {
             // MADVis has been reloaded; setup listeners again
             location.reload();
         }, null, 'iframe');
+
+        window.addEventListener('online', function () {
+            if (lyricsView.querySelector('mad-string')?.locId === 'VISLRC_STATUS_OFFLINE') {
+                processProperties(true);
+            }
+        });
+
+        for (let i = 0; i < lrcMenuItems.length - 1; i++) {
+            lrcMenuItems[i].classList.remove('disabled');
+        }
 
         lrcMenuItems[0].addEventListener('click', async function () { // Load Lyrics button
             const hash = await getSongHash(visStatus.lastMusic?.artist, visStatus.lastMusic?.title, visStatus.lastMusic?.albumTitle);
@@ -146,11 +161,11 @@ async function init() {
             }
         });
 
-        lrcMenuItems[4].addEventListener('click', function () { // Options button
+        lrcMenuItems[5].addEventListener('click', function () { // Options button
             const left = parseInt(madDeskMover.config.xPos) + 25 + 'px';
             const top = parseInt(madDeskMover.config.yPos) + 50 + 'px';
             const options = {
-                left, top, width: '400px', height: '410px',
+                left, top, width: '400px', height: '412px',
                 aot: true, unresizable: true, noIcon: true
             }
             const confDeskMover = madOpenWindow('apps/visualizer/lyrics/config.html', true, options);
@@ -159,8 +174,49 @@ async function init() {
             }, null, "window");
         });
 
-        lrcMenuItems[5].addEventListener('click', function () { // Debug Info button
+        lrcMenuItems[6].addEventListener('click', function () { // Debug Info button
             showDebugInfo();
+        });
+
+        // Sync adjust feature for some use cases like these:
+        // - Estimate timeline feature being inaccurate for some reason
+        // - Using a high latency audio device
+        // - Listening to a audio streamed over RDP with AirPods, like me (lol)
+        syncMenuItems[0].addEventListener('click', function () { // -0.5s button
+            syncDelay -= 0.5;
+            syncDelayDisplay.textContent = syncDelay + 's';
+            processTimeline();
+            localStorage.madesktopVisLyricsSyncDelay = syncDelay;
+        });
+
+        syncMenuItems[2].addEventListener('click', function () { // +0.5s button
+            syncDelay += 0.5;
+            syncDelayDisplay.textContent = syncDelay + 's';
+            processTimeline();
+            localStorage.madesktopVisLyricsSyncDelay = syncDelay;
+        });
+
+        syncMenuItems[3].addEventListener('click', async function () { // Custom button
+            const custom = await madPrompt(madGetString('UI_PROMPT_ENTER_VALUE'), null, syncDelay.toString());
+            if (custom !== null) {
+                if (isNaN(parseFloat(custom)) || parseFloat(custom) === 0) {
+                    syncDelay = 0;
+                    syncDelayDisplay.textContent = '0s';
+                    delete localStorage.madesktopVisLyricsSyncDelay;
+                } else {
+                    syncDelay = parseFloat(custom);
+                    syncDelayDisplay.textContent = syncDelay + 's';
+                    localStorage.madesktopVisLyricsSyncDelay = syncDelay;
+                }
+                processTimeline();
+            }
+        });
+
+        syncMenuItems[4].addEventListener('click', function () { // Reset button
+            syncDelay = 0;
+            syncDelayDisplay.textContent = '0s';
+            processTimeline();
+            delete localStorage.madesktopVisLyricsSyncDelay;
         });
 
         lyricsView.addEventListener('pointerdown', function (event) {
@@ -175,6 +231,19 @@ async function init() {
         });
 
         // Load lyrics from the API
+        // Priority:
+        // 1. Overrides (if present)
+        // 2. Synced results (except for inaccurate search fallback with no album title data)
+        //  2.1 Get (whatever succeeds first)
+        //  2.2 Accurate search fallback
+        //  2.3 Accurate search fallback without album title
+        //  2.4 Inaccurate search fallback
+        //  2.5 Inaccurate search fallback with parentheses stripped
+        // 3. Unsynced results
+        //  3.1 Same as 2.1-2.5
+        // 4. Synced inaccurate search fallback with no album title data
+        // 5. Unsynced inaccurate search fallback with no album title data
+        // 6. No lyrics found
         async function findLyrics(id) {
             if (id) {
                 return await fetchLyrics('https://lrclib.net/api/get/' + id);
@@ -303,12 +372,12 @@ async function init() {
             }
             if (lastUnsyncedLyrics) {
                 const searchResult = await searchFallbackAccurate();
-                if (searchResult.synced) {
+                if (searchResult?.synced) {
                     // If the search fallback found a synced result, return that instead of the unsynced one
                     // Example of get not finding the best result that the search api does: "STAYC - Flexing On My Ex" (maybe because of the duration)
                     return searchResult
                 }
-                // If the search result is unsynced, return the get result instead as that's more accurate
+                // If the search result is unsynced, or it's not found, return the get result instead as that's more accurate
                 return lastUnsyncedLyrics;
             } else {
                 // May work in weird cases like instrumental tracks getting returned above, test case: "GFRIEND - Glass Bead"
@@ -336,6 +405,9 @@ async function init() {
                 title = strippedTitle;
             }
             const albumTitle = visStatus.lastSpotifyMusic?.albumTitle || visStatus.lastMusic?.albumTitle || '';
+            if (!albumTitle) {
+                noAlbum = true;
+            }
 
             const url = new URL('https://lrclib.net/api/search');
             const params = {
@@ -378,6 +450,22 @@ async function init() {
                     }
                 }
                 if (lastUnsyncedLyrics) {
+                    let searchResult;
+                    if (noAlbum) {
+                        // Don't fall back to (inaccurate) search if the album title is not present and unsynced lyrics exist, as it may find a completely different song. Test case: "IVE - I WANT"
+                        // In fact, "IVE" easily causes the search fallback to return a completely different song, as LRCLIB doesn't care about punctuation so songs with "I've" in titles, albums, ... gets returned
+                        if (!visStatus.lastSpotifyMusic?.albumTitle && !visStatus.lastMusic?.albumTitle) {
+                            return lastUnsyncedLyrics;
+                        }
+                        searchResult = await searchFallback();
+                    } else {
+                        searchResult = await searchFallbackAccurate(true);
+                    }
+                    if (searchResult?.synced) {
+                        // If the search fallback found a synced result, return that instead of the unsynced one
+                        return searchResult
+                    }
+                    // If the search result is unsynced, return the accurate search result instead as that's more accurate
                     return lastUnsyncedLyrics;
                 }
             }
@@ -391,20 +479,30 @@ async function init() {
         // Inaccurate but more tolerant search fallback
         // Surprisingly it also works surprisingly well with YT/YTM duplicated titles. Even artificailly duplicated titles like "tripleS - Girls Never Die (Girls Never Die (Girls Never Die (Girls Never Die)))" work fine
         // (though that case is already handled in stripNonAlphaNumeric)
+        // Although the search API allows dropping some words (e.g. "OH MY DUN" finds "OH MY GIRL - DUN DUN DANCE" fine), search results will be less accurate if we do that
+        // So try both with and without parentheses stripped
+        // Misc note: dropping punctuations and special characters also work ("youre" finds "you're" without issues), but dropping other arbitrary characters doesn't (e.g. "NewJean" doesn't find "NewJeans")
         async function searchFallback(stripParens) {
-            // Don't fall back to (inaccurate) search if the album title is not present and unsynced lyrics exist, as it may find a completely different song. Test case: "IVE - I WANT"
-            // In fact, "IVE" easily causes the search fallback to return a completely different song, as LRCLIB doesn't care about punctuation so songs with "I've" in titles, albums, ... gets returned
-            if (!visStatus.lastSpotifyMusic?.albumTitle && !visStatus.lastMusic?.albumTitle) {
-                return null;
-            }
-
             lastFetchInfo.searchFallback = 3;
-            const artist = visStatus.lastSpotifyMusic?.artist || visStatus.lastMusic?.artist || '';
+            let artist = visStatus.lastSpotifyMusic?.artist || visStatus.lastMusic?.artist || '';
             let title = visStatus.lastSpotifyMusic?.title || visStatus.lastMusic?.title || '';
             if (stripParens) {
                 lastFetchInfo.searchFallback = 4;
-                title = stripNonAlphaNumeric(title);
-                if (!title) {
+                let differenceExists = false;
+                if (artist.includes(', ') || artist.includes(' & ')) {
+                    artist = artist.split(', ')[0].split(' & ')[0];
+                    const strippedArtist = stripNonAlphaNumeric(artist);
+                    if (strippedArtist) {
+                        artist = strippedArtist;
+                        differenceExists = true;
+                    }
+                }
+                const strippedTitle = stripNonAlphaNumeric(title);
+                if (strippedTitle) {
+                    title = strippedTitle;
+                    differenceExists = true;
+                }
+                if (!differenceExists) {
                     return null;
                 }
             }
@@ -438,6 +536,13 @@ async function init() {
                     }
                 }
                 if (lastUnsyncedLyrics) {
+                    if (!stripParens) {
+                        const searchResult = await searchFallback(true);
+                        if (searchResult?.synced) {
+                            // If the search fallback found a synced result, return that instead of the unsynced one
+                            return searchResult;
+                        }
+                    }
                     return lastUnsyncedLyrics;
                 }
             }
@@ -551,8 +656,8 @@ async function init() {
             }
 
             lastLyrics = lyrics;
+            loadingIndicator.style.display = 'none';
             if (lyrics) {
-                loadingIndicator.style.display = 'none';
                 lastLyricsId = lyrics.id;
                 if (lyrics.synced && !localStorage.madesktopVisLyricsForceUnsynced && visStatus.mediaIntegrationAvailable && madRunningMode === 1) {
                     lyricsView.innerHTML = '';
@@ -588,7 +693,11 @@ async function init() {
                     madIdb.setItem('lyricsOverrides', overrides);
                 }
             } else {
-                lyricsView.innerHTML = '<mad-string data-locid="VISLRC_STATUS_NOT_FOUND"></mad-string>';
+                if (!navigator.onLine) {
+                    lyricsView.innerHTML = '<mad-string data-locid="VISLRC_STATUS_OFFLINE"></mad-string>';
+                } else {
+                    lyricsView.innerHTML = '<mad-string data-locid="VISLRC_STATUS_NOT_FOUND"></mad-string>';
+                }
                 lastSyncedLyricsParsed = null;
             }
         }
@@ -685,7 +794,6 @@ async function init() {
                         if (i <= nearestIndex) {
                             lyric.style.color = 'var(--button-text)';
                             if (autoScroll && i === nearestIndex) {
-                                //console.log(lyric.offsetTop, lyricsView.offsetHeight / 2, lyric.textContent);
                                 if (lyric.offsetTop < lyricsView.offsetHeight / 2) {
                                     // scrolling to the top of the lyricsView
                                     // don't use scrollIntoView with behavior: 'smooth' here as it causes jittering
@@ -711,6 +819,7 @@ async function init() {
 
         function getNearestLyricIndex(time) {
             if (lastSyncedLyricsParsed) {
+                time += syncDelay;
                 if (time < lastSyncedLyricsParsed[0].time) {
                     return -1;
                 }
@@ -754,7 +863,7 @@ async function init() {
                 return null;
             } else if (replaced.startsWith('(') && replaced.endsWith(')')) {
                 // This may return something like "Feat. whatever" but surprisingly only giving the feat stuff as artist works fine with LRCLIB (searchFallbackAccurate)
-                // Test case: "SUNMI - 보름달 (Feat. Lena)"
+                // Test case: "SUNMI - 보름달 (Feat. Lena)" (this one doesn't have English title at all in Spotify)
                 return replaced.slice(1, -1);
             } else if (replaced.includes(' - ')) {
                 return replaced.split(' - ')[1].trim();
@@ -803,12 +912,13 @@ async function init() {
             visStatus.lastMusic = {
                 title: title,
                 artist: artist,
-                albumTitle: album
+                albumTitle: album,
+                simulated: true
             };
             visStatus.lastSpotifyMusic = {
                 title: title,
                 artist: artist,
-                albumTitle: album,
+                albumTitle: album
             };
             processProperties(true, true);
             console.log('Hash:', await getSongHash(artist, title, album));
@@ -892,17 +1002,24 @@ async function init() {
                     msg += 'Spotify token fetched at: ' + fetchedAtDate + '<br>';
                     msg += 'Spotify token expiry: ' + expiryDate + '<br>';
                 }
+
+                if (visStatus.lastMusic?.simulated) {
+                    msg += '<br><br>This lyrics find was simulated. Click \'Setup listeners again\' to fetch the real lyrics.';
+                }
             }
             const res = await madConfirm(msg, null, {
                 icon: 'info',
                 title: 'locid:VISLRC_TITLE',
                 btn1: 'locid:UI_COPY',
                 btn2: 'locid:UI_OK',
+                btn3: '&Setup listeners again',
                 defaultBtn: 2,
                 cancelBtn: 2
             });
             if (res === true) {
                 copyText(msg.replaceAll('<br>', '\n'));
+            } else if (res === null) {
+                visDeskMover.windowElement.contentWindow.setupMediaListeners();
             }
         }
     } else {

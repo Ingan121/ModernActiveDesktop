@@ -11,20 +11,20 @@ if (parent === window) {
 } else if (!frameElement) {
     alert("MADVis is being cross-origin restricted. Please run ModernActiveDesktop with a web server.");
 } else if (window.madFallbackMode) {
-    top.madAlert(madGetString("UI_MSG_RUNNING_AS_BG"), null, "error");
+    top.madAlert(madGetString("UI_MSG_RUNNING_AS_BG"), null, "error", { title: "locid:VISUALIZER_TITLE" });
 } else if (madRunningMode === 0) {
-    madAlert(madGetString("VISUALIZER_UNSUPPORTED_MSG"), null, "error");
+    madAlert(madGetString("VISUALIZER_UNSUPPORTED_MSG"), null, "error", { title: "locid:VISUALIZER_TITLE" });
     madDeskMover.isVisualizer = true;
     madCloseWindow();
 } else if (parent.visDeskMover && parent.visDeskMover !== madDeskMover) {
-    madAlert(madGetString("VISUALIZER_MULTI_INSTANCE_MSG"), null, "warning");
+    madAlert(madGetString("VISUALIZER_MULTI_INSTANCE_MSG"), null, "warning", { title: "locid:VISUALIZER_TITLE" });
     madCloseWindow();
 } else if (localStorage.madesktopVisUnavailable) {
     // Although the media integration is available, it is not reliable to be used in MAD
     // because we don't have a way to check if the media listener is invalidated or not
     // This happens frequently when an iframe loads a page or gets closed
     // See also: the bottom of wmpvis.js
-    madAlert(madGetString("VISUALIZER_NO_AUDIO_MSG"), null, "error");
+    madAlert(madGetString("VISUALIZER_NO_AUDIO_MSG"), null, "error", { title: "locid:VISUALIZER_TITLE" });
     madDeskMover.isVisualizer = true;
     madCloseWindow();
 } else {
@@ -252,7 +252,7 @@ madDeskMover.menu = new MadMenu(menuBar, ['vis', 'view', 'opt', 'help'], ['estim
 
 visMenuItems[0].addEventListener('click', () => { // Album Art button
     if (!visStatus.mediaIntegrationAvailable) {
-        madAlert(madGetString(NO_MEDINT_MSG), null, isWin10 ? 'info' : 'error');
+        madAlert(madGetString(NO_MEDINT_MSG), null, isWin10 ? 'info' : 'error', { title: 'locid:VISUALIZER_TITLE' });
         return;
     }
 
@@ -326,7 +326,7 @@ viewMenuItems[1].addEventListener('click', () => { // Fullscreen button
 
 viewMenuItems[2].addEventListener('click', () => { // Information button
     if (!visStatus.mediaIntegrationAvailable) {
-        madAlert(madGetString(NO_MEDINT_MSG), null, isWin10 ? 'info' : 'error');
+        madAlert(madGetString(NO_MEDINT_MSG), null, isWin10 ? 'info' : 'error', { title: 'locid:VISUALIZER_TITLE' });
         return;
     }
 
@@ -374,7 +374,7 @@ viewMenuItems[2].addEventListener('click', () => { // Information button
 
 viewMenuItems[3].addEventListener('click', () => { // Playback Status button
     if (!visStatus.mediaIntegrationAvailable) {
-        madAlert(madGetString(NO_MEDINT_MSG), null, isWin10 ? 'info' : 'error');
+        madAlert(madGetString(NO_MEDINT_MSG), null, isWin10 ? 'info' : 'error', { title: 'locid:VISUALIZER_TITLE' });
         return;
     }
 
@@ -431,7 +431,7 @@ viewMenuItems[3].addEventListener('click', () => { // Playback Status button
 
 viewMenuItems[4].addEventListener('click', () => { // Enable Media Controls button
     if (!visStatus.mediaIntegrationAvailable) {
-        madAlert(madGetString(NO_MEDINT_MSG), null, isWin10 ? 'info' : 'error');
+        madAlert(madGetString(NO_MEDINT_MSG), null, isWin10 ? 'info' : 'error', { title: 'locid:VISUALIZER_TITLE' });
         return;
     }
 
@@ -450,14 +450,14 @@ viewMenuItems[4].addEventListener('click', () => { // Enable Media Controls butt
         } else {
             madAlert(madGetString("UI_MSG_SYSPLUG_REQUIRED"), () => {
                 madOpenWindow('SysplugSetupGuide.md', true);
-            });
+            }, 'info', { title: 'locid:VISUALIZER_TITLE' });
         }
     }
 });
 
 viewMenuItems[5].addEventListener('click', () => { // Estimate Timeline button
     if (!visStatus.mediaIntegrationAvailable) {
-        madAlert(madGetString(NO_MEDINT_MSG), null, isWin10 ? 'info' : 'error');
+        madAlert(madGetString(NO_MEDINT_MSG), null, isWin10 ? 'info' : 'error', { title: 'locid:VISUALIZER_TITLE' });
     }
     // Submenu will be opened by MadMenu if this item is not disabled
 });
@@ -493,14 +493,14 @@ viewMenuItems[7].addEventListener('click', () => { // Lyrics button
 
 optMenuItems[1].addEventListener('click', () => { // Window Title button
     if (!visStatus.mediaIntegrationAvailable) {
-        madAlert(madGetString(NO_MEDINT_MSG), null, isWin10 ? 'info' : 'error');
+        madAlert(madGetString(NO_MEDINT_MSG), null, isWin10 ? 'info' : 'error', { title: 'locid:VISUALIZER_TITLE' });
     }
     // Submenu will be opened by MadMenu if this item is not disabled
 });
 
 optMenuItems[3].addEventListener('click', () => { // Show Album Art button
     if (!visStatus.mediaIntegrationAvailable) {
-        madAlert(madGetString(NO_MEDINT_MSG), null, isWin10 ? 'info' : 'error');
+        madAlert(madGetString(NO_MEDINT_MSG), null, isWin10 ? 'info' : 'error', { title: 'locid:VISUALIZER_TITLE' });
         return;
     }
     if (localStorage.madesktopVisOnlyAlbumArt) {
@@ -517,7 +517,7 @@ optMenuItems[3].addEventListener('click', () => { // Show Album Art button
 
 optMenuItems[4].addEventListener('click', () => { // Dim Album Art button
     if (!visStatus.mediaIntegrationAvailable) {
-        madAlert(madGetString(NO_MEDINT_MSG), null, isWin10 ? 'info' : 'error');
+        madAlert(madGetString(NO_MEDINT_MSG), null, isWin10 ? 'info' : 'error', { title: 'locid:VISUALIZER_TITLE' });
         return;
     }
     if (localStorage.madesktopVisOnlyAlbumArt || !localStorage.madesktopVisShowAlbumArt) {
@@ -534,7 +534,7 @@ optMenuItems[4].addEventListener('click', () => { // Dim Album Art button
 
 optMenuItems[5].addEventListener('click', () => { // Album Art Size button
     if (!visStatus.mediaIntegrationAvailable) {
-        madAlert(madGetString(NO_MEDINT_MSG), null, isWin10 ? 'info' : 'error');
+        madAlert(madGetString(NO_MEDINT_MSG), null, isWin10 ? 'info' : 'error', { title: 'locid:VISUALIZER_TITLE' });
     }
     // Submenu will be opened by MadMenu if this item is not disabled
 });
@@ -587,7 +587,7 @@ estimateMenuItems[2].addEventListener('click', () => { // Ignore Original Timeli
 });
 
 estimateMenuItems[3].addEventListener('click', () => { // Help button
-    madAlert(madGetString("VISUALIZER_ESTIMATE_TIMELINE_HELP_MSG"), null, 'info');
+    madAlert(madGetString("VISUALIZER_ESTIMATE_TIMELINE_HELP_MSG"), null, 'info', { title: 'locid:VISUALIZER_TITLE' });
 });
 
 colorMenuItems[0].addEventListener('click', () => { // Default button
@@ -620,7 +620,7 @@ colorMenuItems[2].addEventListener('click', () => { // Custom Color button
 
 colorMenuItems[3].addEventListener('click', () => { // Follow Album Art button
     if (!visStatus.mediaIntegrationAvailable) {
-        madAlert(madGetString(NO_MEDINT_MSG), null, isWin10 ? 'info' : 'error');
+        madAlert(madGetString(NO_MEDINT_MSG), null, isWin10 ? 'info' : 'error', { title: 'locid:VISUALIZER_TITLE' });
         return;
     }
     if (localStorage.madesktopVisFollowAlbumArt) {
@@ -664,10 +664,10 @@ async function mediaControl(action) {
     try {
         const response = await madSysPlug.mediaControl(action, title);
         if (response !== 'OK') {
-            madAlert(madGetString("VISUALIZER_MEDIA_CONTROL_ERROR") + '<br>' + response, null, 'error');
+            madAlert(madGetString("VISUALIZER_MEDIA_CONTROL_ERROR") + '<br>' + response, null, 'error', { title: 'locid:VISUALIZER_TITLE' });
         }
     } catch (error) {
-        await madAlert(madGetString("UI_MSG_NO_SYSPLUG"), null, 'warning');
+        await madAlert(madGetString("UI_MSG_NO_SYSPLUG"), null, 'warning', { title: 'locid:VISUALIZER_TITLE' });
         madOpenWindow('SysplugSetupGuide.md', true);
     }
 }
@@ -824,6 +824,14 @@ function wallpaperMediaTimelineListener(event) {
     // If the estimated timeline setting is set to "Ignore Original Timeline",
     // only update the timeline here if this is a new music
     if (localStorage.madesktopVisGuessTimeline !== '2' || !visStatus.timeline) {
+        if (!visStatus.timeline) {
+            // Always clear the timeline guesser on new music
+            if (timelineGuesserTick) {
+                clearInterval(timelineGuesserTick);
+                timelineGuesserTick = null;
+            }
+        }
+
         const percent = event.position / event.duration * 100;
         seekBar.style.backgroundColor = 'var(--window)';
         seekHandle.style.left = `calc(${percent}% - 6px)`;
@@ -840,18 +848,8 @@ function wallpaperMediaTimelineListener(event) {
     visStatus.timelineOrig = event;
     document.dispatchEvent(mediaTimelineEvent);
 
-    if (localStorage.madesktopVisGuessTimeline === '2') {
-        // If the estimated timeline setting is set to "Ignore Original Timeline",
-        // start the timeline guesser only if it's not already running
-        if (!timelineGuesserTick) {
-            timelineGuesserTick = setInterval(timelineGuesser, 1000);
-        }
-    } else if (localStorage.madesktopVisGuessTimeline) {
-        // If the estimated timeline setting is set to "Enable" or "Disable",
-        // restart the timeline guesser
-        if (timelineGuesserTick) {
-            clearInterval(timelineGuesserTick);
-        }
+    // Don't cancel the timeline guesser if it's running
+    if (localStorage.madesktopVisGuessTimeline && !timelineGuesserTick) {
         timelineGuesserTick = setInterval(timelineGuesser, 1000);
     }
 }

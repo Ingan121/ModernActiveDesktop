@@ -700,6 +700,7 @@
             'madesktopVisMediaControls',
             'madesktopVisSpotifyEnabled',
             'madesktopCorsProxy',
+            'madesktopVisLyricsSyncDelay',
             // Aggregated configs
             'madesktopSavedSchemes',
             'madesktopUserPatterns',

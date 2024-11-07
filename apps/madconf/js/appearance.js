@@ -234,7 +234,7 @@ async function main() {
         if (scheme["supports-colorization"]) {
             secondColorPickerWrap.classList.remove("disabled");
             secondColorPicker.disabled = false;
-            secondColorPickerColor.style.backgroundColor = "#4580c4";
+            secondColorPickerColor.style.backgroundColor = scheme["default-colorization-color"] || "#4580c4";
         }
         if (scheme["supports-transparency"]) {
             transparencyChkBox.disabled = false;
