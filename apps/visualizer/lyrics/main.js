@@ -645,7 +645,9 @@ async function init() {
                         return null;
                     }
                 } else {
-                    lastFetchInfo.attempt[lastFetchInfo.attempted - 1] = -1;
+                    if (lastFetchInfo.attempt) {
+                        lastFetchInfo.attempt[lastFetchInfo.attempted - 1] = -2;
+                    }
                     return null;
                 }
             } catch (error) {
@@ -653,7 +655,7 @@ async function init() {
                     throw error;
                 } else {
                     if (lastFetchInfo.attempt) {
-                        lastFetchInfo.attempt[lastFetchInfo.attempted - 1] = -2;
+                        lastFetchInfo.attempt[lastFetchInfo.attempted - 1] = -3;
                     }
                     console.error(error);
                     return null;
@@ -1009,9 +1011,12 @@ async function init() {
                                 msg += 'Not tried';
                                 break;
                             case -1:
-                                msg += 'No lyrics';
+                                msg += 'Instrumental';
                                 break;
                             case -2:
+                                msg += 'No lyrics';
+                                break;
+                            case -3:
                                 msg += 'Error';
                                 break;
                             default:
