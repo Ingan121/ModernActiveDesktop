@@ -1058,7 +1058,7 @@ async function init() {
                     const fetchedAtDate = new Date(info.fetchedAt * 1000).toLocaleString(window.madLang);
                     const expiryDate = new Date((info.fetchedAt + info.expiresIn - 60) * 1000).toLocaleString(window.madLang);
                     msg += 'Spotify token fetched at: ' + fetchedAtDate + '<br>';
-                    msg += 'Spotify token expiry: ' + expiryDate + '<br>';
+                    msg += 'Spotify token expiry: ' + expiryDate;
                 }
 
                 if (visStatus.lastMusic?.simulated) {

@@ -269,6 +269,7 @@
     if (styleElement) {
         new MutationObserver((mutations) => {
             styleElement.textContent = parentStyleElement.textContent;
+            processTheme();
         }).observe(
             parentStyleElement,
             { characterData: false, attributes: false, childList: true, subtree: false }
