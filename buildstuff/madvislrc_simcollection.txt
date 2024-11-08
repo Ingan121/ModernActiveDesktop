@@ -66,6 +66,11 @@ simulate("GFRIEND", "Glass Bead")
 simulate("IVE", "해야 (HEyA)")
 simulate("STAYC", "Flexing On My Ex", "Metamorphic")
 simulate("YENA, 비비", "SMILEY")
+
+window.simulate("조유리", "Love Shhh...", "Op.22 Y-Waltz : in Major") // Accurate (no artist)
+window.simulate("투어스", "If I’m S, Can You Be My N?", "TWS 2nd Mini Album 'SUMMER BEAT!'") // Accurate (no artist)
+window.simulate("TWS", "If I’m S, Can You Be My N?", "TWS 2nd Mini Album 'SUMMER BEAT!'") // Unsynced in get, synced available in 'Accurate (no album)'
+window.simulate("Missy Elliott", "Let It Bump", "This Is Not A Test"); // Only unsynced exists
 -----END MY DEVTOOLS CONSOLE DUMP-----
 
 -----BEGIN COPILOT NONSENSE-----

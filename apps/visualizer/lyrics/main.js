@@ -57,6 +57,9 @@ async function init() {
         let lastMusic = null;
         let lastFetchInfo = {}; // For debugging
         let autoScroll = true;
+        let preferUnsynced = localStorage.madesktopVisLyricsForceUnsynced || // User preference
+            !visStatus.mediaIntegrationAvailable || // No timeline available (only valild if Spotify is enabled)
+            madRunningMode !== 1; // Lively Wallpaper (no timeline support)
         let syncDelay = parseFloat(localStorage.madesktopVisLyricsSyncDelay) || 0;
         let overrides = await madIdb.lyricsOverrides;
         let abortController = new AbortController();
@@ -267,6 +270,12 @@ async function init() {
         // 4. Synced inaccurate search fallback with no album title data
         // 5. Unsynced inaccurate search fallback with no album title data
         // 6. No lyrics found
+        //
+        // Priority when preferUnsynced is true:
+        // 1. Overrides (if present)
+        // 2. Synced or unsynced results
+        //  2.1 Same as 2.1-2.6 above
+        // 3. No lyrics found
         async function findLyrics(id) {
             if (id) {
                 return await fetchLyrics('https://lrclib.net/api/get/' + id);
@@ -386,7 +395,7 @@ async function init() {
             for (const url of urlsToTry) {
                 const lyrics = await fetchLyrics(url);
                 if (lyrics) {
-                    if (lyrics.synced) {
+                    if (lyrics.synced || preferUnsynced) {
                         return lyrics;
                     } else {
                         lastUnsyncedLyrics = lyrics;
@@ -484,6 +493,9 @@ async function init() {
                             id: item.id,
                             plainLyrics: item.plainLyrics
                         };
+                        if (preferUnsynced) {
+                            return lastUnsyncedLyrics;
+                        }
                     }
                 }
                 if (lastUnsyncedLyrics) {
@@ -584,6 +596,9 @@ async function init() {
                             id: item.id,
                             plainLyrics: item.plainLyrics
                         };
+                        if (preferUnsynced) {
+                            return lastUnsyncedLyrics;
+                        }
                     }
                 }
                 if (lastUnsyncedLyrics) {
@@ -712,7 +727,7 @@ async function init() {
             loadingIndicator.style.display = 'none';
             if (lyrics) {
                 lastLyricsId = lyrics.id;
-                if (lyrics.synced && !localStorage.madesktopVisLyricsForceUnsynced && visStatus.mediaIntegrationAvailable && madRunningMode === 1) {
+                if (lyrics.synced && !preferUnsynced) {
                     lyricsView.innerHTML = '';
                     const lrc = parseLrc(lyrics.syncedLyrics);
                     lrc.forEach((line, index) => {
@@ -786,6 +801,7 @@ async function init() {
         }
 
         async function processProperties(force, simulating) {
+            preferUnsynced = localStorage.madesktopVisLyricsForceUnsynced || !visStatus.mediaIntegrationAvailable || madRunningMode !== 1;
             // Make sure the music has changed, as the event can be triggered multiple times
             // E.g. when the WPE media listeners got invalidated by closing an iframe and listners got re-registered
             if (force === true ||
