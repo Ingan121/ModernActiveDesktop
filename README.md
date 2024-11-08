@@ -148,7 +148,7 @@
     * Renamed some scripts to a shorter name
 * Updated Electron
 
-(2024/11/)
+(2024/11/17)
 
 ### Previous changelog
 Please see [here](docs/Updated.md) for the previous changes
