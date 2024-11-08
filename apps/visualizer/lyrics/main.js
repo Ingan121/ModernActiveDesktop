@@ -24,7 +24,7 @@ madDeskMover.menu = new MadMenu(menuBar, ['lrc'], ['sync']);
 for (let i = 0; i < lrcMenuItems.length - 1; i++) {
     // Setup basic click events for use before initialization and MADVis load
     lrcMenuItems[i].addEventListener('click', function () {
-        if (inited === 0 || inited === 1) {
+        if (inited === 0 || inited === 1 || inited === -1) {
             madAlert(madGetString('VISLRC_STATUS_NO_MADVIS'), null, 'error', { title: 'locid:VISLRC_TITLE' });
         }
     });
@@ -90,6 +90,10 @@ async function init() {
         }
 
         lrcMenuItems[0].addEventListener('click', async function () { // Load Lyrics button
+            if (inited === -1) {
+                return;
+            }
+
             const hash = await getSongHash(visStatus.lastMusic?.artist, visStatus.lastMusic?.title, visStatus.lastMusic?.albumTitle);
             if (overrides[hash]) {
                 delete overrides[hash];
@@ -99,6 +103,10 @@ async function init() {
         });
 
         lrcMenuItems[1].addEventListener('click', function () { // Search Lyrics button
+            if (inited === -1) {
+                return;
+            }
+
             const artist = visStatus.lastSpotifyMusic?.artist || visStatus.lastMusic?.artist || '';
             const title = visStatus.lastSpotifyMusic?.title || visStatus.lastMusic?.title || '';
             const albumTitle = visStatus.lastSpotifyMusic?.albumTitle || visStatus.lastMusic?.albumTitle || '';
@@ -122,6 +130,10 @@ async function init() {
         });
 
         lrcMenuItems[2].addEventListener('click', async function () { // Open Lyrics File button
+            if (inited === -1) {
+                return;
+            }
+
             const pickerOpts = {
                 types: [
                     {
@@ -148,6 +160,9 @@ async function init() {
         });
 
         lrcMenuItems[3].addEventListener('click', function () { // Auto Scroll button
+            if (inited === -1) {
+                return;
+            }
             if (!lastSyncedLyricsParsed) {
                 return;
             }
@@ -162,6 +177,10 @@ async function init() {
         });
 
         lrcMenuItems[5].addEventListener('click', function () { // Options button
+            if (inited === -1) {
+                return;
+            }
+
             const left = parseInt(madDeskMover.config.xPos) + 25 + 'px';
             const top = parseInt(madDeskMover.config.yPos) + 50 + 'px';
             const options = {
@@ -175,6 +194,9 @@ async function init() {
         });
 
         lrcMenuItems[6].addEventListener('click', function () { // Debug Info button
+            if (inited === -1) {
+                return;
+            }
             showDebugInfo();
         });
 
@@ -237,10 +259,11 @@ async function init() {
         //  2.1 Get (whatever succeeds first)
         //  2.2 Accurate search fallback
         //  2.3 Accurate search fallback without album title
-        //  2.4 Inaccurate search fallback
-        //  2.5 Inaccurate search fallback with parentheses stripped
+        //  2.4 Accurate search fallback without artist name (only if album title is present)
+        //  2.5 Inaccurate search fallback
+        //  2.6 Inaccurate search fallback with parentheses stripped
         // 3. Unsynced results
-        //  3.1 Same as 2.1-2.5
+        //  3.1 Same as 2.1-2.6
         // 4. Synced inaccurate search fallback with no album title data
         // 5. Unsynced inaccurate search fallback with no album title data
         // 6. No lyrics found
@@ -389,7 +412,7 @@ async function init() {
 
         // More tolerant than get, but still tries to get the most accurate result (besides album title matters here)
         // Less tolerant than searchFallback (e.g. duplicated titles don't work here)
-        async function searchFallbackAccurate(noAlbum) {
+        async function searchFallbackAccurate(mode = 0) { // 0: Normal, 1: No album title, 2: No artist name
             lastFetchInfo.searchFallback = 1;
             let artist = visStatus.lastSpotifyMusic?.artist || visStatus.lastMusic?.artist || '';
             if (artist.includes(', ') || artist.includes(' & ')) {
@@ -406,20 +429,34 @@ async function init() {
             }
             const albumTitle = visStatus.lastSpotifyMusic?.albumTitle || visStatus.lastMusic?.albumTitle || '';
             if (!albumTitle) {
-                noAlbum = true;
+                mode = 1;
             }
+            log('searchFallbackAccurate: ' + mode, 'log', 'MADVisLrc');
 
             const url = new URL('https://lrclib.net/api/search');
             const params = {
-                track_name: title,
-                artist_name: artist
+                track_name: title
             };
-            if (!noAlbum) {
-                // This matters here, unlike in the get api
-                // So try without album title too
-                params.album_name = albumTitle;
-            } else {
-                lastFetchInfo.searchFallback = 2;
+            switch (mode) {
+                case 0:
+                    params.artist_name = artist;
+                    params.album_name = albumTitle;
+                    lastFetchInfo.searchFallback = 1;
+                    break;
+                case 1:
+                    // Album title matters here, unlike in the get api
+                    // So try without album title too
+                    params.artist_name = artist;
+                    lastFetchInfo.searchFallback = 2;
+                    break;
+                case 2:
+                    // In case the artist name comes in a format not in the DB
+                    // Test case: "QUEEN BEE - メフィスト (メフィスト)" - only the Japanese name is in the DB
+                    // So try without the artist name too - it's possible unlike the get api which mandates the artist name
+                    // I believe title name + album title is more accurate than the inaccurate search fallback?
+                    params.album_name = albumTitle;
+                    lastFetchInfo.searchFallback = 3;
+                    break;
             }
             url.search = new URLSearchParams(params).toString();
 
@@ -451,15 +488,21 @@ async function init() {
                 }
                 if (lastUnsyncedLyrics) {
                     let searchResult;
-                    if (noAlbum) {
-                        // Don't fall back to (inaccurate) search if the album title is not present and unsynced lyrics exist, as it may find a completely different song. Test case: "IVE - I WANT"
-                        // In fact, "IVE" easily causes the search fallback to return a completely different song, as LRCLIB doesn't care about punctuation so songs with "I've" in titles, albums, ... gets returned
-                        if (!visStatus.lastSpotifyMusic?.albumTitle && !visStatus.lastMusic?.albumTitle) {
-                            return lastUnsyncedLyrics;
-                        }
-                        searchResult = await searchFallback();
-                    } else {
-                        searchResult = await searchFallbackAccurate(true);
+                    switch (mode) {
+                        case 0:
+                            searchResult = await searchFallbackAccurate(1);
+                            break;
+                        case 1:
+                            // Don't fall back to (inaccurate) search or accurate search without the artist name if the album title is not present and unsynced lyrics exist, as it may find a completely different song. Test case: "IVE - I WANT"
+                            // In fact, "IVE" easily causes the inaccurate search fallback to return a completely different song, as LRCLIB doesn't care about punctuation so songs with "I've" in titles, albums, ... gets returned
+                            if (!visStatus.lastSpotifyMusic?.albumTitle && !visStatus.lastMusic?.albumTitle) {
+                                return lastUnsyncedLyrics;
+                            }
+                            searchResult = await searchFallbackAccurate(2);
+                            break;
+                        case 2:
+                            searchResult = await searchFallback();
+                            break;
                     }
                     if (searchResult?.synced) {
                         // If the search fallback found a synced result, return that instead of the unsynced one
@@ -469,10 +512,17 @@ async function init() {
                     return lastUnsyncedLyrics;
                 }
             }
-            if (noAlbum) {
-                return await searchFallback();
-            } else {
-                return await searchFallbackAccurate(true);
+            switch (mode) {
+                case 0:
+                    return await searchFallbackAccurate(1);
+                case 1:
+                    // Don't try accurate search without artist name if the album title is not present, as it's too inaccurate at that point
+                    if (!visStatus.lastSpotifyMusic?.albumTitle && !visStatus.lastMusic?.albumTitle) {
+                        return await searchFallback();
+                    }
+                    return await searchFallbackAccurate(2);
+                case 2:
+                    return await searchFallback();
             }
         }
 
@@ -483,11 +533,12 @@ async function init() {
         // So try both with and without parentheses stripped
         // Misc note: dropping punctuations and special characters also work ("youre" finds "you're" without issues), but dropping other arbitrary characters doesn't (e.g. "NewJean" doesn't find "NewJeans")
         async function searchFallback(stripParens) {
-            lastFetchInfo.searchFallback = 3;
+            log('searchFallback' + (stripParens ? ' (stripped)' : ''), 'log', 'MADVisLrc');
+            lastFetchInfo.searchFallback = 4;
             let artist = visStatus.lastSpotifyMusic?.artist || visStatus.lastMusic?.artist || '';
             let title = visStatus.lastSpotifyMusic?.title || visStatus.lastMusic?.title || '';
             if (stripParens) {
-                lastFetchInfo.searchFallback = 4;
+                lastFetchInfo.searchFallback = 5;
                 let differenceExists = false;
                 if (artist.includes(', ') || artist.includes(' & ')) {
                     artist = artist.split(', ')[0].split(' & ')[0];
@@ -768,16 +819,20 @@ async function init() {
                         delete visStatus.lastSpotifyMusic;
                         loadLyrics();
                     } else if (!visStatus.mediaIntegrationAvailable) {
+                        loadingIndicator.style.display = 'none';
                         lyricsView.innerHTML = '<mad-string data-locid="VISLRC_STATUS_NO_MEDINT"></mad-string>';
                     } else {
+                        loadingIndicator.style.display = 'none';
                         lyricsView.innerHTML = '<mad-string data-locid="VISLRC_STATUS_NO_MUSIC"></mad-string>';
                     }
                 } else if (visStatus.lastMusic) {
                     delete visStatus.lastSpotifyMusic;
                     loadLyrics();
                 } else if (!visStatus.mediaIntegrationAvailable) {
+                    loadingIndicator.style.display = 'none';
                     lyricsView.innerHTML = '<mad-string data-locid="VISLRC_STATUS_NO_MEDINT"></mad-string>';
                 } else {
+                    loadingIndicator.style.display = 'none';
                     lyricsView.innerHTML = '<mad-string data-locid="VISLRC_STATUS_NO_MUSIC"></mad-string>';
                 }
             }
@@ -931,7 +986,7 @@ async function init() {
             if (msgInLyricsView) {
                 msg = madGetString(msgInLyricsView.locId);
             } else {
-                msg += 'Current track: ' + visStatus.lastMusic?.artist + ' - ' + visStatus.lastMusic?.title + ' (' + visStatus.lastMusic?.albumTitle + ')<br>';
+                msg += 'Current track: ' + escapeHTML(visStatus.lastMusic?.artist) + ' - ' + escapeHTML(visStatus.lastMusic?.title) + ' (' + escapeHTML(visStatus.lastMusic?.albumTitle) + ')<br>';
                 msg += 'Current lyrics ID: ' + (lastLyricsId ?? 'Local lyrics') + '<br>';
                 msg += 'Song hash: ' + lastFetchInfo.hash + '<br>';
                 msg += 'Timeline: ' + visStatus.timeline?.position + 's / ' + visStatus.timeline?.duration + 's<br><br>';
@@ -976,9 +1031,12 @@ async function init() {
                             msg += 'Search fallback: Accurate (no album)<br>';
                             break;
                         case 3:
-                            msg += 'Search fallback: Normal<br>';
+                            msg += 'Search fallback: Accurate (no artist)<br>';
                             break;
                         case 4:
+                            msg += 'Search fallback: Normal<br>';
+                            break;
+                        case 5:
                             msg += 'Search fallback: Normal (stripped)<br>';
                             break;
                     }
@@ -994,7 +1052,7 @@ async function init() {
                 if (localStorage.madesktopVisSpotifyEnabled && localStorage.madesktopVisSpotifyInfo) {
                     const info = JSON.parse(localStorage.madesktopVisSpotifyInfo);
                     msg += '<br><br>';
-                    msg += 'Current Spotify track: ' + visStatus.lastSpotifyMusic?.artist + ' - ' + visStatus.lastSpotifyMusic?.title + ' (' + visStatus.lastSpotifyMusic?.albumTitle + ')<br>';
+                    msg += 'Current Spotify track: ' + escapeHTML(visStatus.lastSpotifyMusic?.artist) + ' - ' + escapeHTML(visStatus.lastSpotifyMusic?.title) + ' (' + escapeHTML(visStatus.lastSpotifyMusic?.albumTitle) + ')<br>';
                     msg += 'Spotify duration: ' + visStatus.lastSpotifyMusic?.duration + 's<br><br>';
                     msg += 'Spotify client ID: ' + info.clientId + '<br>';
                     const fetchedAtDate = new Date(info.fetchedAt * 1000).toLocaleString(window.madLang);
@@ -1087,6 +1145,9 @@ setInterval(() => {
         if (inited === 2) {
             lyricsView.innerHTML = '<mad-string data-locid="VISLRC_STATUS_NO_MADVIS"></mad-string>';
             inited = -1;
+            for (let i = 0; i < lrcMenuItems.length - 1; i++) {
+                lrcMenuItems[i].classList.add('disabled');
+            }
         }
     } else if (top.visDeskMover) {
         if (inited === 1) {

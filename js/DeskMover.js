@@ -482,10 +482,12 @@
             if (this.isFullscreen) {
                 this.exitFullscreen();
             }
+            this.destroying = true;
             const winCloseAnim = getComputedStyle(this.windowContainer).getPropertyValue('--win-close-anim');
             if (winCloseAnim && !localStorage.madesktopNoWinAnim && this.config.style === "wnd" && isResetting !== true) {
                 this.windowContainer.style.animation = winCloseAnim;
                 await waitForAnim(this.windowContainer);
+                iframeClickEventCtrl(true);
             }
             document.removeEventListener('pointerup', this.boundDocMouseUp);
             document.removeEventListener('pointermove', this.boundDocMouseMove);
@@ -649,6 +651,12 @@
         }
 
         openConfMenu() {
+            // Prevent opening the config menu when the window close animation is playing
+            // (Animations can trigger menu hover events)
+            // Otherwise exceptions will occur while calculating the menu size
+            if (this.destroying) {
+                return;
+            }
             if (this.confMenuBg.style.display === "block" || this.contextMenuBg.style.display !== "block") {
                 return;
             }

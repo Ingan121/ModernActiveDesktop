@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Save File Demo</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <h1>Save File Demo</h1>
+    <p>Click the button below to save a file.</p>
+    <button id="saveButton">Save File</button>
+    <script>
+        async function saveFile(name, data) {
+            // create a new handle
+            const newHandle = await window.showSaveFilePicker({
+                suggestedName: name,
+                types: [{
+                    accept: {
+                        "application/pdf": [".pdf"]
+                    }
+                }]
+            });
+
+            // create a FileSystemWritableFileStream to write to
+            const writableStream = await newHandle.createWritable();
+
+            // write our file
+            await writableStream.write(data);
+
+            // close the file and write the contents to disk.
+            await writableStream.close();
+        }
+
+        document.getElementById('saveButton').addEventListener('click', async () => {
+            const data = new Uint8Array([1, 2, 3, 4, 5]);
+            await saveFile('example.pdf', data);
+        });
+</script>
+</html>

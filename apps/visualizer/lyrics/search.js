@@ -158,6 +158,12 @@ function processResults(result) {
             currentIdFound = true;
         }
     }
+    if (searchResults.options.length === 0) {
+        // Everything is instrumental!
+        searchResults.label.innerHTML = `<mad-string data-locid="VISLRC_STATUS_NOT_FOUND"></mad-string>`;
+        searchResults.disabled = true;
+        return;
+    }
     if (!currentIdFound) {
         searchResults.selectedIndex = 0;
     }

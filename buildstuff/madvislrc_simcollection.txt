@@ -1,0 +1,154 @@
+// window.simulate collection for debugging MADVis Lyrics
+/*
+window.simulate('GFRIEND', 'Glass Bead', 'Season of Glass');
+window.simulate('GFRIEND', 'Me Gustas Tu', 'Flower Bud');
+window.simulate('GFRIEND', 'Rough', 'Snowflake');
+window.simulate('GFRIEND', 'Navillera', 'LOL');
+window.simulate('GFRIEND', 'Fingertip', 'The Awakening');
+window.simulate('GFRIEND', 'Love Whisper', 'Parallel');
+window.simulate('GFRIEND', 'Summer Rain', 'Rainbow');
+window.simulate('GFRIEND', 'Time for the Moon Night', 'Time for the Moon Night');
+window.simulate('GFRIEND', 'Sunny Summer', 'Sunny Summer');
+window.simulate('GFRIEND', 'Sunrise', 'Time for Us');
+window.simulate('GFRIEND', 'Fever', 'Fever Season');
+window.simulate('GFRIEND', 'Crossroads', '回:LABYRINTH');
+window.simulate('GFRIEND', 'Apple', '回:Song of the Sirens');
+window.simulate('GFRIEND', 'MAGO', '回:Walpurgis Night');
+window.simulate('GFRIEND', 'Apple', '回:Song of the Sirens');
+window.simulate('GFRIEND', 'MAGO', '回:Walpurgis Night');
+window.simulate('GFRIEND', 'Apple', '回:Song of the Sirens');
+window.simulate('GFRIEND', 'MAGO', '回:Walpurgis Night');
+wtf copilot
+
+my devtools console dump begins here
+window.simulate("프로미스나인", "Supersonic", "");
+window.simulate("AKMU", "어떻게 이별까지 사랑하겠어, 널 사랑하는 거지(How can I love the heartbreak, you're the one I love)", "");
+window.simulate("ASHGRAY", "Hello Mr. my yesterday (From 애니메이션 \"명탐정 코난\" 10기) (한국어버젼)", "");
+window.simulate("CHUU (츄)", "Confession (Ditto X Chuu (LOONA)) (고백 (영화 '동감' X 츄 (이달의 소녀)))", "");
+window.simulate("GEMN, Tatsuya, & whatever", "Fatal")
+window.simulate("GEMN", "Fatal")
+window.simulate("GFRIEND", "Glass Bead", "");
+window.simulate("GFRIEND", "Glass Bead", "GFRIEND 1st Mini Album 'Season Of Glass'");
+window.simulate("GFRIEND", "Glass Bead", "Season Of Glass");
+window.simulate("IVE", "해야 (HEYA)", "");
+window.simulate("IVE", "I WANT", "");
+window.simulate("IVE", "MINE (MINE)", "");
+window.simulate("Jay Park", "All I Wanna Do (K) (Feat. Hoody & Loco)", "");
+window.simulate("KWON EUNBI", "Underwater (Underwater)", "");
+window.simulate("NCT 127", "Fact Check (불가사의; 不可思議)", "");
+window.simulate("OH MY GIRL", "Dun Dun Dance (Dun Dun Dance)", "");
+window.simulate("PRODUCE 48", "반해버리잖아? (好きになっちゃうだろう？) (Suki ni Nacchaudarou?)", "");
+window.simulate("QUEEN BEE", "メフィスト", "メフィスト")
+window.simulate("QUEEN BEE", "メフィスト")
+window.simulate("QWER", "고민중독", "");
+window.simulate("Ryokuoushoku Shakai", "花になって - Be a flower", "");
+window.simulate("SHINee", "Sherlock · 셜록 (Clue+Note)", "");
+window.simulate("STAYC", "Flexing On My Ex", "");
+window.simulate("tripleS", "Girls Never Die (Girls Never Die (Girls Never Die (Girls Never Die)))", "");
+window.simulate("tripleS", "Girls Never Die (Girls Never Die (Girls Never Die (Girls Never Die)))", "ASSEMBLE24");
+window.simulate("YOUNHA", "사건의 지평선 (EVENT HORIZON)", "");
+
+window.simulate("Shakira", "Try Everything")
+window.simulate("MAROON 5", "Moves Like Jagger")
+simulate("Coldplay", "Viva la Vida")
+simulate("Fool's Garden", "Lemon Tree")
+simulate("The Beatles", "Yesterday")
+
+simulate("프로미스나인", "DM", "Midnight Guest")
+simulate("BTS", "봄날", "undefined")
+simulate("CHEER UP", "TWICE", undefined)
+simulate("DAOKO & Kenshi Yonezu", "打上花火")
+simulate("DAOKO & Kenshi Yonezu", "Uchiagehanabi")
+simulate("DAY6", "녹아내려요 Melt Down", "undefined")
+simulate("DM", "fromis_9", "Midnight Guest")
+simulate("fromis_9", "DM", "Midnight Guest")
+simulate("GFRIEND", "Glass Bead")
+simulate("IVE", "해야 (HEyA)")
+simulate("STAYC", "Flexing On My Ex", "Metamorphic")
+simulate("YENA, 비비", "SMILEY")
+-----END MY DEVTOOLS CONSOLE DUMP-----
+
+-----BEGIN COPILOT NONSENSE-----
+window.simulate("TWICE", "I CAN'T STOP ME", "Eyes wide open");
+window.simulate("TWICE", "CRY FOR ME", "");
+window.simulate("TWICE", "SCIENTIST", "");
+window.simulate("TWICE", "The Feels", "");
+window.simulate("TWICE", "Alcohol-Free", "");
+window.simulate("TWICE", "Perfect World", "");
+window.simulate("TWICE", "Kura Kura", "");
+window.simulate("TWICE", "Doughnut", "");
+window.simulate("TWICE", "SOS", "");
+window.simulate("TWICE", "FOUR", "");
+window.simulate("TWICE", "In the summer", "");
+window.simulate("TWICE", "Strawberry Moon", "");
+window.simulate("TWICE", "Cactus", "");
+window.simulate("TWICE", "Cry", "");
+window.simulate("TWICE", "First Time", "");
+window.simulate("TWICE", "ICON", "");
+window.simulate("TWICE", "LOVE FOOLISH", "");
+window.simulate("TWICE", "OXYGEN", "");
+window.simulate("TWICE", "FIREWORK", "");
+window.simulate("TWICE", "MORE & MORE", "");
+window.simulate("TWICE", "FEEL SPECIAL", "");
+window.simulate("TWICE", "FANCY", "");
+window.simulate("TWICE", "YES or YES", "");
+window.simulate("TWICE", "What is Love?", "");
+window.simulate("TWICE", "Heart Shaker", "");
+window.simulate("TWICE", "LIKEY", "");
+window.simulate("TWICE", "KNOCK KNOCK", "");
+window.simulate("TWICE", "TT", "");
+window.simulate("TWICE", "CHEER UP", "");
+window.simulate("TWICE", "Like OOH-AHH", "");
+
+window.simulate("IU", "Celebrity", "");
+window.simulate("IU", "LILAC", "");
+window.simulate("IU", "Coin", "");
+window.simulate("IU", "Epilogue", "");
+window.simulate("IU", "Hi Spring Bye", "");
+window.simulate("IU", "My Sea", "");
+window.simulate("IU", "Ah puh", "");
+window.simulate("IU", "Flu", "");
+window.simulate("IU", "Troll", "");
+window.simulate("IU", "Empty Cup", "");
+window.simulate("IU", "Love poem", "");
+window.simulate("IU", "Blueming", "");
+window.simulate("IU", "BBIBBI", "");
+window.simulate("IU", "Palette", "");
+window.simulate("IU", "Through the Night", "");
+
+window.simulate("BLACKPINK", "How You Like That", "");
+window.simulate("BLACKPINK", "Ice Cream", "");
+
+window.simulate("Red Velvet", "Psycho", "");
+window.simulate("Red Velvet", "Queendom", "");
+window.simulate("Red Velvet", "Feel My Rhythm", "");
+window.simulate("Red Velvet", "Dumb Dumb", "");
+window.simulate("Red Velvet", "Red Flavor", "");
+window.simulate("Red Velvet", "Peek-A-Boo", "");
+
+window.simulate("LOONA", "PTT (Paint The Town)", "");
+window.simulate("LOONA", "Hi High", "");
+window.simulate("LOONA", "Star", "");
+window.simulate("LOONA", "So What", "");
+window.simulate("LOONA", "Why Not?", "");
+window.simulate("LOONA", "Butterfly", "");
+window.simulate("LOONA", "Eclipse", "");
+window.simulate("LOONA", "New", "");
+window.simulate("LOONA", "Voice", "");
+window.simulate("LOONA", "Fall Again", "");
+window.simulate("LOONA", "Universe", "");
+window.simulate("LOONA", "Hide & Seek", "");
+window.simulate("LOONA", "Love Cherry Motion", "");
+window.simulate("LOONA", "Sweet Crazy Love", "");
+
+window.simulate("IZ*ONE", "Panorama", "");
+window.simulate("IZ*ONE", "Secret Story of the Swan", "");
+window.simulate("IZ*ONE", "Violeta", "");
+window.simulate("IZ*ONE", "La Vie en Rose", "");
+
+window.simulate("TWICE", "I CAN'T STOP ME", "Eyes wide open");
+window.simulate("TWICE", "CRY FOR ME", "");
+
+window.simulate("TWICE", "I CAN'T STOP ME", "Eyes wide open");
+wtf
+*/
