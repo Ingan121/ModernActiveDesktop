@@ -104,6 +104,8 @@ let schemeTopColor = null;
 const visStatus = {};
 madDeskMover.visStatus = visStatus;
 let timelineGuesserTick = null;
+let secondDifferences = [];
+let lastTimelineEventTime = 0;
 
 // Always start with true regardless of OS, to allow already enabled MedInt features to be disabled
 // (As it just clicks the menu item for disabling, if it starts with false, error messages will be shown constantly on non-Win10 systems)
@@ -820,6 +822,7 @@ function wallpaperMediaTimelineListener(event) {
         visStatus.timeline = null;
         return;
     }
+    log(`Timeline event: ${event.position} / ${event.duration}`, 'debug', 'MADVis');
 
     // If the estimated timeline setting is set to "Ignore Original Timeline",
     // only update the timeline here if this is a new music
@@ -830,6 +833,7 @@ function wallpaperMediaTimelineListener(event) {
                 clearInterval(timelineGuesserTick);
                 timelineGuesserTick = null;
             }
+            secondDifferences = [];
         }
 
         const percent = event.position / event.duration * 100;
@@ -845,12 +849,58 @@ function wallpaperMediaTimelineListener(event) {
         };
     }
 
+    if (visStatus.timeline && visStatus.timelineOrig) {
+        if (event.position - visStatus.timeline.position <= 1) {
+            if (lastTimelineEventTime) {
+                const diff = performance.now() - lastTimelineEventTime;
+                const diff2 = (event.position - visStatus.timelineOrig.position) * 1000;
+                const res = diff - diff2;
+                if (res > 1000) {
+                    timelineGuesser();
+                }
+                secondDifferences.push(res % 1000);
+            }
+            lastTimelineEventTime = performance.now();
+            if (secondDifferences.length > 10) {
+                secondDifferences.shift();
+            }
+        }
+    }
+
     visStatus.timelineOrig = event;
     document.dispatchEvent(mediaTimelineEvent);
 
-    // Don't cancel the timeline guesser if it's running
-    if (localStorage.madesktopVisGuessTimeline && !timelineGuesserTick) {
-        timelineGuesserTick = setInterval(timelineGuesser, 1000);
+    if (localStorage.madesktopVisGuessTimeline) {
+        if (localStorage.madesktopVisGuessTimeline === '2') {
+            // In this mode, don't cancel the timeline guesser if it's running
+            if (!timelineGuesserTick) {
+                timelineGuesserTick = setInterval(timelineGuesser, 1000);
+            }
+        } else {
+            // Attempt to adjust the interval to match the actual second
+            if (timelineGuesserTick) {
+                clearInterval(timelineGuesserTick);
+                timelineGuesserTick = null;
+            }
+            const sum = secondDifferences.reduce((a, b) => a + b, 0);
+            const avg = sum / secondDifferences.length;
+            if (isNaN(avg)) {
+                timelineGuesserTick = setInterval(timelineGuesser, 1000);
+                return;
+            }
+            const delay = avg > 0 ? 1000 - avg : -avg;
+            setTimeout(function () {
+                if (timelineGuesserTick) {
+                    clearInterval(timelineGuesserTick);
+                    timelineGuesserTick = null;
+                }
+                timelineGuesserTick = setInterval(timelineGuesser, 1000);
+                if (avg > 0) {
+                    timelineGuesser();
+                }
+            }, delay);
+            log([avg, secondDifferences[secondDifferences.length - 1], delay], 'debug', 'MADVis');
+        }
     }
 }
 

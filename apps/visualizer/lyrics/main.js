@@ -204,7 +204,7 @@ async function init() {
         });
 
         // Sync adjust feature for some use cases like these:
-        // - Estimate timeline feature being inaccurate for some reason
+        // - Estimate timeline feature being inaccurate for some reason (adjusting this for this purpose is only recommended for 'Ignore original timeline' mode)
         // - Using a high latency audio device
         // - Listening to a audio streamed over RDP with AirPods, like me (lol)
         syncMenuItems[0].addEventListener('click', function () { // -0.5s button
