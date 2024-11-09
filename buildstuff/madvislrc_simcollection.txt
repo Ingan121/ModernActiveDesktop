@@ -74,6 +74,7 @@ window.simulate("투어스", "If I’m S, Can You Be My N?", "TWS 2nd Mini Album
 window.simulate("Missy Elliott", "Let It Bump", "This Is Not A Test"); // Only unsynced exists
 window.simulate("2NE1", "Lollipop", "2NE1 1st Mini Album"); // Weird case that only the romanized version is synced
 window.simulate("GFRIEND", "칵테일 사랑", "투유프로젝트 - Sugar Man3 Episode.10") // The album title is being handled weirdly in both get (occationally) and accurate search
+window.simulate("TWICE","올해 제일 잘한 일 / The Best Thing I Ever Did","The year of \"YES\"",true,"TWICE","올해 제일 잘한 일 / The Best Thing I Ever Did","The year of \"YES\"",210.45)
 -----END MY DEVTOOLS CONSOLE DUMP-----
 
 -----BEGIN COPILOT NONSENSE-----

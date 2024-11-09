@@ -926,7 +926,7 @@ async function init() {
 
         // Crazy tricks regarding Spotify and YT Music title formatting
         function stripNonAlphaNumeric(str) {
-            // Spotify test cases: "IVE - 해야 (HEYA)", "DAY6 - 녹아내려요 Melt Down", "Ryokuoushoku Shakai - 花になって - Be a flower" (this one actually doesn't work in stripped form. Aaand in YTM: it only returns the English part to SMTC so have to use the search fallback)
+            // Spotify test cases: "IVE - 해야 (HEYA)", "DAY6 - 녹아내려요 Melt Down", "Ryokuoushoku Shakai - 花になって - Be a flower" (this one actually doesn't work in stripped form. Aaand in YTM: it only returns the English part to SMTC so have to use the search fallback), "TWICE - 올해 제일 잘한 일 / The Best Thing I Ever Did" (works fine in stripped form)
             // These songs do not provide English titles so the Spotify API returns titles like these            
             // Other weird formats I found: "NCT 127 - Fact Check (불가사의; 不可思議)", "SHINee - Sherlock · 셜록 (Clue+Note)" - these two work fine with Spotify data so was not going to handle them but it turns out they work nicely in the finished form of this function (lol)
             // Also: "NCT 127 - 영웅 (英雄; Kick It)" - semicolon is left in the stripped form, but it works fine in both get and search cuz LRCLIB doesn't care about punctuation
@@ -951,8 +951,6 @@ async function init() {
                 // This may return something like "Feat. whatever" but surprisingly only giving the feat stuff as artist works fine with LRCLIB (searchFallbackAccurate)
                 // Test case: "SUNMI - 보름달 (Feat. Lena)" (this one doesn't have English title at all in Spotify)
                 return replaced.slice(1, -1);
-            } else if (replaced.includes(' - ')) {
-                return replaced.split(' - ')[1].trim();
             } else if (replaced.endsWith(')')) {
                 // This may remove parentheses that are not a 'duplicated localized title' format, but it can also help with some weird cases like "ASHGRAY - Hello Mr. my yesterday (From 애니메이션 \"명탐정 코난\" 10기) (한국어버젼)" (watafak)
                 const split = replaced.split('(')[0].trim();
@@ -968,7 +966,7 @@ async function init() {
                     return split;
                 }
             } else {
-                return replacedHard;
+                return replacedHard.trim();
             }
         }
 
