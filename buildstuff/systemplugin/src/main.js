@@ -5,6 +5,7 @@
 
 'use strict';
 
+// #region Electron / Node.js Modules
 // Modules to control application life and create native browser window
 const { app, BrowserView, BrowserWindow, ipcMain, shell, dialog, session, clipboard, systemPreferences, protocol, Menu, Tray } = require('electron');
 const path = require('path');
@@ -14,12 +15,16 @@ const url = require('url');
 const crypto = require('crypto');
 const args = require('minimist')(process.argv);
 const { spawn, execSync } = require('child_process');
+// #endregion
 
-if (args.help) {
+// #region Intro messages
+if (!args.metrics) {
   console.log(`ModernActiveDesktop System Plugin ${app.getVersion()}`);
   console.log("Made by Ingan121");
   console.log("Licensed under the MIT License");
   console.log("https://github.com/Ingan121/ModernActiveDesktop/tree/master/buildstuff/systemplugin\n");
+}
+if (args.help) {
   console.log("Usage: MADSysPlug.exe [options]");
   console.log("--open: Open a URL on startup");
   console.log("--maximize: Maximize the window on startup");
@@ -29,12 +34,21 @@ if (args.help) {
   console.log("--cors: CORS origin to allow (default: https://madesktop.ingan121.com)");
   console.log("--ignore-token: Don't check for a token in the request");
   console.log("--spotify: Custom Spotify Client ID for Spotify API integration");
+  console.log("--spotify-callback-url: Custom Spotify callback URL for Spotify API integration");
+  console.log("--spotify-aux-port: Custom port for Spotify API callback");
   console.log("--metrics: Get window metrics (border size, title height), for internal use only");
   console.log("--help: Show this help message\n");
-  console.log("Warning: Using --cors=*, --listen=0.0.0.0, or --ignore-token is considered insecure. Please only use these options for testing.\n");
+  console.log("Warning: Using --cors=*, --listen=0.0.0.0, or --ignore-token is considered insecure. Please use these options only for testing.\n");
   process.exit();
 }
 
+if (!args.spotify && (args['spotify-callback-url'] || args['spotify-aux-port'])) {
+  console.error("Error: spotify-callback-url and spotify-aux-port require a custom Spotify Client ID.");
+  process.exit();
+}
+// #endregion
+
+// #region Constants and Variables
 const gotTheLock = !!args.metrics || app.requestSingleInstanceLock();
 let tray = null;
 let mainWindow = null;
@@ -63,6 +77,9 @@ const tempFilePath = app.getPath('temp') + '/madsp-uploaded.dat';
 const tokenPath = path.join(__dirname, '../../../madsp-token.txt');
 const wpeCheckPath = path.join(__dirname, '../../../js/DeskSettings.js'); // Check if this MADSysPlug is bundled with the WPE Workshop distribution
 let token = null;
+// #endregion
+
+// #region System plugin access control stuff
 if (!ignoreToken && fs.existsSync(wpeCheckPath)) {
   if (!fs.existsSync(tokenPath)) {
     token = crypto.randomBytes(16).toString('hex');
@@ -93,7 +110,9 @@ const spAccessConfirmOptions = {
   buttons: ['Yes', 'No'],
   detail: spAccessConfirmMsg
 };
+// #endregion
 
+// #region Electron window creation and event handling
 function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({
@@ -176,6 +195,7 @@ function createWindow () {
 }
 
 if (!gotTheLock) {
+  console.log("ModernActiveDesktop System Plugin is already running. Exiting...");
   app.exit();
 } else {
   app.on('second-instance', (event, commandLine, workingDirectory) => {
@@ -229,6 +249,7 @@ app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') app.quit()
 })
 
+// #region System plugin ChannelViewer (deprecated)
 function processNewWindow(childWindow, details) {
   childWindow.removeMenu();
   if (args.maximize) childWindow.maximize(); 
@@ -353,7 +374,10 @@ function processNewWindow(childWindow, details) {
     }
   }
 }
+// #endregion
+// #endregion
 
+// #region Helper functions
 function showErrorMsg(win, msg, type) {
   const options = {
     message: msg,
@@ -465,9 +489,17 @@ function shadeColor(color, percent) {
 
   return "#"+RR+GG+BB;
 }
+// #endregion
 
+// #region Web server
 if (!args.metrics) {
   http.createServer(onRequest).listen(args.port || 3031, args.listen || '127.0.0.1');
+  console.log('ModernActiveDesktop System Plugin listening on port', args.port || 3031);
+}
+
+if (args['spotify-aux-port']) {
+  http.createServer(spotifyCallback).listen(args['spotify-aux-port'], '127.0.0.1');
+  console.log('Auxiliary Spotify callback server listening on port', args['spotify-aux-port']);
 }
 
 function onRequest(req, res) {
@@ -668,7 +700,7 @@ function onRequest(req, res) {
       const authParams = {
         client_id: spotifyClientId,
         response_type: 'code',
-        redirect_uri: `http://localhost:${args.port || 3031}/spotify/callback`,
+        redirect_uri: args['spotify-callback-url'] || `http://localhost:${args.port || 3031}/spotify/callback`,
         code_challenge_method: 'S256',
         code_challenge: codeChallenge,
         state: spotifyCsrfToken,
@@ -690,51 +722,7 @@ function onRequest(req, res) {
 
     // Spotify auth callback
     case '/spotify/callback':
-      if (req.headers.origin) {
-        res.writeHead(403);
-        res.end('This page is not meant to be accessed via AJAX.', 'utf-8');
-        return;
-      }
-      const code = urlParsed.searchParams.get('code');
-      const error = urlParsed.searchParams.get('error');
-      const state = urlParsed.searchParams.get('state');
-      if (!state && !(code || error)) {
-        res.writeHead(400);
-        res.end('400 Bad Request', 'utf-8');
-        // Just ignore this request if it's not a callback
-        return;
-      }
-      if (state !== spotifyCsrfToken) {
-        res.writeHead(403);
-        res.end('CSRF token mismatch', 'utf-8');
-        if (spotifyPendingRes) {
-          spotifyPendingRes.writeHead(403, {'Content-Type':'application/json'});
-          spotifyPendingRes.end('{"error":"CSRF token mismatch"}');
-          spotifyPendingRes = null;
-          clearTimeout(spotifyTimeout);
-        }
-        return;
-      }
-      if (error) {
-        res.writeHead(500);
-        res.end('Spotify auth error: ' + error, 'utf-8');
-        if (spotifyPendingRes) {
-          spotifyPendingRes.writeHead(500, {'Content-Type':'application/json'});
-          spotifyPendingRes.end('{"error":"' + error + '"}');
-          spotifyPendingRes = null;
-          clearTimeout(spotifyTimeout);
-        }
-        return;
-      }
-      res.writeHead(200, {'Content-Type':'text/html'});
-      res.end('You can now close this tab.<script>window.close()</script>');
-
-      if (spotifyPendingRes) {
-        spotifyPendingRes.writeHead(200, {'Content-Type':'application/json'});
-        spotifyPendingRes.end(JSON.stringify({ code, verifier: spotifyCodeVerifier, clientId: spotifyClientId }));
-        spotifyPendingRes = null;
-        clearTimeout(spotifyTimeout);
-      }
+      spotifyCallback(req, res);
       break;
 
     // Connection test, returns the version of the plugin
@@ -798,7 +786,9 @@ function onRequest(req, res) {
       res.end('404 Not Found', 'utf-8');
   }
 }
+// #endregion
 
+// #region Web server helper functions
 function processPost(req, res, callback) {
   let body = '';
 
@@ -913,3 +903,63 @@ function cleanInputPanel() {
     }
   }
 }
+
+function spotifyCallback(req, res) {
+  if (req.headers.origin) {
+    res.writeHead(403);
+    res.end('This page is not meant to be accessed via AJAX.', 'utf-8');
+    return;
+  }
+  const urlParsed = new URL(req.url, `http://${req.headers.host}`);
+  const code = urlParsed.searchParams.get('code');
+  const error = urlParsed.searchParams.get('error');
+  const state = urlParsed.searchParams.get('state');
+  if (!state && !(code || error)) {
+    res.writeHead(400);
+    res.end('400 Bad Request', 'utf-8');
+    // Just ignore this request if it's not a callback
+    return;
+  }
+  if (!spotifyPendingRes) {
+    res.writeHead(500);
+    res.end('No pending auth request', 'utf-8');
+    return;
+  }
+  if (state !== spotifyCsrfToken) {
+    res.writeHead(403);
+    res.end('CSRF token mismatch', 'utf-8');
+    if (spotifyPendingRes) {
+      spotifyPendingRes.writeHead(403, {'Content-Type':'application/json'});
+      spotifyPendingRes.end('{"error":"CSRF token mismatch"}');
+      spotifyPendingRes = null;
+      clearTimeout(spotifyTimeout);
+    }
+    return;
+  }
+  if (error) {
+    res.writeHead(500);
+    res.end('Spotify auth error: ' + error, 'utf-8');
+    if (spotifyPendingRes) {
+      spotifyPendingRes.writeHead(500, {'Content-Type':'application/json'});
+      spotifyPendingRes.end('{"error":"' + error + '"}');
+      spotifyPendingRes = null;
+      clearTimeout(spotifyTimeout);
+    }
+    return;
+  }
+  res.writeHead(200, {'Content-Type':'text/html'});
+  res.end('You can now close this tab.<script>window.close()</script>');
+
+  if (spotifyPendingRes) {
+    spotifyPendingRes.writeHead(200, {'Content-Type':'application/json'});
+    spotifyPendingRes.end(JSON.stringify({
+      code,
+      verifier: spotifyCodeVerifier,
+      clientId: spotifyClientId,
+      redirectUri: args['spotify-callback-url'] || `http://localhost:${args.port || 3031}/spotify/callback`
+    }));
+    spotifyPendingRes = null;
+    clearTimeout(spotifyTimeout);
+  }
+}
+// #endregion

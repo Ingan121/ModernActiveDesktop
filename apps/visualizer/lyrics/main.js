@@ -282,7 +282,11 @@ async function init() {
             }
 
             const hash = await getSongHash(visStatus.lastMusic?.artist, visStatus.lastMusic?.title, visStatus.lastMusic?.albumTitle);
-            lastFetchInfo = { hash };
+            if (lastFetchInfo.spotifyResponse && !lastFetchInfo.hash) {
+                lastFetchInfo.hash = hash;
+            } else {
+                lastFetchInfo = { hash };
+            }
             const override = overrides[hash];
             if (override) {
                 if (override.lrc) {
@@ -410,6 +414,7 @@ async function init() {
                     return searchResult
                 }
                 // If the search result is unsynced, or it's not found, return the get result instead as that's more accurate
+                lastFetchInfo.searchFallback = 0;
                 return lastUnsyncedLyrics;
             } else {
                 // May work in weird cases like instrumental tracks getting returned above, test case: "GFRIEND - Glass Bead"
@@ -450,23 +455,22 @@ async function init() {
                 case 0:
                     params.artist_name = artist;
                     params.album_name = albumTitle;
-                    lastFetchInfo.searchFallback = 1;
                     break;
                 case 1:
                     // Album title matters here, unlike in the get api
                     // So try without album title too
                     params.artist_name = artist;
-                    lastFetchInfo.searchFallback = 2;
                     break;
                 case 2:
                     // In case the artist name comes in a format not in the DB
                     // Test case: "QUEEN BEE - メフィスト (メフィスト)" - only the Japanese name is in the DB
                     // So try without the artist name too - it's possible unlike the get api which mandates the artist name
                     // I believe title name + album title is more accurate than the inaccurate search fallback?
+                    // This also works with localized artist names. That's not a primarily supported case though. May not work if title is fully localized with no English part
                     params.album_name = albumTitle;
-                    lastFetchInfo.searchFallback = 3;
                     break;
             }
+            lastFetchInfo.searchFallback = mode + 1;
             url.search = new URLSearchParams(params).toString();
 
             abortController = new AbortController();
@@ -521,6 +525,7 @@ async function init() {
                         return searchResult
                     }
                     // If the search result is unsynced, return the accurate search result instead as that's more accurate
+                    lastFetchInfo.searchFallback = mode + 1;
                     return lastUnsyncedLyrics;
                 }
             }
@@ -609,6 +614,7 @@ async function init() {
                             return searchResult;
                         }
                     }
+                    lastFetchInfo.searchFallback = stripParens ? 5 : 4;
                     return lastUnsyncedLyrics;
                 }
             }
@@ -817,7 +823,9 @@ async function init() {
                 } else {
                     loadingIndicator.style.display = 'block';
                 }
-                if (localStorage.madesktopVisSpotifyEnabled && localStorage.madesktopVisSpotifyInfo && !simulating) {
+                if (simulating) {
+                    loadLyrics();
+                } else if (localStorage.madesktopVisSpotifyEnabled && localStorage.madesktopVisSpotifyInfo) {
                     const spotifyNowPlaying = await getSpotifyNowPlaying();
                     if (spotifyNowPlaying && spotifyNowPlaying.item) {
                         if (spotifyNowPlaying.item.album.artists.length > 0) {
@@ -835,6 +843,11 @@ async function init() {
                         loadLyrics();
                     } else if (visStatus.lastMusic) {
                         delete visStatus.lastSpotifyMusic;
+                        if (spotifyNowPlaying.errorCode) {
+                            lastFetchInfo = {
+                                spotifyResponse: spotifyNowPlaying.errorCode
+                            }
+                        }
                         loadLyrics();
                     } else if (!visStatus.mediaIntegrationAvailable) {
                         loadingIndicator.style.display = 'none';
@@ -981,23 +994,28 @@ async function init() {
         }
 
         // Debugging stuff
-        window.simulate = async function (artist, title, album) {
+        window.simulate = async function (artist, title, album, isSpotify, spotifyArtist, spotifyTitle, spotifyAlbum, spotifyDuration) {
             visStatus.lastMusic = {
                 title: title,
                 artist: artist,
                 albumTitle: album,
                 simulated: true
             };
-            visStatus.lastSpotifyMusic = {
-                title: title,
-                artist: artist,
-                albumTitle: album
-            };
+            if (isSpotify) {
+                visStatus.lastSpotifyMusic = {
+                    title: spotifyTitle || title,
+                    artist: spotifyArtist || artist,
+                    albumTitle: spotifyAlbum || album,
+                    duration: spotifyDuration || 1
+                };
+            } else {
+                delete visStatus.lastSpotifyMusic;
+            }
             processProperties(true, true);
             console.log('Hash:', await getSongHash(artist, title, album));
         }
 
-        async function showDebugInfo() {
+        function showDebugInfo() {
             let msg = '';
 
             const msgInLyricsView = lyricsView.querySelector('mad-string');
@@ -1073,8 +1091,17 @@ async function init() {
                 if (localStorage.madesktopVisSpotifyEnabled && localStorage.madesktopVisSpotifyInfo) {
                     const info = JSON.parse(localStorage.madesktopVisSpotifyInfo);
                     msg += '<br><br>';
-                    msg += 'Current Spotify track: ' + escapeHTML(visStatus.lastSpotifyMusic?.artist) + ' - ' + escapeHTML(visStatus.lastSpotifyMusic?.title) + ' (' + escapeHTML(visStatus.lastSpotifyMusic?.albumTitle) + ')<br>';
-                    msg += 'Spotify duration: ' + visStatus.lastSpotifyMusic?.duration + 's<br><br>';
+                    if (visStatus.lastSpotifyMusic) {
+                        msg += 'Current Spotify track: ' + escapeHTML(visStatus.lastSpotifyMusic?.artist) + ' - ' + escapeHTML(visStatus.lastSpotifyMusic?.title) + ' (' + escapeHTML(visStatus.lastSpotifyMusic?.albumTitle) + ')<br>';
+                        msg += 'Spotify duration: ' + visStatus.lastSpotifyMusic?.duration + 's<br><br>';
+                    } else {
+                        msg += 'Current Spotify track: None<br>';
+                        if (lastFetchInfo.spotifyResponse === -1) {
+                            msg += 'Spotify API last response: Error<br>';
+                        } else if (lastFetchInfo.spotifyResponse) {
+                            msg += 'Spotify API last response code: ' + lastFetchInfo.lastSpotifyResponse + '<br>';
+                        }
+                    }
                     msg += 'Spotify client ID: ' + info.clientId + '<br>';
                     const fetchedAtDate = new Date(info.fetchedAt * 1000).toLocaleString(window.madLang);
                     const expiryDate = new Date((info.fetchedAt + info.expiresIn - 60) * 1000).toLocaleString(window.madLang);
@@ -1086,7 +1113,14 @@ async function init() {
                     msg += '<br><br>This lyrics find was simulated. Click \'Setup listeners again\' to fetch the real lyrics.';
                 }
             }
-            const res = await madConfirm(msg, null, {
+            let innerText = '';
+            madConfirm(msg, function(res) {
+                if (res === true) {
+                    copyText(innerText);
+                } else if (res === null) {
+                    visDeskMover.windowElement.contentWindow.setupMediaListeners();
+                }
+            }, {
                 icon: 'info',
                 title: 'locid:VISLRC_TITLE',
                 btn1: 'locid:UI_COPY',
@@ -1095,10 +1129,12 @@ async function init() {
                 defaultBtn: 2,
                 cancelBtn: 2
             });
-            if (res === true) {
-                copyText(msg.replaceAll('<br>', '\n'));
-            } else if (res === null) {
-                visDeskMover.windowElement.contentWindow.setupMediaListeners();
+            innerText = top.document.getElementById('msgbox-msg').innerText;
+            innerText += '\n\n';
+            if (visStatus.lastSpotifyMusic) {
+                innerText += 'window.simulate(' + JSON.stringify([visStatus.lastMusic?.artist, visStatus.lastMusic?.title, visStatus.lastMusic?.albumTitle, true, visStatus.lastSpotifyMusic.artist, visStatus.lastSpotifyMusic.title, visStatus.lastSpotifyMusic.albumTitle, visStatus.lastSpotifyMusic.duration]).slice(1, -1) + ')';
+            } else {
+                innerText += 'window.simulate(' + JSON.stringify([visStatus.lastMusic?.artist, visStatus.lastMusic?.title, visStatus.lastMusic?.albumTitle]).slice(1, -1) + ')';
             }
         }
     } else {
@@ -1110,18 +1146,29 @@ async function getSpotifyNowPlaying() {
     if (!localStorage.madesktopVisSpotifyInfo) {
         return null;
     }
-    const info = await getSpotifyToken();
-    const response = await fetch('https://api.spotify.com/v1/me/player/currently-playing', {
-        method: 'GET',
-        headers: {
-            'Authorization': 'Bearer ' + info.accessToken
+    try {
+        const info = await getSpotifyToken();
+        const response = await fetch('https://api.spotify.com/v1/me/player/currently-playing', {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + info.accessToken
+            }
+        });
+        if (response.status === 200) {
+            const json = await response.json();
+            return json;
+        } else {
+            return {
+                item: null,
+                errorCode: response.status
+            };
         }
-    });
-    if (response.status === 200) {
-        const json = await response.json();
-        return json;
-    } else {
-        return null;
+    } catch (error) {
+        console.error(error);
+        return {
+            item: null,
+            errorCode: -1
+        }
     }
 }
 

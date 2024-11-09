@@ -124,6 +124,7 @@
     * System colors not being applied to window contents when the system color scheme is changed on startup
     * Textboxes not automatically scrolling when using the arrow keys with the system plugin input or the on-screen keyboard
     * Background right-click menu (browser only) not being clickable when context menu animations are disabled
+    * Fallback text input not working properly when the system plugin is enabled but it's not running
 * Refactored the codebase
     * Minimize the usage of global variables, and export only necessary functions
     * Split the main script into multiple files for better maintainability

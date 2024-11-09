@@ -1,4 +1,4 @@
-// window.simulate collection for debugging MADVis Lyrics
+// window.simulate collection for debugging and testing MADVis Lyrics
 /*
 window.simulate('GFRIEND', 'Glass Bead', 'Season of Glass');
 window.simulate('GFRIEND', 'Me Gustas Tu', 'Flower Bud');
@@ -70,7 +70,10 @@ simulate("YENA, 비비", "SMILEY")
 window.simulate("조유리", "Love Shhh...", "Op.22 Y-Waltz : in Major") // Accurate (no artist)
 window.simulate("투어스", "If I’m S, Can You Be My N?", "TWS 2nd Mini Album 'SUMMER BEAT!'") // Accurate (no artist)
 window.simulate("TWS", "If I’m S, Can You Be My N?", "TWS 2nd Mini Album 'SUMMER BEAT!'") // Unsynced in get, synced available in 'Accurate (no album)'
+window.simulate("투어스", "If I’m S, Can You Be My N?", "TWS 2nd Mini Album 'SUMMER BEAT!'", true, "TWS", "If I’m S, Can You Be My N?", "TWS 2nd Mini Album 'SUMMER BEAT!'", 169) // A lot of attempts
 window.simulate("Missy Elliott", "Let It Bump", "This Is Not A Test"); // Only unsynced exists
+window.simulate("2NE1", "Lollipop", "2NE1 1st Mini Album"); // Weird case that only the romanized version is synced
+window.simulate("GFRIEND", "칵테일 사랑", "투유프로젝트 - Sugar Man3 Episode.10") // The album title is being handled weirdly in both get (occationally) and accurate search
 -----END MY DEVTOOLS CONSOLE DUMP-----
 
 -----BEGIN COPILOT NONSENSE-----

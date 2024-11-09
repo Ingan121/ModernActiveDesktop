@@ -79,7 +79,7 @@ spotifyLoginBtn.addEventListener("click", async function () {
                     body: new URLSearchParams({
                         grant_type: 'authorization_code',
                         code: result.code,
-                        redirect_uri: 'http://localhost:3031/spotify/callback',
+                        redirect_uri: result.redirectUri,
                         code_verifier: result.verifier,
                         client_id: result.clientId
                     })
@@ -118,7 +118,9 @@ spotifyLoginBtn.addEventListener("click", async function () {
                 madAlert(madGetString("VISLRCCONF_SPOTIFY_LOGIN_FAIL"), null, "error");
             }
         } catch (error) {
-            if (error.message === "Failed to fetch") {
+            if (error.name === "AbortError") {
+                // New login attempt; ignore the previous one
+            } else if (error.message === "Failed to fetch") {
                 madAlert(madGetString("UI_MSG_NO_SYSPLUG"), null, "error");
             } else {
                 madAlert(madGetString("VISLRCCONF_SPOTIFY_LOGIN_FAIL") + "<br>" + error.message, null, "error");

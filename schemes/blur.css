@@ -116,3 +116,8 @@ body:has(.jspaint) {
 #madCalc button {
     color: white !important;
 }
+
+.disabled,
+[data-disabled] {
+    color: #606060 !important;
+}
