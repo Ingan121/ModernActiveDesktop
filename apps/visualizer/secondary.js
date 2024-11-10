@@ -419,6 +419,7 @@ colorMenuItems[0].addEventListener('click', () => { // Default button
 
 colorMenuItems[1].addEventListener('click', () => { // Follow Color Scheme button
     madDeskMover.config.visUseSchemeColors = true;
+    delete madDeskMover.config.visBgColor;
     if (!madDeskMover.config.visFollowAlbumArt || !visStatus.lastAlbumArt) {
         document.body.style.backgroundColor = 'var(--button-face)';
     }
