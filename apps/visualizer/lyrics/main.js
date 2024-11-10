@@ -30,7 +30,7 @@ for (let i = 0; i < lrcMenuItems.length - 1; i++) {
     });
 }
 
-lrcMenuItems[7].addEventListener('click', function () { // Close button
+lrcMenuItems[8].addEventListener('click', function () { // Close button
     madCloseWindow();
 });
 
@@ -196,7 +196,14 @@ async function init() {
             }, null, "window");
         });
 
-        lrcMenuItems[6].addEventListener('click', function () { // Debug Info button
+        lrcMenuItems[6].addEventListener('click', function () { // Publish Lyrics button
+            if (inited === -1) {
+                return;
+            }
+            publish();
+        });
+
+        lrcMenuItems[7].addEventListener('click', function () { // Debug Info button
             if (inited === -1) {
                 return;
             }
@@ -321,7 +328,7 @@ async function init() {
                     artist_name: artist,
                     track_name: title,
                     album_name: albumTitle, // This doesn't seem to cause the find to fail even if the album name is completely wrong (even including 'undefined')
-                    duration: duration // However this does, so try without duration too
+                    duration: duration // However this does, so try without duration too. Also some songs have inaccurate durations (e.g. zero) in the DB
                 };
                 url.search = new URLSearchParams(params).toString();
                 urlsToTry.push(url.toString());
@@ -983,6 +990,115 @@ async function init() {
             return hashB64;
         }
 
+        async function publish() {
+            let artist = visStatus.lastSpotifyMusic?.artist || visStatus.lastMusic?.artist || '';
+            let title = visStatus.lastSpotifyMusic?.title || visStatus.lastMusic?.title || '';
+            let album = visStatus.lastSpotifyMusic?.albumTitle || visStatus.lastMusic?.albumTitle || '';
+            let duration = parseInt(visStatus.lastSpotifyMusic?.duration) || visStatus.timeline?.duration || 1;
+            const lyrics = lastLyrics;
+            if (!lyrics || !lyrics.plainLyrics) {
+                madAlert(madGetString("VISLRC_PUBLISH_NO_LYRICS"), null, 'warning', { title: 'locid:VISLRC_TITLE' });
+                return;
+            }
+            if (lyrics?.id) {
+                madAlert(madGetString("VISLRC_PUBLISH_NOT_LOCAL"), null, 'warning', { title: 'locid:VISLRC_TITLE' });
+                return;
+            }
+
+            artist = await madPrompt(madGetString("VISLRC_PUBLISH_REVIEW_ARTIST"), null, artist, artist);
+            if (artist === null) {
+                return;
+            }
+            title = await madPrompt(madGetString("VISLRC_PUBLISH_REVIEW_TITLE"), null, title, title);
+            if (title === null) {
+                return;
+            }
+            album = await madPrompt(madGetString("VISLRC_PUBLISH_REVIEW_ALBUM"), null, album, album);
+            if (album === null) {
+                return;
+            }
+            duration = await madPrompt(madGetString("VISLRC_PUBLISH_REVIEW_DURATION"), null, duration, duration);
+            if (duration === null) {
+                return;
+            }
+            duration = parseInt(duration);
+            if (isNaN(duration)) {
+                madAlert(madGetString("VISLRC_PUBLISH_DURATION_NAN"), null, 'error', { title: 'locid:VISLRC_TITLE' });
+                return;
+            }
+            if (artist === '' || title === '' || album === '') {
+                madAlert(madGetString("VISLRC_PUBLISH_FILL_ALL"), null, 'error', { title: 'locid:VISLRC_TITLE' });
+                return;
+            }
+
+            const data = {
+                trackName: title,
+                artistName: artist,
+                albumName: album,
+                duration: duration,
+                plainLyrics: lyrics.plainLyrics,
+                syncedLyrics: lyrics.syncedLyrics || null
+            };
+            console.log(data);
+
+            const challenge = await fetch('https://lrclib.net/api/request-challenge', {
+                method: 'POST',
+                headers: headers
+            })
+            const json = await challenge.json();
+            const prefix = json.prefix;
+            const targetHex = json.target;
+            const targetBytes = new Uint8Array(targetHex.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+
+            madAlert(madGetString("VISLRC_PUBLISH_NONCE_WAIT"), null, 'info', { title: 'locid:VISLRC_TITLE' });
+            const nonce = await getNonce(prefix, targetBytes);
+            console.log('Nonce:', nonce);
+            if (nonce === -1) {
+                madAlert(madGetString("VISLRC_PUBLISH_NONCE_TIMEOUT"), null, 'error', { title: 'locid:VISLRC_TITLE' });
+                return;
+            }
+
+            const msg = madGetString("VISLRC_PUBLISH_FINAL_CONFIRM", artist, title, album, duration, lyrics.plainLyrics.split('\n').slice(0, 10).join('\n'));
+            if (!await madConfirm(msg.replaceAll('\n', '<br>'), null, {
+                icon: 'question',
+                title: 'locid:VISLRC_TITLE'
+            })) {
+                return;
+            }
+
+            const publishHeaders = new Headers();
+            publishHeaders.append('Content-Type', 'application/json');
+            publishHeaders.append('X-Publish-Token', `${prefix}:${nonce}`);
+            publishHeaders.append('Lrclib-Client', headers['Lrclib-Client']);
+
+            const response = await fetch('https://lrclib.net/api/publish', {
+                method: 'POST',
+                headers: publishHeaders,
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                madAlert('Lyrics published successfully', null, 'success');
+            } else {
+                const result = await response.json();
+                console.log(result);
+                madAlert('Failed to publish lyrics<br>' + result.message, null, 'error');
+            }
+
+            async function getNonce(prefix, targetBytes) {
+                return new Promise((resolve, reject) => {
+                    const worker = new Worker('nonce.js');
+                    worker.postMessage({ prefix, targetBytes });
+                    worker.onmessage = (e) => {
+                        resolve(e.data);
+                    };
+                    worker.onerror = (e) => {
+                        reject(e);
+                    };
+                });
+            }
+        }
+
         async function configChanged() {
             processProperties(true);
             lyricsView.style.font = localStorage.madesktopVisLyricsFont || '';
@@ -1081,9 +1197,12 @@ async function init() {
                 if (lastSyncedLyricsParsed) {
                     msg += 'Loaded lyrics are synced';
                 } else if (lastLyrics.synced) {
-                    msg += 'Loaded lyrics are not synced, synced lyrics available';
+                    msg += 'Loaded lyrics are not synced, synced lyrics are available';
                 } else {
-                    msg += 'Loaded lyrics are not synced, no synced lyrics available';
+                    msg += 'Loaded lyrics are not synced, synced lyrics are not available';
+                }
+                if (preferUnsynced) {
+                    msg += ', unsynced lyrics are preferred';
                 }
 
                 if (localStorage.madesktopVisSpotifyEnabled && localStorage.madesktopVisSpotifyInfo) {
@@ -1097,7 +1216,7 @@ async function init() {
                         if (lastFetchInfo.spotifyResponse === -1) {
                             msg += 'Spotify API last response: Error<br>';
                         } else if (lastFetchInfo.spotifyResponse) {
-                            msg += 'Spotify API last response code: ' + lastFetchInfo.lastSpotifyResponse + '<br>';
+                            msg += 'Spotify API last response code: ' + lastFetchInfo.spotifyResponse + '<br>';
                         }
                     }
                     msg += 'Spotify client ID: ' + info.clientId + '<br>';

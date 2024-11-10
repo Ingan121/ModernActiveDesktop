@@ -14,9 +14,11 @@
     * Blur (beta)
 * Visualizer improvements
     * Added a lyrics viewer! Click View -> Lyrics to open it
+    * Added a secondary visualizer that can be opened multiple times. This doesn't support visualization, but it can be used to display other media information. Click View -> Secondary Visualizer to open it
     * Several options are now accessible in the menu bar
     * Added an option to change the size of the album art
     * Added an option to change how the window title is displayed
+    * Added an option to estimate the current position of the song
     * Support displaying the visualization as a background
     * Added an option to ignore the wallpaper margins in the fullscreen or background mode
     * Will use the accent color as a bar color in 'Follow color scheme' mode if the current theme supports accent colors (Aero and Blur)

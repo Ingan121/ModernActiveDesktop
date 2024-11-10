@@ -51,7 +51,8 @@ canvas {
     z-index: 2;
 }
 
-#pausedAlert {
+#pausedAlert,
+#alertArea {
     position: absolute;
     width: 100%;
     height: 100%;
@@ -59,6 +60,11 @@ canvas {
     color: white;
     display: none;
     z-index: 3;
+}
+
+#pausedAlert mad-string,
+#alertArea mad-string {
+    white-space: initial;
 }
 
 #extraAlert {

@@ -458,6 +458,7 @@
     "VISUALIZER_VIEW_MENUITEM_ESTIMATE_TIMELINE": "재생 시간 추정(&T)",
     "VISUALIZER_VIEW_MENUITEM_SHOW_AS_BG": "배경으로 표시(&B)",
     "VISUALIZER_VIEW_MENUITEM_LYRICS": "가사(&L)",
+    "VISUALIZER_VIEW_MENUITEM_2ND": "부 시각화(&V)",
 
     "VISUALIZER_OPT_MENUITEM_COLORS": "색상(&C)",
     "VISUALIZER_OPT_MENUITEM_TITLE": "창 제목(&T)",
@@ -517,10 +518,10 @@
     "VISCONF_FS_MARGIN": "전체 화면 시 여백 적용(&M)",
 
     "VISCONF_TITLE_OPT_TITLE": "창 제목",
-    "VISCONF_TITLE_OPT_TITLE_THEN_ARTIST": "제목 - 아티스트 (기본값)",
+    "VISCONF_TITLE_OPT_TITLE_THEN_ARTIST": "제목 - 아티스트",
     "VISCONF_TITLE_OPT_ARTIST_THEN_TITLE": "아티스트 - 제목",
     "VISCONF_TITLE_OPT_TITLE_ONLY": "제목",
-    "VISCONF_TITLE_OPT_STATIC": "정적 (\"시각화\")",
+    "VISCONF_TITLE_OPT_STATIC": "정적",
 
     "VISCONF_CHAN_SEP_TITLE": "채널 분리",
     "VISCONF_CHAN_SEP_DISABLE": "처리 안함 (3.2 이전 작동 방식)",
@@ -535,6 +536,7 @@
     "VISLRC_LRC_MENUITEM_AUTO_SCROLL": "자동 스크롤(&A)",
     "VISLRC_LRC_MENUITEM_ADJUST_SYNC": "싱크 조절(&J)",
     "VISLRC_LRC_MENUITEM_VISLRCCONF": "옵션(&O)",
+    "VISLRC_LRC_MENUITEM_PUBLISH": "가사 게시(&P)",
     "VISLRC_LRC_MENUITEM_DEBUG_INFO": "디버그 정보(&D)",
     "VISLRC_SYNC_MENUITEM_CURRENT": "현재 값:",
     "VISLRC_SYNC_MENUITEM_RESET": "초기화",
@@ -547,6 +549,20 @@
     "VISLRC_STATUS_NO_MADVIS": "%n 시각화가 실행 중이 아닙니다. 시각화를 실행해주세요.",
 
     "VISLRC_CONFIRM_SAVE_LYRICS": "이 노래에 대해 가사를 기억하시겠습니까?<br><br>가사 -> 가사 불러오기를 클릭하여 저장된 가사를 제거할 수 있습니다.",
+
+    "VISLRC_PUBLISH_NO_LYRICS": "가사가 없습니다.",
+    "VISLRC_PUBLISH_NOT_LOCAL": "로컬 파일에서 가져온 가사만 게시할 수 있습니다.",
+    "VISLRC_PUBLISH_NONCE_WAIT": "%n이 가사를 게시하는 데 필요한 nonce를 계산하는 중입니다. 잠시 기다려주세요. 최대 5분이 걸릴 수 있습니다.",
+    "VISLRC_PUBLISH_NONCE_TIMEOUT": "Nonce 계산이 너무 오래 걸렸습니다. 다시 시도해주세요.",
+    "VISLRC_PUBLISH_REVIEW_ARTIST": "아티스트 이름을 검토하세요.",
+    "VISLRC_PUBLISH_REVIEW_TITLE": "노래 제목을 검토하세요.",
+    "VISLRC_PUBLISH_REVIEW_ALBUM": "앨범 제목을 검토하세요.",
+    "VISLRC_PUBLISH_REVIEW_DURATION": "노래 길이를 검토하세요.",
+    "VISLRC_PUBLISH_DURATION_NAN": "길이는 숫자여야 합니다.",
+    "VISLRC_PUBLISH_FILL_ALL": "모든 항목을 작성해야 합니다.",
+    "VISLRC_PUBLISH_FINAL_CONFIRM": "LRCLIB에 가사를 게시하기 전에 다음 정보를 검토하세요:\n\n아티스트: %1s\n제목: %2s\n앨범: %3s\n길이: %4s\n\n가사:\n%5s\n\n확인을 클릭하면 LRCLIB에 가사를 게시하는 데 동의합니다.",
+    "VISLRC_PUBLISH_SUCCESS": "가사가 성공적으로 게시되었습니다!",
+    "VISLRC_PUBLISH_FAIL": "가사 게시에 실패했습니다.",
 
     "VISLRCCONF_TITLE": "가사 등록 정보",
     "VISLRCCONF_SPOTIFY_TITLE": "Spotify 통합",
@@ -582,6 +598,10 @@
     "VISLRCFIND_OVERRIDE_INFO": "가사 -> 가사 불러오기를 클릭하여 이 설정을 제거하세요",
     "VISLRCFIND_ADVANCED_EXPAND": "고급(&D) >>",
     "VISLRCFIND_ADVANCED_COLLAPSE": "고급(&D) <<",
+
+    "VIS2ND_TITLE": "미디어",
+    "VIS2ND_NO_PRIMARY": "주 시각화가 실행 중이 아닙니다. 시각화를 실행해주세요.",
+    "VIS2ND_VIEW_MENUITEM_CLOSE": "부 시각화 닫기(&C)",
 
 
     "CALC_TITLE": "계산기",

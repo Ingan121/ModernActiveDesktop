@@ -97,7 +97,6 @@ const mediaThumbnailEvent = new CustomEvent('mediaThumbnail');
 const isWin10 = navigator.userAgent.includes('Windows NT 10.0');
 const NO_MEDINT_MSG = isWin10 ? "VISUALIZER_NO_MEDINT_MSG" : "VISUALIZER_MEDINT_UNSUPPORTED_MSG";
 
-let mouseOverMenu = false;
 let schemeBarColor = null;
 let schemeTopColor = null;
 
@@ -380,7 +379,6 @@ viewMenuItems[3].addEventListener('click', () => { // Playback Status button
         return;
     }
 
-    const currentWidth = parseInt(madDeskMover.config.width);
     const currentHeight = parseInt(madDeskMover.config.height);
     if (localStorage.madesktopVisStatusShown) {
         delete localStorage.madesktopVisStatusShown;
@@ -400,7 +398,7 @@ viewMenuItems[3].addEventListener('click', () => { // Playback Status button
         if (madDeskMover.config.unscaled) {
             statusAreaHeight /= parent.scaleFactor;
         }
-        madResizeTo(currentWidth, currentHeight - statusAreaHeight);
+        madResizeTo(undefined, currentHeight - statusAreaHeight);
 
         if (localStorage.madesktopVisMediaControls) {
             delete localStorage.madesktopVisMediaControls;
@@ -427,7 +425,7 @@ viewMenuItems[3].addEventListener('click', () => { // Playback Status button
         if (madDeskMover.config.unscaled) {
             statusAreaHeight /= parent.scaleFactor;
         }
-        madResizeTo(currentWidth, currentHeight + statusAreaHeight);
+        madResizeTo(undefined, currentHeight + statusAreaHeight);
     }
 });
 
@@ -491,6 +489,20 @@ viewMenuItems[7].addEventListener('click', () => { // Lyrics button
         width: '400px', height: '502px'
     }
     madOpenWindow('apps/visualizer/lyrics/index.html', false, options);
+});
+
+viewMenuItems[8].addEventListener('click', () => { // Secondary Visualizer button
+    if (!visStatus.mediaIntegrationAvailable) {
+        madAlert(madGetString(NO_MEDINT_MSG), null, isWin10 ? 'info' : 'error', { title: 'locid:VISUALIZER_TITLE' });
+        return;
+    }
+
+    madOpenWindow("apps/visualizer/secondary.html", false, {
+        width: "600px",
+        height: "400px",
+        top: "200px",
+        left: "500px"
+    });
 });
 
 optMenuItems[1].addEventListener('click', () => { // Window Title button
@@ -694,6 +706,7 @@ function wallpaperMediaStatusListener(event) {
         viewMenuItems[3].classList.add('disabled');
         viewMenuItems[4].classList.add('disabled');
         viewMenuItems[5].classList.add('disabled');
+        viewMenuItems[8].classList.add('disabled');
 
         if (localStorage.madesktopVisOnlyAlbumArt) {
             visMenuItems[1].click();
@@ -712,6 +725,7 @@ function wallpaperMediaStatusListener(event) {
             viewMenuItems[4].classList.remove('disabled');
         }
         viewMenuItems[5].classList.remove('disabled');
+        viewMenuItems[8].classList.remove('disabled');
         visMenuItems[0].classList.remove('disabled');
         optMenuItems[1].classList.remove('disabled');
         if (!localStorage.madesktopVisOnlyAlbumArt) {
@@ -858,6 +872,7 @@ function wallpaperMediaTimelineListener(event) {
                 if (res > 1000) {
                     timelineGuesser();
                 }
+                log({ diff, diff2, res }, 'debug', 'MADVis');
                 secondDifferences.push(res % 1000);
             }
             lastTimelineEventTime = performance.now();
@@ -899,7 +914,7 @@ function wallpaperMediaTimelineListener(event) {
                     timelineGuesser();
                 }
             }, delay);
-            log([avg, secondDifferences[secondDifferences.length - 1], delay], 'debug', 'MADVis');
+            log({ avg, lastDiff: secondDifferences[secondDifferences.length - 1], delay }, 'debug', 'MADVis');
         }
     }
 }

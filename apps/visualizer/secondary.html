@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title data-locid="VISUALIZER_TITLE" data-no-update-on-loc-change="true">Visualization</title>
+    <title data-locid="VIS2ND_TITLE" data-no-update-on-loc-change="true">Media</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="../../css/98.css">
@@ -14,30 +14,15 @@
 </head>
 <body id="madVis">
     <div id="menuBar" class="menu">
-        <div id="visMenuBtn" class="menuBtn"><span><mad-string data-locid="VISUALIZER_MENU_VIS">Vi<u>s</u>ualizer</mad-string></span></div>
         <div id="viewMenuBtn" class="menuBtn"><span><mad-string data-locid="UI_MENU_VIEW"><u>V</u>iew</mad-string></span></div>
         <div id="optMenuBtn" class="menuBtn"><span><mad-string data-locid="VISUALIZER_MENU_OPT"><u>O</u>ptions</mad-string></span></div>
         <div id="helpMenuBtn" class="menuBtn"><span><mad-string data-locid="UI_MENU_HELP"><u>H</u>elp</mad-string></span></div>
-        <div id="idleIndicator" class="menuBtn"><mad-string data-locid="VISUALIZER_IDLE">Idle</mad-string></div>
     </div>
     <div id="mainArea">
-        <div id="pausedAlert">
-            <mad-string data-locid="VISUALIZER_PAUSED_ALERT">Update has been paused. Click here to resume.</mad-string>
-            <span id="extraAlert">
-                <br><br>
-                <mad-string data-locid="VISUALIZER_EXTRA_ALERT">
-                    Having problems? Please try the following:
-                    <ul>
-                        <li>1. Make sure 'Audio recording' is enabled in the Wallpaper Engine properties panel.</li>
-                        <li>2. Try <a href="javascript:top.location.reload()">reloading ModernActiveDesktop</a>.</li>
-                        <li>3. Try restarting Wallpaper Engine.</li>
-                    </ul>
-                </mad-string>
-            </span>
+        <div id="alertArea">
+            <mad-string id="alertText" data-locid="VIS2ND_NO_PRIMARY">Primary visualizer is not running. Please open the Visualizer.</mad-string>
         </div>
         <img id="albumArt" src="">
-        <canvas id="bar"></canvas>
-        <canvas id="top"></canvas>
     </div>
     <div id="bottomArea">
         <div id="statusArea">
@@ -89,14 +74,6 @@
         </div>
     </div>
 
-    <div id="visMenuBg" class="contextMenuBg window" tabindex="-1">
-        <div id="visMenu" class="contextMenu window-body">
-            <div class="contextMenuItem"><p><mad-string data-locid="VISUALIZER_VIS_MENUITEM_ALBUM_ART"><u>A</u>lbum Art</mad-string></p></div>
-            <div class="contextMenuItem activeStyle"><p><mad-string data-locid="VISUALIZER_VIS_MENUITEM_WMP_BARS">WMP <u>B</u>ars</mad-string></p></div>
-            <hr>
-            <div class="contextMenuItem"><p><mad-string data-locid="UI_EXIT">E<u>x</u>it</mad-string></p></div>
-        </div>
-    </div>
     <div id="viewMenuBg" class="contextMenuBg window" tabindex="-1">
         <div id="viewMenu" class="contextMenu window-body">
             <div class="contextMenuItem"><p><mad-string data-locid="VISUALIZER_VIEW_MENUITEM_AUTOHIDE_MENU_BAR"><u>A</u>utohide Menu Bar</mad-string></p></div>
@@ -104,24 +81,19 @@
             <div class="contextMenuItem"><p><mad-string data-locid="VISUALIZER_VIEW_MENUITEM_INFORMATION"><u>I</u>nformation</mad-string></p></div>
             <div class="contextMenuItem"><p><mad-string data-locid="VISUALIZER_VIEW_MENUITEM_PLAYBACK_STATUS">Playback <u>S</u>tatus</mad-string></p></div>
             <div class="contextMenuItem disabled"><p><mad-string data-locid="VISUALIZER_VIEW_MENUITEM_ENABLE_MEDIA_CONTROLS"><u>E</u>nable Media Controls</mad-string></p></div>
-            <div class="contextMenuItem" data-submenu="estimate"><p><mad-string data-locid="VISUALIZER_VIEW_MENUITEM_ESTIMATE_TIMELINE">Estimate <u>T</u>imeline</mad-string></p><p class="submenuMark">⏵</p></div>
             <div class="contextMenuItem"><p><mad-string data-locid="VISUALIZER_VIEW_MENUITEM_SHOW_AS_BG">Show as <u>B</u>ackground</mad-string></p></div>
             <hr>
-            <div class="contextMenuItem"><p><mad-string data-locid="VISUALIZER_VIEW_MENUITEM_LYRICS"><u>L</u>yrics</mad-string></p></div>
-            <div class="contextMenuItem"><p><mad-string data-locid="VISUALIZER_VIEW_MENUITEM_2ND">Secondary <u>V</u>isualizer</mad-string></p></div>
+            <div class="contextMenuItem"><p><mad-string data-locid="VIS2ND_VIEW_MENUITEM_CLOSE"><u>C</u>lose Secondary Visualizer</mad-string></p></div>
         </div>
     </div>
     <div id="optMenuBg" class="contextMenuBg window" tabindex="-1">
         <div id="optMenu" class="contextMenu window-body">
             <div class="contextMenuItem" data-submenu="color"><p><mad-string data-locid="VISUALIZER_OPT_MENUITEM_COLORS"><u>C</u>olors</mad-string></p><p class="submenuMark">⏵</p></div>
             <div class="contextMenuItem" data-submenu="titleOpt"><p><mad-string data-locid="VISUALIZER_OPT_MENUITEM_TITLE">Window <u>T</u>itle</mad-string></p><p class="submenuMark">⏵</p></div>
-            <div class="contextMenuItem" data-submenu="chanSep"><p><mad-string data-locid="VISUALIZER_OPT_MENUITEM_CHAN_SEP">Channel <u>S</u>eparation</mad-string></p><p class="submenuMark">⏵</p></div>
-            <hr>
-            <div class="contextMenuItem"><p><mad-string data-locid="VISUALIZER_OPT_MENUITEM_ALBUM_ART_SHOW">Show <u>A</u>lbum Art</mad-string></p></div>
-            <div class="contextMenuItem"><p><mad-string data-locid="VISUALIZER_OPT_MENUITEM_ALBUM_ART_DIM"><u>D</u>im Album Art</mad-string></p></div>
             <div class="contextMenuItem" data-submenu="albumArtSize"><p><mad-string data-locid="VISUALIZER_OPT_MENUITEM_ALBUM_ART_SIZE">Album Art Si<u>z</u>e</mad-string></p><p class="submenuMark">⏵</p></div>
             <hr>
-            <div class="contextMenuItem"><p><mad-string data-locid="VISUALIZER_OPT_MENUITEM_VISCONF">Advanced <u>O</u>ptions</mad-string></p></div>
+            <div class="contextMenuItem checkedItem"><p><mad-string data-locid="VISCONF_SHOW_CLIENT_EDGE">Show <u>b</u>orders around the visualization area</mad-string></p></div>
+            <div class="contextMenuItem checkedItem"><p><mad-string data-locid="VISCONF_FS_MARGIN">Apply <u>m</u>argins in fullscreen mode</mad-string></p></div>
         </div>
     </div>
     <div id="helpMenuBg" class="contextMenuBg window" tabindex="-1">
@@ -130,15 +102,6 @@
         </div>
     </div>
 
-    <div id="estimateMenuBg" class="contextMenuBg window" tabindex="-1" data-submenu-of="view">
-        <div id="estimateMenu" class="contextMenu window-body">
-            <div class="contextMenuItem"><p><mad-string data-locid="VISUALIZER_ESTIMATE_MENUITEM_DISABLED"><u>D</u>isabled</mad-string></p></div>
-            <div class="contextMenuItem"><p><mad-string data-locid="VISUALIZER_ESTIMATE_MENUITEM_ENABLED"><u>E</u>nabled</mad-string></p></div>
-            <div class="contextMenuItem"><p><mad-string data-locid="VISUALIZER_ESTIMATE_MENUITEM_IGNORE_ORIGINAL"><u>I</u>gnore Original Timeline</mad-string></p></div>
-            <hr>
-            <div class="contextMenuItem"><p><mad-string data-locid="VISUALIZER_ESTIMATE_MENUITEM_HELP"><u>H</u>elp</mad-string></p></div>
-        </div>
-    </div>
     <div id="colorMenuBg" class="contextMenuBg window" tabindex="-1" data-submenu-of="opt">
         <div id="colorMenu" class="contextMenu window-body">
             <div class="contextMenuItem"><p><mad-string data-locid="VISCONF_COLOR_DEFAULT"><u>D</u>efault</mad-string></p></div>
@@ -168,19 +131,11 @@
             <div class="contextMenuItem" data-value="static"><p><mad-string data-locid="VISCONF_TITLE_OPT_STATIC">Static</mad-string></p></div>
         </div>
     </div>
-    <div id="chanSepMenuBg" class="contextMenuBg window" tabindex="-1" data-submenu-of="opt">
-        <div id="chanSepMenu" class="contextMenu window-body">
-            <div class="contextMenuItem"><p><mad-string data-locid="VISCONF_CHAN_SEP_DISABLE">No processing (pre-3.2 behavior)</mad-string></p></div>
-            <div class="contextMenuItem"><p><mad-string data-locid="VISCONF_CHAN_SEP_REVERSE">Reverse the right channel (default)</mad-string></p></div>
-            <div class="contextMenuItem"><p><mad-string data-locid="VISCONF_CHAN_SEP_COMBINE">Combine left and right channels</mad-string></p></div>
-        </div>
-    </div>
     <script src="../../js/functions.js"></script>
     <script src="../../js/MadStrings.js"></script>
     <script src="../../js/libmad.js"></script>
     <script src="../../js/MadMenu.js"></script>
     <script src="../../js/MadSysPlug.js"></script>
-    <script src="main.js"></script>
-    <script src="wmpvis.js"></script>
+    <script src="secondary.js"></script>
 </body>
 </html>
