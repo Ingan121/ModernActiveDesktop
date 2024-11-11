@@ -239,6 +239,8 @@ if (!gotTheLock) {
         inputPanel.center();
       }
     });
+
+    console.log('ModernActiveDesktop System Plugin is ready');
   })
 }
 
@@ -501,6 +503,7 @@ if (args['spotify-aux-port']) {
   http.createServer(spotifyCallback).listen(args['spotify-aux-port'], '127.0.0.1');
   console.log('Auxiliary Spotify callback server listening on port', args['spotify-aux-port']);
 }
+console.log('');
 
 function onRequest(req, res) {
   console.log('serve: ' + req.url);

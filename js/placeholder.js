@@ -36,16 +36,23 @@ function openApp(app) {
             break;
         case "vis":
             if (parent.visDeskMover) {
-                madAlert(madGetString("VISUALIZER_MULTI_INSTANCE_MSG"), null, "warning");
-                return;
+                if (parent.visDeskMover.visStatus.mediaIntegrationAvailable) {
+                    madResizeTo(600, 400);
+                    madMoveTo(500, 200);
+                    madChangeWndStyle("wnd");
+                    madLocReplace("apps/visualizer/secondary.html");
+                } else {
+                    madAlert(madGetString("PH_VIS2ND_NO_MEDINT"), null, "warning");
+                }
             } else if (localStorage.madesktopVisUnavailable) {
                 madAlert(madGetString("VISUALIZER_NO_AUDIO_MSG"), null, "error");
                 return;
+            } else {
+                madResizeTo(725, 380);
+                madMoveTo(getRelativeWindowX(26.04) + leftMargin, getRelativeWindowY(18.52) + topMargin);
+                madChangeWndStyle("wnd");
+                madLocReplace("apps/visualizer/index.html");
             }
-            madResizeTo(725, 380);
-            madMoveTo(getRelativeWindowX(26.04) + leftMargin, getRelativeWindowY(18.52) + topMargin);
-            madChangeWndStyle("wnd");
-            madLocReplace("apps/visualizer/index.html");
             break;
         case "cv":
             madResizeTo(1024, 768);

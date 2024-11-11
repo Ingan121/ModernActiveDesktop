@@ -66,6 +66,7 @@ const helpMenuItems = document.querySelectorAll('#helpMenu .contextMenuItem');
 const colorMenuItems = document.querySelectorAll('#colorMenu .contextMenuItem');
 const albumArtSizeMenuItems = document.querySelectorAll('#albumArtSizeMenu .contextMenuItem');
 const titleOptMenuItems = document.querySelectorAll('#titleOptMenu .contextMenuItem');
+const miscMenuItems = document.querySelectorAll('#miscMenu .contextMenuItem');
 
 const isWin10 = navigator.userAgent.includes('Windows NT 10.0');
 
@@ -124,7 +125,7 @@ window.addEventListener("message", (event) => {
 if (madDeskMover.config.visMenuAutohide) {
     viewMenuItems[0].classList.add('checkedItem');
     mainArea.style.marginTop = '0';
-    menuBar.style.opacity = '0';
+    menuBar.dataset.autohide = true;
 }
 
 if (madDeskMover.config.visFullscreen) {
@@ -172,13 +173,13 @@ if (localStorage.sysplugIntegration) {
 }
 
 if (madDeskMover.config.visNoClientEdge) {
-    optMenuItems[3].classList.remove('checkedItem');
+    miscMenuItems[0].classList.remove('checkedItem');
     mainArea.style.boxShadow = 'none';
     mainArea.style.setProperty('--main-area-margin', '0px');
 }
 
 if (madDeskMover.config.visNoFsMargin) {
-    optMenuItems[4].classList.remove('checkedItem');
+    miscMenuItems[1].classList.remove('checkedItem');
     document.body.dataset.noFsMargin = true;
 }
 
@@ -207,19 +208,19 @@ if (madDeskMover.config.visTitleMode) {
 // #endregion
 
 // #region Menu bar
-madDeskMover.menu = new MadMenu(menuBar, ['view', 'opt', 'help'], ['color', 'albumArtSize', 'titleOpt']);
+madDeskMover.menu = new MadMenu(menuBar, ['view', 'opt', 'help'], ['color', 'albumArtSize', 'titleOpt', 'misc']);
 
 viewMenuItems[0].addEventListener('click', () => { // Autohide Menu Bar button
     if (madDeskMover.config.visMenuAutohide) {
         delete madDeskMover.config.visMenuAutohide;
         viewMenuItems[0].classList.remove('checkedItem');
         mainArea.style.marginTop = '';
-        menuBar.style.opacity = '';
+        delete menuBar.dataset.autohide;
     } else {
         madDeskMover.config.visMenuAutohide = true;
         viewMenuItems[0].classList.add('checkedItem');
         mainArea.style.marginTop = '0';
-        menuBar.style.opacity = '0';
+        menuBar.dataset.autohide = true;
     }
 });
 
@@ -377,28 +378,28 @@ viewMenuItems[6].addEventListener('click', () => { // Exit button
     madCloseWindow();
 });
 
-optMenuItems[3].addEventListener('click', () => { // Show borders around the visualization area button
+miscMenuItems[0].addEventListener('click', () => { // Show borders around the visualization area button
     if (madDeskMover.config.visNoClientEdge) {
         delete madDeskMover.config.visNoClientEdge;
-        optMenuItems[3].classList.add('checkedItem');
+        miscMenuItems[0].classList.add('checkedItem');
         mainArea.style.boxShadow = '';
         mainArea.style.setProperty('--main-area-margin', '2px');
     } else {
         madDeskMover.config.visNoClientEdge = true;
-        optMenuItems[3].classList.remove('checkedItem');
+        miscMenuItems[0].classList.remove('checkedItem');
         mainArea.style.boxShadow = 'none';
         mainArea.style.setProperty('--main-area-margin', '0px');
     }
 });
 
-optMenuItems[4].addEventListener('click', () => { // Apply margins in fullscreen mode button
+miscMenuItems[1].addEventListener('click', () => { // Apply margins in fullscreen mode button
     if (madDeskMover.config.visNoFsMargin) {
         delete madDeskMover.config.visNoFsMargin;
-        optMenuItems[4].classList.add('checkedItem');
+        miscMenuItems[1].classList.add('checkedItem');
         delete document.body.dataset.noFsMargin;
     } else {
         madDeskMover.config.visNoFsMargin = true;
-        optMenuItems[4].classList.remove('checkedItem');
+        miscMenuItems[1].classList.remove('checkedItem');
         document.body.dataset.noFsMargin = true;
     }
 });
@@ -506,6 +507,9 @@ function init() {
         visDeskMover.addEventListener('mediaTimeline', wallpaperMediaTimelineListener);
         visDeskMover.addEventListener('mediaPlayback', wallpaperMediaPlaybackListener);
         visDeskMover.addEventListener('mediaThumbnail', wallpaperMediaThumbnailListener);
+        visDeskMover.addEventListener('load', () => {
+            inited = -1;
+        }, null, 'iframe');
         wallpaperMediaStatusListener();
         wallpaperMediaPropertiesListener();
         wallpaperMediaTimelineListener();
@@ -523,7 +527,7 @@ setInterval(() => {
             alertText.locId = "VIS2ND_NO_PRIMARY";
             inited = -1;
         }
-    } else if (top.visDeskMover) {
+    } else if (top.visDeskMover && inited !== 2) {
         alertArea.style.display = 'none';
         init();
     }

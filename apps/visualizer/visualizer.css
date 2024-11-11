@@ -81,6 +81,10 @@ a {
     z-index: 5;
 }
 
+.menu[data-autohide] {
+    opacity: 0;
+}
+
 .menu:hover,
 .menu[data-active] {
     opacity: 1 !important;

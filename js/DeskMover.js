@@ -1804,6 +1804,18 @@
                 delete this.config.clockBackgroundColor;
                 delete this.config.clockFont;
                 delete this.config.clockNoOutline;
+
+                delete this.config.visBgColor;
+                delete this.config.visUseSchemeColors;
+                delete this.config.visFollowAlbumArt;
+                delete this.config.visAlbumArtSize;
+                delete this.config.visNoClientEdge;
+                delete this.config.visMenuAutohide;
+                delete this.config.visFullscreen;
+                delete this.config.visInfoShown;
+                delete this.config.visStatusShown;
+                delete this.config.visMediaControls;
+                delete this.config.visTitleMode;
                 clearTimeout(this.timeout);
             }
 

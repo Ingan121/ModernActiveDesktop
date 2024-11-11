@@ -192,7 +192,7 @@ if (localStorage.madesktopVisOnlyAlbumArt) {
 if (localStorage.madesktopVisMenuAutohide) {
     viewMenuItems[0].classList.add('checkedItem');
     mainArea.style.marginTop = '0';
-    menuBar.style.opacity = '0';
+    menuBar.dataset.autohide = true;
 }
 
 if (localStorage.madesktopVisFullscreen) {
@@ -299,12 +299,12 @@ viewMenuItems[0].addEventListener('click', () => { // Autohide Menu Bar button
         delete localStorage.madesktopVisMenuAutohide;
         viewMenuItems[0].classList.remove('checkedItem');
         mainArea.style.marginTop = '';
-        menuBar.style.opacity = '';
+        delete menuBar.dataset.autohide;
     } else {
         localStorage.madesktopVisMenuAutohide = true;
         viewMenuItems[0].classList.add('checkedItem');
         mainArea.style.marginTop = '0';
-        menuBar.style.opacity = '0';
+        menuBar.dataset.autohide = true;
     }
     updateSize();
 });

@@ -15,7 +15,7 @@
     --gradient-active-title: #101010A0;
     --gradient-inactive-title: #10101080;
     --gray-text: #B0B0B0;
-    --hilight: #0066CC;
+    --hilight: var(--title-accent, #0066CC);
     --hilight-text: #FFFFFF;
     --hot-tracking-color: #3399FF;
     --inactive-border: #00000000;
@@ -25,7 +25,7 @@
     --info-window: #282819;
     --menu: #101010a0;
     --menu-bar: #101010a0;
-    --menu-hilight: #0066CC;
+    --menu-hilight: var(--title-accent, #0066CC);
     --menu-text: #FFFFFF;
     --scrollbar: #282828;
     --title-text: #FFFFFF;
@@ -105,7 +105,7 @@ body[data-init-complete] > .window::before,
     background-color: var(--title-accent);
 }
 
-.menu, .menus, .menu-button {
+body:not([data-fullscreen]) .menu:not([data-autohide]), .menus, .menu-button {
     background-color: transparent;
 }
 

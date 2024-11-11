@@ -92,8 +92,7 @@
             <div class="contextMenuItem" data-submenu="titleOpt"><p><mad-string data-locid="VISUALIZER_OPT_MENUITEM_TITLE">Window <u>T</u>itle</mad-string></p><p class="submenuMark">⏵</p></div>
             <div class="contextMenuItem" data-submenu="albumArtSize"><p><mad-string data-locid="VISUALIZER_OPT_MENUITEM_ALBUM_ART_SIZE">Album Art Si<u>z</u>e</mad-string></p><p class="submenuMark">⏵</p></div>
             <hr>
-            <div class="contextMenuItem checkedItem"><p><mad-string data-locid="VISCONF_SHOW_CLIENT_EDGE">Show <u>b</u>orders around the visualization area</mad-string></p></div>
-            <div class="contextMenuItem checkedItem"><p><mad-string data-locid="VISCONF_FS_MARGIN">Apply <u>m</u>argins in fullscreen mode</mad-string></p></div>
+            <div class="contextMenuItem" data-subment="misc"><p><mad-string data-locid="VIS2ND_OPT_MENUITEM_MISC"><u>M</u>iscellaneous</mad-string></p><p class="submenuMark">⏵</p></div>
         </div>
     </div>
     <div id="helpMenuBg" class="contextMenuBg window" tabindex="-1">
@@ -129,6 +128,12 @@
             <div class="contextMenuItem" data-value="artistThenTitle"><p><mad-string data-locid="VISCONF_TITLE_OPT_ARTIST_THEN_TITLE">Artist - Title</mad-string></p></div>
             <div class="contextMenuItem" data-value="titleOnly"><p><mad-string data-locid="VISCONF_TITLE_OPT_TITLE_ONLY">Title</mad-string></p></div>
             <div class="contextMenuItem" data-value="static"><p><mad-string data-locid="VISCONF_TITLE_OPT_STATIC">Static</mad-string></p></div>
+        </div>
+    </div>
+    <div id="miscMenuBg" class="contextMenuBg window" tabindex="-1" data-submenu-of="opt">
+        <div id="miscMenu" class="contextMenu window-body">
+            <div class="contextMenuItem checkedItem"><p><mad-string data-locid="VISCONF_SHOW_CLIENT_EDGE">Show <u>b</u>orders around the visualization area</mad-string></p></div>
+            <div class="contextMenuItem checkedItem"><p><mad-string data-locid="VISCONF_FS_MARGIN">Apply <u>m</u>argins in fullscreen mode</mad-string></p></div>
         </div>
     </div>
     <script src="../../js/functions.js"></script>

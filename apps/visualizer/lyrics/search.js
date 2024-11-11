@@ -13,7 +13,7 @@ const query = artist + ' ' + title + ' ' + albumTitle;
 const currentId = parseInt(urlParsed.get('current'));
 
 const headers = {
-    'Lrclib-Client': 'ModernActiveDesktop/' + top.madVersion.toString(1) + (madRunningMode === 1 ? ' (Wallpaper Engine)' : ' (Lively Wallpaper)') + ' (https://madesktop.ingan121.com/)'
+    'Lrclib-Client': 'ModernActiveDesktop/' + top.madVersion.toString(1) + (madRunningMode === 1 ? ' (Wallpaper Engine)' : (madRunningMode === 2 ? ' (Lively Wallpaper)' : '')) + ' (https://madesktop.ingan121.com/)'
 }
 
 const normalSearchSection = document.querySelector('.normalSearch');

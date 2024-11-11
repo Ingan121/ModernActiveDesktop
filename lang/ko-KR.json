@@ -107,6 +107,7 @@
     "PH_APP_CLOCK": "시계",
     "PH_APP_CALC": "계산기",
     "PH_APP_VIS": "시각화",
+    "PH_VIS2ND_NO_MEDINT": "부 시각화를 사용하려면 미디어 통합 지원이 필요합니다. Wallpaper Engine 설정 -> 일반에서 '미디어 통합 지원'을 활성화하세요.",
     "PH_PROMPT_YT_URL": "YouTube URL 입력",
     "PH_MSG_INVALID_URL": "올바르지 않은 URL",
 
@@ -552,7 +553,7 @@
 
     "VISLRC_PUBLISH_NO_LYRICS": "가사가 없습니다.",
     "VISLRC_PUBLISH_NOT_LOCAL": "로컬 파일에서 가져온 가사만 게시할 수 있습니다.",
-    "VISLRC_PUBLISH_NONCE_WAIT": "%n이 가사를 게시하는 데 필요한 nonce를 계산하는 중입니다. 잠시 기다려주세요. 최대 5분이 걸릴 수 있습니다.",
+    "VISLRC_PUBLISH_NONCE_WAIT": "%n이 가사를 게시하는 데 필요한 nonce를 계산하는 중입니다. 잠시 기다려주세요. 최대 5분이 소요될 수 있습니다.",
     "VISLRC_PUBLISH_NONCE_TIMEOUT": "Nonce 계산이 너무 오래 걸렸습니다. 다시 시도해주세요.",
     "VISLRC_PUBLISH_REVIEW_ARTIST": "아티스트 이름을 검토하세요.",
     "VISLRC_PUBLISH_REVIEW_TITLE": "노래 제목을 검토하세요.",
@@ -600,8 +601,9 @@
     "VISLRCFIND_ADVANCED_COLLAPSE": "고급(&D) <<",
 
     "VIS2ND_TITLE": "미디어",
-    "VIS2ND_NO_PRIMARY": "주 시각화가 실행 중이 아닙니다. 시각화를 실행해주세요.",
+    "VIS2ND_NO_PRIMARY": "주 시각화가 실행 중이 아닙니다. <a href=\"javascript:madOpenWindow('apps/visualizer/index.html', false, { width: '725px', height: '380px', top: '200px', left: '500px' });\">시각화를 실행</a>해주세요.",
     "VIS2ND_VIEW_MENUITEM_CLOSE": "부 시각화 닫기(&C)",
+    "VIS2ND_OPT_MENUITEM_MISC": "기타(&M)",
 
 
     "CALC_TITLE": "계산기",

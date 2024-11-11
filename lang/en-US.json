@@ -119,6 +119,7 @@
     "PH_APP_CLOCK": "Clock",
     "PH_APP_CALC": "Calculator",
     "PH_APP_VIS": "Visualizer",
+    "PH_VIS2ND_NO_MEDINT": "Media integration must be enabled to use the secondary visualizer. Please enable it in Wallpaper Engine settings -> General -> Media integration support.",
     "PH_PROMPT_YT_URL": "Enter a YouTube URL",
     "PH_MSG_INVALID_URL": "Invalid URL",
     // #endregion
@@ -661,8 +662,9 @@
 
     // #region Secondary Visualizer strings
     "VIS2ND_TITLE": "Media",
-    "VIS2ND_NO_PRIMARY": "Primary visualizer is not running. Please open the Visualizer.",
+    "VIS2ND_NO_PRIMARY": "Primary visualizer is not running. Please <a href=\"javascript:madOpenWindow('apps/visualizer/index.html', false, { width: '725px', height: '380px', top: '200px', left: '500px' });\">open the Visualizer.</a>",
     "VIS2ND_VIEW_MENUITEM_CLOSE": "&Close Secondary Visualizer",
+    "VIS2ND_OPT_MENUITEM_MISC": "&Miscellaneous",
     // #endregion
     // #endregion
 

@@ -250,12 +250,10 @@
 
         changeUnderline(!localStorage.madesktopHideUnderline);
 
-        if (window.osguiCompatRequired && localStorage.madesktopColorScheme === "7css4mad") {
-            if (localStorage.madesktopAeroColor) {
-                changeAeroColor(localStorage.madesktopAeroColor);
-            }
-            changeAeroGlass(localStorage.madesktopAeroNoGlass);
+        if (localStorage.madesktopAeroColor) {
+            changeAeroColor(localStorage.madesktopAeroColor);
         }
+        changeAeroGlass(localStorage.madesktopAeroNoGlass);
         changeWinShadow(localStorage.madesktopNoWinShadow);
     }
 
