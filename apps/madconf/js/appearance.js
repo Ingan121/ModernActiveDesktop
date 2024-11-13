@@ -1015,6 +1015,10 @@ async function main() {
                             flatMenuChkBox.checked = true;
                             flatMenuSelector.disabled = false;
                             flatMenuSelector.selectedIndex = 2;
+                        } else {
+                            scheme['flat-menus'] = "none";
+                            flatMenuChkBox.checked = false;
+                            flatMenuSelector.disabled = true;
                         }
                     } else {
                         // WindowMetrics parsing is not supported; just use the default values
