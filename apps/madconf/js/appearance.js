@@ -274,6 +274,48 @@ async function main() {
                     copyText(JSON.stringify(scheme));
                     madAlert(madGetString("MADCONF_MSG_COPYJSON"), null, "info");
                     return;
+                case "!copyreg":
+                    let reg = "Windows Registry Editor Version 5.00\n\n[HKEY_CURRENT_USER\\Control Panel\\Colors]\n";
+                    for (const key in scheme) {
+                        if (key === "menu-animation" || // Not a color key but can cause false positives because the possible value 'fade' is a valid hex
+                            key === "default-colorization-color" // Color key but not a part of the Windows color scheme
+                        ) {
+                            continue;
+                        }
+                        try {
+                            const keyName = key.split("-").map(part => part.charAt(0).toUpperCase() + part.slice(1)).join("");
+                            const rgb = hexToRgb(scheme[key]).join(" ");
+                            reg += `"${keyName}"="${rgb}"\n`;
+                        } catch {
+                            // Skip non-color keys
+                            // Exception thrown at hexToRgb -> normalizeColor
+                            continue;
+                        }
+                    }
+                    copyText(reg);
+                    madAlert(madGetString("MADCONF_MSG_COPYREG"), null, "info");
+                    return;
+                case "!copytheme":
+                    let text = '';
+                    for (const key in scheme) {
+                        if (key === "menu-animation" || // Not a color key but can cause false positives because the possible value 'fade' is a valid hex
+                            key === "default-colorization-color" // Color key but not a part of the Windows color scheme
+                        ) {
+                            continue;
+                        }
+                        try {
+                            const keyName = key.split("-").map(part => part.charAt(0).toUpperCase() + part.slice(1)).join("");
+                            const rgb = hexToRgb(scheme[key]).join(" ");
+                            text += `${keyName}=${rgb}\n`;
+                        } catch {
+                            // Skip non-color keys
+                            // Exception thrown at hexToRgb -> normalizeColor
+                            continue;
+                        }
+                    }
+                    copyText(text);
+                    madAlert(madGetString("MADCONF_MSG_COPYTHEME"), null, "info");
+                    return;
             }
             if (savedSchemes[res]) {
                 madConfirm(madGetString("MADCONF_CONFIRM_SCHEME_OVERWRITE"), function (res2) {
@@ -838,6 +880,14 @@ async function main() {
     async function importScheme() {
         const pickerOpts = {
             types: [{
+                description: "All Supported Types",
+                accept: {
+                    "application/x-windows-theme": [".theme", ".themepack"],
+                    "application/x-windows-registry": [".reg"],
+                    "application/json": [".json"],
+                    "text/css": [".css"]
+                }
+            }, {
                 description: "Theme Files",
                 accept: {
                     "application/x-windows-theme": [".theme", ".themepack"]
@@ -865,57 +915,117 @@ async function main() {
         const file = await fileHandle.getFile();
         const text = await file.text();
 
-        schemeName = getFilename(file.name);
-        schemeSelector.options[0].textContent = schemeName;
-
         if (text.match("--.*:.*;") || file.name.endsWith(".css")) {
             parent.changeColorScheme(text);
             localStorage.madesktopColorScheme = "custom";
+            localStorage.madesktopLastSchemeName = getFilename(file.name);
+            madAnnounce("scheme-updated");
             location.reload();
         } else {
             try {
                 scheme = JSON.parse(text);
+                schemeName = getFilename(file.name);
+                schemeSelector.options[0].textContent = schemeName;
                 schemeSelector.selectedIndex = 0;
                 selector.disabled = false;
                 applyPreview();
                 selector.dispatchEvent(new Event("change"));
             } catch {
                 // Match both REGEDIT4 and Windows Registry Editor Version 5.00
-                let reg = !!text.split("\n")[0].match(/(?=.*REG)(?=.*EDIT)/i);
+                const reg = !!text.split("\n")[0].match(/(?=.*REG)(?=.*EDIT)/i);
+                const ctc = reg && text.includes("\\Control Panel\\Appearance\\ClassicSchemes\\");
                 try {
                     scheme = {
-                        'active-border': getColorValue(text, 'ActiveBorder', reg),
-                        'active-title': getColorValue(text, 'ActiveTitle', reg),
-                        'app-workspace': getColorValue(text, 'AppWorkspace', reg),
-                        'background': getColorValue(text, 'Background', reg),
-                        'button-alternate-face': getColorValue(text, 'ButtonAlternateFace', reg),
-                        'button-dk-shadow': getColorValue(text, 'ButtonDkShadow', reg),
-                        'button-face': getColorValue(text, 'ButtonFace', reg),
-                        'button-hilight': getColorValue(text, 'ButtonHilight', reg),
-                        'button-light': getColorValue(text, 'ButtonLight', reg),
-                        'button-shadow': getColorValue(text, 'ButtonShadow', reg),
-                        'button-text': getColorValue(text, 'ButtonText', reg),
-                        'gradient-active-title': getColorValue(text, 'GradientActiveTitle', reg),
-                        'gradient-inactive-title': getColorValue(text, 'GradientInactiveTitle', reg),
-                        'gray-text': getColorValue(text, 'GrayText', reg),
-                        'hilight': getColorValue(text, 'Hilight', reg),
-                        'hilight-text': getColorValue(text, 'HilightText', reg),
-                        'hot-tracking-color': getColorValue(text, 'HotTrackingColor', reg),
-                        'inactive-border': getColorValue(text, 'InactiveBorder', reg),
-                        'inactive-title': getColorValue(text, 'InactiveTitle', reg),
-                        'inactive-title-text': getColorValue(text, 'InactiveTitleText', reg),
-                        'info-text': getColorValue(text, 'InfoText', reg),
-                        'info-window': getColorValue(text, 'InfoWindow', reg),
-                        'menu': getColorValue(text, 'Menu', reg),
-                        'menu-bar': getColorValue(text, 'MenuBar', reg),
-                        'menu-hilight': getColorValue(text, 'MenuHilight', reg),
-                        'menu-text': getColorValue(text, 'MenuText', reg),
-                        'scrollbar': getColorValue(text, 'Scrollbar', reg),
-                        'title-text': getColorValue(text, 'TitleText', reg),
-                        'window': getColorValue(text, 'Window', reg),
-                        'window-frame': getColorValue(text, 'WindowFrame', reg),
-                        'window-text': getColorValue(text, 'WindowText', reg)
+                        'active-border': getColorValue(text, 'ActiveBorder', reg, ctc),
+                        'active-title': getColorValue(text, 'ActiveTitle', reg, ctc),
+                        'app-workspace': getColorValue(text, 'AppWorkspace', reg, ctc),
+                        'background': getColorValue(text, 'Background', reg, ctc),
+                        'button-alternate-face': getColorValue(text, 'ButtonAlternateFace', reg, ctc),
+                        'button-dk-shadow': getColorValue(text, 'ButtonDkShadow', reg, ctc),
+                        'button-face': getColorValue(text, 'ButtonFace', reg, ctc),
+                        'button-hilight': getColorValue(text, 'ButtonHilight', reg, ctc),
+                        'button-light': getColorValue(text, 'ButtonLight', reg, ctc),
+                        'button-shadow': getColorValue(text, 'ButtonShadow', reg, ctc),
+                        'button-text': getColorValue(text, 'ButtonText', reg, ctc),
+                        'gradient-active-title': getColorValue(text, 'GradientActiveTitle', reg, ctc),
+                        'gradient-inactive-title': getColorValue(text, 'GradientInactiveTitle', reg, ctc),
+                        'gray-text': getColorValue(text, 'GrayText', reg, ctc),
+                        'hilight': getColorValue(text, 'Hilight', reg, ctc),
+                        'hilight-text': getColorValue(text, 'HilightText', reg, ctc),
+                        'hot-tracking-color': getColorValue(text, 'HotTrackingColor', reg, ctc),
+                        'inactive-border': getColorValue(text, 'InactiveBorder', reg, ctc),
+                        'inactive-title': getColorValue(text, 'InactiveTitle', reg, ctc),
+                        'inactive-title-text': getColorValue(text, 'InactiveTitleText', reg, ctc),
+                        'info-text': getColorValue(text, 'InfoText', reg, ctc),
+                        'info-window': getColorValue(text, 'InfoWindow', reg, ctc),
+                        'menu': getColorValue(text, 'Menu', reg, ctc),
+                        'menu-bar': getColorValue(text, 'MenuBar', reg, ctc),
+                        'menu-hilight': getColorValue(text, 'MenuHilight', reg, ctc),
+                        'menu-text': getColorValue(text, 'MenuText', reg, ctc),
+                        'scrollbar': getColorValue(text, 'Scrollbar', reg, ctc),
+                        'title-text': getColorValue(text, 'TitleText', reg, ctc),
+                        'window': getColorValue(text, 'Window', reg, ctc),
+                        'window-frame': getColorValue(text, 'WindowFrame', reg, ctc),
+                        'window-text': getColorValue(text, 'WindowText', reg, ctc),
                     };
+                    if (ctc) {
+                        // Parse WinClassicThemeConfig-specific registry values
+                        // Font values are not supported
+                        const scrollbarSize = text.match(`\\n"Size1"=dword:0000(.*)\r\n`);
+                        if (scrollbarSize) {
+                            scheme['scrollbar-size'] = parseInt(scrollbarSize[1], 16) + "px";
+                        } else {
+                            scheme['scrollbar-size'] = '16px';
+                        }
+                        const menuHeight = text.match(`\\n"Size8"=dword:0000(.*)\r\n`);
+                        if (menuHeight) {
+                            scheme['menu-height'] = parseInt(menuHeight[1], 16) + "px";
+                        } else {
+                            scheme['menu-height'] = '18px';
+                        }
+                        const paletteTitleHeight = text.match(`\\n"Size5"=dword:0000(.*)\r\n`);
+                        if (paletteTitleHeight) {
+                            scheme['palette-title-height'] = parseInt(paletteTitleHeight[1], 16) + "px";
+                        } else {
+                            scheme['palette-title-height'] = '15px';
+                        }
+                        const borderSize = text.match(`\\n"Size0"=dword:0000(.*)\r\n`);
+                        const paddedBorderSize = text.match(`\\n"Size9"=dword:0000(.*)\r\n`);
+                        if (borderSize && paddedBorderSize) {
+                            scheme['extra-border-size'] = parseInt(borderSize[1], 16) + parseInt(paddedBorderSize[1], 16) + "px";
+                        } else if (borderSize) {
+                            scheme['extra-border-size'] = parseInt(borderSize[1], 16) + "px";
+                        } else {
+                            scheme['extra-border-size'] = '1px';
+                        }
+                        const titleHeight = text.match(`\\n"Size3"=dword:0000(.*)\r\n`);
+                        if (titleHeight) {
+                            scheme['extra-title-height'] = parseInt(titleHeight[1], 16) - 20 + "px";
+                        } else {
+                            scheme['extra-title-height'] = '-2px';
+                        }
+                        const gradientsDisabled = text.match(`\\n"Gradients"=dword:00000000\r\n`);
+                        if (gradientsDisabled) {
+                            scheme['gradient-active-title'] = scheme['active-title'];
+                            scheme['gradient-inactive-title'] = scheme['inactive-title'];
+                        }
+                        const flatMenusDisabled = text.match(`\\n"FlatMenus"=dword:00000000\r\n`);
+                        if (flatMenusDisabled) {
+                            scheme['flat-menus'] = "mbcm";
+                            flatMenuChkBox.checked = true;
+                            flatMenuSelector.disabled = false;
+                            flatMenuSelector.selectedIndex = 2;
+                        }
+                    } else {
+                        // WindowMetrics parsing is not supported; just use the default values
+                        scheme['scrollbar-size'] = '16px';
+                        scheme['menu-height'] = '18px';
+                        scheme['palette-title-height'] = '15px';
+                        scheme['extra-border-size'] = '1px';
+                        scheme['extra-title-height'] = '-2px';
+                    }
+                    schemeName = getFilename(file.name);
+                    schemeSelector.options[0].textContent = schemeName;
                     schemeSelector.selectedIndex = 0;
                     selector.disabled = false;
                     applyPreview();
@@ -1079,21 +1189,69 @@ function generateCssScheme(scheme, keepEffects = false) {
 
 // Parse *.theme files
 // Or exported "HKCU\Control Panel\Colors" *.reg files (reg = true)
-function getColorValue(themeText, name, reg) {
-    const regex = reg ? `\n\"${name}\"=\"(.*)\"\r\n` : `\n${name}=(.*)\r\n`
+// Or WinClassicThemeConfig reg files (ctc = true)
+function getColorValue(themeText, name, reg, ctc) {
+    const ctcMap = [
+        'Scrollbar',
+        'Background',
+        'ActiveTitle',
+        'InactiveTitle',
+        'Menu',
+        'Window',
+        'WindowFrame',
+        'MenuText',
+        'WindowText',
+        'TitleText',
+        'ActiveBorder',
+        'InactiveBorder',
+        'AppWorkspace',
+        'Hilight',
+        'HilightText',
+        'ButtonFace',
+        'ButtonShadow',
+        'GrayText',
+        'ButtonText',
+        'InactiveTitleText',
+        'ButtonHilight',
+        'ButtonDkShadow',
+        'ButtonLight',
+        'InfoText',
+        'InfoWindow',
+        'ButtonAlternateFace',
+        'HotTrackingColor',
+        'GradientActiveTitle',
+        'GradientInactiveTitle',
+        'MenuHilight',
+        'MenuBar'
+    ];
+    let regex;
+    if (ctc) {
+        regex = new RegExp(`\\n"Color${ctcMap.indexOf(name)}"=dword:00(.*)\r\n`);
+    } else if (reg) {
+        regex = new RegExp(`\\n\"${name}\"=\"(.*)\"\r\n`);
+    } else {
+        regex = new RegExp(`\\n${name}=(.*)\r\n`);
+    }
     let rgb = themeText.match(regex);
+    if (ctc) {
+        if (!rgb) {
+            throw new Error(`Color not found for ${name}`);
+        } else {
+            return '#' + rgb[1].trim().match(/.{2}/g).reverse().join('');
+        }
+    }
     if (!rgb) {
         switch (name) {
             case 'ButtonAlternateFace':
                 return '#B5B5B5';
             case 'GradientActiveTitle':
-                return getColorValue(themeText, 'ActiveTitle');
+                return getColorValue(themeText, 'ActiveTitle', reg);
             case 'GradientInactiveTitle':
-                return getColorValue(themeText, 'InactiveTitle');
+                return getColorValue(themeText, 'InactiveTitle', reg);
             case 'MenuBar':
-                return getColorValue(themeText, 'Menu');
+                return getColorValue(themeText, 'Menu', reg);
             case 'MenuHilight':
-                return getColorValue(themeText, 'Hilight');
+                return getColorValue(themeText, 'Hilight', reg);
             case 'HotTrackingColor':
                 return '#008080';
             default:

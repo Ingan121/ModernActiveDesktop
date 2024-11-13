@@ -16,6 +16,7 @@
     <div id="menuBar" class="menu">
         <div id="lrcMenuBtn" class="menuBtn"><span><mad-string data-locid="VISLRC_MENU_LRC"><u>L</u>yrics</mad-string></span></div>
         <div id="loadingIndicator" class="menuBtn"><span><mad-string data-locid="VISLRC_STATUS_LOADING">Loading...</mad-string></span></div>
+        <div id="nonceIndicator" class="menuBtn"><span><mad-string data-locid="VISLRC_PUBLISH_NONCE_PROGRESS">Calculating nonce... (%s millions calculated)</mad-string></span></div>
     </div>
     <div id="lyricsView" class="clientEdge borderedScrollBar">
         <mad-string data-locid="VISLRC_STATUS_LOADING">Loading...</mad-string>
@@ -26,13 +27,21 @@
             <div class="contextMenuItem"><p><mad-string data-locid="VISLRC_LRC_MENUITEM_LOAD">Load <u>L</u>yrics</mad-string></p></div>
             <div class="contextMenuItem"><p><mad-string data-locid="VISLRC_LRC_MENUITEM_SEARCH"><u>S</u>earch Lyrics</mad-string></p></div>
             <div class="contextMenuItem"><p><mad-string data-locid="VISLRC_LRC_MENUITEM_OPENFILE">Open Lyrics <u>F</u>ile</mad-string></p></div>
+            <div class="contextMenuItem disabled" data-submenu="save"><p><mad-string data-locid="VISLRC_LRC_MENUITEM_SAVE">Sa<u>v</u>e Lyrics</mad-string></p><p class="submenuMark">⏵</p></div>
+            <div class="contextMenuItem disabled"><p><mad-string data-locid="VISLRC_LRC_MENUITEM_PUBLISH"><u>P</u>ublish Lyrics</mad-string></p></div>
             <hr>
-            <div class="contextMenuItem checkedItem"><p><mad-string data-locid="VISLRC_LRC_MENUITEM_AUTO_SCROLL"><u>A</u>uto Scroll</mad-string></p></div>
-            <div class="contextMenuItem" data-submenu="sync"><p><mad-string data-locid="VISLRC_LRC_MENUITEM_ADJUST_SYNC">Ad<u>j</u>ust Sync</mad-string></p><p class="submenuMark">⏵</p></div>
+            <div class="contextMenuItem disabled"><p><mad-string data-locid="VISLRC_LRC_MENUITEM_AUTO_SCROLL"><u>A</u>uto Scroll</mad-string></p></div>
+            <div class="contextMenuItem disabled" data-submenu="sync"><p><mad-string data-locid="VISLRC_LRC_MENUITEM_ADJUST_SYNC">Ad<u>j</u>ust Sync</mad-string></p><p class="submenuMark">⏵</p></div>
             <div class="contextMenuItem"><p><mad-string data-locid="VISLRC_LRC_MENUITEM_VISLRCCONF"><u>O</u>ptions</mad-string></p></div>
-            <div class="contextMenuItem debug"><p><mad-string data-locid="VISLRC_LRC_MENUITEM_PUBLISH"><u>P</u>ublish Lyrics</mad-string></p></div>
             <div class="contextMenuItem debug"><p><mad-string data-locid="VISLRC_LRC_MENUITEM_DEBUG_INFO"><u>D</u>ebug Info</mad-string></p></div>
+            <div class="contextMenuItem"><p><mad-string data-locid="VISLRC_LRC_MENUITEM_ABOUT">A<u>b</u>out Lyrics</mad-string></p></div>
             <div class="contextMenuItem"><p><mad-string data-locid="UI_CLOSE"><u>C</u>lose</mad-string></p></div>
+        </div>
+    </div>
+    <div id="saveMenuBg" class="contextMenuBg window" tabindex="-1" data-submenu-of="lrc">
+        <div id="saveMenu" class="contextMenu window-body">
+            <div class="contextMenuItem disabled"><p><mad-string data-locid="VISLRC_SAVE_MENUITEM_SYNCED"><u>S</u>ynced</mad-string></p></div>
+            <div class="contextMenuItem"><p><mad-string data-locid="VISLRC_SAVE_MENUITEM_PLAIN"><u>P</u>lain</mad-string></p></div>
         </div>
     </div>
     <div id="syncMenuBg" class="contextMenuBg window" tabindex="-1" data-submenu-of="lrc">
@@ -46,6 +55,7 @@
         </div>
     </div>
     <script src="../../../js/functions.js"></script>
+    <script src="../../../js/MadVersion.js"></script>
     <script src="../../../js/MadStrings.js"></script>
     <script src="../../../js/libmad.js"></script>
     <script src="../../../js/MadMenu.js"></script>

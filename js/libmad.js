@@ -144,7 +144,9 @@
 
             window.addEventListener("message", (event) => {
                 if (event.data.type === "language-ready") {
-                    this.label.textContent = this.options[this.selectedIndex].textContent;
+                    if (this.options[this.selectedIndex]) {
+                        this.label.textContent = this.options[this.selectedIndex].textContent;
+                    }
                     this.adjustMinWidth();
                 }
             });
@@ -512,6 +514,29 @@
                     windowElement: {
                         contentWindow: newWnd,
                         addEventListener: newWnd.addEventListener.bind(newWnd),
+                    },
+                    addEventListener: function (event, func, third, target) {
+                        switch (target) {
+                            case "window": case "iframe":
+                                newWnd.addEventListener(event, func, third);
+                                break;
+                            default: // "document"
+                                newWnd.document.addEventListener(event, func, third);
+                                break;
+                        }
+                    },
+                    removeEventListener: function (event, func, third, target) {
+                        switch (target) {
+                            case "window": case "iframe":
+                                newWnd.removeEventListener(event, func, third);
+                                break;
+                            default: // "document"
+                                newWnd.document.removeEventListener(event, func, third);
+                                break;
+                        }
+                    },
+                    closeWindow: function () {
+                        newWnd.close();
                     }
                 }
             }
@@ -529,31 +554,34 @@
             }
             window.madAlert = async function (msg, callback, icon) {
                 return new Promise((resolve) => {
-                    alert(msg);
+                    alert(msg.replaceAll("<br>", "\n"));
                     if (callback) {
                         callback();
                     }
                     resolve();
                 });
             }
+            window.madAlert.fallback = true;
             window.madConfirm = async function (msg, callback) {
                 return new Promise((resolve) => {
-                    const result = confirm(msg);
+                    const result = confirm(msg.replaceAll("<br>", "\n"));
                     if (callback) {
                         callback(result);
                     }
                     resolve(result);
                 });
             }
+            window.madConfirm.fallback = true;
             window.madPrompt = async function (msg, callback, hint, text) {
                 return new Promise((resolve) => {
-                    const result = prompt(msg, text);
+                    const result = prompt(msg.replaceAll("<br>", "\n"), text);
                     if (callback) {
                         callback(result);
                     }
                     resolve(result);
                 });
             }
+            window.madPrompt.fallback = true;
             window.madAnnounce = function (type) {
                 window.postMessage({ type }, "*");
                 if (window.opener) {

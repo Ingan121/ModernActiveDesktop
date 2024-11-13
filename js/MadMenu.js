@@ -219,12 +219,12 @@ class MadMenu {
         let menuItems;
         const debugItems = menuBg.querySelectorAll('.contextMenuItem.debug');
         if (localStorage.madesktopDebugMode) {
-            menuItems = menuBg.querySelectorAll('.contextMenuItem');
+            menuItems = menuBg.querySelectorAll('.contextMenuItem:not([data-hidden])');
             for (const debugItem of debugItems) {
                 debugItem.style.display = '';
             }
         } else {
-            menuItems = menuBg.querySelectorAll('.contextMenuItem:not(.debug)');
+            menuItems = menuBg.querySelectorAll('.contextMenuItem:not([data-hidden]):not(.debug)');
             for (const debugItem of debugItems) {
                 debugItem.style.display = 'none';
             }
@@ -493,7 +493,12 @@ class MadMenu {
 
     calcMenuWidth(menuName) {
         const menuBg = document.getElementById(menuName + 'MenuBg');
-        const menuItems = menuBg.querySelectorAll('.contextMenuItem');
+        let menuItems;
+        if (localStorage.madesktopDebugMode) {
+            menuItems = menuBg.querySelectorAll('.contextMenuItem:not([data-hidden])');
+        } else {
+            menuItems = menuBg.querySelectorAll('.contextMenuItem:not([data-hidden]):not(.debug)');
+        }
         menuBg.style.minWidth = '';
         const minWidth = parseInt(getComputedStyle(menuBg).minWidth) || 0;
         const width = Array.from(menuItems).reduce((maxWidth, elem) => {
@@ -510,9 +515,9 @@ class MadMenu {
 
         let menuItems;
         if (localStorage.madesktopDebugMode) {
-            menuItems = menuBg.querySelectorAll('.contextMenuItem');
+            menuItems = menuBg.querySelectorAll('.contextMenuItem:not([data-hidden])');
         } else {
-            menuItems = menuBg.querySelectorAll('.contextMenuItem:not(.debug)');
+            menuItems = menuBg.querySelectorAll('.contextMenuItem:not([data-hidden]):not(.debug)');
         }
         const menuItemHeight = menuItems[0].offsetHeight;
 

@@ -491,20 +491,6 @@ viewMenuItems[7].addEventListener('click', () => { // Lyrics button
     madOpenWindow('apps/visualizer/lyrics/index.html', false, options);
 });
 
-viewMenuItems[8].addEventListener('click', () => { // Secondary Visualizer button
-    if (!visStatus.mediaIntegrationAvailable) {
-        madAlert(madGetString(NO_MEDINT_MSG), null, isWin10 ? 'info' : 'error', { title: 'locid:VISUALIZER_TITLE' });
-        return;
-    }
-
-    madOpenWindow("apps/visualizer/secondary.html", false, {
-        width: "600px",
-        height: "400px",
-        top: "200px",
-        left: "500px"
-    });
-});
-
 optMenuItems[1].addEventListener('click', () => { // Window Title button
     if (!visStatus.mediaIntegrationAvailable) {
         madAlert(madGetString(NO_MEDINT_MSG), null, isWin10 ? 'info' : 'error', { title: 'locid:VISUALIZER_TITLE' });
@@ -706,7 +692,6 @@ function wallpaperMediaStatusListener(event) {
         viewMenuItems[3].classList.add('disabled');
         viewMenuItems[4].classList.add('disabled');
         viewMenuItems[5].classList.add('disabled');
-        viewMenuItems[8].classList.add('disabled');
 
         if (localStorage.madesktopVisOnlyAlbumArt) {
             visMenuItems[1].click();
@@ -725,7 +710,6 @@ function wallpaperMediaStatusListener(event) {
             viewMenuItems[4].classList.remove('disabled');
         }
         viewMenuItems[5].classList.remove('disabled');
-        viewMenuItems[8].classList.remove('disabled');
         visMenuItems[0].classList.remove('disabled');
         optMenuItems[1].classList.remove('disabled');
         if (!localStorage.madesktopVisOnlyAlbumArt) {

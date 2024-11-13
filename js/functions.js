@@ -83,8 +83,14 @@
         } else if (color.startsWith("rgb")) {
             color = rgbToHex(color);
         } else if (color.length === 6 || color.length === 8) {
+            if (isNaN(Number("0x" + color))) {
+                throw new Error("Invalid color");
+            }
             color = "#" + color.slice(0, 6);
         } else if (color.length === 3 || color.length === 4) {
+            if (isNaN(Number("0x" + color))) {
+                throw new Error("Invalid color");
+            }
             color = "#" + color[0] + color[0] + color[1] + color[1] + color[2] + color[2];
         } else {
             // css color names other than those in minified 98.css are not supported yet
@@ -92,6 +98,15 @@
         }
         log(color);
         return color;
+    }
+
+    function hexToRgb(hex) {
+        hex = normalizeColor(hex).slice(1);
+        const bigint = parseInt(hex, 16);
+        const r = (bigint >> 16) & 255;
+        const g = (bigint >> 8) & 255;
+        const b = bigint & 255;
+        return [r, g, b];
     }
 
     // http://stackoverflow.com/questions/12043187/how-to-check-if-hex-color-is-too-black
@@ -280,11 +295,42 @@
         return Math.round((top.vHeight || window.innerHeight) * percent / 100);
     }
 
+    // https://stackoverflow.com/a/69118077
+    async function showOpenFilePicker(options = {}) {
+        return new Promise((resolve) => {
+            const input = document.createElement("input");
+            input.type = "file";
+            input.multiple = options.multiple;
+            if (options.types) {
+                input.accept = options.types
+                    .map((type) => type.accept)
+                    .flatMap((inst) => Object.keys(inst).flatMap((key) => inst[key]))
+                    .join(",");
+            }
+    
+            input.addEventListener("change", () => {
+                resolve(
+                    [...input.files].map((file) => {
+                        return {
+                            getFile: async () =>
+                                new Promise((resolve) => {
+                                    resolve(file);
+                                }),
+                        };
+                    })
+                );
+            });
+
+            input.click();
+        });
+    }
+
     window.getTextWidth = getTextWidth;
     window.scrollIntoView = scrollIntoView;
     window.rgbToHex = rgbToHex;
     window.hslToHex = hslToHex;
     window.normalizeColor = normalizeColor;
+    window.hexToRgb = hexToRgb;
     window.isDarkColor = isDarkColor;
     window.parseWallEngColorProp = parseWallEngColorProp;
     window.invertColor = invertColor;
@@ -301,4 +347,5 @@
     window.getMadBase = getMadBase;
     window.getRelativeWindowX = getRelativeWindowX;
     window.getRelativeWindowY = getRelativeWindowY;
+    window.showOpenFilePicker = window.showOpenFilePicker || showOpenFilePicker;
 })();

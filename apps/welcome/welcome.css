@@ -66,6 +66,14 @@ body {
     letter-spacing: -1px;
 }
 
+#langSelector {
+    position: absolute;
+    top: 8px;
+    right: 9px;
+    width: 70px;
+    animation: appear 1.9s;
+}
+
 #bar {
     position: absolute;
     top: 44px;

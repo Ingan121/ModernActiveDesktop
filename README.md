@@ -104,9 +104,11 @@
     * 96
     * Arc-Dark
     * Blur (beta)
+    * VGUI
+    * Various XP fallback schemes: Royale Noir, Zune, Embedded, and Watercolor
 * Visualizer improvements
     * Added a lyrics viewer! Click View -> Lyrics to open it
-    * Added a secondary visualizer that can be opened multiple times. This doesn't support visualization, but it can be used to display other media information. Click View -> Secondary Visualizer to open it
+    * Supports secondary visualizers that can be opened multiple times. These don't support visualization but can be used to display other media information. A secondary visualizer will be opened when trying to open the visualizer when it's already running
     * Several options are now accessible in the menu bar
     * Added an option to change the size of the album art
     * Added an option to change how the window title is displayed
@@ -128,11 +130,14 @@
     * Added a guide document for translating ModernActiveDesktop
 * Miscellaneous improvements
     * Clock configurations are now per-window
+    * Support importing WinClassicThemeConfig registry files
+    * Support exporting schemes as an HKCU\Control Panel\Colors registry file or a Windows *.theme file. Type `!copyreg` or `!copytheme` to the scheme save dialog to do this
     * Dropdown lists will be displayed reversed if it's too close to the bottom of the screen
     * Default window placement no longer assumes 1920x1080 or similar resolution; they will be placed relative to the screen size
-    * Also new windows will be prevented from being placed off-screen. After these changes, ModernActiveDesktop should now run decently on any resolution higher than 640x480
+    * Also, new windows will no longer be placed off-screen. After these changes, ModernActiveDesktop should now run decently on any resolution higher than 640x480
     * Adjusted some font sizes to look better with the default pixelated font
     * Automatically reset the display scaling factor if the effective screen resolution is smaller than 640x480
+    * Added a language selector in the welcome window
 * Security improvements
     * Prevent displaying arbitrary HTML (XSS) through imported configuration files
     * Show a warning about loading an unverified page after importing a configuration file
@@ -145,14 +150,14 @@
     * System colors not being applied to window contents when the system color scheme is changed on startup
     * Textboxes not automatically scrolling when using the arrow keys with the system plugin input or the on-screen keyboard
     * Background right-click menu (browser only) not being clickable when context menu animations are disabled
-    * Fallback text input not working properly when the system plugin is enabled but it's not running
+    * Fallback text input not working properly when the system plugin is enabled, but it's not running
 * Refactored the codebase
-    * Minimize the usage of global variables, and export only necessary functions
+    * Minimize the usage of global variables and export only necessary functions
     * Split the main script into multiple files for better maintainability
     * Renamed some scripts to a shorter name
 * Updated Electron
 
-(2024/11/17)
+(2024/11/19)
 
 ### Previous changelog
 Please see [here](docs/Updated.md) for the previous changes

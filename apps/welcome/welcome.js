@@ -5,6 +5,7 @@
 
 'use strict';
 
+const langSelector = document.getElementById("langSelector");
 const items = document.querySelectorAll(".items");
 const contents = document.querySelectorAll(".contents");
 const bgImg = document.getElementById("bgImg");
@@ -39,6 +40,20 @@ if (navigator.userAgent.match("Windows NT 6.1")) {
         unsupportedWarning.locId = "WELCOME_UNSUPPORTED_CHROMIUM";
     }
 }
+
+for (const supportedLang in window.madSupportedLanguages) {
+    const option = document.createElement('option');
+    option.value = supportedLang;
+    option.textContent = window.madSupportedLanguages[supportedLang];
+    langSelector.insertBefore(option, langSelector.lastElementChild);
+}
+
+langSelector.value = window.madLang;
+
+langSelector.addEventListener("change", function () {
+    localStorage.madesktopLang = langSelector.value;
+    top.changeLanguage(langSelector.value);
+});
 
 for (const item of items) {
     item.addEventListener("pointerover", function () {

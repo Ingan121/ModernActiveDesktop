@@ -9,12 +9,8 @@ const urlParsed = new URLSearchParams(window.location.search);
 const artist = urlParsed.get('artist');
 const title = urlParsed.get('title');
 const albumTitle = urlParsed.get('albumTitle');
-const query = artist + ' ' + title + ' ' + albumTitle;
+const query = (artist + ' ' + title + ' ' + albumTitle).trim();
 const currentId = parseInt(urlParsed.get('current'));
-
-const headers = {
-    'Lrclib-Client': 'ModernActiveDesktop/' + top.madVersion.toString(1) + (madRunningMode === 1 ? ' (Wallpaper Engine)' : (madRunningMode === 2 ? ' (Lively Wallpaper)' : '')) + ' (https://madesktop.ingan121.com/)'
-}
 
 const normalSearchSection = document.querySelector('.normalSearch');
 const advancedSections = document.querySelectorAll('.advancedSearch');
@@ -36,6 +32,19 @@ const advancedBtn = document.getElementById('advancedBtn');
 const advancedBtnLabel = advancedBtn.querySelector('mad-string');
 
 const textboxes = document.querySelectorAll("input[type=text], input[type=number]:not(#fontSize)");
+
+const headers = {
+    'Lrclib-Client': 'ModernActiveDesktop/' + window.madVersion.toString(1)
+};
+switch (madRunningMode) {
+    case 1:
+        headers['Lrclib-Client'] += ' (Wallpaper Engine)';
+        break;
+    case 2:
+        headers['Lrclib-Client'] += ' (Lively Wallpaper)';
+        break;
+}
+headers['Lrclib-Client'] += ' (https://madesktop.ingan121.com/)';
 
 let advancedMode = false;
 
@@ -99,7 +108,13 @@ advancedBtn.addEventListener('click', () => {
     madResizeTo(null, document.documentElement.offsetHeight);
 });
 
-search();
+if (query) {
+    search();
+} else {
+    // No music loaded
+    addOverrideChkBox.disabled = true;
+    searchResults.label.innerHTML = `<mad-string data-locid="VISLRCFIND_MANUAL_INFO"></mad-string>`;
+}
 
 async function search() {
     searchResults.disabled = true;

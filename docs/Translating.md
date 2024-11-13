@@ -19,23 +19,15 @@ The localization files are located in the `lang/` directory. Each language is re
 
 3. **Translate the Strings**: Open your new language file and replace the English strings with the translated strings. Make sure to preserve the JSON structure.
 
-4. **Add the Language to the Application**: Open the `js/MadStrings.js` file and add the new language code to the `supportedLanguages` array.
+4. **Add the Language to the Application**: Open the `js/MadStrings.js` file and add the new language code to the `supportedLanguages` object.
 
     ```js
-    const supportedLanguages = ['en-US', 'ko-KR', 'fr-FR'];
+    const supportedLanguages = {
+        'en-US': 'English',
+        'ko-KR': '한국어',
+        'fr-FR': 'Français',
+    };
     ```
-* Now open `apps/madconf/misc.html` and add the new language to the dropdown list. The value should be the language code and the text should be the language name in that language.
-
-    ```html
-    <mad-select id="langSelector">
-        <option value="en-US">English</option>
-        <option value="ko-KR">한국어</option>
-        <option value="fr-FR">Français</option>
-        <!-- keep this one at the bottom -->
-        <option value="translate"><mad-string data-locid="MADCONF_LANG_CONTRIBUTE">Help translate!</mad-string></option>
-    </mad-select>
-    ```
-
 5. **Test the Translation**: Load the new language in the application and verify that the strings are correctly translated. Use the `changeLanguage` function in the browser console to quickly switch languages.
 
     ```js

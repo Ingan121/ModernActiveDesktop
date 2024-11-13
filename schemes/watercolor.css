@@ -1,0 +1,50 @@
+/* Watercolor */
+:root {
+    --active-border: #d4d0c8;
+    --active-title: #5297f9;
+    --app-workspace: #808080;
+    --background: #004e98;
+    --button-alternate-face: #b5b5b5;
+    --button-dk-shadow: #404040;
+    --button-face: #ebebe4;
+    --button-hilight: #ffffff;
+    --button-light: #d4d0c8;
+    --button-shadow: #808080;
+    --button-text: #000000;
+    --gradient-active-title: #3573d6;
+    --gradient-inactive-title: #2c60b2;
+    --gray-text: #808080;
+    --hilight: #316ac5;
+    --hilight-text: #ffffff;
+    --hot-tracking-color: #000080;
+    --inactive-border: #d4d0c8;
+    --inactive-title: #2c60b2;
+    --inactive-title-text: #c0c0c0;
+    --info-text: #000000;
+    --info-window: #ffffe1;
+    --menu: #ffffff;
+    --menu-bar: #f4f4f0;
+    --menu-hilight: #ced3e1;
+    --menu-text: #000000;
+    --scrollbar: #ebebe4;
+    --title-text: #ffffff;
+    --window: #ffffff;
+    --window-frame: #000000;
+    --window-text: #000000;
+    --flat-menus: mbcm;
+    --menu-animation: fade;
+    --menu-shadow: true;
+    --scrollbar-size: 16px;
+    --menu-height: 19px;
+    --palette-title-height: 15px;
+    --ui-font: Tahoma, Arial, var(--cjk-fontlink);
+    --caption-font: bold 11px/1.4 var(--ui-font);
+    --menu-font: 11px/1 var(--ui-font);
+    --message-font: 11px var(--ui-font);
+    --status-font: 11px var(--ui-font);
+    --sm-caption-font: bold 7pt/1 var(--ui-font);
+}
+.window {
+    --extra-border-size: 1px;
+    --extra-title-height: 2px;
+}

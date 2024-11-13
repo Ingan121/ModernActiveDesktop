@@ -16,6 +16,7 @@ const boldToggle = document.getElementById("boldToggle");
 const italicToggle = document.getElementById("italicToggle");
 
 const forceUnsyncedChkBox = document.getElementById("forceUnsyncedChkBox");
+const syncInfoText = document.getElementById("syncInfoText");
 const smoothScrollChkBox = document.getElementById("smoothScrollChkBox");
 const smoothScrollChkBoxLabel = document.querySelector("label[for=smoothScrollChkBox] mad-string");
 
@@ -53,6 +54,16 @@ FontDetective.each(font => {
 
 if (localStorage.madesktopDebugMode) {
     showSpotifyBtn.style.display = "block";
+}
+
+if (madRunningMode !== 1) {
+    syncInfoText.locId = "VISLRCCONF_SYNCED_UNAVAILABLE";
+    forceUnsyncedChkBox.disabled = true;
+    smoothScrollChkBox.disabled = true;
+}
+if (madRunningMode === 0) {
+    showSpotifyBtn.style.display = "none";
+    tipsFieldset.style.display = "none";
 }
 
 showSpotifyBtn.addEventListener("click", function () {

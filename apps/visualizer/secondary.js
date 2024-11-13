@@ -488,7 +488,7 @@ for (const item of titleOptMenuItems) {
 // #endregion
 
 // #region Initialization - Attach to Primary
-let inited = 0;
+let connected = false;
 
 top.addEventListener('load', init);
 
@@ -497,9 +497,8 @@ if (top.document.readyState === 'complete') {
 }
 
 function init() {
-    inited = 1;
     if (top.visDeskMover) {
-        inited = 2;
+        connected = true;
         const visDeskMover = top.visDeskMover;
         visStatus = visDeskMover.visStatus;
         visDeskMover.addEventListener('mediaStatus', wallpaperMediaStatusListener);
@@ -507,9 +506,7 @@ function init() {
         visDeskMover.addEventListener('mediaTimeline', wallpaperMediaTimelineListener);
         visDeskMover.addEventListener('mediaPlayback', wallpaperMediaPlaybackListener);
         visDeskMover.addEventListener('mediaThumbnail', wallpaperMediaThumbnailListener);
-        visDeskMover.addEventListener('load', () => {
-            inited = -1;
-        }, null, 'iframe');
+        visDeskMover.addEventListener('load', init, null, 'iframe');
         wallpaperMediaStatusListener();
         wallpaperMediaPropertiesListener();
         wallpaperMediaTimelineListener();
@@ -521,15 +518,20 @@ function init() {
 }
 
 setInterval(() => {
-    if (!top.visDeskMover && inited) {
-        if (inited === 2) {
-            alertArea.style.display = 'block';
-            alertText.locId = "VIS2ND_NO_PRIMARY";
-            inited = -1;
-        }
-    } else if (top.visDeskMover && inited !== 2) {
+    if (!top.visDeskMover && connected) {
+        alertArea.style.display = 'block';
+        alertText.locId = "VIS2ND_NO_PRIMARY";
+        connected = false;
+        visStatus = {};
+        wallpaperMediaPropertiesListener();
+        wallpaperMediaThumbnailListener();
+    } else if (top.visDeskMover && !connected) {
         alertArea.style.display = 'none';
         init();
+    } else if (top.visDeskMover && connected) {
+        if (top.visDeskMover.visStatus !== visStatus) {
+            init();
+        }
     }
 }, 2000);
 // #endregion
@@ -553,8 +555,8 @@ async function mediaControl(action) {
 
 function wallpaperMediaStatusListener() {
     if (!visStatus.mediaIntegrationAvailable) {
-        wallpaperMediaPropertiesListener({});
-        wallpaperMediaThumbnailListener({});
+        wallpaperMediaPropertiesListener();
+        wallpaperMediaThumbnailListener();
         alertArea.style.display = 'block';
         alertText.locId = "VISUALIZER_NO_MEDINT_MSG";
     } else {
@@ -588,9 +590,6 @@ function wallpaperMediaPropertiesListener() {
         return;
     }
 
-    if (event.artist.endsWith(' - Topic')) { // YT auto-generated stuff
-        event.artist = event.artist.slice(0, -7);
-    }
     updateTitle(event);
 
     titleValue.textContent = event.title;
@@ -687,7 +686,7 @@ function wallpaperMediaPlaybackListener() {
 
 function wallpaperMediaThumbnailListener() {
     const event = visStatus.lastAlbumArt;
-    if (!event || event.thumbnail === 'data:image/png;base64,' || !event.thumbnail) {
+    if (!event || event.thumbnail === 'data:image/png;base64,' || !event.thumbnail || !visStatus.mediaIntegrationAvailable) {
         albumArt.style.display = 'none';
         return;
     }

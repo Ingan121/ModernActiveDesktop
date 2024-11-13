@@ -5,6 +5,8 @@
 
 'use strict';
 
+// LRCLIB nonce calculation according to https://github.com/tranxuanthang/lrcget/blob/main/src-tauri/src/lrclib/challenge_solver.rs
+
 onmessage = async function (e) {
     if (e.data.prefix && e.data.targetBytes) {
         const startTime = performance.now();
@@ -16,19 +18,22 @@ onmessage = async function (e) {
         do {
             nonce++;
             if (nonce % 1000000 === 0) {
-                if (performance.now() - startTime > 300000) {
-                    // LRCLIB challenges expire after 5 minutes
-                    console.log('Nonce generation took too long, aborting');
-                    postMessage(-1);
-                    return;
+                if (nonce !== 0) {
+                    if (performance.now() - startTime > 300000) {
+                        // LRCLIB challenges expire after 5 minutes
+                        console.log('Nonce generation took too long, aborting');
+                        postMessage({ error: 'timeout' });
+                        return;
+                    }
+                    console.log('Processed', nonce, 'hashes in', performance.now() - startTime, 'ms');
                 }
-                console.log('Processed', nonce, 'hashes in', performance.now() - startTime, 'ms');
+                postMessage({ progress: nonce });
             }
             hash = sha256(prefix + nonce);
         } while (!verifyNonce(hash, targetBytes));
 
         console.log('Nonce generation took', performance.now() - startTime, 'ms');
-        postMessage(nonce);
+        postMessage({ nonce: nonce });
     }
 };
 

@@ -49,6 +49,7 @@ if (!args.spotify && (args['spotify-callback-url'] || args['spotify-aux-port']))
 // #endregion
 
 // #region Constants and Variables
+const port = args.port || 3031;
 const gotTheLock = !!args.metrics || app.requestSingleInstanceLock();
 let tray = null;
 let mainWindow = null;
@@ -79,7 +80,7 @@ const wpeCheckPath = path.join(__dirname, '../../../js/DeskSettings.js'); // Che
 let token = null;
 // #endregion
 
-// #region System plugin access control stuff
+// #region System plugin access control
 if (!ignoreToken && fs.existsSync(wpeCheckPath)) {
   if (!fs.existsSync(tokenPath)) {
     token = crypto.randomBytes(16).toString('hex');
@@ -495,8 +496,8 @@ function shadeColor(color, percent) {
 
 // #region Web server
 if (!args.metrics) {
-  http.createServer(onRequest).listen(args.port || 3031, args.listen || '127.0.0.1');
-  console.log('ModernActiveDesktop System Plugin listening on port', args.port || 3031);
+  http.createServer(onRequest).listen(port, args.listen || '127.0.0.1');
+  console.log('ModernActiveDesktop System Plugin listening on port', port);
 }
 
 if (args['spotify-aux-port']) {
@@ -594,7 +595,7 @@ function onRequest(req, res) {
           req.pipe(stream);
           stream.on('finish', () => {
             const options = {
-              defaultPath : path.join(app.getPath(req.headers['x-file-path'] || 'downloads'), (req.headers['x-file-name'] || '')),
+              defaultPath : path.join(app.getPath(req.headers['x-file-path'] || 'downloads'), (decodeURIComponent(req.headers['x-file-name'] || ''))),
               filters : [
                   {name: req.headers['x-format-name'], extensions: req.headers['x-format-extension'].split(',')},
                   {name: 'All Files', extensions: ['*']}
@@ -703,7 +704,7 @@ function onRequest(req, res) {
       const authParams = {
         client_id: spotifyClientId,
         response_type: 'code',
-        redirect_uri: args['spotify-callback-url'] || `http://localhost:${args.port || 3031}/spotify/callback`,
+        redirect_uri: args['spotify-callback-url'] || `http://localhost:${port}/spotify/callback`,
         code_challenge_method: 'S256',
         code_challenge: codeChallenge,
         state: spotifyCsrfToken,
@@ -959,7 +960,7 @@ function spotifyCallback(req, res) {
       code,
       verifier: spotifyCodeVerifier,
       clientId: spotifyClientId,
-      redirectUri: args['spotify-callback-url'] || `http://localhost:${args.port || 3031}/spotify/callback`
+      redirectUri: args['spotify-callback-url'] || `http://localhost:${port}/spotify/callback`
     }));
     spotifyPendingRes = null;
     clearTimeout(spotifyTimeout);

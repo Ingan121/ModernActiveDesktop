@@ -5,10 +5,6 @@
 
 'use strict';
 
-if (madRunningMode === 0) {
-    document.getElementById("visIcon").style.display = "none";
-}
-
 madSetResizeArea(false);
 
 function openApp(app) {
@@ -35,6 +31,23 @@ function openApp(app) {
             madLocReplace("apps/solitaire/index.html");
             break;
         case "vis":
+            if (madRunningMode === 0) {
+                madConfirm(madGetString("VISUALIZER_UNSUPPORTED_MSG"), function (res) {
+                    if (res) {
+                        madResizeTo(400, 502);
+                        madMoveTo(500, 200);
+                        madChangeWndStyle("wnd");
+                        madLocReplace("apps/visualizer/lyrics/index.html");
+                    }
+                }, {
+                    icon: "warning",
+                    btn1: "locid:PH_OPEN_LYRICS",
+                    btn2: "locid:UI_OK",
+                    defaultBtn: 2,
+                    cancelBtn: 2
+                });
+                return;
+            }
             if (parent.visDeskMover) {
                 if (parent.visDeskMover.visStatus.mediaIntegrationAvailable) {
                     madResizeTo(600, 400);

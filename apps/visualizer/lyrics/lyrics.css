@@ -15,7 +15,8 @@ body {
     user-select: none;
 }
 
-#loadingIndicator {
+#loadingIndicator,
+#nonceIndicator {
     margin-left: auto;
     pointer-events: none;
     display: none;

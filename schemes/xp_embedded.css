@@ -1,0 +1,50 @@
+/* Windows XP Embedded */
+:root {
+    --active-border: #d4d0c8;
+    --active-title: #3e9de8;
+    --app-workspace: #808080;
+    --background: #000040;
+    --button-alternate-face: #b5b5b5;
+    --button-dk-shadow: #85878c;
+    --button-face: #ebe9ed;
+    --button-hilight: #ffffff;
+    --button-light: #dcdfe4;
+    --button-shadow: #b5b4b8;
+    --button-text: #000000;
+    --gradient-active-title: #70b1eb;
+    --gradient-inactive-title: #83b7e3;
+    --gray-text: #b5b4b8;
+    --hilight: #3e9de8;
+    --hilight-text: #ffffff;
+    --hot-tracking-color: #000080;
+    --inactive-border: #d4d0c8;
+    --inactive-title: #6fa1d9;
+    --inactive-title-text: #ffffff;
+    --info-text: #000000;
+    --info-window: #ffffe1;
+    --menu: #ffffff;
+    --menu-bar: #ebe9ed;
+    --menu-hilight: #3e9de8;
+    --menu-text: #000000;
+    --scrollbar: #d4d0c8;
+    --title-text: #ffffff;
+    --window: #ffffff;
+    --window-frame: #000000;
+    --window-text: #000000;
+    --flat-menus: mbcm;
+    --menu-animation: fade;
+    --menu-shadow: true;
+    --scrollbar-size: 17px;
+    --menu-height: 19px;
+    --palette-title-height: 17px;
+    --ui-font: Tahoma, Arial, var(--cjk-fontlink);
+    --caption-font: bold 10pt/1 "Trebuchet MS", var(--ui-font);
+    --menu-font: 11px/1 var(--ui-font);
+    --message-font: 11px var(--ui-font);
+    --status-font: 11px var(--ui-font);
+    --sm-caption-font: bold 11px/1 var(--ui-font);
+}
+.window {
+    --extra-title-height: 5px;
+    --extra-border-size: 1px;
+}

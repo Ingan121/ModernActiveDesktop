@@ -16,7 +16,11 @@
     window.madStrings = !!frameElement ? (top.madStrings || {}) : {};
     let fallbackStrings = null;
 
-    const supportedLanguages = ["en-US", "ko-KR"];
+    const supportedLanguages = {
+        "en-US": "English",
+        "ko-KR": "한국어"
+    };
+    window.madSupportedLanguages = supportedLanguages;
 
     let lang = (!!frameElement ? top.madLang : null) || localStorage.madesktopLang || navigator.language || navigator.userLanguage;
     window.madLang = lang;
@@ -28,16 +32,16 @@
 
     let languageReady = window.madStrings.loaded;
 
-    if (!supportedLanguages.includes(lang)) {
+    if (!(lang in supportedLanguages)) {
         if (lang.length === 2) {
-            for (const supportedLang of supportedLanguages) {
+            for (const supportedLang in supportedLanguages) {
                 if (lang.slice(0, 2) === supportedLang.slice(0, 2)) {
                     lang = supportedLang;
                     break;
                 }
             }
         }
-        if (!supportedLanguages.includes(lang)) {
+        if (!(lang in supportedLanguages)) {
             lang = "en-US";
         }
     }
@@ -45,14 +49,14 @@
     if (top === window) {
         // Only for the main MAD page
         window.changeLanguage = async (newLang, isInit) => {
-            if (!supportedLanguages.includes(newLang) && !isInit) {
-                for (const supportedLang of supportedLanguages) {
+            if (!(newLang in supportedLanguages) && !isInit) {
+                for (const supportedLang in supportedLanguages) {
                     if (newLang.slice(0, 2) === supportedLang.slice(0, 2)) {
                         newLang = supportedLang;
                         break;
                     }
                 }
-                if (!supportedLanguages.includes(newLang)) {
+                if (!(newLang in supportedLanguages)) {
                     throw new Error(`Language ${newLang} is not supported`);
                 }
             }

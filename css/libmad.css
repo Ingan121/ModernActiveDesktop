@@ -185,6 +185,10 @@ body[data-fullscreen] .contextMenuBg {
     border-bottom-color: var(--underline-hilight);
 }
 
+.contextMenuItem[data-hidden] {
+    display: none;
+}
+
 .contextMenu hr {
     width: 100%;
     margin-top: calc(var(--menu-height) / 4 - 1.5px);

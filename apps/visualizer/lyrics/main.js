@@ -9,15 +9,21 @@ const lyricsView = document.getElementById('lyricsView');
 
 const menuBar = document.getElementById('menuBar');
 const lrcMenuItems = document.querySelectorAll('#lrcMenu .contextMenuItem');
+const saveMenuItems = document.querySelectorAll('#saveMenu .contextMenuItem');
 const syncMenuItems = document.querySelectorAll('#syncMenu .contextMenuItem');
 const syncDelayDisplay = document.getElementById('syncDelayDisplay');
 const loadingIndicator = document.getElementById('loadingIndicator');
+const nonceIndicator = document.getElementById('nonceIndicator');
 
-const headers = {
-    'Lrclib-Client': 'ModernActiveDesktop/' + top.madVersion.toString(1) + (madRunningMode === 1 ? ' (Wallpaper Engine)' : (madRunningMode === 2 ? ' (Lively Wallpaper)' : '')) + ' (https://madesktop.ingan121.com/)'
-};
+const loadLyricsBtn = lrcMenuItems[0];
+const searchLyricsBtn = lrcMenuItems[1];
+const openLyricsFileBtn = lrcMenuItems[2];
+const saveLyricsBtn = lrcMenuItems[3];
+const publishLyricsBtn = lrcMenuItems[4];
+const autoScrollBtn = lrcMenuItems[5];
+const syncAdjustBtn = lrcMenuItems[6];
 
-let inited = 0; // 0: Not initialized at all, 1: Initialized but MADVis not loaded, 2: Fully initialized, -1: MADVis unloaded while running
+let connected = false;
 let visStatus = {};
 
 let lastLyrics = null;
@@ -28,20 +34,45 @@ let lastFetchInfo = {}; // For debugging
 let autoScroll = true;
 let preferUnsynced = localStorage.madesktopVisLyricsForceUnsynced || // User preference
     !visStatus.mediaIntegrationAvailable || // No timeline available (only valild if Spotify is enabled)
-    madRunningMode !== 1; // Lively Wallpaper (no timeline support)
+    madRunningMode !== 1 || // Lively Wallpaper (no timeline support) or normal browsers (no MADVis support)
+    !connected; // No connection to MADVis
 let syncDelay = parseFloat(localStorage.madesktopVisLyricsSyncDelay) || 0;
 let overrides = {};
 let abortController = new AbortController();
+
+const headers = {
+    'Lrclib-Client': 'ModernActiveDesktop/' + window.madVersion.toString(1)
+};
+switch (madRunningMode) {
+    case 1:
+        headers['Lrclib-Client'] += ' (Wallpaper Engine)';
+        break;
+    case 2:
+        headers['Lrclib-Client'] += ' (Lively Wallpaper)';
+        break;
+}
+headers['Lrclib-Client'] += ' (https://madesktop.ingan121.com/)';
 
 if (localStorage.madesktopVisLyricsFont) {
     lyricsView.style.font = localStorage.madesktopVisLyricsFont;
 }
 syncDelayDisplay.textContent = syncDelay + 's';
 
+if (madRunningMode === 0) {
+    loadLyricsBtn.dataset.hidden = true;
+}
+if (madRunningMode !== 1) {
+    autoScrollBtn.dataset.hidden = true;
+    syncAdjustBtn.dataset.hidden = true;
+}
+
 // #region Menu Bar
-madDeskMover.menu = new MadMenu(menuBar, ['lrc'], ['sync']);
+madDeskMover.menu = new MadMenu(menuBar, ['lrc'], ['save', 'sync']);
 
 lrcMenuItems[0].addEventListener('click', async function () { // Load Lyrics button
+    if (madRunningMode === 0) {
+        return;
+    }
     const hash = await getSongHash(visStatus.lastMusic?.artist, visStatus.lastMusic?.title, visStatus.lastMusic?.albumTitle);
     if (overrides[hash]) {
         delete overrides[hash];
@@ -87,8 +118,7 @@ lrcMenuItems[2].addEventListener('click', async function () { // Open Lyrics Fil
 
     const [fileHandle] = await window.showOpenFilePicker(pickerOpts);
     const file = await fileHandle.getFile();
-    const text = await file.text();
-    loadLyrics(text);
+    loadLyrics(file);
 
     const hash = await getSongHash(visStatus.lastMusic?.artist, visStatus.lastMusic?.title, visStatus.lastMusic?.albumTitle);
     if (hash && await madConfirm(madGetString('VISLRC_CONFIRM_SAVE_LYRICS'))) {
@@ -99,21 +129,25 @@ lrcMenuItems[2].addEventListener('click', async function () { // Open Lyrics Fil
     }
 });
 
-lrcMenuItems[3].addEventListener('click', function () { // Auto Scroll button
+lrcMenuItems[4].addEventListener('click', function () { // Publish Lyrics button
+    publish();
+});
+
+lrcMenuItems[5].addEventListener('click', function () { // Auto Scroll button
     if (!lastSyncedLyricsParsed) {
         return;
     }
 
     autoScroll = !autoScroll;
     if (autoScroll) {
-        lrcMenuItems[3].classList.add('checkedItem');
+        lrcMenuItems[5].classList.add('checkedItem');
         processTimeline();
     } else {
-        lrcMenuItems[3].classList.remove('checkedItem');
+        lrcMenuItems[5].classList.remove('checkedItem');
     }
 });
 
-lrcMenuItems[5].addEventListener('click', function () { // Options button
+lrcMenuItems[7].addEventListener('click', function () { // Options button
     const left = parseInt(madDeskMover.config.xPos) + 25 + 'px';
     const top = parseInt(madDeskMover.config.yPos) + 50 + 'px';
     const options = {
@@ -126,16 +160,65 @@ lrcMenuItems[5].addEventListener('click', function () { // Options button
     }, null, "window");
 });
 
-lrcMenuItems[6].addEventListener('click', function () { // Publish Lyrics button
-    publish();
-});
-
-lrcMenuItems[7].addEventListener('click', function () { // Debug Info button
+lrcMenuItems[8].addEventListener('click', function () { // Debug Info button
     showDebugInfo();
 });
 
-lrcMenuItems[8].addEventListener('click', function () { // Close button
+lrcMenuItems[9].addEventListener('click', function () { // About Lyrics button
+    madOpenConfig('about');
+});
+
+lrcMenuItems[10].addEventListener('click', function () { // Close button
     madCloseWindow();
+});
+
+saveMenuItems[0].addEventListener('click', function () { // Synced button
+    if (!lastLyrics) {
+        return;
+    }
+    if (!lastLyrics.syncedLyrics) {
+        return;
+    }
+    let filename = '';
+    const artist = visStatus.lastSpotifyMusic?.artist || visStatus.lastMusic?.artist || lastLyrics.artist || '';
+    const title = visStatus.lastSpotifyMusic?.title || visStatus.lastMusic?.title || lastLyrics.title || '';
+    if (artist && title) {
+        filename = artist + ' - ' + title + '.lrc';
+    } else if (title) {
+        filename = title + '.lrc';
+    } else {
+        filename = 'lyrics.lrc';
+    }
+    if (navigator.userAgent.includes('Windows')) {
+        filename.replace(/[/\\?%*:|"<>]/g, '-');
+    } else {
+        filename.replace(/\//g, '-');
+    }
+    saveText(lastLyrics.syncedLyrics, filename, true);
+});
+
+saveMenuItems[1].addEventListener('click', function () { // Plain button
+    if (!lastLyrics) {
+        return;
+    }
+    let filename = '';
+    const artist = visStatus.lastSpotifyMusic?.artist || visStatus.lastMusic?.artist || lastLyrics.artist || '';
+    const title = visStatus.lastSpotifyMusic?.title || visStatus.lastMusic?.title || lastLyrics.title || '';
+    if (artist && title) {
+        filename = artist + ' - ' + title + '.txt';
+    } else if (title) {
+        filename = title + '.txt';
+    } else {
+        filename = 'lyrics.txt';
+    }
+    if (navigator.userAgent.includes('Windows')) {
+        filename.replace(/[/\\?%*:|"<>]/g, (char) => {
+            return encodeURIComponent(char);
+        });
+    } else {
+        filename.replace(/\//g, '%2F');
+    }
+    saveText(lastLyrics.plainLyrics, filename, false);
 });
 
 // Sync adjust feature for some use cases like these:
@@ -188,7 +271,7 @@ lyricsView.addEventListener('pointerdown', function (event) {
     if (event.clientX >= window.innerWidth - scrollbarSize - padding) {
         // scrollbar clicked
         autoScroll = false;
-        lrcMenuItems[3].classList.remove('checkedItem');
+        autoScrollBtn.classList.remove('checkedItem');
     }
 });
 
@@ -238,9 +321,14 @@ async function findLyrics(id) {
         if (override.lrc) {
             lastFetchInfo.override = -1;
             if (isTextLrc(override.lrc)) {
+                const { artist, title, albumTitle, duration } = parseLrcMetadata(override.lrc);
                 return {
                     synced: true,
                     id: null,
+                    title: title,
+                    artist: artist,
+                    albumTitle: albumTitle,
+                    duration: duration,
                     syncedLyrics: override.lrc,
                     plainLyrics: lrcToPlain(override.lrc)
                 };
@@ -298,9 +386,15 @@ async function findLyrics(id) {
             artist_name: artist,
             track_name: title,
             album_name: albumTitle
+            // Duration here is more inaccurate than Spotify's duration, and it also may not be present or up to date when the timeline event is triggered
+            // So don't include it here
         };
-        // Duration here is more inaccurate than Spotify's duration, and it also may not be present or up to date when the timeline event is triggered
-        // So don't include it here
+
+        if (urlsToTry.length === 0 && !artist) {
+            // Don't try get without artist name, as it's mandatory for the get API
+            return await searchFallbackAccurate();
+        }
+
         url.search = new URLSearchParams(params).toString();
         urlsToTry.push(url.toString());
 
@@ -409,7 +503,7 @@ async function searchFallbackAccurate(mode = 0) { // 0: Normal, 1: No album titl
             break;
         case 2:
             // In case the artist name comes in a format not in the DB
-            // Test case: "QUEEN BEE - メフィスト (メフィスト)" - only the Japanese name is in the DB
+            // Test case: "QUEEN BEE - メフィスト (メフィスト)" - only the Japanese name is in the DB. Same for "fromis_9 - Supersonic" above
             // So try without the artist name too - it's possible unlike the get api which mandates the artist name
             // I believe title name + album title is more accurate than the inaccurate search fallback?
             // This also works with localized artist names. That's not a primarily supported case though. May not work if title is fully localized with no English part
@@ -434,6 +528,10 @@ async function searchFallbackAccurate(mode = 0) { // 0: Normal, 1: No album titl
                 return {
                     synced: true,
                     id: item.id,
+                    title: item.trackName,
+                    artist: item.artistName,
+                    albumTitle: item.albumName,
+                    duration: item.duration,
                     syncedLyrics: item.syncedLyrics,
                     plainLyrics: item.plainLyrics || lrcToPlain(item.syncedLyrics)
                 };
@@ -441,6 +539,10 @@ async function searchFallbackAccurate(mode = 0) { // 0: Normal, 1: No album titl
                 lastUnsyncedLyrics = {
                     synced: false,
                     id: item.id,
+                    title: item.trackName,
+                    artist: item.artistName,
+                    albumTitle: item.albumName,
+                    duration: item.duration,
                     plainLyrics: item.plainLyrics
                 };
                 if (preferUnsynced) {
@@ -538,6 +640,10 @@ async function searchFallback(stripParens) {
                 return {
                     synced: true,
                     id: item.id,
+                    title: item.trackName,
+                    artist: item.artistName,
+                    albumTitle: item.albumName,
+                    duration: item.duration,
                     syncedLyrics: item.syncedLyrics,
                     plainLyrics: item.plainLyrics || lrcToPlain(item.syncedLyrics)
                 };
@@ -545,6 +651,10 @@ async function searchFallback(stripParens) {
                 lastUnsyncedLyrics = {
                     synced: false,
                     id: item.id,
+                    title: item.trackName,
+                    artist: item.artistName,
+                    albumTitle: item.albumName,
+                    duration: item.duration,
                     plainLyrics: item.plainLyrics
                 };
                 if (preferUnsynced) {
@@ -593,6 +703,10 @@ async function fetchLyrics(url) {
                 return {
                     synced: true,
                     id: json.id,
+                    title: json.trackName,
+                    artist: json.artistName,
+                    albumTitle: json.albumName,
+                    duration: json.duration,
                     syncedLyrics: json.syncedLyrics,
                     plainLyrics: json.plainLyrics || lrcToPlain(json.syncedLyrics)
                 }
@@ -603,6 +717,10 @@ async function fetchLyrics(url) {
                 return {
                     synced: false,
                     id: json.id,
+                    title: json.trackName,
+                    artist: json.artistName,
+                    albumTitle: json.albumName,
+                    duration: json.duration,
                     plainLyrics: json.plainLyrics
                 }
             } else {
@@ -644,19 +762,26 @@ async function loadLyrics(idOrLrc, addOverride) {
             hash: lastFetchInfo.hash
         };
     }
-    if (idOrLrc?.length >= 10) {
-        if (isTextLrc(idOrLrc)) {
+    if (idOrLrc instanceof File) {
+        const text = await idOrLrc.text();
+        if (isTextLrc(text)) {
+            const { artist, title, albumTitle, duration } = parseLrcMetadata(text);
             lyrics = {
                 synced: true,
                 id: null,
-                syncedLyrics: idOrLrc,
-                plainLyrics: lrcToPlain(idOrLrc)
+                title: title || getFilename(idOrLrc.name),
+                artist: artist,
+                albumTitle: albumTitle,
+                duration: duration,
+                syncedLyrics: text,
+                plainLyrics: lrcToPlain(text)
             }
         } else {
             lyrics = {
                 synced: false,
                 id: null,
-                plainLyrics: idOrLrc
+                title: getFilename(idOrLrc.name),
+                plainLyrics: text
             }
         }
     } else {
@@ -679,7 +804,14 @@ async function loadLyrics(idOrLrc, addOverride) {
     loadingIndicator.style.display = 'none';
     if (lyrics) {
         lastLyricsId = lyrics.id;
+        saveLyricsBtn.classList.remove('disabled');
+        if (lyrics.id) {
+            publishLyricsBtn.classList.add('disabled');
+        } else {
+            publishLyricsBtn.classList.remove('disabled');
+        }
         if (lyrics.synced && !preferUnsynced) {
+            saveMenuItems[0].classList.remove('disabled');
             lyricsView.innerHTML = '';
             const lrc = parseLrc(lyrics.syncedLyrics);
             lrc.forEach((line, index) => {
@@ -691,18 +823,23 @@ async function loadLyrics(idOrLrc, addOverride) {
             lastSyncedLyricsParsed = lrc;
 
             autoScroll = true;
-            lrcMenuItems[3].classList.remove('disabled');
-            lrcMenuItems[3].classList.add('checkedItem');
+            autoScrollBtn.classList.remove('disabled');
+            autoScrollBtn.classList.add('checkedItem');
             processTimeline();
         } else {
+            if (lyrics.synced) {
+                saveMenuItems[0].classList.remove('disabled');
+            } else {
+                saveMenuItems[0].classList.add('disabled');
+            }
             lyricsView.textContent = lyrics.plainLyrics;
             lastSyncedLyricsParsed = null;
 
             autoScroll = false;
-            lrcMenuItems[3].classList.add('disabled');
-            lrcMenuItems[3].classList.remove('checkedItem');
+            autoScrollBtn.classList.add('disabled');
+            autoScrollBtn.classList.remove('checkedItem');
         }
-        if (addOverride && idOrLrc && idOrLrc.length <= 10) {
+        if (addOverride && idOrLrc && !idOrLrc instanceof File && idOrLrc.length <= 10) {
             const hash = await getSongHash(visStatus.lastMusic?.artist, visStatus.lastMusic?.title, visStatus.lastMusic?.albumTitle);
             if (!hash) {
                 return;
@@ -713,6 +850,11 @@ async function loadLyrics(idOrLrc, addOverride) {
             madIdb.setItem('lyricsOverrides', overrides);
         }
     } else {
+        saveLyricsBtn.classList.add('disabled');
+        saveMenuItems[0].classList.add('disabled');
+        publishLyricsBtn.classList.add('disabled');
+        autoScrollBtn.classList.add('disabled');
+        autoScrollBtn.classList.remove('checkedItem');
         if (!navigator.onLine) {
             lyricsView.innerHTML = '<mad-string data-locid="VISLRC_STATUS_OFFLINE"></mad-string>';
         } else {
@@ -744,8 +886,34 @@ function parseLrc(string) {
     return lyrics;
 }
 
+function parseLrcMetadata(string) {
+    let artist = '';
+    let title = '';
+    let albumTitle = '';
+    let duration = 0;
+    for (const line of string.split('\n')) {
+        if (line.startsWith('[ar:')) {
+            artist = line.substring(4, line.length - 1);
+        } else if (line.startsWith('[ti:')) {
+            title = line.substring(4, line.length - 1);
+        } else if (line.startsWith('[al:')) {
+            albumTitle = line.substring(4, line.length - 1);
+        } else if (line.startsWith('[length:')) {
+            const value = line.substring(8, line.length - 1).trim().split(':');
+            if (value.length === 2) {
+                duration = parseInt(value[0]) * 60 + parseInt(value[1]);
+            } else if (value.length === 3) {
+                duration = parseInt(value[0]) * 3600 + parseInt(value[1]) * 60 + parseInt(value[2]);
+            } else {
+                duration = parseInt(value[0]);
+            }
+        }
+    }
+    return { artist, title, albumTitle, duration };
+}
+
 function lrcToPlain(string) {
-    return string.replace(/\[\d+:\d+\.\d+\]/g, '').replace(/\[.*?:.*?\]/g, '').trim();
+    return string.replace(/\[\d+:\d+\.\d+\]/g, '').replace(/\[.*?:.*?\]/g, '').trim().split('\n').map(line => line.trim()).join('\n');
 }
 
 function isTextLrc(string) {
@@ -753,7 +921,12 @@ function isTextLrc(string) {
 }
 
 async function processProperties(force, simulating) {
-    preferUnsynced = localStorage.madesktopVisLyricsForceUnsynced || !visStatus.mediaIntegrationAvailable || madRunningMode !== 1;
+    preferUnsynced = localStorage.madesktopVisLyricsForceUnsynced || !visStatus.mediaIntegrationAvailable || madRunningMode !== 1 || !connected;
+    if (preferUnsynced) {
+        syncAdjustBtn.classList.add('disabled');
+    } else {
+        syncAdjustBtn.classList.remove('disabled');
+    }
     // Make sure the music has changed, as the event can be triggered multiple times
     // E.g. when the WPE media listeners got invalidated by closing an iframe and listners got re-registered
     if (force === true ||
@@ -795,6 +968,9 @@ async function processProperties(force, simulating) {
                     }
                 }
                 loadLyrics();
+            } else if (!connected) {
+                loadingIndicator.style.display = 'none';
+                lyricsView.innerHTML = '<mad-string data-locid="VISLRC_STATUS_NO_MADVIS"></mad-string>';
             } else if (!visStatus.mediaIntegrationAvailable) {
                 loadingIndicator.style.display = 'none';
                 lyricsView.innerHTML = '<mad-string data-locid="VISLRC_STATUS_NO_MEDINT"></mad-string>';
@@ -805,6 +981,9 @@ async function processProperties(force, simulating) {
         } else if (visStatus.lastMusic) {
             delete visStatus.lastSpotifyMusic;
             loadLyrics();
+        } else if (!connected) {
+            loadingIndicator.style.display = 'none';
+            lyricsView.innerHTML = '<mad-string data-locid="VISLRC_STATUS_NO_MADVIS"></mad-string>';
         } else if (!visStatus.mediaIntegrationAvailable) {
             loadingIndicator.style.display = 'none';
             lyricsView.innerHTML = '<mad-string data-locid="VISLRC_STATUS_NO_MEDINT"></mad-string>';
@@ -930,10 +1109,10 @@ async function getSongHash(artist, title, albumTitle) {
 }
 
 async function publish() {
-    let artist = visStatus.lastSpotifyMusic?.artist || visStatus.lastMusic?.artist || '';
-    let title = visStatus.lastSpotifyMusic?.title || visStatus.lastMusic?.title || '';
-    let album = visStatus.lastSpotifyMusic?.albumTitle || visStatus.lastMusic?.albumTitle || '';
-    let duration = parseInt(visStatus.lastSpotifyMusic?.duration) || visStatus.timeline?.duration || 1;
+    let artist = visStatus.lastSpotifyMusic?.artist || visStatus.lastMusic?.artist || lastLyrics?.artist || '';
+    let title = visStatus.lastSpotifyMusic?.title || visStatus.lastMusic?.title || lastLyrics?.title || '';
+    let album = visStatus.lastSpotifyMusic?.albumTitle || visStatus.lastMusic?.albumTitle || lastLyrics?.albumTitle || '';
+    let duration = parseInt(visStatus.lastSpotifyMusic?.duration) || visStatus.timeline?.duration || lastLyrics?.duration || 1;
     const lyrics = lastLyrics;
     if (!lyrics || !lyrics.plainLyrics) {
         madAlert(madGetString("VISLRC_PUBLISH_NO_LYRICS"), null, 'warning', { title: 'locid:VISLRC_TITLE' });
@@ -989,7 +1168,9 @@ async function publish() {
     const targetHex = json.target;
     const targetBytes = new Uint8Array(targetHex.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
 
-    madAlert(madGetString("VISLRC_PUBLISH_NONCE_WAIT"), null, 'info', { title: 'locid:VISLRC_TITLE' });
+    if (!madAlert.fallback) {
+        madAlert(madGetString("VISLRC_PUBLISH_NONCE_WAIT"), null, 'info', { title: 'locid:VISLRC_TITLE' });
+    }
     const nonce = await getNonce(prefix, targetBytes);
     console.log('Nonce:', nonce);
     if (nonce === -1) {
@@ -1017,11 +1198,11 @@ async function publish() {
     });
 
     if (response.ok) {
-        madAlert('Lyrics published successfully', null, 'success');
+        madAlert(madGetString("VISLRC_PUBLISH_SUCCESS"), null, 'info', { title: 'locid:VISLRC_TITLE' });
     } else {
         const result = await response.json();
         console.log(result);
-        madAlert('Failed to publish lyrics<br>' + result.message, null, 'error');
+        madAlert(madGetString("VISLRC_PUBLISH_SUCCESS") + '<br>' + result.message, null, 'error', { title: 'locid:VISLRC_TITLE' });
     }
 
     async function getNonce(prefix, targetBytes) {
@@ -1029,17 +1210,64 @@ async function publish() {
             const worker = new Worker('nonce.js');
             worker.postMessage({ prefix, targetBytes });
             worker.onmessage = (e) => {
-                resolve(e.data);
+                const data = e.data;
+                if (data.nonce) {
+                    nonceIndicator.style.display = 'none';
+                    resolve(data.nonce);
+                } else if (data.progress !== undefined) {
+                    nonceIndicator.style.display = 'block';
+                    if (data.progress === 0) {
+                        nonceIndicator.textContent = madGetString("VISLRC_PUBLISH_NONCE_START");
+                    } else {
+                        nonceIndicator.textContent = madGetString("VISLRC_PUBLISH_NONCE_PROGRESS", data.progress / 1000000);
+                    }
+                } else if (data.error) {
+                    nonceIndicator.style.display = 'none';
+                    if (data.error === 'timeout') {
+                        resolve(-1);
+                    } else {
+                        reject(data.error);
+                    }
+                }
             };
             worker.onerror = (e) => {
+                nonceIndicator.style.display = 'none';
                 reject(e);
             };
         });
     }
 }
 
+async function saveText(text, filename, synced) {
+    const blob = new Blob([text], { type: 'text/plain' });
+    if (madRunningMode === 0) {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+    } else {
+        try {
+            const res = await madSysPlug.saveFile(blob, {
+                "X-Format-Name": synced ? "Lyrics Files" : "Text Files",
+                "X-Format-Extension": synced ? "lrc" : "txt",
+                "X-File-Name": encodeURIComponent(filename)
+            });
+            if (!res) {
+                copyText(text);
+                madAlert(madGetString("VISLRC_LYRICS_COPIED"));
+            }
+        } catch {
+            copyText(text);
+            madAlert(madGetString("VISLRC_LYRICS_COPIED"));
+        }
+    }
+}
+
 async function configChanged() {
-    processProperties(true);
+    if (connected) {
+        processProperties(true);
+    }
     lyricsView.style.font = localStorage.madesktopVisLyricsFont || '';
     if (!localStorage.madesktopVisSpotifyEnabled || !localStorage.madesktopVisSpotifyInfo) {
         delete visStatus.lastSpotifyMusic;
@@ -1114,7 +1342,7 @@ async function getSpotifyToken() {
 }
 
 // Debugging stuff
-window.simulate = async function (artist, title, album, isSpotify, spotifyArtist, spotifyTitle, spotifyAlbum, spotifyDuration) {
+async function simulate(artist, title, album, isSpotify, spotifyArtist, spotifyTitle, spotifyAlbum, spotifyDuration) {
     visStatus.lastMusic = {
         title: title,
         artist: artist,
@@ -1146,6 +1374,8 @@ function showDebugInfo() {
         msg += 'Current lyrics ID: ' + (lastLyricsId ?? 'Local lyrics') + '<br>';
         msg += 'Song hash: ' + lastFetchInfo.hash + '<br>';
         msg += 'Timeline: ' + visStatus.timeline?.position + 's / ' + visStatus.timeline?.duration + 's<br><br>';
+        msg += 'Track info from the loaded lyrics: ' + escapeHTML(lastLyrics?.artist) + ' - ' + escapeHTML(lastLyrics?.title) + ' (' + escapeHTML(lastLyrics?.albumTitle) + ')<br>';
+        msg += 'Duration of the loaded lyrics: ' + lastLyrics?.duration + 's<br><br>';
         if (lastFetchInfo.override === -1) {
             msg += 'Override: Local lyrics<br>';
         } else if (lastFetchInfo.override) {
@@ -1241,7 +1471,7 @@ function showDebugInfo() {
         if (res === true) {
             copyText(innerText);
         } else if (res === null) {
-            visDeskMover.windowElement.contentWindow.setupMediaListeners();
+            top.visDeskMover.windowElement.contentWindow.setupMediaListeners();
         }
     }, {
         icon: 'info',
@@ -1270,9 +1500,8 @@ if (top.document.readyState === 'complete') {
 }
 
 async function init() {
-    inited = 1;
     if (top.visDeskMover) {
-        inited = 2;
+        connected = true;
         const visDeskMover = top.visDeskMover;
         visStatus = visDeskMover.visStatus;
 
@@ -1286,23 +1515,27 @@ async function init() {
 
         visDeskMover.addEventListener('mediaProperties', processProperties);
         visDeskMover.addEventListener('mediaTimeline', processTimeline);
-        visDeskMover.addEventListener('load', function () {
-            // MADVis has been reloaded; setup listeners again
-            inited = -1;
-        }, null, 'iframe');
-    } else {
+        visDeskMover.addEventListener('load', init, null, 'iframe');
+    } else if (madRunningMode !== 0) {
         lyricsView.innerHTML = '<mad-string data-locid="VISLRC_STATUS_NO_MADVIS"></mad-string>';
+    } else {
+        lyricsView.innerHTML = `<mad-string data-locid="VISLRC_STATUS_MANUAL_INFO"></mad-string>`;
     }
 }
 
-setInterval(() => {
-    if (!top.visDeskMover && inited) {
-        if (inited === 2) {
+if (madRunningMode !== 0) {
+    setInterval(() => {
+        if (!top.visDeskMover && connected) {
             lyricsView.innerHTML = '<mad-string data-locid="VISLRC_STATUS_NO_MADVIS"></mad-string>';
-            inited = -1;
+            connected = false;
+            visStatus = {};
+        } else if (top.visDeskMover && !connected) {
+            init();
+        } else if (top.visDeskMover && connected) {
+            if (top.visDeskMover.visStatus !== visStatus) {
+                init();
+            }
         }
-    } else if (top.visDeskMover && inited !== 2) {
-        init();
-    }
-}, 2000);
+    }, 2000);
+}
 // #endregion

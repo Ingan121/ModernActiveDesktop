@@ -128,6 +128,13 @@ rightIconArea.value = config.rightIcon;
 topIconArea.value = config.topIcon;
 bottomIconArea.value = config.bottomIcon;
 
+for (const supportedLang in window.madSupportedLanguages) {
+    const option = document.createElement('option');
+    option.value = supportedLang;
+    option.textContent = window.madSupportedLanguages[supportedLang];
+    langSelector.insertBefore(option, langSelector.lastElementChild);
+}
+
 langSelector.value = config.lang;
 
 window.apply = function () {
