@@ -1010,7 +1010,7 @@ async function main() {
                             scheme['gradient-inactive-title'] = scheme['inactive-title'];
                         }
                         const flatMenusDisabled = text.match(`\\n"FlatMenus"=dword:00000000\r\n`);
-                        if (flatMenusDisabled) {
+                        if (!flatMenusDisabled) {
                             scheme['flat-menus'] = "mbcm";
                             flatMenuChkBox.checked = true;
                             flatMenuSelector.disabled = false;
