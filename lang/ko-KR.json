@@ -563,6 +563,7 @@
     "VISLRC_PUBLISH_NO_LYRICS": "가사가 없습니다.",
     "VISLRC_PUBLISH_NOT_LOCAL": "로컬 파일에서 가져온 가사만 게시할 수 있습니다.",
     "VISLRC_PUBLISH_NONCE_WAIT": "%n이 가사를 게시하는 데 필요한 nonce를 계산하는 중입니다. 잠시 기다려주세요. 최대 5분이 소요될 수 있습니다.",
+    "VISLRC_PUBLISH_NONCE_INFO": "%n이 가사를 게시하는 데 필요한 nonce를 계산하는 중입니다. 잠시 기다려주세요. 최대 5분이 소요될 수 있습니다.<br><br>'취소'를 클릭하여 게시를 중지할 수 있습니다.",
     "VISLRC_PUBLISH_NONCE_TIMEOUT": "Nonce 계산이 너무 오래 걸렸습니다. 다시 시도해주세요.",
     "VISLRC_PUBLISH_NONCE_START": "Nonce 계산 중...",
     "VISLRC_PUBLISH_NONCE_PROGRESS": "Nonce 계산 중... (%s000000개 계산됨)",

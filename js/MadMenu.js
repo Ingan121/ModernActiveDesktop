@@ -14,8 +14,9 @@ class MadMenu {
     // menuOrder: An array of menu names in the order they appear in the menu bar
     // submenus: An array of submenu names
     // simpleMenus: An array of other context menus that are not part of the menu bar
+    // btnOnly: An array of menu buttons that do not have a corresponding menu
     // menu names are defined by the id of the menu button, the menu background, and the menu element (e.g. "fileMenuBtn", "fileMenuBg", and "fileMenu")
-    constructor(menuBar, menuOrder, submenus = [], simpleMenus = []) {
+    constructor(menuBar, menuOrder, submenus = [], simpleMenus = [], btnOnly = []) {
         this.menuBar = menuBar;
         this.menuOrder = menuOrder;
         this.submenus = submenus;
@@ -204,6 +205,16 @@ class MadMenu {
                     return;
                 }
                 this.closeMenu(simpleMenu);
+            });
+        }
+
+        for (const btn of btnOnly) {
+            const menuBtn = document.getElementById(btn);
+            menuBtn.addEventListener('pointerdown', (event) => {
+                menuBtn.dataset.active = true;
+            });
+            menuBtn.addEventListener('pointerup', (event) => {
+                delete menuBtn.dataset.active;
             });
         }
     }

@@ -20,6 +20,7 @@
 |![Solitaire Icon](apps/solitaire/icon.png)|Solitaire|A web-based remake of MS Solitaire|[Original](https://github.com/rjanjic/js-solitaire)<br>[MAD Version](https://github.com/Ingan121/ModernActiveDesktop/tree/master/apps/solitaire)|
 |<img src="apps/clock/icon.png" width="16" alt="Clock Icon">|Clock|A web-based remake of NT4 clock.exe|[Link](https://github.com/Ingan121/ModernActiveDesktop/tree/master/apps/clock)|
 |![Visualizer Icon](apps/visualizer/icon.png)|Visualizer|A music visualizer for Wallpaper Engine<br>WMP6 style controls with WMP7+ bar visualization<br>Lively Wallpaper is partially supported|[Link](https://github.com/Ingan121/ModernActiveDesktop/tree/master/apps/visualizer)|
+|![Visualizer Icon](apps/visualizer/icon.png)|Visualizer Lyrics|A lyrics viewer for the Visualizer app, using lyrics from LRCLIB|[Link](https://github.com/Ingan121/ModernActiveDesktop/tree/master/apps/visualizer/lyrics)|
 |![ChannelViewer Icon](apps/channelviewer/images/icon.png)|ChannelViewer|An IE4 remake with some elements of IE6<br>Supports loading webpages with a classic look and features|[Link](https://github.com/Ingan121/ModernActiveDesktop/tree/master/apps/channelviewer)|
 |![Calculator Icon](apps/calc/icon.png)|Calculator|A web-based remake of Windows calculator|[Link](https://github.com/Ingan121/ModernActiveDesktop/tree/master/apps/calc)|
 ||Configurator|Remake of the 'Display Properties' and 'Internet Options' control panel applets<br>Some of them are pretty pixel-perfect to the original|[Main](https://github.com/Ingan121/ModernActiveDesktop/tree/master/apps/madconf), [Internet](https://github.com/Ingan121/ModernActiveDesktop/tree/master/apps/inetcpl)|
@@ -27,7 +28,7 @@
 ## Included Themes
 * XP
     * A CSS theme based on XP.css
-    * Fallback schemes: Blue, Olive Green, Silver, and Royale
+    * Fallback schemes: Blue, Olive Green, Silver, Royale, Royale Noir, Zune, Embedded, and Watercolor
 * Aero
     * A CSS theme based on 7.css
 * Aero Basic
@@ -38,6 +39,10 @@
     * Simple CSS theme based on the looks of Needy Girl Overdose
     * Only the title bars are themed; other controls will use the generic Classic styles
 * Catppuccin Mocha
+* Windows 93 and 96 schemes
+* Arc-Dark
+* Blur
+    * My own experimental customization of the Windows Classic theme with a blur effect
 * Windows 1-3 schemes
 * Windows 11 high contrast schemes
 * Three schemes found in the JSPaint source files

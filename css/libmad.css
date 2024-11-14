@@ -86,7 +86,7 @@ body[data-no-underline] {
     user-select: none;
 }
 
-.menu:not([data-active]) > .menuBtn:hover {
+.menuBtn:hover {
     border-color: var(--button-hilight) var(--button-shadow) var(--button-shadow) var(--button-hilight);
 }
 

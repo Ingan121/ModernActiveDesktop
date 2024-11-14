@@ -32,6 +32,7 @@ let lastLyricsId = null;
 let lastMusic = null;
 let lastFetchInfo = {}; // For debugging
 let autoScroll = true;
+let nonceObj = null;
 let preferUnsynced = localStorage.madesktopVisLyricsForceUnsynced || // User preference
     !visStatus.mediaIntegrationAvailable || // No timeline available (only valild if Spotify is enabled)
     madRunningMode !== 1 || // Lively Wallpaper (no timeline support) or normal browsers (no MADVis support)
@@ -67,7 +68,7 @@ if (madRunningMode !== 1) {
 }
 
 // #region Menu Bar
-madDeskMover.menu = new MadMenu(menuBar, ['lrc'], ['save', 'sync']);
+madDeskMover.menu = new MadMenu(menuBar, ['lrc'], ['save', 'sync'], [], ['nonceIndicator']);
 
 lrcMenuItems[0].addEventListener('click', async function () { // Load Lyrics button
     if (madRunningMode === 0) {
@@ -260,6 +261,23 @@ syncMenuItems[4].addEventListener('click', function () { // Reset button
     syncDelayDisplay.textContent = '0s';
     processTimeline();
     delete localStorage.madesktopVisLyricsSyncDelay;
+});
+
+nonceIndicator.addEventListener('click', async function () { // Nonce indicator
+    if (nonceObj) {
+        const res = await madConfirm(madGetString('VISLRC_PUBLISH_NONCE_INFO'), null, {
+            icon: 'info',
+            title: 'locid:VISLRC_TITLE',
+            defaultBtn: 1,
+            cancelBtn: 1
+        });
+        if (res === false) {
+            nonceObj.worker.terminate();
+            nonceObj.resolve();
+            nonceObj = null;
+            nonceIndicator.style.display = 'none';
+        }
+    }
 });
 // #endregion
 
@@ -839,7 +857,7 @@ async function loadLyrics(idOrLrc, addOverride) {
             autoScrollBtn.classList.add('disabled');
             autoScrollBtn.classList.remove('checkedItem');
         }
-        if (addOverride && idOrLrc && !idOrLrc instanceof File && idOrLrc.length <= 10) {
+        if (addOverride && idOrLrc && !(idOrLrc instanceof File) && idOrLrc.length <= 10) {
             const hash = await getSongHash(visStatus.lastMusic?.artist, visStatus.lastMusic?.title, visStatus.lastMusic?.albumTitle);
             if (!hash) {
                 return;
@@ -1071,6 +1089,11 @@ function stripNonAlphaNumeric(str) {
         }
     }
     if (replaced === '' || replaced === str) {
+        // Try stripping 'from', 'feat.', or such stuff from alphanumeric only titles (usually for YT Music)
+        // The original title is in the DB in most cases though
+        if ((str.includes('(') && str.includes(')'))) {
+            return str.split('(')[0].trim();
+        }
         return null;
     } else if (replaced.startsWith('(') && replaced.endsWith(')')) {
         // This may return something like "Feat. whatever" but surprisingly only giving the feat stuff as artist works fine with LRCLIB (searchFallbackAccurate)
@@ -1173,6 +1196,9 @@ async function publish() {
     }
     const nonce = await getNonce(prefix, targetBytes);
     console.log('Nonce:', nonce);
+    if (nonce === undefined) {
+        return;
+    }
     if (nonce === -1) {
         madAlert(madGetString("VISLRC_PUBLISH_NONCE_TIMEOUT"), null, 'error', { title: 'locid:VISLRC_TITLE' });
         return;
@@ -1213,6 +1239,7 @@ async function publish() {
                 const data = e.data;
                 if (data.nonce) {
                     nonceIndicator.style.display = 'none';
+                    nonceObj = null;
                     resolve(data.nonce);
                 } else if (data.progress !== undefined) {
                     nonceIndicator.style.display = 'block';
@@ -1223,6 +1250,7 @@ async function publish() {
                     }
                 } else if (data.error) {
                     nonceIndicator.style.display = 'none';
+                    nonceObj = null;
                     if (data.error === 'timeout') {
                         resolve(-1);
                     } else {
@@ -1232,8 +1260,14 @@ async function publish() {
             };
             worker.onerror = (e) => {
                 nonceIndicator.style.display = 'none';
+                nonceObj = null;
                 reject(e);
             };
+            nonceObj = {
+                worker: worker,
+                resolve: resolve,
+                reject: reject
+            }
         });
     }
 }

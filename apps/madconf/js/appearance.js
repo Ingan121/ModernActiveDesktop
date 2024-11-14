@@ -913,7 +913,18 @@ async function main() {
         };
         const [fileHandle] = await window.showOpenFilePicker(pickerOpts);
         const file = await fileHandle.getFile();
-        const text = await file.text();
+        
+        const arrayBuffer = await file.arrayBuffer();
+        const uint8Array = new Uint8Array(arrayBuffer);
+
+        let encoding = 'utf-8';
+        if (uint8Array[0] === 0xFF && uint8Array[1] === 0xFE) {
+            encoding = 'utf-16le';
+        } else if (uint8Array[0] === 0xFE && uint8Array[1] === 0xFF) {
+            encoding = 'utf-16be';
+        }
+
+        const text = new TextDecoder(encoding).decode(arrayBuffer);
 
         if (text.match("--.*:.*;") || file.name.endsWith(".css")) {
             parent.changeColorScheme(text);

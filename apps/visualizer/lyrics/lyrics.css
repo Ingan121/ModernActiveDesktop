@@ -18,8 +18,11 @@ body {
 #loadingIndicator,
 #nonceIndicator {
     margin-left: auto;
-    pointer-events: none;
     display: none;
+}
+
+#loadingIndicator {
+    pointer-events: none;
 }
 
 #lyricsView {

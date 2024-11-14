@@ -75,6 +75,14 @@ window.simulate("Missy Elliott", "Let It Bump", "This Is Not A Test"); // Only u
 window.simulate("2NE1", "Lollipop", "2NE1 1st Mini Album"); // Weird case that only the romanized version is synced
 window.simulate("GFRIEND", "칵테일 사랑", "투유프로젝트 - Sugar Man3 Episode.10") // The album title is being handled weirdly in both get (occationally) and accurate search
 window.simulate("TWICE","올해 제일 잘한 일 / The Best Thing I Ever Did","The year of \"YES\"",true,"TWICE","올해 제일 잘한 일 / The Best Thing I Ever Did","The year of \"YES\"",210.45)
+
+// YTM - these worked out of the box tho, just brought these to test new stripNonAlphaNumeric logic involving all-English titles
+window.simulate("Justin Timberlake", 'CAN\'T STOP THE FEELING! (from DreamWorks Animation\'s "TROLLS")', "");
+window.simulate("Maroon 5", 'Moves like Jagger (Studio Recording from "The Voice" Performance) (feat. Christina Aguilera)', "");
+window.simulate("Idina Menzel", 'Let It Go (From "Frozen"/Soundtrack Version)', "");
+window.simulate("LMFAO", 'Party Rock Anthem (feat. Lauren Bennett, GoonRock)', "");
+window.simulate("PSY", "That That (prod. & feat. SUGA of BTS) (feat. SUGA of BTS)", "");
+window.simulate("여자친구(GFRIEND)", '짠 Cheers (From "한입만, Season 2 Just One Bite, Season 2")', "");
 -----END MY DEVTOOLS CONSOLE DUMP-----
 
 -----BEGIN COPILOT NONSENSE-----
