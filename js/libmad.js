@@ -183,7 +183,7 @@
     const styleElement = document.getElementById("style");
     const deskMoverNum = frameElement.dataset.num || 0;
     const deskMover = top.deskMovers[deskMoverNum];
-    const config = deskMover.config;
+    const config = deskMover?.config || {};
 
     window.log = top.log;
 

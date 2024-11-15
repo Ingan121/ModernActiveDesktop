@@ -614,7 +614,7 @@
     "VISLRCFIND_ADVANCED_EXPAND": "고급(&D) >>",
     "VISLRCFIND_ADVANCED_COLLAPSE": "고급(&D) <<",
 
-    "VIS2ND_TITLE": "미디어",
+    "VIS2ND_TITLE": "지금 재생",
     "VIS2ND_NO_PRIMARY": "주 시각화가 실행 중이 아닙니다. <a href=\"javascript:madOpenWindow('apps/visualizer/index.html', false, { width: '725px', height: '380px', top: '200px', left: '500px' });\">시각화를 실행</a>해주세요.",
     "VIS2ND_VIEW_MENUITEM_CLOSE": "부 시각화 닫기(&C)",
     "VIS2ND_OPT_MENUITEM_MISC": "기타(&M)",

@@ -43,7 +43,7 @@
     --menu-height: 19px;
     --palette-title-height: 22px;
     --ui-font: "Segoe UI", "SegoeUI", "Noto Sans", sans-serif;
-    --caption-font: 9pt/1.2 var(--ui-font);
+    --caption-font: 9pt/1.1 var(--ui-font);
     --menu-font: 9pt/0.9 var(--ui-font);
     --message-font: 9pt var(--ui-font);
     --status-font: 9pt var(--ui-font);

@@ -896,7 +896,7 @@ function parseLrc(string) {
                 const seconds = parseInt(t[0]) * 60 + parseFloat(t[1]);
                 lyrics.push({
                     time: seconds,
-                    text: text
+                    text: text.trim()
                 });
             }
         }
