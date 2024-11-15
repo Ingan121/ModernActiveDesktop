@@ -52,18 +52,15 @@ FontDetective.each(font => {
     fonts.push(font.name);
 });
 
-if (localStorage.madesktopDebugMode) {
-    showSpotifyBtn.style.display = "block";
-}
-
 if (madRunningMode !== 1) {
     syncInfoText.locId = "VISLRCCONF_SYNCED_UNAVAILABLE";
     forceUnsyncedChkBox.disabled = true;
     smoothScrollChkBox.disabled = true;
 }
 if (madRunningMode === 0) {
-    showSpotifyBtn.style.display = "none";
     tipsFieldset.style.display = "none";
+} else if (localStorage.madesktopDebugMode) {
+    showSpotifyBtn.style.display = "block";
 }
 
 showSpotifyBtn.addEventListener("click", function () {

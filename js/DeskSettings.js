@@ -73,6 +73,8 @@
                     } else {
                         bgHtmlView.src = localStorage.madesktopBgHtmlSrc;
                     }
+                } else {
+                    bgHtmlView.src = "bghtml/index.html";
                 }
                 break;
         }
@@ -734,6 +736,10 @@
                         // Don't export the WPE image path; normalize it
                         madConfig[key] = "!wpewall";
                     }
+                    continue;
+                } else if (key === "madesktopBgHtmlSrc" && localStorage.madesktopBgHtmlSrc.startsWith("file:///")) {
+                    // Don't export the local HTML file path
+                    continue;
                 }
                 madConfig[key] = localStorage[key];
             }

@@ -77,7 +77,6 @@
     window.confDeskMover = null;
     
     // #region Early function exports
-    window.log = log;
     window.saveZOrder = saveZOrder;
     window.activateWindow = activateWindow;
     window.cascadeWindow = cascadeWindow;
@@ -133,7 +132,11 @@
 
     loadConfigs();
 
-    deskMovers[0] = new DeskMover(windowContainerBase, "");
+    if (localStorage.madesktopItemVisible === "false") {
+        windowContainerBase.style.display = "none";
+    } else {
+        deskMovers[0] = new DeskMover(windowContainerBase, "");
+    }
     initSimpleMover(msgbox, msgboxTitlebar, [msgboxCloseBtn]);
     initSimpleMover(osk, oskTitlebar, []);
     if (localStorage.madesktopChanViewTopMargin || localStorage.madesktopChanViewRightMargin) {
@@ -287,10 +290,6 @@
                     migratorWindow.closeWindow();
                 }
             });
-    }
-
-    if (localStorage.madesktopItemVisible === "false") {
-        windowContainerBase.style.display = "none";
     }
     // #endregion
 
@@ -830,7 +829,7 @@
     // Also its modal for everything, which is not good
     // Finish buildstuff/MadDialog.js and use that instead
     // Probably in 3.5
-    async function madAlert(msg, callback, icon = "info", options = {}) {
+    function madAlert(msg, callback, icon = "info", options = {}) {
         return new Promise(resolve => {
             // Close the previous dialog if it's open
             if (msgbox.style.display === "block") {
@@ -887,14 +886,14 @@
                 document.removeEventListener('keyup', keyup);
                 msgboxBtn1.removeEventListener('click', close);
                 msgboxCloseBtn.removeEventListener('click', close);
-                deskMovers[activeWindow].windowTitlebar.classList.remove("inactive");
+                deskMovers[activeWindow]?.windowTitlebar.classList.remove("inactive");
                 if (callback) callback();
                 resolve();
             }
         });
     }
 
-    async function madConfirm(msg, callback, options = {}) {
+    function madConfirm(msg, callback, options = {}) {
         return new Promise(resolve => {
             // Close the previous dialog if it's open
             if (msgboxBg.style.display === "block") {
@@ -1010,12 +1009,12 @@
                 msgboxBtn2.removeEventListener('click', btn2);
                 msgboxBtn3.removeEventListener('click', btn3);
                 msgboxCloseBtn.removeEventListener('click', cancelBtn);
-                deskMovers[activeWindow].windowTitlebar.classList.remove("inactive");
+                deskMovers[activeWindow]?.windowTitlebar.classList.remove("inactive");
             }
         });
     }
 
-    async function madPrompt(msg, callback, hint = "", text = "", spAlrFailed = false) {
+    function madPrompt(msg, callback, hint = "", text = "", spAlrFailed = false) {
         return new Promise(async resolve => {
             if (kbdSupport === 0 && (!localStorage.sysplugIntegration || spAlrFailed)) {
                 // Only call prompt if the system plugin integration is disabled or already failed before calling madPrompt
@@ -1110,7 +1109,7 @@
                 msgboxBtn1.removeEventListener('click', ok);
                 msgboxBtn2.removeEventListener('click', close);
                 msgboxCloseBtn.removeEventListener('click', close);
-                deskMovers[activeWindow].windowTitlebar.classList.remove("inactive");
+                deskMovers[activeWindow]?.windowTitlebar.classList.remove("inactive");
             }
         });
     }
@@ -1134,7 +1133,7 @@
         }
 
         if (!localStorage.madesktopNoDeactivate) {
-            deskMovers[activeWindow].windowTitlebar.classList.add("inactive");
+            deskMovers[activeWindow]?.windowTitlebar.classList.add("inactive");
         }
         msgboxBg.style.display = "block";
         msgbox.style.top = (vHeight - msgbox.offsetHeight) / 2 + "px";

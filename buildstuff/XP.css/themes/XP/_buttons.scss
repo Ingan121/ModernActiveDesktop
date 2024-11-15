@@ -17,6 +17,7 @@ body:not(.unthemed) button:not(.window-button):not(.lightweight):not(.toggle) {
     border-radius: 3px;
     &:not(:disabled) {
         &:active,
+        &[data-active],
         &.active {
             box-shadow: none !important;
             background: linear-gradient(

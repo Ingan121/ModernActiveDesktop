@@ -521,7 +521,7 @@ async function searchFallbackAccurate(mode = 0) { // 0: Normal, 1: No album titl
             break;
         case 2:
             // In case the artist name comes in a format not in the DB
-            // Test case: "QUEEN BEE - メフィスト (メフィスト)" - only the Japanese name is in the DB. Same for "fromis_9 - Supersonic" above
+            // Test case: "QUEEN BEE - メフィスト (メフィスト)" - only the Japanese name is in the DB. Same for "fromis_9 - Supersonic" above (well this doesn't work well; Supersonic both as title and album is too common. I reuploaded the song with English artist name anyway)
             // So try without the artist name too - it's possible unlike the get api which mandates the artist name
             // I believe title name + album title is more accurate than the inaccurate search fallback?
             // This also works with localized artist names. That's not a primarily supported case though. May not work if title is fully localized with no English part
@@ -1231,7 +1231,7 @@ async function publish() {
         madAlert(madGetString("VISLRC_PUBLISH_SUCCESS") + '<br>' + result.message, null, 'error', { title: 'locid:VISLRC_TITLE' });
     }
 
-    async function getNonce(prefix, targetBytes) {
+    function getNonce(prefix, targetBytes) {
         return new Promise((resolve, reject) => {
             const worker = new Worker('nonce.js');
             worker.postMessage({ prefix, targetBytes });
@@ -1417,7 +1417,7 @@ function showDebugInfo() {
         } else if (lastFetchInfo.urls) {
             msg += 'URLs tried:<br>';
             for (let i = 0; i < lastFetchInfo.urls.length; i++) {
-                msg += '- ' + decodeURIComponent(lastFetchInfo.urls[i]) + ' (';
+                msg += '- ' + escapeHTML(decodeURIComponent(lastFetchInfo.urls[i])) + ' (';
                 switch (lastFetchInfo.attempt[i]) {
                     case 1:
                         msg += 'Synced';

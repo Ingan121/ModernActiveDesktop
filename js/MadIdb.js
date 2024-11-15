@@ -34,7 +34,7 @@
         }
     });
 
-    async function madIdbGetItem(key) {
+    function madIdbGetItem(key) {
         return new Promise((resolve, reject) => {
             const db = indexedDB.open("madesktop", 1);
             db.onupgradeneeded = function () {
@@ -57,7 +57,7 @@
         });
     }
 
-    async function madIdbSetItem(key, value) {
+    function madIdbSetItem(key, value) {
         return new Promise((resolve, reject) => {
             const db = indexedDB.open("madesktop", 1);
             db.onupgradeneeded = function () {
@@ -80,7 +80,7 @@
         });
     }
 
-    async function madIdbDeleteItem(key) {
+    function madIdbDeleteItem(key) {
         return new Promise((resolve, reject) => {
             const db = indexedDB.open("madesktop", 1);
             db.onupgradeneeded = function () {
@@ -103,7 +103,7 @@
         });
     }
 
-    async function madIdbItemExists(key) {
+    function madIdbItemExists(key) {
         return new Promise((resolve, reject) => {
             const db = indexedDB.open("madesktop", 1);
             db.onupgradeneeded = function () {

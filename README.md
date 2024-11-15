@@ -54,6 +54,7 @@
 * ChannelViewer
     * Hook fetch / XHR with fetchProxy to get AJAX sites working when force-loaded
     * Also deal with the origin header - Google, YT, etc. checks for it and returns 403. This also affects Wallpaper Engine or other environments with the same origin policy disabled.
+    * Isolate / sandbox the iframe to prevent the site from breaking the desktop - seems using a non-same origin iframe prevents the loaded site from crashing the whole MAD
 * WindowMetrics (`extra-border-size`) support for Active Desktop style DeskMovers
 * Refactor the dialog system
     * Support being modal only to the parent window

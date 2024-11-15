@@ -173,7 +173,7 @@
         return;
     }
 
-    async function waitForAnim(elem) {
+    function waitForAnim(elem) {
         if (elem.style.animationName === "none") return;
         return new Promise(resolve => {
             elem.addEventListener('animationend', function () {
@@ -182,7 +182,7 @@
         });
     }
 
-    async function asyncTimeout(ms) {
+    function asyncTimeout(ms) {
         return new Promise(resolve => {
             setTimeout(resolve, ms);
         });
@@ -296,7 +296,7 @@
     }
 
     // https://stackoverflow.com/a/69118077
-    async function showOpenFilePicker(options = {}) {
+    function showOpenFilePicker(options = {}) {
         return new Promise((resolve) => {
             const input = document.createElement("input");
             input.type = "file";

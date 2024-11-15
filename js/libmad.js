@@ -552,7 +552,7 @@
             window.madOpenExternal = function (url) {
                 window.open(url, "_blank");
             }
-            window.madAlert = async function (msg, callback, icon) {
+            window.madAlert = function (msg, callback, icon) {
                 return new Promise((resolve) => {
                     alert(msg.replaceAll("<br>", "\n"));
                     if (callback) {
@@ -562,7 +562,7 @@
                 });
             }
             window.madAlert.fallback = true;
-            window.madConfirm = async function (msg, callback) {
+            window.madConfirm = function (msg, callback) {
                 return new Promise((resolve) => {
                     const result = confirm(msg.replaceAll("<br>", "\n"));
                     if (callback) {
@@ -572,7 +572,7 @@
                 });
             }
             window.madConfirm.fallback = true;
-            window.madPrompt = async function (msg, callback, hint, text) {
+            window.madPrompt = function (msg, callback, hint, text) {
                 return new Promise((resolve) => {
                     const result = prompt(msg.replaceAll("<br>", "\n"), text);
                     if (callback) {

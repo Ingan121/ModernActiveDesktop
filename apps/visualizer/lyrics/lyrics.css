@@ -26,7 +26,7 @@ body {
 }
 
 #lyricsView {
-    height: calc(100% - var(--menu-height) - 6px);
+    height: calc(100% - var(--menu-height) - var(--client-edge-size) * 2 - 2px);
     overflow-y: scroll;
     text-align: center;
     white-space: pre-wrap;

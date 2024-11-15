@@ -112,7 +112,7 @@ let urlAppend = "";
                 break;
             }
             let json;
-            if (file.type === 'application/json') {
+            if (file.type === 'application/json' || file.type.startsWith('text/')) {
                 json = await file.text();
             } else {
                 // Decompress gzip
@@ -221,10 +221,14 @@ let urlAppend = "";
     }
 
     console.log("Done");
-    // WPE somehow doesn't navigate to page if hash is provided without a question mark
-    // So we need to add a question mark if hash is provided and running in WPE
-    if (urlAppend && typeof wallpaperOnVideoEnded === "function") {
-        urlAppend = "?" + urlAppend;
+    if (urlAppend) {
+        // WPE somehow doesn't navigate to page if hash is provided without a question mark
+        // So we need to add a question mark if hash is provided and running in WPE
+        if (typeof wallpaperOnVideoEnded === "function") {
+            urlAppend = "?" + urlAppend;
+        }
+        // Break on error
+        debugger;
     }
     location.replace('index.html' + urlAppend);
 })();
