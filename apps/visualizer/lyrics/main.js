@@ -1027,6 +1027,12 @@ function processTimeline() {
                             // scrolling to the top of the lyricsView
                             // don't use scrollIntoView with behavior: 'smooth' here as it causes jittering
                             lyricsView.scrollTop = 0;
+                        } else if (lyric.offsetTop > lyricsView.scrollHeight - lyricsView.offsetHeight / 2) {
+                            // scrolling to the bottom of the lyricsView
+                            lyricsView.scrollTo({
+                                top: lyricsView.scrollHeight,
+                                behavior: localStorage.madesktopVisLyricsSmoothScroll ? 'smooth' : 'instant'
+                            });
                         } else {
                             lyric.scrollIntoView({
                                 block: 'center', 
