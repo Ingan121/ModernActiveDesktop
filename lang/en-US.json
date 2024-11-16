@@ -85,8 +85,8 @@
     "MAD_MSG_SYSPLUG_UPDATED": "System plugin has been updated, and it needs a reinstall. Please update it with the setup guide.",
     "MAD_MSG_MIGRATION_INCOMPLETE": "The data migration check has not been completed. Do you want to retry it?",
     "MAD_MSG_LOCALSTORAGE_FULL": "Local storage is full! This is likely due to the large amount of JS Paint images. Expect things to break until this is resolved.<br>Do you want to open JS Paint to review the images?",
-    "MAD_MSG_LOCALSTORAGE_FULL_ON_IMPORT": "Config import failed because local storage is full. It seems that another application is using a lot of local storage. Do you want to completely clear the local storage? This will affect other applications on this domain.",
-    "MAD_MSG_LOCALSTORAGE_FULL_ON_IMPORT_WPE": "Config import failed because local storage is full. It seems that other wallpapers are using a lot of local storage. Do you want to completely clear the local storage? This will affect other wallpapers' saved data too. (Won't affect things set in the Wallpaper Engine properties panel.)",
+    "MAD_MSG_LOCALSTORAGE_FULL_ON_IMPORT": "Config import failed because local storage is full. It might be possible that another application is using a lot of local storage. Do you want to completely clear the local storage? This will affect other applications on this origin.",
+    "MAD_MSG_LOCALSTORAGE_FULL_ON_IMPORT_WPE": "Config import failed because local storage is full. It might be possible that other wallpapers are using a lot of local storage. Do you want to completely clear the local storage? This will affect other wallpapers' saved data too. (Won't affect things set in the Wallpaper Engine properties panel.)",
     "MAD_MSG_SCALE_RESET": "The scale factor has reset as the screen size was too small.",
 
     "MAD_DEBUG_LOCATION": "Loaded from %s",
@@ -631,6 +631,15 @@
     "VISLRC_PUBLISH_FINAL_CONFIRM": "Please review the following information before publishing the lyrics to LRCLIB:\n\nArtist: %1s\nTitle: %2s\nAlbum: %3s\nDuration: %4s\n\nLyrics:\n%5s\n...\n\nBy clicking OK, you agree to publish the lyrics to LRCLIB.",
     "VISLRC_PUBLISH_SUCCESS": "Lyrics published successfully!",
     "VISLRC_PUBLISH_FAIL": "Failed to publish lyrics.",
+
+    "VISLRC_1STRUN_WELCOME": "Welcome to %n Visualizer Lyrics! Please answer a few questions to help us optimize your experience.",
+    "VISLRC_1STRUN_Q_SPOTIFY": "Are you using the Spotify Desktop application to listen to music?<br><br>If you are using the Spotify web player, we recommend switching to the desktop player for the best experience.",
+    "VISLRC_1STRUN_INFO_SPOTIFY": "For the best lyrics-finding results, please set the Spotify app's language to English.",
+    "VISLRC_1STRUN_Q_BROWSER": "Are you using a web browser to listen to music?",
+    "VISLRC_1STRUN_Q_YT": "Are you using YouTube or YouTube Music to listen to music?",
+    "VISLRC_1STRUN_INFO_YT": "It is recommended to use YouTube Music over YouTube for the best experience.<br>Also, for the best lyrics finding results, please set YouTube Music's UI language to English.",
+    "VISLRC_1STRUN_Q_TIMELINE": "Does your media player provide timeline information?",
+    "VISLRC_1STRUN_INFO_COMMON": "You can change these settings later in Lyrics -> Options and Visualizer -> View -> Estimate Timeline.<br>(Move the cursor to the top of the screen if the Visualizer is running in full screen.)<br><br>Thank you for using %n!",
 
     // #region Visualizer Lyrics Configuration strings
     "VISLRCCONF_TITLE": "Lyrics Properties",

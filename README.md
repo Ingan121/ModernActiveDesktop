@@ -93,6 +93,11 @@
 * ModernActiveDesktop is primarily optimized for Chromium 124 and higher. Some features may not work or look well on other browsers.
     * The display scaling feature is currently buggy on Firefox (which is only supported on FF 126 and newer)
 
+## Hidden Features
+* In the About tab of the properties window, click the ModernActiveDesktop logo and click Apply to enable the debug mode.
+* In the scheme save dialog, type `!copycss`, `!copyjson`, `!copyreg`, or `!copytheme` to export the scheme as a CSS file, JSON file, a registry file for HKCU\Control Panel\Colors, or a Windows *.theme file, respectively.
+* In a color picker window, click the big color preview box to enter a CSS color value. Also, prepend `!` to the color value to bypass additional processing and just apply it directly. This will allow transparent colors and other CSS color values that are not supported by the color picker. Examples: `#ff0000`, `rgb(128, 128, 128)`, `teal`, `!transparent`
+
 ## Contributing
 * Please read [Translating.md](docs/Translating.md) for information on translating ModernActiveDesktop.
 

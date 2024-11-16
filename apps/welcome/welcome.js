@@ -41,10 +41,10 @@ if (navigator.userAgent.match("Windows NT 6.1")) {
     }
 }
 
-for (const supportedLang in window.madSupportedLanguages) {
+for (const supportedLang in window.madStrings.supportedLanguages) {
     const option = document.createElement('option');
     option.value = supportedLang;
-    option.textContent = window.madSupportedLanguages[supportedLang];
+    option.textContent = window.madStrings.supportedLanguages[supportedLang];
     langSelector.insertBefore(option, langSelector.lastElementChild);
 }
 

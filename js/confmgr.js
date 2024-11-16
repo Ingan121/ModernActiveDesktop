@@ -79,6 +79,7 @@ const keysToIgnoreOnPreset = [
     'madesktopVisGuessTimeline',
     'madesktopVisLyricsForceUnsynced',
     'madesktopVisLyricsOverrides',
+    'madesktopVisLyricsRanOnce',
     // Debug configs
     'madesktopDebugMode',
     'madesktopDebugLog',

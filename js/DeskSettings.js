@@ -718,6 +718,7 @@
             'madesktopCheckedGitHub',
             'madesktopVisGuessTimeline',
             'madesktopVisLyricsForceUnsynced',
+            'madesktopVisLyricsRanOnce',
             // Debug configs
             'madesktopDebugMode',
             'madesktopDebugLog',

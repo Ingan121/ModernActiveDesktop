@@ -10,7 +10,7 @@ The system plugin provides some useful features for your experience with ModernA
 ## Setup Guide
 To install the ModernActiveDesktop System Plugin, please follow the instructions below.
 1. Open the Wallpaper Engine's wallpaper selection window.
-2. Right-click this wallpaper.
+2. Right-click this wallpaper. If you are using a preset, find the main 'Windows 98 Desktop Experience' wallpaper and right-click it.
 3. Click 'Open in Explorer'  
 ![Step 2-3](images/sysplug1.png)
 4. Run the 'Install System Plugin' batch file.  

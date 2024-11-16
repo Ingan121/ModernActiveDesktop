@@ -73,7 +73,8 @@ showSpotifyBtn.addEventListener("click", function () {
 spotifyLoginBtn.addEventListener("click", async function () {
     if (!localStorage.madesktopVisSpotifyInfo) {
         if (!localStorage.sysplugIntegration) {
-            madAlert(madGetString("VISLRCCONF_SPOTIFY_SYSPLUG_REQUIRED"), null, "warning");
+            await madAlert(madGetString("VISLRCCONF_SPOTIFY_SYSPLUG_REQUIRED"), null, "warning");
+            madOpenWindow('SysplugSetupGuide.md', true);
             return;
         }
         try {

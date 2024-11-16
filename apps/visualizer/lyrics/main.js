@@ -838,6 +838,7 @@ async function loadLyrics(idOrLrc, addOverride) {
                 p.dataset.time = line.time;
                 lyricsView.appendChild(p);
             });
+            lyricsView.scrollTop = 0;
             lastSyncedLyricsParsed = lrc;
 
             autoScroll = true;
@@ -1556,6 +1557,36 @@ async function init() {
         visDeskMover.addEventListener('mediaProperties', processProperties);
         visDeskMover.addEventListener('mediaTimeline', processTimeline);
         visDeskMover.addEventListener('load', init, null, 'iframe');
+
+        if (!localStorage.madesktopVisLyricsRanOnce) {
+            localStorage.madesktopVisLyricsRanOnce = true;
+            const options = {
+                icon: 'question',
+                title: 'locid:VISLRC_TITLE',
+                btn1: 'locid:UI_YES',
+                btn2: 'locid:UI_NO',
+                cancelBtn: 2
+            };
+            const commonFinalMsg = madGetString("VISLRC_1STRUN_INFO_COMMON");
+
+            await madAlert("locid:VISLRC_1STRUN_WELCOME", null, 'info', { title: 'locid:VISLRC_TITLE' });
+
+            if (await madConfirm(madGetString("VISLRC_1STRUN_Q_SPOTIFY"), null, options)) {
+                localStorage.madesktopVisGuessTimeline = true;
+                madAlert(madGetString("VISLRC_1STRUN_INFO_SPOTIFY") + "<br><br>" + commonFinalMsg, null, 'info', { title: 'locid:VISLRC_TITLE' });
+            } else if (await madConfirm(madGetString("VISLRC_1STRUN_Q_BROWSER"), null, options)) {
+                localStorage.madesktopVisGuessTimeline = '2';
+                if (await madConfirm(madGetString("VISLRC_1STRUN_Q_YT"), null, options)) {
+                    madAlert(madGetString("VISLRC_1STRUN_INFO_YT") + "<br><br>" + commonFinalMsg, null, 'info', { title: 'locid:VISLRC_TITLE' });
+                } else {
+                    madAlert(commonFinalMsg, null, 'info', { title: 'locid:VISLRC_TITLE' });
+                }
+            } else if (!await madConfirm(madGetString("VISLRC_1STRUN_Q_TIMELINE"), null, options)) {
+                localStorage.madesktopVisLyricsForceUnsynced = true;
+                madAlert(commonFinalMsg, null, 'info', { title: 'locid:VISLRC_TITLE' });
+            }
+            visDeskMover.windowElement.contentWindow.location.reload();
+        }
     } else if (madRunningMode !== 0) {
         lyricsView.innerHTML = '<mad-string data-locid="VISLRC_STATUS_NO_MADVIS"></mad-string>';
     } else {

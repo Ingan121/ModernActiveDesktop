@@ -8,41 +8,42 @@
 'use strict';
 
 (function () {
-    // Non-localizable strings
-    const appName = "ModernActiveDesktop";
-    const author = "Ingan121";
-    const channelViewer = "ChannelViewer";
-
-    window.madStrings = !!frameElement ? (top.madStrings || {}) : {};
-    let fallbackStrings = null;
-
     const supportedLanguages = {
         "en-US": "English",
         "ko-KR": "한국어"
     };
-    window.madSupportedLanguages = supportedLanguages;
 
-    let lang = (!!frameElement ? top.madLang : null) || localStorage.madesktopLang || navigator.language || navigator.userLanguage;
-    window.madLang = lang;
+    window.madLang = (!!frameElement ? top.madLang : null) || localStorage.madesktopLang || navigator.language || navigator.userLanguage;
+
+    const madStrings = {
+        loaded: false,
+        supportedLanguages: supportedLanguages,
+        strings: {},
+        fallbackStrings: null
+    };
+    window.madStrings = madStrings;
 
     const localizableElements = [];
     const titleElem = document.querySelector("title");
     const titleLocId = titleElem.dataset.locid;
     const langStyleElement = document.getElementById("langStyle");
 
-    let languageReady = window.madStrings.loaded;
+    // Non-localizable strings
+    const appName = "ModernActiveDesktop";
+    const author = "Ingan121";
+    const channelViewer = "ChannelViewer";
 
-    if (!(lang in supportedLanguages)) {
-        if (lang.length === 2) {
+    if (!(window.madLang in supportedLanguages)) {
+        if (window.madLang.length === 2) {
             for (const supportedLang in supportedLanguages) {
-                if (lang.slice(0, 2) === supportedLang.slice(0, 2)) {
-                    lang = supportedLang;
+                if (window.madLang.slice(0, 2) === supportedLang.slice(0, 2)) {
+                    window.madLang = supportedLang;
                     break;
                 }
             }
         }
-        if (!(lang in supportedLanguages)) {
-            lang = "en-US";
+        if (!(window.madLang in supportedLanguages)) {
+            window.madLang = "en-US";
         }
     }
 
@@ -61,73 +62,75 @@
                 }
             }
             if (!isInit) {
-                lang = newLang;
-                window.madLang = lang;
+                window.madLang = newLang;
             }
             try {
-                window.madStrings = await loadLanguageFile(lang);
+                const strings = await loadLanguageFile(newLang);
+                madStrings.strings = strings;
                 readyAll();
-                languageReady = true;
-                window.madStrings.loaded = true;
+                madStrings.loaded = true;
                 const announceFunc = window.announce || window.madAnnounce;
                 if (announceFunc) {
                     announceFunc("language-ready");
                 }
 
                 const logFunc = (isInit && window.logTimed) ? window.logTimed : console.log;
-                logFunc(`MADStrings: Language ${lang} loaded successfully`);
+                logFunc(`MADStrings: Language ${window.madLang} loaded successfully`);
 
                 if (isInit) {
-                    if (lang === "en-US") {
-                        fallbackStrings = window.madStrings;
+                    if (window.madLang === "en-US") {
+                        madStrings.fallbackStrings = strings;
                     } else {
                         try {
-                            fallbackStrings = await loadLanguageFile("en-US");
+                            madStrings.fallbackStrings = await loadLanguageFile("en-US");
                             logFunc(`MADStrings: Fallback language en-US loaded successfully`);
                         } catch (err) {
                             console.error(`Failed to load fallback language file for en-US.\n`, err);
                         }
                     }
                 }
-                if (fallbackStrings) {
-                    window.madStrings.fallbackStrings = fallbackStrings;
-                }
             } catch (err) {
-                if (lang === "en-US") {
+                if (window.madLang === "en-US") {
                     console.error(`Failed to load language file for en-US.\n`, err);
                     // This is a critical error, so we need to show an alert
                     // Unless we're in a file:// context (main.js will show the alert in that case)
                     window.addEventListener("load", () => {
                         // Wait for window.madAlert to be defined (in main.js)
-                        if (!languageReady && !window.madFileUriRestricted) {
+                        if (!madStrings.loaded && !window.madFileUriRestricted) {
                             // Avoid window.alert when running MAD normally, as it softlocks WPE 2.5+
                             const alertFunc = window.madMainWindow ? window.madAlert : window.alert;
                             alertFunc("ModernActiveDesktop failed to load the language file for en-US. Expect things to be broken. Check the console for more information.", null, "error");
                         }
                     });
                 } else if (isInit) {
-                    console.error(`Failed to load language file for ${lang}. Trying to load English instead.`);
+                    console.error(`Failed to load language file for ${window.madLang}. Trying to load English instead.`);
                     changeLanguage("en-US");
                 } else {
-                    console.error(`Failed to load language file for ${lang}.`);
+                    console.error(`Failed to load language file for ${window.madLang}.`);
                 }
             }
         }
-        changeLanguage(lang, true);
+        changeLanguage(window.madLang, true);
     } else {
-        document.documentElement.lang = lang;
-        if (languageReady) {
+        if (frameElement && top.madStrings) {
+            madStrings.strings = top.madStrings.strings;
+            madStrings.fallbackStrings = top.madStrings.fallbackStrings;
+            madStrings.loaded = top.madStrings.loaded;
+        }
+
+        document.documentElement.lang = window.madLang;
+        if (madStrings.loaded) {
             updateTitle(true);
             updateStyle();
         }
         window.addEventListener("message", (event) => {
             if (event.data.type === "language-ready") {
-                window.madStrings = top.madStrings;
-                lang = top.madLang;
-                window.madLang = lang;
-                document.documentElement.lang = lang;
+                madStrings.strings = top.madStrings.strings;
+                madStrings.fallbackStrings = top.madStrings.fallbackStrings;
+                window.madLang = top.madLang;
+                document.documentElement.lang = window.madLang;
                 readyAll();
-                languageReady = true;
+                madStrings.loaded = true;
             }
         });
     }
@@ -178,7 +181,7 @@
         }
         updateTitle();
         updateStyle();
-        document.documentElement.lang = lang;
+        document.documentElement.lang = window.madLang;
         if (window.madMainWindow && window.showDebugInfo) {
             showDebugInfo();
         }
@@ -200,8 +203,8 @@
 
     function updateStyle() {
         if (langStyleElement) {
-            if (window.madStrings["STYLESHEET"]) {
-                langStyleElement.textContent = window.madStrings["STYLESHEET"];
+            if (madStrings.strings["STYLESHEET"]) {
+                langStyleElement.textContent = madStrings.strings["STYLESHEET"];
             } else {
                 langStyleElement.textContent = "";
             }
@@ -209,13 +212,13 @@
     }
 
     function getString(locId) {
-        if (window.madStrings[locId]) {
-            return processString(window.madStrings[locId], ...Array.from(arguments).slice(1));
-        } else if (window.madStrings.fallbackStrings?.[locId]) {
+        if (madStrings.strings[locId]) {
+            return processString(madStrings.strings[locId], ...Array.from(arguments).slice(1));
+        } else if (madStrings.fallbackStrings?.[locId]) {
             console.info(`Fallback string used for locId ${locId}`);
-            return processString(window.madStrings.fallbackStrings?.[locId], ...Array.from(arguments).slice(1));
+            return processString(madStrings.fallbackStrings?.[locId], ...Array.from(arguments).slice(1));
         } else {
-            if (languageReady) {
+            if (madStrings.loaded) {
                 console.error(`No string found for locId ${locId}`);
             }
             return locId;
@@ -245,13 +248,13 @@
         }
 
         ready(isLocIdChange) {
-            if (window.madStrings[this.locId]) {
-                this.innerHTML = processString(window.madStrings[this.locId]);
-            } else if (window.madStrings.fallbackStrings?.[this.locId]) {
+            if (madStrings.strings[this.locId]) {
+                this.innerHTML = processString(madStrings.strings[this.locId]);
+            } else if (madStrings.fallbackStrings?.[this.locId]) {
                 console.info(`Fallback string used for locId ${this.locId}`);
-                this.innerHTML = processString(window.madStrings.fallbackStrings?.[this.locId]);
+                this.innerHTML = processString(madStrings.fallbackStrings?.[this.locId]);
             } else {
-                if (languageReady) {
+                if (madStrings.loaded) {
                     console.error(`No string found for locId ${this.locId}`);
                 }
                 if (isLocIdChange || !this.innerHTML) {

@@ -102,9 +102,12 @@ let schemeTopColor = null;
 
 const visStatus = {};
 madDeskMover.visStatus = visStatus;
+
 let timelineGuesserTick = null;
 let secondDifferences = [];
 let lastTimelineEventTime = 0;
+let lastTimelineEventTimeMode2 = 0;
+let mode2InitialTime = 0;
 
 // Always start with true regardless of OS, to allow already enabled MedInt features to be disabled
 // (As it just clicks the menu item for disabling, if it starts with false, error messages will be shown constantly on non-Win10 systems)
@@ -230,11 +233,11 @@ if (localStorage.madesktopVisStatusShown) {
 }
 
 if (localStorage.madesktopVisGuessTimeline === '2') {
-    estimateMenuItems[2].classList.add('checkedItem');
+    estimateMenuItems[2].classList.add('activeStyle');
 } else if (localStorage.madesktopVisGuessTimeline) {
-    estimateMenuItems[1].classList.add('checkedItem');
+    estimateMenuItems[1].classList.add('activeStyle');
 } else {
-    estimateMenuItems[0].classList.add('checkedItem');
+    estimateMenuItems[0].classList.add('activeStyle');
 }
 
 if (localStorage.sysplugIntegration) {
@@ -555,9 +558,9 @@ helpMenuItems[0].addEventListener('click', () => { // About Visualizer button
 
 estimateMenuItems[0].addEventListener('click', () => { // Disable button
     delete localStorage.madesktopVisGuessTimeline;
-    estimateMenuItems[0].classList.add('checkedItem');
-    estimateMenuItems[1].classList.remove('checkedItem');
-    estimateMenuItems[2].classList.remove('checkedItem');
+    estimateMenuItems[0].classList.add('activeStyle');
+    estimateMenuItems[1].classList.remove('activeStyle');
+    estimateMenuItems[2].classList.remove('activeStyle');
     if (timelineGuesserTick) {
         clearInterval(timelineGuesserTick);
         timelineGuesserTick = null;
@@ -566,23 +569,23 @@ estimateMenuItems[0].addEventListener('click', () => { // Disable button
 
 estimateMenuItems[1].addEventListener('click', () => { // Enable button
     localStorage.madesktopVisGuessTimeline = true;
-    estimateMenuItems[0].classList.remove('checkedItem');
-    estimateMenuItems[1].classList.add('checkedItem');
-    estimateMenuItems[2].classList.remove('checkedItem');
-});
-
-estimateMenuItems[2].addEventListener('click', () => { // Ignore Original Timeline button
-    localStorage.madesktopVisGuessTimeline = '2';
-    estimateMenuItems[0].classList.remove('checkedItem');
-    estimateMenuItems[1].classList.remove('checkedItem');
-    estimateMenuItems[2].classList.add('checkedItem');
-
+    estimateMenuItems[0].classList.remove('activeStyle');
+    estimateMenuItems[1].classList.add('activeStyle');
+    estimateMenuItems[2].classList.remove('activeStyle');
     if (timelineGuesserTick) {
         clearInterval(timelineGuesserTick);
         timelineGuesserTick = null;
     }
-    if (visStatus.timeline) {
-        timelineGuesserTick = setInterval(timelineGuesser, 1000);
+});
+
+estimateMenuItems[2].addEventListener('click', () => { // Ignore Original Timeline button
+    localStorage.madesktopVisGuessTimeline = '2';
+    estimateMenuItems[0].classList.remove('activeStyle');
+    estimateMenuItems[1].classList.remove('activeStyle');
+    estimateMenuItems[2].classList.add('activeStyle');
+    if (timelineGuesserTick) {
+        clearInterval(timelineGuesserTick);
+        timelineGuesserTick = null;
     }
 });
 
@@ -873,7 +876,9 @@ function wallpaperMediaTimelineListener(event) {
         if (localStorage.madesktopVisGuessTimeline === '2') {
             // In this mode, don't cancel the timeline guesser if it's running
             if (!timelineGuesserTick) {
-                timelineGuesserTick = setInterval(timelineGuesser, 1000);
+                lastTimelineEventTimeMode2 = Date.now();
+                mode2InitialTime = event.position;
+                timelineGuesserTick = setInterval(timelineGuesser, 100);
             }
         } else {
             // Attempt to adjust the interval to match the actual second
@@ -923,15 +928,30 @@ function timelineGuesser() {
     }
 
     if (visStatus.state === window.wallpaperMediaIntegration.PLAYBACK_PLAYING) {
+        let changed = false;
         if (visStatus.timeline.position <= visStatus.timeline.duration) {
-            visStatus.timeline.position += 1;
-            seekHandle.style.left = `calc(${visStatus.timeline.position / visStatus.timeline.duration * 100}% - 6px)`;
-            timeText.textContent = `${formatTime(visStatus.timeline.position)} / ${formatTime(visStatus.timeline.duration)}`;
+            if (localStorage.madesktopVisGuessTimeline === '2') {
+                const newTime = Math.round((Date.now() - lastTimelineEventTimeMode2) / 1000) + mode2InitialTime;
+                if (newTime !== visStatus.timeline.position) {
+                    changed = true;
+                }
+                visStatus.timeline.position = newTime;
+            } else {
+                visStatus.timeline.position += 1;
+                changed = true;
+            }
+            if (changed) {
+                seekHandle.style.left = `calc(${visStatus.timeline.position / visStatus.timeline.duration * 100}% - 6px)`;
+                timeText.textContent = `${formatTime(visStatus.timeline.position)} / ${formatTime(visStatus.timeline.duration)}`;
+                document.dispatchEvent(mediaTimelineEvent);
+            }
         } else {
             clearInterval(timelineGuesserTick);
             timelineGuesserTick = null;
         }
-        document.dispatchEvent(mediaTimelineEvent);
+    } else if (localStorage.madesktopVisGuessTimeline === '2') {
+        lastTimelineEventTimeMode2 = Date.now();
+        mode2InitialTime = visStatus.timeline.position;
     }
 }
 

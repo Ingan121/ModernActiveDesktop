@@ -577,6 +577,15 @@
     "VISLRC_PUBLISH_SUCCESS": "가사가 성공적으로 게시되었습니다!",
     "VISLRC_PUBLISH_FAIL": "가사 게시에 실패했습니다.",
 
+    "VISLRC_1STRUN_WELCOME": "환영합니다! %n 시각화 가사를 사용하기 전에 몇 가지 질문에 답해주세요.",
+    "VISLRC_1STRUN_Q_SPOTIFY": "음악을 듣기 위해 Spotify 데스크톱 애플리케이션을 사용하고 계십니까?<br><br>Spotify 웹 플레이어를 사용 중이라면 최상의 경험을 위해 데스크톱 애플리케이션으로 전환하는 것을 추천합니다.",
+    "VISLRC_1STRUN_INFO_SPOTIFY": "더 나은 가사 검색 결과를 위해선 Spotify 앱의 언어를 영어로 설정하세요.",
+    "VISLRC_1STRUN_Q_BROWSER": "음악을 듣기 위해 웹 브라우저를 사용하고 계십니까?",
+    "VISLRC_1STRUN_Q_YT": "음악을 듣기 위해 YouTube 또는 YouTube Music을 사용하고 계십니까?",
+    "VISLRC_1STRUN_INFO_YT": "최상의 경험을 위해 YouTube Music을 사용하는 것이 좋습니다.<br>또한 더 나은 가사 검색 결과를 위해 YouTube Music의 UI 언어를 영어로 설정하세요.",
+    "VISLRC_1STRUN_Q_TIMELINE": "미디어 플레이어가 타임라인 정보를 제공합니까?",
+    "VISLRC_1STRUN_INFO_COMMON": "가사 -> 옵션 및 시각화 -> 보기 -> 재생 시간 추정에서 이러한 설정을 나중에 변경할 수 있습니다.<br>(시각화가 전체 화면으로 실행 중인 경우 커서를 화면 상단에 가져다 대세요.)<br><br>%n을 사용해 주셔서 감사합니다!",
+
     "VISLRCCONF_TITLE": "가사 등록 정보",
     "VISLRCCONF_SPOTIFY_TITLE": "Spotify 통합",
     "VISLRCCONF_SPOTIFY_ENABLE": "확장된 Spotify 통합 활성화",
