@@ -1,12 +1,11 @@
 /* VGUI */
-/* From https://winclassic.net/post/12335/thread */
-/* Made by Jevil7452 */
-/* Inspired by the old Steam VGUI (a.k.a. Half-Life 1 Steam UI) */
+/* Mixture of https://winclassic.net/post/12335/thread by Jevil7452 and https://winclassic.net/post/26260/thread by iliketoeatglass */
+/* Inspired by the old Steam VGUI theme (a.k.a. Half-Life 1 Steam UI) */
 :root {
     --active-border: #4c5844;
     --active-title: #4c5844;
     --app-workspace: #3e4637;
-    --background: #000000;
+    --background: #3e4837;
     --button-alternate-face: #b5b5b5;
     --button-dk-shadow: #404040;
     --button-face: #4c5844;
@@ -16,9 +15,9 @@
     --button-text: #ffffff;
     --gradient-active-title: #4c5844;
     --gradient-inactive-title: #3e4637;
-    --gray-text: #32392d;
+    --gray-text: #282e22;
     --hilight: #282e20;
-    --hilight-text: #ffffff;
+    --hilight-text: #c4b550;
     --hot-tracking-color: #a5b39b;
     --inactive-border: #4c5844;
     --inactive-title: #32392d;
@@ -27,13 +26,13 @@
     --info-window: #3e4637;
     --menu: #4c5844;
     --menu-bar: #4c5844;
-    --menu-hilight: #282e20;
-    --menu-text: #ffffff;
+    --menu-hilight: #4c5844;
+    --menu-text: #a0aa95;
     --scrollbar: #a5b39b;
     --title-text: #ffffff;
     --window: #3e4637;
     --window-frame: #000000;
-    --window-text: #ffffff;
+    --window-text: #a0aa95;
     --scrollbar-size: 16px;
     --menu-height: 18px;
     --palette-title-height: 15px;
@@ -46,5 +45,5 @@
 }
 .window {
     --extra-border-size: 1px;
-    --extra-title-height: -2px;
+    --extra-title-height: 1px;
 }
