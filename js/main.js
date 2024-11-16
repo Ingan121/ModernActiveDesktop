@@ -887,6 +887,7 @@
                 msgboxBtn1.removeEventListener('click', close);
                 msgboxCloseBtn.removeEventListener('click', close);
                 deskMovers[activeWindow]?.windowTitlebar.classList.remove("inactive");
+                delete deskMovers[activeWindow]?.windowContainer.dataset.inactive;
                 if (callback) callback();
                 resolve();
             }
@@ -1010,6 +1011,7 @@
                 msgboxBtn3.removeEventListener('click', btn3);
                 msgboxCloseBtn.removeEventListener('click', cancelBtn);
                 deskMovers[activeWindow]?.windowTitlebar.classList.remove("inactive");
+                delete deskMovers[activeWindow]?.windowContainer.dataset.inactive;
             }
         });
     }
@@ -1110,6 +1112,7 @@
                 msgboxBtn2.removeEventListener('click', close);
                 msgboxCloseBtn.removeEventListener('click', close);
                 deskMovers[activeWindow]?.windowTitlebar.classList.remove("inactive");
+                delete deskMovers[activeWindow]?.windowContainer.dataset.inactive;
             }
         });
     }
@@ -1132,8 +1135,10 @@
             }, { once: true });
         }
 
-        if (!localStorage.madesktopNoDeactivate) {
-            deskMovers[activeWindow]?.windowTitlebar.classList.add("inactive");
+        const activeDeskMover = deskMovers[activeWindow];
+        if (!localStorage.madesktopNoDeactivate && activeDeskMover) {
+            activeDeskMover.windowTitlebar.classList.add("inactive");
+            activeDeskMover.windowContainer.dataset.inactive = true;
         }
         msgboxBg.style.display = "block";
         msgbox.style.top = (vHeight - msgbox.offsetHeight) / 2 + "px";
