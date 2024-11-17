@@ -42,13 +42,16 @@
   <script>
     const content = document.getElementById('content');
     const url = new URL(location.href);
-    const src = url.searchParams.get('src');
+    let src = url.searchParams.get('src');
 
     if (url.searchParams.get('showbackbtn')) {
       document.getElementById('backbtn').style.display = 'block';
     }
 
     if (src) {
+      // Limit allowed characters to prevent loading external files
+      src = src.replace(/[^a-zA-Z0-9./]/g, '');
+
       if (src === "SysplugSetupGuide.md" && madRunningMode === 0 && !url.searchParams.get('noredirect')) {
         location.href = "?src=SysplugSetupGuideForBrowsers.md";
       }
@@ -76,7 +79,7 @@
       }
 
     } else content.innerText = 'Usage: append ?src=path to the URL. path is relative to this directory';
-    
+
     document.addEventListener('keydown', function (event) {
         if (event.key === 'Escape') {
             madCloseWindow();

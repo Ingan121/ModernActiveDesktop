@@ -474,6 +474,7 @@ viewMenuItems[6].addEventListener('click', () => { // Show as Background button
         if (madDeskMover.isFullscreen) {
             viewMenuItems[1].click();
         }
+        updateColors();
     } else {
         localStorage.madesktopVisBgMode = true;
         viewMenuItems[6].classList.add('checkedItem');
@@ -482,6 +483,7 @@ viewMenuItems[6].addEventListener('click', () => { // Show as Background button
         if (!madDeskMover.isFullscreen) {
             viewMenuItems[1].click();
         }
+        updateColors();
     }
 });
 
@@ -1029,14 +1031,6 @@ function configChanged() {
         albumArt.src = '';
     }
 
-    if (localStorage.madesktopVisFollowAlbumArt && visStatus.lastAlbumArt) {
-        document.body.style.backgroundColor = visStatus.lastAlbumArt.primaryColor;
-    } else if (localStorage.madesktopVisUseSchemeColors) {
-        updateSchemeColor();
-    } else {
-        document.body.style.backgroundColor = localStorage.madesktopVisBgColor || 'black';
-    }
-
     if (localStorage.madesktopVisShowAlbumArt) {
         optMenuItems[3].classList.add('checkedItem');
         if (visStatus.mediaIntegrationAvailable) {
@@ -1091,16 +1085,29 @@ function configChanged() {
     document.querySelector(`#chanSepMenu .activeStyle`)?.classList.remove('activeStyle');
     chanSepMenuItems[(localStorage.madesktopVisChannelSeparation || 2) - 1].classList.add('activeStyle');
 
+    updateColors();
     updateVisConfig();
     updateTitle();
     updateAlbumArtSize();
     updateSize();
 }
 
+function updateColors() {
+    if (localStorage.madesktopVisFollowAlbumArt && visStatus.lastAlbumArt) {
+        document.body.style.backgroundColor = visStatus.lastAlbumArt.primaryColor;
+    } else if (localStorage.madesktopVisBgMode) {
+        document.body.style.backgroundColor = 'transparent';
+    } else if (localStorage.madesktopVisUseSchemeColors) {
+        updateSchemeColor();
+    } else {
+        document.body.style.backgroundColor = localStorage.madesktopVisBgColor || 'black';
+    }
+}
+
 function updateSchemeColor() {
     schemeBarColor = localStorage.madesktopAeroColor || getComputedStyle(document.documentElement).getPropertyValue('--hilight');
     schemeTopColor = getComputedStyle(document.documentElement).getPropertyValue('--button-text');
-    if (localStorage.madesktopVisUseSchemeColors && (!visStatus.lastAlbumArt || !localStorage.madesktopVisFollowAlbumArt)) {
+    if (localStorage.madesktopVisUseSchemeColors && (!visStatus.lastAlbumArt || !localStorage.madesktopVisFollowAlbumArt) && !localStorage.madesktopVisBgMode) {
         document.body.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--button-face');
     }
 }

@@ -45,18 +45,19 @@
 
 ## Todo
 * ChannelViewer
-    * Hook fetch / XHR with fetchProxy to get AJAX sites working when force-loaded
+    * Hook fetch/XHR with fetchProxy to get AJAX sites working when force-loaded
     * Also deal with the origin header - Google, YT, etc. checks for it and returns 403. This also affects Wallpaper Engine or other environments with the same origin policy disabled.
-    * Isolate / sandbox the iframe to prevent the site from breaking the desktop - seems using a non-same origin iframe prevents the loaded site from crashing the whole MAD
+    * Isolate/sandbox the iframe to prevent the site from breaking the desktop - it seems using a non-same origin iframe prevents the loaded site from crashing the whole MAD as they run in separate threads
 * WindowMetrics (`extra-border-size`) support for Active Desktop style DeskMovers
 * Refactor the dialog system
     * Support being modal only to the parent window
 * Add customizable icon pack system
-    * Preload some icons, and allow users to add their own (and save in IndexedDB)
-    * Maybe resembling the Effects tab in the Display Properties control panel (and move the Effects window to the bottom of the tab)
-* Add customizable sounds system
+    * Preload some icon packs such as 95, Plus!, 98, 2000, XP, Aero, 7, 10, and 11
+    * Allow users to add their own (and save in IndexedDB)
+    * Maybe resembling the Effects tab in the Display Properties control panel (and move the current Effects window to the bottom of the tab)
+* Add customizable sound system
     * Also add more default sounds: Plus!, Win7 theme sounds, etc.
-    * Also resemble the Sounds control panel
+    * Resemble the Sounds control panel
 * Show menus outside the iframe
 * More themes to add
     * Windows 3.x
@@ -69,6 +70,9 @@
     * Mac OS 7?
     * Also if I implement the Win3 theme, I should make a separate visual style selector in the appearance control panel, like the one in XP
 * Support multi-display background wallpaper configuration?
+* Split some large scripts of MAD apps into separate files for better maintainability
+    * Especially the Visualizer, ChannelViewer, and Appearance MADConf
+* Convert some of the scripts to ES6 modules
 
 ## Notes
 * ModernActiveDesktop is primarily optimized for Chromium 124 and higher. Some features may not work or look well on other browsers.

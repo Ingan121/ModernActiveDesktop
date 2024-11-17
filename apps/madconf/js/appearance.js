@@ -620,7 +620,7 @@ async function main() {
             parentSchemeElement.textContent = preview.contentDocument.getElementById("style").textContent;
             parent.changeColorScheme(schemeSelector.value);
             localStorage.madesktopColorScheme = schemeSelector.value;
-            localStorage.madesktopLastSchemeName = schemeName;
+            delete localStorage.madesktopLastSchemeName;
             parent.changeBgColor(colorPickerColor.style.backgroundColor);
             if (scheme["supports-colorization"]) {
                 parent.changeAeroColor(secondColorPickerColor.style.backgroundColor);

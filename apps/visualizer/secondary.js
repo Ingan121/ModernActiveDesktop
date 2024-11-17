@@ -363,6 +363,13 @@ viewMenuItems[5].addEventListener('click', () => { // Show as Background button
         if (madDeskMover.isFullscreen) {
             viewMenuItems[1].click();
         }
+        if (madDeskMover.config.visFollowAlbumArt && visStatus.lastAlbumArt) {
+            document.body.style.backgroundColor = visStatus.lastAlbumArt.primaryColor;
+        } else if (madDeskMover.config.visUseSchemeColors) {
+            document.body.style.backgroundColor = 'var(--button-face)';
+        } else {
+            document.body.style.backgroundColor = madDeskMover.config.visBgColor || 'black';
+        }
     } else {
         madDeskMover.config.visBgMode = true;
         viewMenuItems[5].classList.add('checkedItem');
@@ -370,6 +377,9 @@ viewMenuItems[5].addEventListener('click', () => { // Show as Background button
         madBringToTop(); // Trigger z-index update
         if (!madDeskMover.isFullscreen) {
             viewMenuItems[1].click();
+        }
+        if (!madDeskMover.config.visFollowAlbumArt || !visStatus.lastAlbumArt) {
+            document.body.style.backgroundColor = 'transparent';
         }
     }
 });
@@ -411,7 +421,7 @@ helpMenuItems[0].addEventListener('click', () => { // About Visualizer button
 colorMenuItems[0].addEventListener('click', () => { // Default button
     delete madDeskMover.config.visBgColor;
     delete madDeskMover.config.visUseSchemeColors;
-    if (!madDeskMover.config.visFollowAlbumArt || !visStatus.lastAlbumArt) {
+    if ((!madDeskMover.config.visFollowAlbumArt || !visStatus.lastAlbumArt) && !madDeskMover.config.visBgMode) {
         document.body.style.backgroundColor = 'black';
     }
     document.querySelector('#colorMenu .activeStyle').classList.remove('activeStyle');
@@ -421,7 +431,7 @@ colorMenuItems[0].addEventListener('click', () => { // Default button
 colorMenuItems[1].addEventListener('click', () => { // Follow Color Scheme button
     madDeskMover.config.visUseSchemeColors = true;
     delete madDeskMover.config.visBgColor;
-    if (!madDeskMover.config.visFollowAlbumArt || !visStatus.lastAlbumArt) {
+    if ((!madDeskMover.config.visFollowAlbumArt || !visStatus.lastAlbumArt) && !madDeskMover.config.visBgMode) {
         document.body.style.backgroundColor = 'var(--button-face)';
     }
     document.querySelector('#colorMenu .activeStyle').classList.remove('activeStyle');
@@ -435,12 +445,12 @@ colorMenuItems[2].addEventListener('click', () => { // Custom Color button
     } else if (!madDeskMover.config.visBgColor) {
         madDeskMover.config.visBgColor = "#000000";
     }
-    if (!madDeskMover.config.visFollowAlbumArt || !visStatus.lastAlbumArt) {
+    if ((!madDeskMover.config.visFollowAlbumArt || !visStatus.lastAlbumArt) && !madDeskMover.config.visBgMode) {
         document.body.style.backgroundColor = madDeskMover.config.visBgColor;
     }
     madOpenColorPicker(madDeskMover.config.visBgColor, true, function (color) {
         madDeskMover.config.visBgColor = color;
-        if (!madDeskMover.config.visFollowAlbumArt || !visStatus.lastAlbumArt) {
+        if ((!madDeskMover.config.visFollowAlbumArt || !visStatus.lastAlbumArt) && !madDeskMover.config.visBgMode) {
             document.body.style.backgroundColor = color;
         }
     });
@@ -452,12 +462,12 @@ colorMenuItems[3].addEventListener('click', () => { // Follow Album Art button
     if (madDeskMover.config.visFollowAlbumArt) {
         delete madDeskMover.config.visFollowAlbumArt;
         colorMenuItems[3].classList.remove('checkedItem');
-        if (madDeskMover.config.visBgColor) {
-            document.body.style.backgroundColor = madDeskMover.config.visBgColor;
+        if (madDeskMover.config.visBgMode) {
+            document.body.style.backgroundColor = 'transparent';
         } else if (madDeskMover.config.visUseSchemeColors) {
             document.body.style.backgroundColor = 'var(--button-face)';
         } else {
-            document.body.style.backgroundColor = 'black';
+            document.body.style.backgroundColor = madDeskMover.config.visBgColor || 'black';
         }
     } else {
         madDeskMover.config.visFollowAlbumArt = true;
@@ -490,10 +500,30 @@ for (const item of titleOptMenuItems) {
 // #region Initialization - Attach to Primary
 let connected = false;
 
-top.addEventListener('load', init);
+if (!!frameElement) {
+    top.addEventListener('load', init);
 
-if (top.document.readyState === 'complete') {
-    init();
+    if (top.document.readyState === 'complete') {
+        init();
+    }
+
+    setInterval(() => {
+        if (!top.visDeskMover && connected) {
+            alertArea.style.display = 'block';
+            alertText.locId = "VIS2ND_NO_PRIMARY";
+            connected = false;
+            visStatus = {};
+            wallpaperMediaPropertiesListener();
+            wallpaperMediaThumbnailListener();
+        } else if (top.visDeskMover && !connected) {
+            alertArea.style.display = 'none';
+            init();
+        } else if (top.visDeskMover && connected) {
+            if (top.visDeskMover.visStatus !== visStatus) {
+                init();
+            }
+        }
+    }, 2000);
 }
 
 function init() {
@@ -516,24 +546,6 @@ function init() {
         alertArea.style.display = 'block';
     }
 }
-
-setInterval(() => {
-    if (!top.visDeskMover && connected) {
-        alertArea.style.display = 'block';
-        alertText.locId = "VIS2ND_NO_PRIMARY";
-        connected = false;
-        visStatus = {};
-        wallpaperMediaPropertiesListener();
-        wallpaperMediaThumbnailListener();
-    } else if (top.visDeskMover && !connected) {
-        alertArea.style.display = 'none';
-        init();
-    } else if (top.visDeskMover && connected) {
-        if (top.visDeskMover.visStatus !== visStatus) {
-            init();
-        }
-    }
-}, 2000);
 // #endregion
 
 // #region Functions

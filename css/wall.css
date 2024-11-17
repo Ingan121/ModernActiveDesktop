@@ -736,6 +736,7 @@ body::after { /* preload images */
     top: 0;
     right: 0;
     text-align: right;
+    z-index: 1;
 }
 
 #debug > * {

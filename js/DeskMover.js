@@ -13,6 +13,9 @@
     const windowOutline = document.getElementById("windowOutline");
     const miniPickerBase = document.getElementsByClassName("miniPicker")[0];
 
+    let lastZIndex = parseInt(localStorage.madesktopItemCount) || 1;
+    let lastAoTZIndex = lastZIndex + 50000;
+
     class DeskMover {
         // DeskMover creation options:
         // width: The width of the window
@@ -361,10 +364,10 @@
                 this.confMenuItems[3].classList.add("checkedItem");
             }
             if (this.config.alwaysOnTop) {
-                this.windowContainer.style.zIndex = (this.config.zIndex + 50000) || ++window.lastAoTZIndex;
+                this.windowContainer.style.zIndex = (this.config.zIndex + 50000) || ++lastAoTZIndex;
                 this.confMenuItems[4].classList.add("checkedItem");
             } else {
-                this.windowContainer.style.zIndex = this.config.zIndex || ++window.lastZIndex;
+                this.windowContainer.style.zIndex = this.config.zIndex || ++lastZIndex;
                 this.confMenuItems[4].classList.remove("checkedItem");
             }
             if (this.config.unresizable) {
@@ -1387,7 +1390,11 @@
                             }
                             windowOutline.style.height = this.prevOffsetBottom - this.mousePosition.y + this.windowFrame.offsetTop + extraBorderBottom + extra + 'px';
                         } else {
-                            this.windowElement.height = this.prevOffsetBottom - this.mousePosition.y + 'px';
+                            let extra = 0;
+                            if (this.config.style === "ad") {
+                                extra = 5;
+                            }
+                            this.windowElement.height = this.prevOffsetBottom - this.mousePosition.y + extra + 'px';
                         }
                         target2.style.top = (this.mousePosition.y + this.offset[1]) + 'px';
                     }
@@ -1571,11 +1578,11 @@
         #toggleAoT() {
             this.closeContextMenu();
             if (this.config.alwaysOnTop) {
-                this.windowContainer.style.zIndex = ++window.lastZIndex;
+                this.windowContainer.style.zIndex = ++lastZIndex;
                 this.confMenuItems[4].classList.remove("checkedItem");
                 this.config.alwaysOnTop = false;
             } else {
-                this.windowContainer.style.zIndex = ++window.lastAoTZIndex;
+                this.windowContainer.style.zIndex = ++lastAoTZIndex;
                 this.confMenuItems[4].classList.add("checkedItem");
                 this.config.alwaysOnTop = true;
             }
@@ -1659,11 +1666,11 @@
         // Update z-index
         bringToTop () {
             if (this.bottomMost) {
-                this.windowContainer.style.zIndex = 1;
+                this.windowContainer.style.zIndex = 0;
             } else if (this.config.alwaysOnTop) {
-                this.windowContainer.style.zIndex = ++window.lastAoTZIndex;
+                this.windowContainer.style.zIndex = ++lastAoTZIndex;
             } else {
-                this.windowContainer.style.zIndex = ++window.lastZIndex;
+                this.windowContainer.style.zIndex = ++lastZIndex;
             }
             activateWindow(this.numStr || 0);
             saveZOrder();
@@ -1835,7 +1842,7 @@
                 delete localStorage.madesktopVisInfoShown;
                 delete localStorage.madesktopVisStatusShown;
                 delete localStorage.madesktopVisMediaControls;
-                delete localStorage.madesktopVisGuessTimeline;
+                //delete localStorage.madesktopVisGuessTimeline; // Keep this one
                 delete localStorage.madesktopVisTitleMode;
                 delete localStorage.madesktopVisChannelSeparation;
                 delete localStorage.madesktopVisBarWidth;
@@ -1982,7 +1989,103 @@
         }
     }
 
-    // Attempt to fix Wayback Machine compatibility
+    // #region Helper functions
+    // @unexported
+    // Save current window z-order
+    function saveZOrder() {
+        let zOrders = [];
+        for (const i in deskMovers) {
+            zOrders.push([i, deskMovers[i].windowContainer.style.zIndex]);
+        }
+
+        zOrders.sort(function(a, b) {
+            if (+a[1] > +b[1]) return 1;
+            else if (+a[1] === +b[1]) return 0;
+            else return -1;
+        });
+
+        for (let i = 0; i < zOrders.length; i++) {
+            try {
+                deskMovers[zOrders[i][0]].config.zIndex = i;
+            } catch (error) {
+                // localStorage error, like QuotaExceededError
+                // but ignore it here as this function is called too frequently (on every window click)
+                console.error(error);
+            }
+        }
+
+        log(zOrders);
+    }
+
+    // @unexported
+    async function getFavicon(iframe) {
+        try {
+            const madBase = getMadBase();
+            const loc = iframe.contentWindow.location.href;
+            const doc = iframe.contentDocument;
+            const url = new URL(loc);
+
+            // Get the favicon from the page
+            const iconElem = doc.querySelector("link[rel*='icon']") || doc.querySelector("link[rel*='shortcut icon']") || { href: url.origin + '/favicon.ico', notFound: true };
+            let path = iconElem.href;
+            log('Favicon path from page: ' + path);
+
+            // Use the MAD icon for local/MAD files and data URLs
+            if (loc.startsWith("file:///") || loc.startsWith("data:") || loc.startsWith(madBase)) {
+                if (iconElem.notFound) {
+                    return 'images/mad16.png';
+                } else {
+                    return path;
+                }
+            }
+
+            // Check if the favicon exists
+            await fetch(path).then(response => {
+                if (!response.ok) {
+                    log('Favicon not found, using a generic icon', 'log', 'getFavicon');
+                    path = 'images/html.png';
+                }
+            });
+            return path;
+        } catch (e) {
+            log('Error getting favicon');
+            console.log(e);
+            return 'images/html.png';
+        }
+    }
+
+    // @unexported
+    // Prevent windows from being created in the same position
+    function cascadeWindow(x, y) {
+        log({x, y});
+        const extraTitleHeight = parseInt(getComputedStyle(msgbox).getPropertyValue('--extra-title-height'));
+        const extraBorderSize = parseInt(getComputedStyle(msgbox).getPropertyValue('--extra-border-size'));
+        x = parseInt(x);
+        y = parseInt(y);
+        if (isWindowInPosition(x, y)) {
+            return cascadeWindow(x + 4 + extraBorderSize, y + 24 + extraTitleHeight + extraBorderSize);
+        } else {
+            return [x + "px", y + "px"];
+        }
+    }
+
+    // @unexported
+    function isWindowInPosition(x, y) {
+        if (typeof x === "number") {
+            x = x + "px";
+        }
+        if (typeof y === "number") {
+            y = y + "px";
+        }
+        for (const i in deskMovers) {
+            if (deskMovers[i].config.xPos === x && deskMovers[i].config.yPos === y) {
+                return true;
+            }
+        }
+        return false;
+    }
+    // #endregion
+
     window.DeskMover = DeskMover;
     window.initSimpleMover = initSimpleMover;
 })();

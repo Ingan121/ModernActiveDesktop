@@ -44,9 +44,6 @@
 
     window.msgboxInput = document.getElementById("msgbox-input");
 
-    window.lastZIndex = parseInt(localStorage.madesktopItemCount) || 0;
-    window.lastAoTZIndex = lastZIndex + 50000;
-
     window.isContextMenuOpen = false;
     window.openedMenu = null;
     window.openedMenuCloseFunc = null;
@@ -67,23 +64,23 @@
     // -1 = Keyboard not supported (WPE 2.5 and above; uses either MadInput or OSK)
     window.kbdSupport = 1;
 
+    // Display scaling related variables
     window.scaleFactor = "1";
     window.vWidth = window.innerWidth;
     window.vHeight = window.innerHeight;
     window.isIframeAutoScaled = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./)?.[2] >= 128;
 
+    // Every DeskMover instance is stored in this object
     window.deskMovers = {};
+    // DeskMovers of apps with single-instance enforcement
     window.visDeskMover = null;
     window.confDeskMover = null;
-    
+
     // #region Early function exports
-    window.saveZOrder = saveZOrder;
     window.activateWindow = activateWindow;
-    window.cascadeWindow = cascadeWindow;
     window.iframeClickEventCtrl = iframeClickEventCtrl;
     window.updateIframeScale = updateIframeScale;
     window.hookIframeSize = hookIframeSize;
-    window.getFavicon = getFavicon;
     window.menuNavigationHandler = menuNavigationHandler;
     // #endregion
     // #endregion
@@ -200,7 +197,7 @@
     if (localStorage.madesktopBgImg) {
         if (localStorage.madesktopBgImg.startsWith("wallpapers/") && localStorage.madesktopBgImg.endsWith(".bmp")) {
             localStorage.madesktopBgImg = localStorage.madesktopBgImg.replace(".bmp", ".png");
-            loadBgImgConf();
+            changeBgType("image");
         }
     }
     // Mistake that I made in previous versions
@@ -713,32 +710,6 @@
         });
     }
 
-    // Save current window z-order
-    function saveZOrder() {
-        let zOrders = [];
-        for (const i in deskMovers) {
-            zOrders.push([i, deskMovers[i].windowContainer.style.zIndex]);
-        }
-
-        zOrders.sort(function(a, b) {
-            if (+a[1] > +b[1]) return 1;
-            else if (+a[1] === +b[1]) return 0;
-            else return -1;
-        });
-
-        for (let i = 0; i < zOrders.length; i++) {
-            try {
-                deskMovers[zOrders[i][0]].config.zIndex = i;
-            } catch (error) {
-                // localStorage error, like QuotaExceededError
-                // but ignore it here as this function is called too frequently (on every window click)
-                console.error(error);
-            }
-        }
-
-        log(zOrders);
-    }
-
     function activateWindow(num = activeWindow || 0) {
         log(num);
         if (!deskMovers[num]) {
@@ -771,36 +742,6 @@
                 }
             }
         }
-    }
-
-    // Prevent windows from being created in the same position
-    function cascadeWindow(x, y) {
-        log({x, y});
-        const extraTitleHeight = parseInt(getComputedStyle(msgbox).getPropertyValue('--extra-title-height'));
-        const extraBorderSize = parseInt(getComputedStyle(msgbox).getPropertyValue('--extra-border-size'));
-        x = parseInt(x);
-        y = parseInt(y);
-        if (isWindowInPosition(x, y)) {
-            return cascadeWindow(x + 4 + extraBorderSize, y + 24 + extraTitleHeight + extraBorderSize);
-        } else {
-            return [x + "px", y + "px"];
-        }
-    }
-
-    // @unexported
-    function isWindowInPosition(x, y) {
-        if (typeof x === "number") {
-            x = x + "px";
-        }
-        if (typeof y === "number") {
-            y = y + "px";
-        }
-        for (const i in deskMovers) {
-            if (deskMovers[i].config.xPos === x && deskMovers[i].config.yPos === y) {
-                return true;
-            }
-        }
-        return false;
     }
 
     function adjustAllElements(extraTitleHeight, extraBorderSize, extraBorderBottom) {
@@ -1210,42 +1151,6 @@
     // #endregion
 
     // #region Global helper functions (Expects the top window so not suitable for functions.js)
-    async function getFavicon(iframe) {
-        try {
-            const madBase = getMadBase();
-            const loc = iframe.contentWindow.location.href;
-            const doc = iframe.contentDocument;
-            const url = new URL(loc);
-
-            // Get the favicon from the page
-            const iconElem = doc.querySelector("link[rel*='icon']") || doc.querySelector("link[rel*='shortcut icon']") || { href: url.origin + '/favicon.ico', notFound: true };
-            let path = iconElem.href;
-            log('Favicon path from page: ' + path);
-
-            // Use the MAD icon for local/MAD files and data URLs
-            if (loc.startsWith("file:///") || loc.startsWith("data:") || loc.startsWith(madBase)) {
-                if (iconElem.notFound) {
-                    return 'images/mad16.png';
-                } else {
-                    return path;
-                }
-            }
-
-            // Check if the favicon exists
-            await fetch(path).then(response => {
-                if (!response.ok) {
-                    log('Favicon not found, using a generic icon', 'log', 'getFavicon');
-                    path = 'images/html.png';
-                }
-            });
-            return path;
-        } catch (e) {
-            log('Error getting favicon');
-            console.log(e);
-            return 'images/html.png';
-        }
-    }
-
     function menuNavigationHandler(event) {
         if (!openedMenu) {
             return;
@@ -1385,12 +1290,103 @@
         }
     }
 
+    // @unexported
+    function openApp(app) {
+        switch(app) {
+            case "channelbar":
+                openWindow("ChannelBar.html", true, {
+                    width: 84,
+                    height: 471,
+                    centered: true,
+                    unresizable: true,
+                    style: "ad"
+                });
+                break;
+            case "jspaint":
+                openWindow("apps/jspaint/index.html", true, {
+                    width: 268,
+                    height: 355,
+                    centered: true,
+                    style: "wnd"
+                });
+                break;
+            case "sol":
+                openWindow("apps/solitaire/index.html", true, {
+                    width: 660,
+                    height: 440,
+                    centered: true,
+                    style: "wnd"
+                });
+                break;
+            case "vis":
+                if (runningMode === 0) {
+                    return;
+                }
+                if (visDeskMover) {
+                    if (visDeskMover.visStatus.mediaIntegrationAvailable) {
+                        openWindow("apps/visualizer/secondary.html", true, {
+                            width: 600,
+                            height: 400,
+                            centered: true,
+                            style: "wnd"
+                        });
+                    } else {
+                        return;
+                    }
+                } else if (localStorage.madesktopVisUnavailable) {
+                    return;
+                } else {
+                    openWindow("apps/visualizer/index.html", true, {
+                        width: 725,
+                        height: 380,
+                        centered: true,
+                        style: "wnd"
+                    });
+                }
+                break;
+            case "cv":
+                openWindow("apps/channelviewer/index.html", true, {
+                    width: 1024,
+                    height: 768,
+                    centered: true,
+                    style: "wnd"
+                });
+                break;
+            case "clock":
+                openWindow("apps/clock/index.html", true, {
+                    width: 398,
+                    height: 417,
+                    centered: true,
+                    style: "wnd"
+                });
+                break;
+            case "calc":
+                openWindow("apps/calc/index.html", true, {
+                    width: 254,
+                    height: 227,
+                    centered: true,
+                    unresizable: true,
+                    style: "wnd"
+                });
+                break;
+            case "lyrics":
+                openWindow("apps/visualizer/lyrics/index.html", true, {
+                    width: 400,
+                    height: 502,
+                    centered: true,
+                    style: "wnd"
+                });
+                break;
+        }
+    }
+
     // #region Late function exports
     window.createNewDeskItem = createNewDeskItem;
     window.openWindow = openWindow;
     window.openConfig = openConfig;
     window.openExternal = openExternal;
     window.openExternalExternally = openExternalExternally;
+    window.openApp = openApp; // For DevTools access
     window.announce = announce;
     window.playSound = playSound;
     window.adjustAllElements = adjustAllElements;
@@ -1482,6 +1478,11 @@
                 btn1: "locid:UI_YES",
                 btn2: "locid:UI_NO"
             });
+            break;
+        default:
+            if (location.hash.startsWith("#openapp:")) {
+                openApp(location.hash.slice(9));
+            }
     }
     // Clear hash
     history.pushState("", document.title, window.location.pathname + window.location.search);

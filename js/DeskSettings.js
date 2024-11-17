@@ -87,7 +87,11 @@
     function changeBgColor(str) {
         log(str);
         document.documentElement.style.backgroundColor = str;
-        localStorage.madesktopBgColor = str;
+        if (str !== 'var(--background)') {
+            localStorage.madesktopBgColor = str;
+        } else {
+            delete localStorage.madesktopBgColor;
+        }
     }
 
     async function loadBgImgConf() {
