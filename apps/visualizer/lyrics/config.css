@@ -60,7 +60,7 @@ p, legend, label,
 }
 
 mad-select {
-    width: 197px;
+    width: 220px;
     margin-left: 4px;
     min-width: 0 !important;
 }
@@ -77,11 +77,10 @@ mad-select {
 #boldToggle,
 #italicToggle {
     position: relative;
-    left: -5px;
     min-width: 0;
     min-height: 21px;
     margin: 0;
-    margin-top: 16px;
+    margin-top: 13px;
     padding: 0 9px 0 7px;
 }
 
@@ -103,7 +102,7 @@ button[data-active] {
 #fontSize {
     width: 57px;
     height: 21px;
-    margin-left: -1px;
+    margin-left: 1px;
     -moz-appearance: textfield !important;
 }
 
