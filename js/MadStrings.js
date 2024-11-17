@@ -94,14 +94,28 @@
                     console.error(`Failed to load language file for en-US.\n`, err);
                     // This is a critical error, so we need to show an alert
                     // Unless we're in a file:// context (main.js will show the alert in that case)
-                    window.addEventListener("load", () => {
-                        // Wait for window.madAlert to be defined (in main.js)
-                        if (!madStrings.loaded && !window.madFileUriRestricted) {
-                            // Avoid window.alert when running MAD normally, as it softlocks WPE 2.5+
-                            const alertFunc = window.madMainWindow ? window.madAlert : window.alert;
-                            alertFunc("ModernActiveDesktop failed to load the language file for en-US. Expect things to be broken. Check the console for more information.", null, "error");
+                    if (!madStrings.loaded && !window.madFileUriRestricted) {
+                        if (!window.madConfirm) {
+                            // Wait for window.madConfirm to be defined (in main.js)
+                            window.addEventListener("load", showAlert);
+                        } else {
+                            showAlert();
                         }
-                    });
+                    }
+                    function showAlert() {
+                        const msg = "ModernActiveDesktop failed to load the language file for en-US. Expect things to be broken. Check the console for more information.<br><br>Click OK to retry, or Cancel to ignore and continue running ModernActiveDesktop.";
+                        if (window.madMainWindow) {
+                            madConfirm(msg, res => {
+                                if (res) {
+                                    changeLanguage("en-US", true);
+                                }
+                            }, { icon: "error"} );
+                        } else {
+                            if (confirm(msg.replaceAll("<br>", "\n"))) {
+                                changeLanguage("en-US", true);
+                            }
+                        }
+                    }
                 } else if (isInit) {
                     console.error(`Failed to load language file for ${window.madLang}. Trying to load English instead.`);
                     changeLanguage("en-US");
