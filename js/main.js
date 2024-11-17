@@ -1290,7 +1290,6 @@
         }
     }
 
-    // @unexported
     function openApp(app) {
         switch(app) {
             case "channelbar":
@@ -1298,7 +1297,6 @@
                     width: 84,
                     height: 471,
                     centered: true,
-                    unresizable: true,
                     style: "ad"
                 });
                 break;
