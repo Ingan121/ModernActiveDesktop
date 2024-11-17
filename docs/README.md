@@ -59,6 +59,11 @@
     * Also add more default sounds: Plus!, Win7 theme sounds, etc.
     * Resemble the Sounds control panel
 * Show menus outside the iframe
+* Cache loaded lyrics in the Visualizer Lyrics app for offline access and quicker loading
+* Add a storage manager for IndexedDB and LocalStorage
+    * Categorize the data by type (configs, schemes, images, cache, etc.)
+    * Show used storage space and estimated remaining space
+    * Move export/import functions here
 * More themes to add
     * Windows 3.x
         * I think it would be pretty easy, just give it flat title bars and buttons with border-radius
