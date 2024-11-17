@@ -59,7 +59,7 @@ if (madRunningMode !== 1) {
 }
 if (madRunningMode === 0) {
     tipsFieldset.style.display = "none";
-} else if (localStorage.madesktopDebugMode) {
+} else if (localStorage.madesktopDebugMode || localStorage.madesktopVisSpotifyEnabled || localStorage.madesktopVisSpotifyInfo) {
     showSpotifyBtn.style.display = "block";
 }
 
