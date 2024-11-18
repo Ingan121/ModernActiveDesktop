@@ -80,6 +80,10 @@ const keysToIgnoreOnPreset = [
     'madesktopVisLyricsForceUnsynced',
     'madesktopVisLyricsOverrides',
     'madesktopVisLyricsRanOnce',
+    'madesktopVisLyricsNoCache',
+    'madesktopVisLyricsCacheMax',
+    'madesktopVisLyricsCacheExpiry',
+    'madesktopVisUseSpotifyAlbumArt',
     // Debug configs
     'madesktopDebugMode',
     'madesktopDebugLog',
@@ -95,10 +99,10 @@ let urlAppend = "";
 (async function () {
     switch (action) {
         case 'reset':
-            reset();
+            await reset();
             break;
         case 'resetsoft':
-            reset(true);
+            await reset(true);
             break;
         case 'resethard':
             localStorage.clear();
@@ -148,7 +152,7 @@ let urlAppend = "";
                         urlAppend = "#cmfail_invconf";
                         break;
                     }
-                    reset(true);
+                    await reset(true);
                     for (const key in parsed) {
                         if (keysToNotImport.includes(key)) {
                             continue;
@@ -234,7 +238,7 @@ let urlAppend = "";
     location.replace('index.html' + urlAppend);
 })();
 
-function reset(softIdbReset = false) {
+async function reset(softIdbReset = false) {
     for (const key of keys) {
         if ((key.startsWith('madesktop') || key === 'sysplugIntegration' ||
             key.startsWith('image#') || key.startsWith('jspaint ')) &&
@@ -250,8 +254,26 @@ function reset(softIdbReset = false) {
         delete madIdb.bgImg;
         delete madIdb.cvFavorites;
         delete madIdb.configToImport;
+        delete madIdb.lyricsOverrides;
+        await clearCache();
     } else {
         // This causes further IDB operations to take a long time
         indexedDB.deleteDatabase('madesktop');
     }
+}
+
+async function clearCache() {
+    const db = await madIdb.init();
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction("lrccache", "readwrite");
+        const store = transaction.objectStore("lrccache");
+        const request = store.clear();
+        request.onsuccess = function () {
+            resolve();
+        };
+        request.onerror = function () {
+            console.error(request.error);
+            reject(request.error);
+        };
+    });
 }

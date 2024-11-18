@@ -107,12 +107,12 @@
                         if (window.madMainWindow) {
                             madConfirm(msg, res => {
                                 if (res) {
-                                    changeLanguage("en-US", true);
+                                    changeLanguage("en-US", isInit);
                                 }
                             }, { icon: "error"} );
                         } else {
                             if (confirm(msg.replaceAll("<br>", "\n"))) {
-                                changeLanguage("en-US", true);
+                                changeLanguage("en-US", isInit);
                             }
                         }
                     }

@@ -769,11 +769,13 @@ function onRequest(req, res) {
               <a href="/playpause">/playpause</a><br>
               <a href="/stop">/stop</a><br>
               <a href="/prev">/prev</a><br>
-              <a href="/next">/next</a><br><br>
+              <a href="/next">/next</a><br>
+              <br>
               <a href="/begininput">/begininput</a><br>
               <a href="/getinput">/getinput</a><br>
               <a href="/focusinput">/focusinput</a><br>
-              <a href="/endinput">/endinput</a><br><br>
+              <a href="/endinput">/endinput</a><br>
+              <br>
               <a href="/spotify/auth">/spotify/auth</a><br>
               <a href="/spotify/callback">/spotify/callback</a><br>
               <br>

@@ -433,6 +433,7 @@ async function exportConfig(minimal = false) {
     if (await madIdb.itemExists("lyricsOverrides")) {
         madConfig["madesktopVisLyricsOverrides"] = JSON.stringify(await madIdb.lyricsOverrides);
     }
+    // No plan to export the lyrics cache in indexedDB. Cache is cache.
 
     // Handle large files, compress if > 1 MB
     const json = JSON.stringify(madConfig);

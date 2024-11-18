@@ -4,7 +4,7 @@
     <title data-locid="VISLRCCONF_TITLE">Lyrics Properties</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="../../../css/98.css">
-    <link rel="stylesheet" href="config.css">
+    <link rel="stylesheet" href="css/config.css">
     <link id="scheme" rel="stylesheet" href="data:text/css,">
     <style id="style"></style>
 </head>
@@ -52,6 +52,28 @@
                 <button id="italicToggle"><span>/</span></button>
             </section>
         </fieldset>
+        <fieldset id="cacheFieldset">
+            <legend><mad-string data-locid="VISLRCCONF_CACHE_TITLE">Caching</mad-string></legend>
+            <div id="cacheConfArea">
+                <div>
+                    <input id="enableCacheChkBox" type="checkbox" name="enableCache" accesskey="c" checked>
+                    <label for="enableCacheChkBox"><mad-string data-locid="VISLRCCONF_CACHE_ENABLE">Enable <u>c</u>aching</mad-string></label>
+                </div>
+                <div>
+                    <mad-string data-locid="VISLRCCONF_CACHE_COUNT">Cache count:</mad-string> <span id="cacheCount">0</span>
+                    <button id="clearCacheBtn" accesskey="l"><mad-string data-locid="VISLRCCONF_CACHE_CLEAR">C<u>l</u>ear</mad-string></button>
+                </div>
+                <div>
+                    <span id="maxCacheLabel"><mad-string data-locid="VISLRCCONF_CACHE_MAX">Max cache count:</mad-string></span>
+                    <input id="maxCacheInput" type="number" min="0" value="500" placeholder="500">
+                </div>
+                <div>
+                    <span id="cacheExpiryLabel"><mad-string data-locid="VISLRCCONF_CACHE_EXPIRY">Cache expiry (days):</mad-string></span>
+                    <input id="cacheExpiryInput" type="number" min="0" value="31" placeholder="31">
+                </div>
+            </div>
+            <mad-string id="cacheInfo" data-locid="VISLRCCONF_CACHE_INFO">Caching allows offline and faster loading of lyrics. Click Lyrics -> Load Lyrics to bypass the cache.</mad-string>
+        </fieldset>
         <fieldset>
             <legend><mad-string data-locid="VISCONF_MISC_TITLE">Miscellaneous</mad-string></legend>
             <input id="forceUnsyncedChkBox" type="checkbox" name="forceUnsynced" accesskey="u">
@@ -64,30 +86,10 @@
             </ul>
             <input id="smoothScrollChkBox" type="checkbox" name="smoothScroll" accesskey="c">
             <label for="smoothScrollChkBox"><mad-string data-locid="VISLRCCONF_SMOOTH_SCROLL">Smooth s<u>c</u>rolling</mad-string></label>
-        </fieldset>
-        <fieldset id="tipsFieldset">
-            <legend><mad-string data-locid="VISLRCCONF_TIPS_TITLE">Tips</mad-string></legend>
-            <ul id="tipsList">
-                <mad-string data-locid="VISLRCCONF_TIPS">
-                    <li>Spotify users:
-                        <ul>
-                            <li>Use the desktop client for the best experience.</li>
-                            <li>Set your Spotify client language to English for better lyric search results.</li>
-                            <!-- hide this for now
-                            <li>Or, enable the extended Spotify integration above.</li>
-                            -->
-                            <li>Set 'Estimate Timeline' to 'Enabled' in Visualizer -> View.</li>
-                        </ul>
-                    </li>
-                    <li>YouTube users:
-                        <ul>
-                            <li>Use YouTube Music for the best experience, if available.</li>
-                            <li>Set your YouTube Music's UI language to English for better lyric search results.</li>
-                            <li>Set 'Estimate Timeline' to 'Ignore Original Timeline' in Visualizer -> View.</li>
-                        </ul>
-                    </li>
-                </mad-string>
-            </ul>
+            <section class="field-row">
+                <button id="show1stRunBtn" accesskey="q"><mad-string data-locid="VISLRCCONF_SHOW_1STRUN">Show first run <u>q</u>uestions</mad-string></button>
+                <button id="showTipsBtn" accesskey="t"><mad-string data-locid="VISLRCCONF_SHOW_TIPS">Show <u>t</u>ips</mad-string></button>
+            </section>
         </fieldset>
         <p><mad-string data-locid="VISLRCCONF_LYRICS_PROVIDER">Lyrics provided by</mad-string> <a href="https://lrclib.net/" target="_cv">LRCLIB</a></p>
         <section class="bottomButtons field-row">
@@ -103,6 +105,7 @@
     <script src="../../jspaint/lib/font-detective.js"></script>
     <script src="../../../js/MadSysPlug.js"></script>
     <script src="../../../js/MadInput.js"></script>
-    <script src="config.js"></script>
+    <script src="js/caching.js"></script>
+    <script src="js/config.js"></script>
 </body>
 </html>

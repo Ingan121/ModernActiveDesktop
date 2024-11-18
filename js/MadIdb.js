@@ -11,6 +11,8 @@
         get(target, prop) {
             // handle it like localStorage
             switch (prop) {
+                case "init":
+                    return initMadIdb;
                 case "getItem":
                     return madIdbGetItem;
                 case "setItem":
@@ -34,22 +36,16 @@
         }
     });
 
-    function madIdbGetItem(key) {
+    function initMadIdb() {
         return new Promise((resolve, reject) => {
             const db = indexedDB.open("madesktop", 1);
             db.onupgradeneeded = function () {
                 db.result.createObjectStore("config");
+                const lrcCacheStore = db.result.createObjectStore("lrccache", { keyPath: "hash" });
+                lrcCacheStore.createIndex("createdAtIndex", "createdAt", { unique: false });
             };
             db.onsuccess = function () {
-                const transaction = db.result.transaction("config", "readwrite");
-                const store = transaction.objectStore("config");
-                const request = store.get(key);
-                request.onsuccess = function () {
-                    resolve(request.result);
-                };
-                request.onerror = function () {
-                    reject(request.error);
-                };
+                resolve(db.result);
             };
             db.onerror = function () {
                 reject(db.error);
@@ -57,71 +53,62 @@
         });
     }
 
-    function madIdbSetItem(key, value) {
+    async function madIdbGetItem(key) {
+        const db = await initMadIdb();
         return new Promise((resolve, reject) => {
-            const db = indexedDB.open("madesktop", 1);
-            db.onupgradeneeded = function () {
-                db.result.createObjectStore("config");
+            const transaction = db.transaction("config", "readwrite");
+            const store = transaction.objectStore("config");
+            const request = store.get(key);
+            request.onsuccess = function () {
+                resolve(request.result);
             };
-            db.onsuccess = function () {
-                const transaction = db.result.transaction("config", "readwrite");
-                const store = transaction.objectStore("config");
-                store.put(value, key);
-                transaction.oncomplete = function () {
-                    resolve();
-                };
-                transaction.onerror = function () {
-                    reject(transaction.error);
-                };
-            };
-            db.onerror = function () {
-                reject(db.error);
+            request.onerror = function () {
+                reject(request.error);
             };
         });
     }
 
-    function madIdbDeleteItem(key) {
+    async function madIdbSetItem(key, value) {
+        const db = await initMadIdb();
         return new Promise((resolve, reject) => {
-            const db = indexedDB.open("madesktop", 1);
-            db.onupgradeneeded = function () {
-                db.result.createObjectStore("config");
+            const transaction = db.transaction("config", "readwrite");
+            const store = transaction.objectStore("config");
+            store.put(value, key);
+            transaction.oncomplete = function () {
+                resolve();
             };
-            db.onsuccess = function () {
-                const transaction = db.result.transaction("config", "readwrite");
-                const store = transaction.objectStore("config");
-                store.delete(key);
-                transaction.oncomplete = function () {
-                    resolve();
-                };
-                transaction.onerror = function () {
-                    reject(transaction.error);
-                };
-            };
-            db.onerror = function () {
-                reject(db.error);
+            transaction.onerror = function () {
+                reject(transaction.error);
             };
         });
     }
 
-    function madIdbItemExists(key) {
+    async function madIdbDeleteItem(key) {
+        const db = await initMadIdb();
         return new Promise((resolve, reject) => {
-            const db = indexedDB.open("madesktop", 1);
-            db.onupgradeneeded = function () {
-                db.result.createObjectStore("config");
+            const transaction = db.transaction("config", "readwrite");
+            const store = transaction.objectStore("config");
+            store.delete(key);
+            transaction.oncomplete = function () {
+                resolve();
             };
-            db.onsuccess = function () {
-                const transaction = db.result.transaction("config", "readwrite");
-                const store = transaction.objectStore("config");
-                const request = store.getKey(key);
-                request.onsuccess = function () {
-                    resolve(request.result !== undefined);
-                };
-                request.onerror = function () {
-                    reject(request.error);
-                };
+            transaction.onerror = function () {
+                reject(transaction.error);
             };
-            db.onerror = function () {
-                reject(db.error);
+        });
+    }
+
+    async function madIdbItemExists(key) {
+        const db = await initMadIdb();
+        return new Promise((resolve, reject) => {
+            const transaction = db.transaction("config", "readwrite");
+            const store = transaction.objectStore("config");
+            const request = store.getKey(key);
+            request.onsuccess = function () {
+                resolve(request.result !== undefined);
+            };
+            request.onerror = function () {
+                reject(request.error);
             };
         });
     }

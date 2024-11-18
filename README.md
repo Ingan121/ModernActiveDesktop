@@ -66,7 +66,6 @@
     * Also add more default sounds: Plus!, Win7 theme sounds, etc.
     * Resemble the Sounds control panel
 * Show menus outside the iframe
-* Cache loaded lyrics in the Visualizer Lyrics app for offline access and quicker loading
 * Add a storage manager for IndexedDB and LocalStorage
     * Categorize the data by type (configs, schemes, images, cache, etc.)
     * Show used storage space and estimated remaining space
@@ -176,7 +175,7 @@
     * Renamed some scripts to a shorter name
 * Updated Electron
 
-(2024/11/19)
+(2024/11/21)
 
 ### Previous changelog
 Please see [here](docs/Updated.md) for the previous changes

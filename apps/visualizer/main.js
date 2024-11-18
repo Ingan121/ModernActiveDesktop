@@ -810,6 +810,9 @@ function wallpaperMediaPropertiesListener(event) {
         timeText.parentElement.style.display = 'none';
         visStatus.timelineOrig = null;
         visStatus.timeline = null;
+        if (visStatus.lastAlbumArt.fromSpotify) {
+            visStatus.lastAlbumArt = null;
+        }
     }
 
     visStatus.lastMusic = event;
@@ -986,6 +989,9 @@ function wallpaperMediaPlaybackListener(event) {
 }
 
 function wallpaperMediaThumbnailListener(event) {
+    if (visStatus.lastAlbumArt?.fromSpotify && !event.fromSpotify) {
+        return;
+    }
     if (event.thumbnail === 'data:image/png;base64,' || !event.thumbnail) {
         visStatus.lastAlbumArt = null;
         configChanged();
@@ -999,13 +1005,17 @@ function wallpaperMediaThumbnailListener(event) {
         document.body.style.backgroundColor = event.primaryColor;
     }
     visStatus.lastAlbumArt = event;
-    const image = new Image();
-    image.onload = () => {
-        event.width = image.width;
-        event.height = image.height;
+    if (!event.width || !event.height) {
+        const image = new Image();
+        image.onload = () => {
+            event.width = image.width;
+            event.height = image.height;
+            updateAlbumArtSize();
+        }
+        image.src = event.thumbnail;
+    } else {
         updateAlbumArtSize();
     }
-    image.src = event.thumbnail;
     document.dispatchEvent(mediaThumbnailEvent);
 }
 

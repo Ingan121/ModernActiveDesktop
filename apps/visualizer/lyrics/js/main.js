@@ -79,6 +79,7 @@ lrcMenuItems[0].addEventListener('click', async function () { // Load Lyrics but
         delete overrides[hash];
         madIdb.setItem('lyricsOverrides', overrides); // Doesn't need to wait for the promise to resolve
     }
+    await lrcCache.delete(hash);
     processProperties(true);
 });
 
@@ -157,7 +158,9 @@ lrcMenuItems[7].addEventListener('click', function () { // Options button
     }
     const confDeskMover = madOpenWindow('apps/visualizer/lyrics/config.html', true, options);
     confDeskMover.addEventListener('load', () => {
-        confDeskMover.windowElement.contentWindow.configChanged = configChanged;
+        const cw = confDeskMover.windowElement.contentWindow;
+        cw.configChanged = configChanged;
+        cw.firstRun = firstRun;
     }, null, "window");
 });
 
@@ -304,25 +307,29 @@ window.addEventListener('online', function () {
 
 // Load lyrics from the API
 // Priority:
-// 1. Overrides (if present)
-// 2. Synced results (except for inaccurate search fallback with no album title data)
-//  2.1 Get (whatever succeeds first)
-//  2.2 Accurate search fallback
-//  2.3 Accurate search fallback without album title
-//  2.4 Accurate search fallback without artist name (only if album title is present)
-//  2.5 Inaccurate search fallback
-//  2.6 Inaccurate search fallback with parentheses stripped
-// 3. Unsynced results
-//  3.1 Same as 2.1-2.6
-// 4. Synced inaccurate search fallback with no album title data
-// 5. Unsynced inaccurate search fallback with no album title data
-// 6. No lyrics found
+// 1. Local overrides
+// 2. Cached results (includes remote overrides, ignore if loaded while preferring unsynced unless it's an override)
+// 3. Remote overrides
+// 4. Synced results (except for inaccurate search fallback with no album title data)
+//  4.1 Get (whatever succeeds first)
+//  4.2 Accurate search fallback
+//  4.3 Accurate search fallback without album title
+//  4.4 Accurate search fallback without artist name (only if album title is present)
+//  4.5 Inaccurate search fallback
+//  4.6 Inaccurate search fallback with parentheses stripped
+// 5. Unsynced results
+//  5.1 Same as 4.1-4.6
+// 6. Synced inaccurate search fallback with no album title data
+// 7. Unsynced inaccurate search fallback with no album title data
+// 8. No lyrics found
 //
 // Priority when preferUnsynced is true:
-// 1. Overrides (if present)
-// 2. Synced or unsynced results
-//  2.1 Same as 2.1-2.6 above
-// 3. No lyrics found
+// 1. Local overrides
+// 2. Cached results (includes remote overrides)
+// 3. Remote overrides
+// 4. Synced or unsynced results
+//  4.1 Same as 4.1-4.6 above
+// 5. No lyrics found
 async function findLyrics(id) {
     if (id) {
         return await fetchLyrics('https://lrclib.net/api/get/' + id);
@@ -335,32 +342,48 @@ async function findLyrics(id) {
         lastFetchInfo = { hash };
     }
     const override = overrides[hash];
-    if (override) {
-        if (override.lrc) {
-            lastFetchInfo.override = -1;
-            if (isTextLrc(override.lrc)) {
-                const { artist, title, albumTitle, duration } = parseLrcMetadata(override.lrc);
-                return {
-                    synced: true,
-                    id: null,
-                    title: title,
-                    artist: artist,
-                    albumTitle: albumTitle,
-                    duration: duration,
-                    syncedLyrics: override.lrc,
-                    plainLyrics: lrcToPlain(override.lrc)
-                };
-            } else {
-                return {
-                    synced: false,
-                    id: null,
-                    plainLyrics: override.lrc
-                };
-            }
-        } else if (override.id) {
-            lastFetchInfo.override = override.id;
-            return await fetchLyrics('https://lrclib.net/api/get/' + override.id);
+    if (override?.lrc) {
+        lastFetchInfo.override = -1;
+        if (LRC.isTextLrc(override.lrc)) {
+            const { artist, title, albumTitle, duration } = LRC.parseMetadata(override.lrc);
+            return {
+                synced: true,
+                id: null,
+                title: title,
+                artist: artist,
+                albumTitle: albumTitle,
+                duration: duration,
+                syncedLyrics: override.lrc,
+                plainLyrics: LRC.toPlain(override.lrc)
+            };
+        } else {
+            return {
+                synced: false,
+                id: null,
+                plainLyrics: override.lrc
+            };
         }
+    }
+
+    const cache = !localStorage.madesktopVisLyricsNoCache && await lrcCache.get(hash);
+    if (cache) {
+        // Delete cache if cache is unsynced, cached while preferring unsynced, now preferring synced, and not an override
+        // As lyrics load logic is different when preferring unsynced
+        if (!cache.synced && cache.preferredUnsynced && !preferUnsynced && override?.id !== cache.id) {
+            log('Deleting no longer wanted unsynced cache: ' + hash, 'log', 'MADVisLrc');
+            await lrcCache.delete(hash);
+        } else {
+            lastFetchInfo.cache = true;
+            if (override?.id) {
+                lastFetchInfo.override = override.id;
+            }
+            return cache;
+        }
+    }
+
+    if (override?.id) {
+        lastFetchInfo.override = override.id;
+        return await fetchLyrics('https://lrclib.net/api/get/' + override.id);
     }
 
     // Try to get best (synced) results by trying multiple URLs
@@ -551,7 +574,7 @@ async function searchFallbackAccurate(mode = 0) { // 0: Normal, 1: No album titl
                     albumTitle: item.albumName,
                     duration: item.duration,
                     syncedLyrics: item.syncedLyrics,
-                    plainLyrics: item.plainLyrics || lrcToPlain(item.syncedLyrics)
+                    plainLyrics: item.plainLyrics || LRC.toPlain(item.syncedLyrics)
                 };
             } else if (item.plainLyrics) {
                 lastUnsyncedLyrics = {
@@ -663,7 +686,7 @@ async function searchFallback(stripParens) {
                     albumTitle: item.albumName,
                     duration: item.duration,
                     syncedLyrics: item.syncedLyrics,
-                    plainLyrics: item.plainLyrics || lrcToPlain(item.syncedLyrics)
+                    plainLyrics: item.plainLyrics || LRC.toPlain(item.syncedLyrics)
                 };
             } else if (item.plainLyrics) {
                 lastUnsyncedLyrics = {
@@ -726,7 +749,7 @@ async function fetchLyrics(url) {
                     albumTitle: json.albumName,
                     duration: json.duration,
                     syncedLyrics: json.syncedLyrics,
-                    plainLyrics: json.plainLyrics || lrcToPlain(json.syncedLyrics)
+                    plainLyrics: json.plainLyrics || LRC.toPlain(json.syncedLyrics)
                 }
             } else if (json.plainLyrics) {
                 if (lastFetchInfo.attempt) {
@@ -782,8 +805,8 @@ async function loadLyrics(idOrLrc, addOverride) {
     }
     if (idOrLrc instanceof File) {
         const text = await idOrLrc.text();
-        if (isTextLrc(text)) {
-            const { artist, title, albumTitle, duration } = parseLrcMetadata(text);
+        if (LRC.isTextLrc(text)) {
+            const { artist, title, albumTitle, duration } = LRC.parseMetadata(text);
             lyrics = {
                 synced: true,
                 id: null,
@@ -792,7 +815,7 @@ async function loadLyrics(idOrLrc, addOverride) {
                 albumTitle: albumTitle,
                 duration: duration,
                 syncedLyrics: text,
-                plainLyrics: lrcToPlain(text)
+                plainLyrics: LRC.toPlain(text)
             }
         } else {
             lyrics = {
@@ -831,7 +854,7 @@ async function loadLyrics(idOrLrc, addOverride) {
         if (lyrics.synced && !preferUnsynced) {
             saveMenuItems[0].classList.remove('disabled');
             lyricsView.innerHTML = '';
-            const lrc = parseLrc(lyrics.syncedLyrics);
+            const lrc = LRC.parse(lyrics.syncedLyrics);
             lrc.forEach((line, index) => {
                 const p = document.createElement('p');
                 p.textContent = line.text;
@@ -858,15 +881,20 @@ async function loadLyrics(idOrLrc, addOverride) {
             autoScrollBtn.classList.add('disabled');
             autoScrollBtn.classList.remove('checkedItem');
         }
-        if (addOverride && idOrLrc && !(idOrLrc instanceof File) && idOrLrc.length <= 10) {
-            const hash = await getSongHash(visStatus.lastMusic?.artist, visStatus.lastMusic?.title, visStatus.lastMusic?.albumTitle);
-            if (!hash) {
-                return;
+        const hash = await getSongHash(visStatus.lastMusic?.artist, visStatus.lastMusic?.title, visStatus.lastMusic?.albumTitle);
+        if (!hash) {
+            return;
+        }
+        if (idOrLrc && !(idOrLrc instanceof File) && idOrLrc.length <= 10) {
+            if (addOverride) {
+                overrides[hash] = {
+                    id: lyrics.id
+                };
+                madIdb.setItem('lyricsOverrides', overrides);
+                lrcCache.add(hash, lyrics, preferUnsynced);
             }
-            overrides[hash] = {
-                id: lyrics.id
-            };
-            madIdb.setItem('lyricsOverrides', overrides);
+        } else if (!lastFetchInfo.cache) {
+            lrcCache.add(hash, lyrics, preferUnsynced);
         }
     } else {
         saveLyricsBtn.classList.add('disabled');
@@ -881,62 +909,6 @@ async function loadLyrics(idOrLrc, addOverride) {
         }
         lastSyncedLyricsParsed = null;
     }
-}
-
-function parseLrc(string) {
-    // Copilot did this!
-    const lines = string.split('\n');
-    const lyrics = [];
-    for (let i = 0; i < lines.length; i++) {
-        const line = lines[i];
-        const time = line.match(/\[\d+:\d+\.\d+\]/g);
-        if (time) {
-            const text = line.replace(/\[\d+:\d+\.\d+\]/g, '');
-            for (let j = 0; j < time.length; j++) {
-                const t = time[j].match(/\d+/g);
-                const seconds = parseInt(t[0]) * 60 + parseFloat(t[1]);
-                lyrics.push({
-                    time: seconds,
-                    text: text.trim()
-                });
-            }
-        }
-    }
-    return lyrics;
-}
-
-function parseLrcMetadata(string) {
-    let artist = '';
-    let title = '';
-    let albumTitle = '';
-    let duration = 0;
-    for (const line of string.split('\n')) {
-        if (line.startsWith('[ar:')) {
-            artist = line.substring(4, line.length - 1);
-        } else if (line.startsWith('[ti:')) {
-            title = line.substring(4, line.length - 1);
-        } else if (line.startsWith('[al:')) {
-            albumTitle = line.substring(4, line.length - 1);
-        } else if (line.startsWith('[length:')) {
-            const value = line.substring(8, line.length - 1).trim().split(':');
-            if (value.length === 2) {
-                duration = parseInt(value[0]) * 60 + parseInt(value[1]);
-            } else if (value.length === 3) {
-                duration = parseInt(value[0]) * 3600 + parseInt(value[1]) * 60 + parseInt(value[2]);
-            } else {
-                duration = parseInt(value[0]);
-            }
-        }
-    }
-    return { artist, title, albumTitle, duration };
-}
-
-function lrcToPlain(string) {
-    return string.replace(/\[\d+:\d+\.\d+\]/g, '').replace(/\[.*?:.*?\]/g, '').trim().split('\n').map(line => line.trim()).join('\n');
-}
-
-function isTextLrc(string) {
-    return string.match(/\[\d+:\d+\.\d+\]/g) !== null;
 }
 
 async function processProperties(force, simulating) {
@@ -977,6 +949,31 @@ async function processProperties(force, simulating) {
                         albumTitle: albumTitle,
                         duration: duration
                     };
+                    // Hidden localStorage flag to use album art from Spotify in MADVis, instead of the one from the media properties (SMTC with WPE's own cropping of the Spotify logo that doesn't work well with non-square images)
+                    // Run localStorage.madesktopVisSpotifyInfo = <preferred height> in the debug mode run js button / DevTools console to enable this
+                    if (localStorage.madesktopVisUseSpotifyAlbumArt) {
+                        const images = spotifyNowPlaying.item.album.images;
+                        const height = parseInt(localStorage.madesktopVisUseSpotifyAlbumArt) || 300; // Typically 64, 300, or 640
+                        let closest = images[0];
+                        for (const image of images) {
+                            if (image.height >= height && image.height < closest.height) {
+                                closest = image;
+                            }
+                        }
+                        const visDeskMover = top.visDeskMover;
+                        const current = visDeskMover.visStatus.lastAlbumArt;
+                        visDeskMover.windowElement.contentWindow.wallpaperMediaThumbnailListener({
+                            thumbnail: closest.url,
+                            width: closest.width,
+                            height: closest.height,
+                            primaryColor: current.primaryColor,
+                            secondaryColor: current.secondaryColor,
+                            tertiaryColor: current.tertiaryColor,
+                            textColor: current.textColor,
+                            highContrastColor: current.highContrastColor,
+                            fromSpotify: true
+                        });
+                    }
                 }
                 loadLyrics();
             } else if (visStatus.lastMusic) {
@@ -1235,7 +1232,7 @@ async function publish() {
     } else {
         const result = await response.json();
         console.log(result);
-        madAlert(madGetString("VISLRC_PUBLISH_SUCCESS") + '<br>' + result.message, null, 'error', { title: 'locid:VISLRC_TITLE' });
+        madAlert(madGetString("VISLRC_PUBLISH_FAIL") + '<br>' + result.message, null, 'error', { title: 'locid:VISLRC_TITLE' });
     }
 
     function getNonce(prefix, targetBytes) {
@@ -1315,71 +1312,38 @@ async function configChanged() {
     }
 }
 
-// Spotify stuff
-async function getSpotifyNowPlaying() {
-    if (!localStorage.madesktopVisSpotifyInfo) {
-        return null;
-    }
-    try {
-        const info = await getSpotifyToken();
-        const response = await fetch('https://api.spotify.com/v1/me/player/currently-playing', {
-            method: 'GET',
-            headers: {
-                'Authorization': 'Bearer ' + info.accessToken
-            }
-        });
-        if (response.status === 200) {
-            const json = await response.json();
-            return json;
+async function firstRun() {
+    const options = {
+        icon: 'question',
+        title: 'locid:VISLRC_TITLE',
+        btn1: 'locid:UI_YES',
+        btn2: 'locid:UI_NO',
+        cancelBtn: 2
+    };
+    const commonFinalMsg = madGetString("VISLRC_1STRUN_INFO_COMMON");
+
+    await madAlert("locid:VISLRC_1STRUN_WELCOME", null, 'info', { title: 'locid:VISLRC_TITLE' });
+
+    if (await madConfirm(madGetString("VISLRC_1STRUN_Q_SPOTIFY"), null, options)) {
+        localStorage.madesktopVisGuessTimeline = true;
+        madAlert(madGetString("VISLRC_1STRUN_INFO_SPOTIFY") + "<br><br>" + commonFinalMsg, null, 'info', { title: 'locid:VISLRC_TITLE' });
+    } else if (await madConfirm(madGetString("VISLRC_1STRUN_Q_BROWSER"), null, options)) {
+        localStorage.madesktopVisGuessTimeline = '2';
+        if (await madConfirm(madGetString("VISLRC_1STRUN_Q_YT"), null, options)) {
+            madAlert(madGetString("VISLRC_1STRUN_INFO_YT") + "<br><br>" + commonFinalMsg, null, 'info', { title: 'locid:VISLRC_TITLE' });
         } else {
-            return {
-                item: null,
-                errorCode: response.status
-            };
+            madAlert(commonFinalMsg, null, 'info', { title: 'locid:VISLRC_TITLE' });
         }
-    } catch (error) {
-        console.error(error);
-        return {
-            item: null,
-            errorCode: -1
-        }
-    }
-}
-
-async function getSpotifyToken() {
-    if (!localStorage.madesktopVisSpotifyInfo) {
-        return null;
-    }
-    const info = JSON.parse(localStorage.madesktopVisSpotifyInfo);
-    if (info.fetchedAt + info.expiresIn - 60 > Date.now() / 1000) {
-        return info;
-    }
-
-    const response = await fetch('https://accounts.spotify.com/api/token', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-            grant_type: 'refresh_token',
-            refresh_token: info.refreshToken,
-            client_id: info.clientId
-        })
-    });
-    if (response.ok) {
-        const json = await response.json();
-        const newInfo = {
-            accessToken: json.access_token,
-            expiresIn: json.expires_in,
-            fetchedAt: Date.now() / 1000,
-            refreshToken: json.refresh_token,
-            clientId: info.clientId
-        };
-        localStorage.madesktopVisSpotifyInfo = JSON.stringify(newInfo);
-        return newInfo;
+    } else if (!await madConfirm(madGetString("VISLRC_1STRUN_Q_TIMELINE"), null, options)) {
+        delete localStorage.madesktopVisGuessTimeline;
+        localStorage.madesktopVisLyricsForceUnsynced = true;
+        madAlert(commonFinalMsg, null, 'info', { title: 'locid:VISLRC_TITLE' });
     } else {
-        return null;
+        delete localStorage.madesktopVisGuessTimeline;
+        delete localStorage.madesktopVisLyricsForceUnsynced;
+        madAlert(commonFinalMsg, null, 'info', { title: 'locid:VISLRC_TITLE' });
     }
+    top.visDeskMover.windowElement.contentWindow.location.reload();
 }
 
 // Debugging stuff
@@ -1419,8 +1383,13 @@ function showDebugInfo() {
         msg += 'Duration of the loaded lyrics: ' + lastLyrics?.duration + 's<br><br>';
         if (lastFetchInfo.override === -1) {
             msg += 'Override: Local lyrics<br>';
-        } else if (lastFetchInfo.override) {
-            msg += 'Override ID: ' + lastFetchInfo.override + '<br>';
+        } else if (lastFetchInfo.override || lastFetchInfo.cache) {
+            if (lastFetchInfo.override) {
+                msg += 'Override ID: ' + lastFetchInfo.override + '<br>';
+            }
+            if (lastFetchInfo.cache) {
+                msg += 'Lyrics loaded from cache<br>';
+            }
         } else if (lastFetchInfo.urls) {
             msg += 'URLs tried:<br>';
             for (let i = 0; i < lastFetchInfo.urls.length; i++) {
@@ -1560,32 +1529,7 @@ async function init() {
 
         if (!localStorage.madesktopVisLyricsRanOnce) {
             localStorage.madesktopVisLyricsRanOnce = true;
-            const options = {
-                icon: 'question',
-                title: 'locid:VISLRC_TITLE',
-                btn1: 'locid:UI_YES',
-                btn2: 'locid:UI_NO',
-                cancelBtn: 2
-            };
-            const commonFinalMsg = madGetString("VISLRC_1STRUN_INFO_COMMON");
-
-            await madAlert("locid:VISLRC_1STRUN_WELCOME", null, 'info', { title: 'locid:VISLRC_TITLE' });
-
-            if (await madConfirm(madGetString("VISLRC_1STRUN_Q_SPOTIFY"), null, options)) {
-                localStorage.madesktopVisGuessTimeline = true;
-                madAlert(madGetString("VISLRC_1STRUN_INFO_SPOTIFY") + "<br><br>" + commonFinalMsg, null, 'info', { title: 'locid:VISLRC_TITLE' });
-            } else if (await madConfirm(madGetString("VISLRC_1STRUN_Q_BROWSER"), null, options)) {
-                localStorage.madesktopVisGuessTimeline = '2';
-                if (await madConfirm(madGetString("VISLRC_1STRUN_Q_YT"), null, options)) {
-                    madAlert(madGetString("VISLRC_1STRUN_INFO_YT") + "<br><br>" + commonFinalMsg, null, 'info', { title: 'locid:VISLRC_TITLE' });
-                } else {
-                    madAlert(commonFinalMsg, null, 'info', { title: 'locid:VISLRC_TITLE' });
-                }
-            } else if (!await madConfirm(madGetString("VISLRC_1STRUN_Q_TIMELINE"), null, options)) {
-                localStorage.madesktopVisLyricsForceUnsynced = true;
-                madAlert(commonFinalMsg, null, 'info', { title: 'locid:VISLRC_TITLE' });
-            }
-            visDeskMover.windowElement.contentWindow.location.reload();
+            firstRun();
         }
     } else if (madRunningMode !== 0) {
         lyricsView.innerHTML = '<mad-string data-locid="VISLRC_STATUS_NO_MADVIS"></mad-string>';

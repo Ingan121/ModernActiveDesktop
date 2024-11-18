@@ -168,4 +168,6 @@ window.simulate("TWICE", "CRY FOR ME", "");
 
 window.simulate("TWICE", "I CAN'T STOP ME", "Eyes wide open");
 wtf
+
+https://stats.fm/ingan121 if you are curious
 */

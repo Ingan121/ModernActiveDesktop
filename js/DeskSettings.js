@@ -723,6 +723,10 @@
             'madesktopVisGuessTimeline',
             'madesktopVisLyricsForceUnsynced',
             'madesktopVisLyricsRanOnce',
+            'madesktopVisLyricsNoCache',
+            'madesktopVisLyricsCacheMax',
+            'madesktopVisLyricsCacheExpiry',
+            'madesktopVisUseSpotifyAlbumArt',
             // Debug configs
             'madesktopDebugMode',
             'madesktopDebugLog',

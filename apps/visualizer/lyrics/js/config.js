@@ -15,17 +15,25 @@ const fontSize = document.getElementById("fontSize");
 const boldToggle = document.getElementById("boldToggle");
 const italicToggle = document.getElementById("italicToggle");
 
+const cacheFieldset = document.getElementById("cacheFieldset");
+const enableCacheChkBox = document.getElementById("enableCacheChkBox");
+const cacheCount = document.getElementById("cacheCount");
+const clearCacheBtn = document.getElementById("clearCacheBtn");
+const maxCacheInput = document.getElementById("maxCacheInput");
+const cacheExpiryInput = document.getElementById("cacheExpiryInput");
+
 const forceUnsyncedChkBox = document.getElementById("forceUnsyncedChkBox");
 const syncInfoText = document.getElementById("syncInfoText");
 const smoothScrollChkBox = document.getElementById("smoothScrollChkBox");
 const smoothScrollChkBoxLabel = document.querySelector("label[for=smoothScrollChkBox] mad-string");
-
-const tipsFieldset = document.getElementById("tipsFieldset");
+const show1stRunBtn = document.getElementById("show1stRunBtn");
+const showTipsBtn = document.getElementById("showTipsBtn");
 
 const okBtn = document.getElementById("okBtn");
 const cancelBtn = document.getElementById("cancelBtn");
 const applyBtn = document.getElementById("applyBtn");
 
+const textboxes = document.querySelectorAll("input[type=text], input[type=number]:not(#fontSize)");
 const links = document.querySelectorAll('a');
 
 const animationsDisabled = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -35,6 +43,22 @@ for (const link of links) {
     link.addEventListener('click', () => {
         delete madDeskMover.config.alwaysOnTop;
         madBringToTop();
+    });
+}
+
+for (const textbox of textboxes) {
+    textbox.addEventListener("click", async function () {
+        if (madKbdSupport !== 1) {
+            if (madSysPlug.inputStatus) {
+                madSysPlug.focusInput();
+            } else if (!await madSysPlug.beginInput()) {
+                madPrompt(madGetString("UI_PROMPT_ENTER_VALUE"), function (res) {
+                    if (res === null) return;
+                    textbox.value = res;
+                    textbox.dispatchEvent(new Event('change'));
+                }, '', textbox.value, true);
+            }
+        }
     });
 }
 
@@ -58,7 +82,9 @@ if (madRunningMode !== 1) {
     smoothScrollChkBox.disabled = true;
 }
 if (madRunningMode === 0) {
-    tipsFieldset.style.display = "none";
+    cacheFieldset.style.display = "none";
+    show1stRunBtn.style.display = "none";
+    showTipsBtn.style.display = "none";
 } else if (localStorage.madesktopDebugMode || localStorage.madesktopVisSpotifyEnabled || localStorage.madesktopVisSpotifyInfo) {
     showSpotifyBtn.style.display = "block";
 }
@@ -66,14 +92,13 @@ if (madRunningMode === 0) {
 showSpotifyBtn.addEventListener("click", function () {
     spotifyFieldset.style.display = "block";
     showSpotifyBtn.style.display = "none";
-    tipsFieldset.style.display = "none";
     madResizeTo(null, document.documentElement.offsetHeight / madScaleFactor);
 });
 
 spotifyLoginBtn.addEventListener("click", async function () {
     if (!localStorage.madesktopVisSpotifyInfo) {
         if (!localStorage.sysplugIntegration) {
-            await madAlert(madGetString("VISLRCCONF_SPOTIFY_SYSPLUG_REQUIRED"), null, "warning");
+            await madAlert(madGetString("VISLRCCONF_SPOTIFY_SYSPLUG_REQUIRED"), null, "warning", { title: "locid:VISLRC_TITLE" });
             madOpenWindow('SysplugSetupGuide.md', true);
             return;
         }
@@ -102,29 +127,29 @@ spotifyLoginBtn.addEventListener("click", async function () {
                         refreshToken: json.refresh_token,
                         clientId: result.clientId
                     });
-                    madAlert(madGetString("VISLRCCONF_SPOTIFY_LOGIN_SUCCESS"), null, "info");
+                    madAlert(madGetString("VISLRCCONF_SPOTIFY_LOGIN_SUCCESS"), null, "info", { title: "locid:VISLRC_TITLE" });
                     spotifyLoginBtn.innerHTML = madGetString("VISLRCCONF_SPOTIFY_LOGOUT");
                 } else if (json.error) {
                     if (json.error_description) {
-                        madAlert(madGetString("VISLRCCONF_SPOTIFY_LOGIN_FAIL_TOKEN") + "<br>" + json.error_description, null, "error");
+                        madAlert(madGetString("VISLRCCONF_SPOTIFY_LOGIN_FAIL_TOKEN") + "<br>" + json.error_description, null, "error", { title: "locid:VISLRC_TITLE" });
                     } else {
-                        madAlert(madGetString("VISLRCCONF_SPOTIFY_LOGIN_FAIL_TOKEN"), null, "error");
+                        madAlert(madGetString("VISLRCCONF_SPOTIFY_LOGIN_FAIL_TOKEN"), null, "error", { title: "locid:VISLRC_TITLE" });
                     }
                 } else {
-                    madAlert(madGetString("VISLRCCONF_SPOTIFY_LOGIN_FAIL_TOKEN"), null, "error");
+                    madAlert(madGetString("VISLRCCONF_SPOTIFY_LOGIN_FAIL_TOKEN"), null, "error", { title: "locid:VISLRC_TITLE" });
                 }
             } else if (result.error) {
                 if (result.error === "access_denied") {
-                    madAlert(madGetString("VISLRCCONF_SPOTIFY_LOGIN_USER_CANCEL"), null, "info");
+                    madAlert(madGetString("VISLRCCONF_SPOTIFY_LOGIN_USER_CANCEL"), null, "info", { title: "locid:VISLRC_TITLE" });
                 } else if (result.error === "Timeout") {
-                    madAlert(madGetString("VISLRCCONF_SPOTIFY_LOGIN_TIMEOUT"), null, "error");
+                    madAlert(madGetString("VISLRCCONF_SPOTIFY_LOGIN_TIMEOUT"), null, "error", { title: "locid:VISLRC_TITLE" });
                 } else if (result.error === "System plugin has denied the connection") {
-                    madAlert(madGetString("VISLRCCONF_SPOTIFY_LOGIN_SYSPLUG_DENIED"), null, "error");
+                    madAlert(madGetString("VISLRCCONF_SPOTIFY_LOGIN_SYSPLUG_DENIED"), null, "error", { title: "locid:VISLRC_TITLE" });
                 } else {
-                    madAlert(madGetString("VISLRCCONF_SPOTIFY_LOGIN_FAIL") + "<br>" + result.error, null, "error");
+                    madAlert(madGetString("VISLRCCONF_SPOTIFY_LOGIN_FAIL") + "<br>" + result.error, null, "error", { title: "locid:VISLRC_TITLE" });
                 }
             } else {
-                madAlert(madGetString("VISLRCCONF_SPOTIFY_LOGIN_FAIL"), null, "error");
+                madAlert(madGetString("VISLRCCONF_SPOTIFY_LOGIN_FAIL"), null, "error", { title: "locid:VISLRC_TITLE" });
             }
         } catch (error) {
             if (error.name === "AbortError") {
@@ -137,7 +162,7 @@ spotifyLoginBtn.addEventListener("click", async function () {
         }
     } else {
         delete localStorage.madesktopVisSpotifyInfo;
-        madAlert(madGetString("VISLRCCONF_SPOTIFY_LOGOUT_SUCCESS"), null, "info");
+        madAlert(madGetString("VISLRCCONF_SPOTIFY_LOGOUT_SUCCESS"), null, "info", { title: "locid:VISLRC_TITLE" });
         spotifyLoginBtn.innerHTML = madGetString("VISLRCCONF_SPOTIFY_LOGIN");
     }
 });
@@ -233,6 +258,17 @@ function getFontInfo() {
     return fontInfo;
 }
 
+clearCacheBtn.addEventListener("click", async function () {
+    if (await madConfirm(madGetString("VISLRCCONF_CACHE_CLEAR_CONFIRM"), null, {
+        icon: "warning",
+        title: "locid:VISLRC_TITLE"
+    })) {
+        await lrcCache.clear();
+        cacheCount.textContent = 0;
+        madAlert(madGetString("VISLRCCONF_CACHE_CLEAR_SUCCESS"), null, "info", { title: "locid:VISLRC_TITLE" });
+    }
+});
+
 forceUnsyncedChkBox.addEventListener("click", function () {
     if (this.checked) {
         smoothScrollChkBox.disabled = true;
@@ -242,6 +278,15 @@ forceUnsyncedChkBox.addEventListener("click", function () {
     }
 });
 
+show1stRunBtn.addEventListener("click", function () {
+    window.firstRun();
+    madCloseWindow();
+});
+
+showTipsBtn.addEventListener("click", function () {
+    madAlert(madGetString("VISLRCCONF_TIPS"), null, "info", { title: "locid:VISLRC_TITLE" });
+});
+
 window.apply = function () {
     if (enableSpotifyChkBox.checked) {
         localStorage.madesktopVisSpotifyEnabled = true;
@@ -249,6 +294,13 @@ window.apply = function () {
         delete localStorage.madesktopVisSpotifyEnabled;
     }
     localStorage.madesktopVisLyricsFont = fontShorthand;
+    if (enableCacheChkBox.checked) {
+        delete localStorage.madesktopVisLyricsNoCache;
+    } else {
+        localStorage.madesktopVisLyricsNoCache = true;
+    }
+    localStorage.madesktopVisLyricsCacheMax = maxCacheInput.value || 500;
+    localStorage.madesktopVisLyricsCacheExpiry = cacheExpiryInput.value || 31;
     if (forceUnsyncedChkBox.checked) {
         localStorage.madesktopVisLyricsForceUnsynced = true;
     } else {
@@ -297,6 +349,19 @@ if (fontInfo.bold) {
 }
 if (fontInfo.italic) {
     italicToggle.dataset.active = true;
+}
+
+if (localStorage.madesktopVisLyricsNoCache) {
+    enableCacheChkBox.checked = false;
+}
+lrcCache.count().then(count => {
+    cacheCount.textContent = count;
+});
+if (localStorage.madesktopVisLyricsCacheMax) {
+    maxCacheInput.value = localStorage.madesktopVisLyricsCacheMax;
+}
+if (localStorage.madesktopVisLyricsCacheExpiry) {
+    cacheExpiryInput.value = localStorage.madesktopVisLyricsCacheExpiry;
 }
 
 if (localStorage.madesktopVisLyricsForceUnsynced) {
