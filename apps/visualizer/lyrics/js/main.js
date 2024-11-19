@@ -310,7 +310,7 @@ window.addEventListener('online', function () {
 // Load lyrics from the API
 // Priority:
 // 1. Local overrides
-// 2. Cached results (includes remote overrides, ignore if loaded while preferring unsynced unless it's an override)
+// 2. Cached results (includes remote overrides; ignore if unsynced, loaded while preferring unsynced, and it's not an override)
 // 3. Remote overrides
 // 4. Synced results (except for inaccurate search fallback with no album title data)
 //  4.1 Get (whatever succeeds first)
@@ -1331,9 +1331,13 @@ async function firstRun() {
     const changeEstimateOption = top.visDeskMover.windowElement.contentWindow.changeEstimateOption;
     if (await madConfirm(madGetString("VISLRC_1STRUN_Q_SPOTIFY"), null, options)) {
         changeEstimateOption(true);
+        delete localStorage.madesktopVisLyricsForceUnsynced;
+        processProperties(true);
         madAlert(madGetString("VISLRC_1STRUN_INFO_SPOTIFY") + "<br><br>" + commonFinalMsg, null, 'info', { title: 'locid:VISLRC_TITLE' });
     } else if (await madConfirm(madGetString("VISLRC_1STRUN_Q_BROWSER"), null, options)) {
         changeEstimateOption(2);
+        delete localStorage.madesktopVisLyricsForceUnsynced;
+        processProperties(true);
         if (await madConfirm(madGetString("VISLRC_1STRUN_Q_YT"), null, options)) {
             madAlert(madGetString("VISLRC_1STRUN_INFO_YT") + "<br><br>" + commonFinalMsg, null, 'info', { title: 'locid:VISLRC_TITLE' });
         } else {
@@ -1342,10 +1346,12 @@ async function firstRun() {
     } else if (!await madConfirm(madGetString("VISLRC_1STRUN_Q_TIMELINE"), null, options)) {
         changeEstimateOption();
         localStorage.madesktopVisLyricsForceUnsynced = true;
+        processProperties(true);
         madAlert(commonFinalMsg, null, 'info', { title: 'locid:VISLRC_TITLE' });
     } else {
         changeEstimateOption();
         delete localStorage.madesktopVisLyricsForceUnsynced;
+        processProperties(true);
         madAlert(commonFinalMsg, null, 'info', { title: 'locid:VISLRC_TITLE' });
     }
 }
@@ -1399,6 +1405,9 @@ function showDebugInfo() {
                 const expiryDate = new Date(lastLyrics.cachedAt + expiryTime).toLocaleString(window.madLang);
                 msg += 'Cached at: ' + cachedAtDate + '<br>';
                 msg += 'Cache expiry: ' + expiryDate + '<br>';
+                if (lastLyrics.preferredUnsynced) {
+                    msg += 'Cached while preferring unsynced lyrics<br>';
+                }
             }
         } else if (lastFetchInfo.urls) {
             msg += 'URLs tried:<br>';
