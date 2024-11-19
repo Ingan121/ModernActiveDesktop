@@ -726,6 +726,7 @@
             'madesktopVisLyricsNoCache',
             'madesktopVisLyricsCacheMax',
             'madesktopVisLyricsCacheExpiry',
+            'madesktopVisLyricsLastCacheClean',
             'madesktopVisUseSpotifyAlbumArt',
             // Debug configs
             'madesktopDebugMode',

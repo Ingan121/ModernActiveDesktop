@@ -9,7 +9,11 @@ const showSpotifyBtn = document.getElementById("showSpotifyBtn");
 const spotifyFieldset = document.getElementById("spotifyFieldset");
 const enableSpotifyChkBox = document.getElementById("enableSpotifyChkBox");
 const spotifyLoginBtn = document.getElementById("spotifyLoginBtn");
+const spotifyAlbumArtArea = document.getElementById("spotifyAlbumArtArea");
+const useSpotifyAlbumArtChkBox = document.getElementById("useSpotifyAlbumArtChkBox");
+const albumArtHeightInput = document.getElementById("albumArtHeightInput");
 
+const mainFieldsets = document.querySelectorAll("fieldset:not(#spotifyFieldset)");
 const fontSelector = document.getElementById("fontSelector");
 const fontSize = document.getElementById("fontSize");
 const boldToggle = document.getElementById("boldToggle");
@@ -62,6 +66,8 @@ for (const textbox of textboxes) {
     });
 }
 
+let spotifyShown = false;
+
 let fonts = [
     "Pixelated MS Sans Serif",
     "Fixedsys Excelsior",
@@ -89,9 +95,28 @@ if (madRunningMode === 0) {
     showSpotifyBtn.style.display = "block";
 }
 
+// Only shown if this config is manually created with DevTools / debug menu js execution
+if (localStorage.madesktopVisUseSpotifyAlbumArt) {
+    spotifyAlbumArtArea.style.display = "block";
+    useSpotifyAlbumArtChkBox.checked = true;
+    albumArtHeightInput.value = parseInt(localStorage.madesktopVisUseSpotifyAlbumArt) || 640;
+}
+
 showSpotifyBtn.addEventListener("click", function () {
-    spotifyFieldset.style.display = "block";
-    showSpotifyBtn.style.display = "none";
+    if (spotifyShown) {
+        spotifyFieldset.style.display = "none";
+        for (const fieldset of mainFieldsets) {
+            fieldset.style.display = "block";
+        }
+        showSpotifyBtn.textContent = "Spotify >>";
+    } else {
+        spotifyFieldset.style.display = "block";
+        for (const fieldset of mainFieldsets) {
+            fieldset.style.display = "none";
+        }
+        showSpotifyBtn.textContent = "Back <<";
+    }
+    spotifyShown = !spotifyShown;
     madResizeTo(null, document.documentElement.offsetHeight / madScaleFactor);
 });
 
@@ -293,6 +318,11 @@ window.apply = function () {
     } else {
         delete localStorage.madesktopVisSpotifyEnabled;
     }
+    if (useSpotifyAlbumArtChkBox.checked) {
+        localStorage.madesktopVisUseSpotifyAlbumArt = albumArtHeightInput.value || 640;
+    } else {
+        delete localStorage.madesktopVisUseSpotifyAlbumArt;
+    }
     localStorage.madesktopVisLyricsFont = fontShorthand;
     if (enableCacheChkBox.checked) {
         delete localStorage.madesktopVisLyricsNoCache;
@@ -300,7 +330,7 @@ window.apply = function () {
         localStorage.madesktopVisLyricsNoCache = true;
     }
     localStorage.madesktopVisLyricsCacheMax = maxCacheInput.value || 500;
-    localStorage.madesktopVisLyricsCacheExpiry = cacheExpiryInput.value || 31;
+    localStorage.madesktopVisLyricsCacheExpiry = cacheExpiryInput.value || 21;
     if (forceUnsyncedChkBox.checked) {
         localStorage.madesktopVisLyricsForceUnsynced = true;
     } else {
@@ -354,7 +384,7 @@ if (fontInfo.italic) {
 if (localStorage.madesktopVisLyricsNoCache) {
     enableCacheChkBox.checked = false;
 }
-lrcCache.count().then(count => {
+window.lrcCache?.count().then(count => {
     cacheCount.textContent = count;
 });
 if (localStorage.madesktopVisLyricsCacheMax) {

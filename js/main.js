@@ -92,7 +92,7 @@
     }
     logTimed(`ModernActiveDesktop ${madVersion.toString(0)} load started`);
 
-    // Data migration from www.ingan121.com to madesktop.ingan121.com
+    // 3.2.1 and below: Data migration from www.ingan121.com to madesktop.ingan121.com
     if (location.href.startsWith("https://madesktop.ingan121.com/") && !localStorage.madesktopMigrationProgress) {
         localStorage.madesktopMigrationProgress = 0;
         bgHtmlView.src = "https://www.ingan121.com/mad/migrator.html";
@@ -156,13 +156,14 @@
     kbdSupportLabel.textContent = kbdSupport;
 
     // Migrate old configs
+    // 2.0-2.1 to 2.2
     if (localStorage.madesktopNonADStyle) {
         for (let i = 0; i < localStorage.madesktopItemCount; i++) localStorage.setItem("madesktopItemStyle" + (i || ""), "nonad");
         delete localStorage.madesktopNonADStyle;
         location.reload();
         throw new Error("Refreshing...");
     }
-    // Convert destryoedItems to openWindows
+    // 2.x to 3.0: Convert destryoedItems to openWindows
     // Only save open windows instead of all destroyed windows
     if (localStorage.madesktopDestroyedItems) {
         let openWindows = [0];
@@ -192,15 +193,18 @@
         }
         localStorage.madesktopOpenWindows = openWindows;
     }
+    // 2.1-2.3 to 3.0
     delete localStorage.madesktopLastCustomScale;
+    // 2.0-3.1.2 to 3.2
     delete localStorage.madesktopPrevOWConfigRequest;
+    // 3.0-3.1.2 to 3.2: Convert bmp wallpapers to png
     if (localStorage.madesktopBgImg) {
         if (localStorage.madesktopBgImg.startsWith("wallpapers/") && localStorage.madesktopBgImg.endsWith(".bmp")) {
             localStorage.madesktopBgImg = localStorage.madesktopBgImg.replace(".bmp", ".png");
             changeBgType("image");
         }
     }
-    // Mistake that I made in previous versions
+    // 3.0-3.1.2 to 3.2: Mistake that I made in previous versions
     if (localStorage.madesktopCustomColor) {
         if (localStorage.madesktopCustomColor.includes("--menu-highlight")) {
             localStorage.madesktopCustomColor = localStorage.madesktopCustomColor.replace("--menu-highlight", "--menu-hilight");
@@ -980,6 +984,7 @@
 
             if (hint.length > 50 || text.length > 50) {
                 msgboxInput.style.width = "500px";
+                msgbox.style.maxWidth = "100%";
             } else {
                 msgboxInput.style.width = "100%";
             }
@@ -1122,9 +1127,11 @@
                 }
                 msgbox.style.animation = "";
                 msgboxBg.style.display = "none";
+                msgbox.style.maxWidth = "";
             }, { once: true });
         } else {
             msgboxBg.style.display = "none";
+            msgbox.style.maxWidth = "";
         }
         osk.style.display = "none";
     }

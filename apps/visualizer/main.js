@@ -760,7 +760,7 @@ function wallpaperMediaPropertiesListener(event) {
     }
 
     if (event.artist.endsWith(' - Topic')) { // YT auto-generated stuff
-        event.artist = event.artist.slice(0, -7);
+        event.artist = event.artist.slice(0, -7).trim();
     }
     updateTitle(event);
 
@@ -810,7 +810,7 @@ function wallpaperMediaPropertiesListener(event) {
         timeText.parentElement.style.display = 'none';
         visStatus.timelineOrig = null;
         visStatus.timeline = null;
-        if (visStatus.lastAlbumArt.fromSpotify) {
+        if (visStatus.lastAlbumArt?.fromSpotify) {
             visStatus.lastAlbumArt = null;
         }
     }
@@ -1017,6 +1017,23 @@ function wallpaperMediaThumbnailListener(event) {
         updateAlbumArtSize();
     }
     document.dispatchEvent(mediaThumbnailEvent);
+}
+
+function changeEstimateOption(option) {
+    if (localStorage.madesktopVisGuessTimeline === option) {
+        return;
+    }
+    switch (option) {
+        case undefined:
+            estimateMenuItems[0].click();
+            break;
+        case 'true': case true:
+            estimateMenuItems[1].click();
+            break;
+        case '2': case 2:
+            estimateMenuItems[2].click();
+            break;
+    }
 }
 
 function configChanged() {

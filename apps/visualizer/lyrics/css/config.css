@@ -30,6 +30,14 @@ p, legend, label,
     margin-left: 5px;
 }
 
+#spotifyAlbumArtArea {
+    display: none;
+}
+
+label[for="useSpotifyAlbumArtChkBox"] {
+    margin-top: 3px;
+}
+
 #spotifyInfo,
 #syncInfo,
 #scrollInfo,
@@ -132,6 +140,7 @@ label[for="enableCacheChkBox"] {
     margin-bottom: 3px;
 }
 
+#albumArtHeightInput,
 #maxCacheInput,
 #cacheExpiryInput {
     width: 40px;

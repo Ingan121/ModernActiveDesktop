@@ -12,7 +12,6 @@
     <!-- This is definitely longer than 640x480 when the Spotify section is visible -->
     <!-- but gotta keep it this way till the Spotify integration is approved -->
     <div class="window-body">
-        <button id="showSpotifyBtn">Show Spotify integration options</button>
         <fieldset id="spotifyFieldset">
             <legend><mad-string data-locid="VISLRCCONF_SPOTIFY_TITLE">Spotify integration</mad-string></legend>
             <input id="enableSpotifyChkBox" type="checkbox" name="enableSpotify" accesskey="i">
@@ -30,6 +29,12 @@
                 <li>If you wish to use this feature right now, exit the ModernActiveDesktop System Plugin, and run systemplugin\MADSysPlug.exe with the --spotify &lt;client_id&gt; argument.</li>
                 <li>Go to the dashboard in developer.spotify.com, create a new app, put http://localhost:3031/spotify/callback in the Redirect URIs, and get the client ID there.</li>
             </ul>
+            <div id="spotifyAlbumArtArea">
+                <input id="useSpotifyAlbumArtChkBox" type="checkbox" name="enableCache" accesskey="c">
+                <label for="useSpotifyAlbumArtChkBox">Use album art returned from Spotify API in the Visualizer</mad-string></label><br>
+                <span id="albumArtHeightLabel">Album art height (usually 64, 300, and 640 are provided):</span>
+                <input id="albumArtHeightInput" type="number" min="0" value="640" placeholder="640">
+            </div>
         </fieldset>
         <fieldset>
             <legend><mad-string data-locid="VISLRCCONF_FONT_TITLE">Fonts</mad-string></legend>
@@ -69,7 +74,7 @@
                 </div>
                 <div>
                     <span id="cacheExpiryLabel"><mad-string data-locid="VISLRCCONF_CACHE_EXPIRY">Cache expiry (days):</mad-string></span>
-                    <input id="cacheExpiryInput" type="number" min="0" value="31" placeholder="31">
+                    <input id="cacheExpiryInput" type="number" min="0" value="21" placeholder="21">
                 </div>
             </div>
             <mad-string id="cacheInfo" data-locid="VISLRCCONF_CACHE_INFO">Caching allows offline and faster loading of lyrics. Click Lyrics -> Load Lyrics to bypass the cache.</mad-string>
@@ -93,6 +98,7 @@
         </fieldset>
         <p><mad-string data-locid="VISLRCCONF_LYRICS_PROVIDER">Lyrics provided by</mad-string> <a href="https://lrclib.net/" target="_cv">LRCLIB</a></p>
         <section class="bottomButtons field-row">
+            <button id="showSpotifyBtn">Spotify &gt;&gt;</button>
             <button id="okBtn"><mad-string data-locid="UI_OK">OK</mad-string></button>
             <button id="cancelBtn"><mad-string data-locid="UI_CANCEL">Cancel</mad-string></button>
             <button id="applyBtn" accesskey="a"><mad-string data-locid="UI_APPLY"><u>A</u>pply</mad-string></button>

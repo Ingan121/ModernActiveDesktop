@@ -83,6 +83,8 @@ window.simulate("Idina Menzel", 'Let It Go (From "Frozen"/Soundtrack Version)', 
 window.simulate("LMFAO", 'Party Rock Anthem (feat. Lauren Bennett, GoonRock)', "");
 window.simulate("PSY", "That That (prod. & feat. SUGA of BTS) (feat. SUGA of BTS)", "");
 window.simulate("여자친구(GFRIEND)", '짠 Cheers (From "한입만, Season 2 Just One Bite, Season 2")', "");
+
+window.simulate("IU","Into the I-LAND (Into the I-LAND)","") // YT
 -----END MY DEVTOOLS CONSOLE DUMP-----
 
 -----BEGIN COPILOT NONSENSE-----

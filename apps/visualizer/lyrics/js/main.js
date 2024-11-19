@@ -122,12 +122,14 @@ lrcMenuItems[2].addEventListener('click', async function () { // Open Lyrics Fil
     const file = await fileHandle.getFile();
     loadLyrics(file);
 
-    const hash = await getSongHash(visStatus.lastMusic?.artist, visStatus.lastMusic?.title, visStatus.lastMusic?.albumTitle);
-    if (hash && await madConfirm(madGetString('VISLRC_CONFIRM_SAVE_LYRICS'))) {
-        overrides[hash] = {
-            lrc: text
-        };
-        madIdb.setItem('lyricsOverrides', overrides);
+    if (window.madIdb) {
+        const hash = await getSongHash(visStatus.lastMusic?.artist, visStatus.lastMusic?.title, visStatus.lastMusic?.albumTitle);
+        if (hash && await madConfirm(madGetString('VISLRC_CONFIRM_SAVE_LYRICS'), null, { icon: 'question', title: 'locid:VISLRC_TITLE' })) {
+            overrides[hash] = {
+                lrc: text
+            };
+            madIdb.setItem('lyricsOverrides', overrides);
+        }
     }
 });
 
@@ -881,20 +883,22 @@ async function loadLyrics(idOrLrc, addOverride) {
             autoScrollBtn.classList.add('disabled');
             autoScrollBtn.classList.remove('checkedItem');
         }
-        const hash = await getSongHash(visStatus.lastMusic?.artist, visStatus.lastMusic?.title, visStatus.lastMusic?.albumTitle);
-        if (!hash) {
-            return;
-        }
-        if (idOrLrc && !(idOrLrc instanceof File) && idOrLrc.length <= 10) {
-            if (addOverride) {
-                overrides[hash] = {
-                    id: lyrics.id
-                };
-                madIdb.setItem('lyricsOverrides', overrides);
+        if (window.madIdb) {
+            const hash = await getSongHash(visStatus.lastMusic?.artist, visStatus.lastMusic?.title, visStatus.lastMusic?.albumTitle);
+            if (!hash) {
+                return;
+            }
+            if (idOrLrc && !(idOrLrc instanceof File) && idOrLrc.length <= 10) {
+                if (addOverride) {
+                    overrides[hash] = {
+                        id: lyrics.id
+                    };
+                    madIdb.setItem('lyricsOverrides', overrides);
+                    lrcCache.add(hash, lyrics, preferUnsynced);
+                }
+            } else if (!lyrics.cachedAt) {
                 lrcCache.add(hash, lyrics, preferUnsynced);
             }
-        } else if (!lastFetchInfo.cache) {
-            lrcCache.add(hash, lyrics, preferUnsynced);
         }
     } else {
         saveLyricsBtn.classList.add('disabled');
@@ -1080,7 +1084,7 @@ function stripNonAlphaNumeric(str) {
 
     // YTM English mode test cases: "YOUNHA - EVENT HORIZON (사건의 지평선)" (actually works fine in non-stripped form), "Weki Meki - Whatever U Want (너 하고 싶은 거 다 해 (너.하.다))"
     const replaced = str.replace(/[^\x20-\x7E]/g, '').trim(); // Remove non-ASCII characters
-    const replacedHard = replaced.replace(/[^a-zA-Z0-9\s]/g, ''); // Remove non-alphanumeric characters (preserve spaces)
+    const replacedHard = replaced.replace(/[^a-zA-Z0-9\s-]/g, '').replace(/ - /g, '').trim(); // Remove non-alphanumeric characters (preserve spaces and hyphens without surrounding spaces)
 
     // Check if the title is a duplicated English title (YTM somehow has these even in English mode)
     // Test case: "IVE - MINE (MINE)", "KWON EUNBI - Underwater (Underwater)", "OH MY GIRL - Dun Dun Dance (Dun Dun Dance)" (this actually works fine in non-stripped form in both get and search)
@@ -1110,7 +1114,7 @@ function stripNonAlphaNumeric(str) {
         if (splitReplacedHard === '') {
             // This surprisingly works fine with some complicated examples in YTM English mode
             // Tested with "PRODUCE 48 - 반해버리잖아? (好きになっちゃうだろう？) (Suki ni Nacchaudarou?)", and "AKMU - 어떻게 이별까지 사랑하겠어, 널 사랑하는 거지(How can I love the heartbreak, you're the one I love)"
-            // LRCLIB doesn't seem to care about punctuation or special characters
+            // LRCLIB doesn't seem to care about punctuation or special characters (EXCEPT for hyphens, "IU -Into the I-LAND (Into the I-LAND)" (YT) doesn't work in with hyphens stripped)
             return replacedHard.trim();
         } else if (split === '') {
             return null;
@@ -1237,7 +1241,7 @@ async function publish() {
 
     function getNonce(prefix, targetBytes) {
         return new Promise((resolve, reject) => {
-            const worker = new Worker('nonce.js');
+            const worker = new Worker('js/nonce.js');
             worker.postMessage({ prefix, targetBytes });
             worker.onmessage = (e) => {
                 const data = e.data;
@@ -1324,26 +1328,26 @@ async function firstRun() {
 
     await madAlert("locid:VISLRC_1STRUN_WELCOME", null, 'info', { title: 'locid:VISLRC_TITLE' });
 
+    const changeEstimateOption = top.visDeskMover.windowElement.contentWindow.changeEstimateOption;
     if (await madConfirm(madGetString("VISLRC_1STRUN_Q_SPOTIFY"), null, options)) {
-        localStorage.madesktopVisGuessTimeline = true;
+        changeEstimateOption(true);
         madAlert(madGetString("VISLRC_1STRUN_INFO_SPOTIFY") + "<br><br>" + commonFinalMsg, null, 'info', { title: 'locid:VISLRC_TITLE' });
     } else if (await madConfirm(madGetString("VISLRC_1STRUN_Q_BROWSER"), null, options)) {
-        localStorage.madesktopVisGuessTimeline = '2';
+        changeEstimateOption(2);
         if (await madConfirm(madGetString("VISLRC_1STRUN_Q_YT"), null, options)) {
             madAlert(madGetString("VISLRC_1STRUN_INFO_YT") + "<br><br>" + commonFinalMsg, null, 'info', { title: 'locid:VISLRC_TITLE' });
         } else {
             madAlert(commonFinalMsg, null, 'info', { title: 'locid:VISLRC_TITLE' });
         }
     } else if (!await madConfirm(madGetString("VISLRC_1STRUN_Q_TIMELINE"), null, options)) {
-        delete localStorage.madesktopVisGuessTimeline;
+        changeEstimateOption();
         localStorage.madesktopVisLyricsForceUnsynced = true;
         madAlert(commonFinalMsg, null, 'info', { title: 'locid:VISLRC_TITLE' });
     } else {
-        delete localStorage.madesktopVisGuessTimeline;
+        changeEstimateOption();
         delete localStorage.madesktopVisLyricsForceUnsynced;
         madAlert(commonFinalMsg, null, 'info', { title: 'locid:VISLRC_TITLE' });
     }
-    top.visDeskMover.windowElement.contentWindow.location.reload();
 }
 
 // Debugging stuff
@@ -1383,12 +1387,18 @@ function showDebugInfo() {
         msg += 'Duration of the loaded lyrics: ' + lastLyrics?.duration + 's<br><br>';
         if (lastFetchInfo.override === -1) {
             msg += 'Override: Local lyrics<br>';
-        } else if (lastFetchInfo.override || lastFetchInfo.cache) {
+        } else if (lastFetchInfo.override || lastLyrics?.cachedAt) {
             if (lastFetchInfo.override) {
                 msg += 'Override ID: ' + lastFetchInfo.override + '<br>';
             }
-            if (lastFetchInfo.cache) {
+            if (lastLyrics?.cachedAt) {
                 msg += 'Lyrics loaded from cache<br>';
+                const cachedAtDate = new Date(lastLyrics.cachedAt).toLocaleString(window.madLang);
+                const expiryDays = parseInt(localStorage.madesktopVisLyricsCacheExpiry) || 21;
+                const expiryTime = expiryDays * 24 * 60 * 60 * 1000;
+                const expiryDate = new Date(lastLyrics.cachedAt + expiryTime).toLocaleString(window.madLang);
+                msg += 'Cached at: ' + cachedAtDate + '<br>';
+                msg += 'Cache expiry: ' + expiryDate + '<br>';
             }
         } else if (lastFetchInfo.urls) {
             msg += 'URLs tried:<br>';
@@ -1528,8 +1538,8 @@ async function init() {
         visDeskMover.addEventListener('load', init, null, 'iframe');
 
         if (!localStorage.madesktopVisLyricsRanOnce) {
+            await firstRun();
             localStorage.madesktopVisLyricsRanOnce = true;
-            firstRun();
         }
     } else if (madRunningMode !== 0) {
         lyricsView.innerHTML = '<mad-string data-locid="VISLRC_STATUS_NO_MADVIS"></mad-string>';

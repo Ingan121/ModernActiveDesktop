@@ -20,7 +20,7 @@
 |![Solitaire Icon](apps/solitaire/icon.png)|Solitaire|A web-based remake of MS Solitaire|[Original](https://github.com/rjanjic/js-solitaire)<br>[MAD Version](https://github.com/Ingan121/ModernActiveDesktop/tree/master/apps/solitaire)|
 |<img src="apps/clock/icon.png" width="16" alt="Clock Icon">|Clock|A web-based remake of NT4 clock.exe|[Link](https://github.com/Ingan121/ModernActiveDesktop/tree/master/apps/clock)|
 |![Visualizer Icon](apps/visualizer/icon.png)|Visualizer|A music visualizer for Wallpaper Engine<br>WMP6 style controls with WMP7+ bar visualization<br>Lively Wallpaper is partially supported|[Link](https://github.com/Ingan121/ModernActiveDesktop/tree/master/apps/visualizer)|
-|![Visualizer Icon](apps/visualizer/icon.png)|Visualizer Lyrics|A lyrics viewer for the Visualizer app, using lyrics from LRCLIB|[Link](https://github.com/Ingan121/ModernActiveDesktop/tree/master/apps/visualizer/lyrics)|
+|![Visualizer Lyrics Icon](apps/visualizer/lyrics/icon.png)|Visualizer Lyrics|A lyrics viewer for the Visualizer app, using lyrics from LRCLIB|[Link](https://github.com/Ingan121/ModernActiveDesktop/tree/master/apps/visualizer/lyrics)|
 |![ChannelViewer Icon](apps/channelviewer/images/icon.png)|ChannelViewer|An IE4 remake with some elements of IE6<br>Supports loading webpages with a classic look and features|[Link](https://github.com/Ingan121/ModernActiveDesktop/tree/master/apps/channelviewer)|
 |![Calculator Icon](apps/calc/icon.png)|Calculator|A web-based remake of Windows calculator|[Link](https://github.com/Ingan121/ModernActiveDesktop/tree/master/apps/calc)|
 ||Configurator|Remake of the 'Display Properties' and 'Internet Options' control panel applets<br>Some of them are pretty pixel-perfect to the original|[Main](https://github.com/Ingan121/ModernActiveDesktop/tree/master/apps/madconf), [Internet](https://github.com/Ingan121/ModernActiveDesktop/tree/master/apps/inetcpl)|
@@ -108,6 +108,38 @@
 ## Contributing
 * Please read [Translating.md](docs/Translating.md) for information on translating ModernActiveDesktop.
 
+## Security
+* ModernActiveDesktop did take some security measures to prevent unwanted access to the running environment. However, it's not perfect, and there may be some vulnerabilities that I'm not aware of. If you find any security issues, please report them to * ModernActiveDesktop did take some security measures to prevent unwanted access to the running environment. However, it's not perfect, and there may be some vulnerabilities that I'm not aware of. If you find any security issues, please report them to the [GitHub Issues page](https://github.com/Ingan121/ModernActiveDesktop/issues).
+* The following are examples of a security issue:
+    * Bypassing the security checks when importing configuration files and loading unwanted pages and scripts on behalf of the user
+    * Unwanted access to the system plugin, bypassing the security measures (token verification, CORS/origin checks, etc.)
+    * Arbitrary code execution in the system plugin through network requests
+* The following are not considered security issues (yet):
+    * Pages loaded (by user) in DeskMovers (WPE) and ChannelViewer having access to the top window - the former is because Wallpaper Engine disables the same-origin policy, and for the latter, sandboxing the iframe is not implemented yet (see the todo list)
+    * The system plugin being accessed by external software that is not a web page in a normal browser environment with web security
+* ModernActiveDesktop is not responsible for any security issues caused by unverified pages not part of the official distribution. Please be cautious when importing configuration files/presets and loading external pages.
+
+## License
+* ModernActiveDesktop is licensed under the MIT license. Please read the [license file](?src=../license.txt&showbackbtn=1) for more information.
+
+`Copyright (c) 2024 Ingan121. Licensed under the MIT license.`
+* Some Microsoft assets are used in ModernActiveDesktop. MIT license does not apply to these assets.
+
+### Credits
+* [98.css](https://jdan.github.io/98.css/) - A CSS library for building Windows 98-like interfaces
+* [XP.css](https://botoxparty.github.io/XP.css/) - Used for the Windows XP style
+* [7.css](https://khang-nd.github.io/7.css/) - Used for the Windows Aero and Basic style
+* [JS Paint](https://jspaint.app/about) - A web-based remake of MS Paint
+* [js-solitaire](https://github.com/rjanjic/js-solitaire) - A web-based remake of MS Solitaire
+* [X-Frame-Bypass](https://github.com/niutech/x-frame-bypass) - Allows ChannelViewer to load more webpages
+* [marked](https://marked.js.org/) - A JavaScript library for parsing markdown docs
+* [Electron](https://www.electronjs.org/) - Used for the system plugin
+* [minimist](https://github.com/minimistjs/minimist) - A Node.js library for parsing command line arguments
+* [WindowsMediaController](https://github.com/DubyaDude/WindowsMediaController) - Used by [MediaControlCLI](https://github.com/Ingan121/MediaControlCLI) for media controls
+* And many assets from Microsoft Windows
+* And various codes snippets from Stack Overflow
+* Some color schemes are from various sources. See comments in the CSS files for more information
+
 ## Changelog
 
 ## 3.4
@@ -179,6 +211,3 @@
 
 ### Previous changelog
 Please see [here](docs/Updated.md) for the previous changes
-
-Copyright (c) 2024 Ingan121  
-[Licensed under the MIT license](license.txt)

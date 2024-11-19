@@ -83,6 +83,7 @@ const keysToIgnoreOnPreset = [
     'madesktopVisLyricsNoCache',
     'madesktopVisLyricsCacheMax',
     'madesktopVisLyricsCacheExpiry',
+    'madesktopVisLyricsLastCacheClean',
     'madesktopVisUseSpotifyAlbumArt',
     // Debug configs
     'madesktopDebugMode',
@@ -251,10 +252,10 @@ async function reset(softIdbReset = false) {
         }
     }
     if (softIdbReset) {
-        delete madIdb.bgImg;
-        delete madIdb.cvFavorites;
-        delete madIdb.configToImport;
-        delete madIdb.lyricsOverrides;
+        await madIdb.deleteItem("bgImg");
+        await madIdb.deleteItem("cvFavorites");
+        await madIdb.deleteItem("configToImport");
+        await madIdb.deleteItem("lyricsOverrides");
         await clearCache();
     } else {
         // This causes further IDB operations to take a long time
