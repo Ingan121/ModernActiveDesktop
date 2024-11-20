@@ -155,7 +155,7 @@ window.addEventListener("message", (event) => {
         case "scheme-updated":
             if (!['98', 'custom', 'sys', undefined].includes(localStorage.madesktopColorScheme) &&
                 localStorage.madesktopVisUseSchemeColors &&
-                (!visStatus.lastAlbumArt || !localStorage.madesktopVisFollowAlbumArt))
+                (!visStatus.lastAlbumArt?.primaryColor || !localStorage.madesktopVisFollowAlbumArt))
             {
                 location.reload();
             } else {
@@ -753,6 +753,7 @@ function wallpaperMediaPropertiesListener(event) {
         seekHandle.style.display = 'none';
         timeText.parentElement.style.display = 'none';
         visStatus.lastMusic = null;
+        visStatus.lastAlbumArt = null;
         visStatus.timelineOrig = null;
         visStatus.timeline = null;
         document.dispatchEvent(mediaPropertiesEvent);
@@ -989,7 +990,10 @@ function wallpaperMediaPlaybackListener(event) {
 }
 
 function wallpaperMediaThumbnailListener(event) {
-    if (visStatus.lastAlbumArt?.fromSpotify && !event.fromSpotify) {
+    if (visStatus.lastAlbumArt?.fromSpotify &&
+        !event.fromSpotify &&
+        visStatus.lastAlbumArt.primaryColor)
+    {
         return;
     }
     if (event.thumbnail === 'data:image/png;base64,' || !event.thumbnail) {
@@ -1001,7 +1005,7 @@ function wallpaperMediaThumbnailListener(event) {
         albumArt.style.display = 'block';
         albumArt.src = event.thumbnail;
     }
-    if (localStorage.madesktopVisFollowAlbumArt) {
+    if (localStorage.madesktopVisFollowAlbumArt && event.primaryColor) {
         document.body.style.backgroundColor = event.primaryColor;
     }
     visStatus.lastAlbumArt = event;
@@ -1120,7 +1124,7 @@ function configChanged() {
 }
 
 function updateColors() {
-    if (localStorage.madesktopVisFollowAlbumArt && visStatus.lastAlbumArt) {
+    if (localStorage.madesktopVisFollowAlbumArt && visStatus.lastAlbumArt?.primaryColor) {
         document.body.style.backgroundColor = visStatus.lastAlbumArt.primaryColor;
     } else if (localStorage.madesktopVisBgMode) {
         document.body.style.backgroundColor = 'transparent';
@@ -1134,7 +1138,7 @@ function updateColors() {
 function updateSchemeColor() {
     schemeBarColor = localStorage.madesktopAeroColor || getComputedStyle(document.documentElement).getPropertyValue('--hilight');
     schemeTopColor = getComputedStyle(document.documentElement).getPropertyValue('--button-text');
-    if (localStorage.madesktopVisUseSchemeColors && (!visStatus.lastAlbumArt || !localStorage.madesktopVisFollowAlbumArt) && !localStorage.madesktopVisBgMode) {
+    if (localStorage.madesktopVisUseSchemeColors && (!visStatus.lastAlbumArt?.primaryColor || !localStorage.madesktopVisFollowAlbumArt) && !localStorage.madesktopVisBgMode) {
         document.body.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--button-face');
     }
 }

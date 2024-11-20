@@ -109,13 +109,13 @@
 * Please read [Translating.md](docs/Translating.md) for information on translating ModernActiveDesktop.
 
 ## Security
-* ModernActiveDesktop did take some security measures to prevent unwanted access to the running environment. However, it's not perfect, and there may be some vulnerabilities that I'm not aware of. If you find any security issues, please report them to * ModernActiveDesktop did take some security measures to prevent unwanted access to the running environment. However, it's not perfect, and there may be some vulnerabilities that I'm not aware of. If you find any security issues, please report them to the [GitHub Issues page](https://github.com/Ingan121/ModernActiveDesktop/issues).
+* ModernActiveDesktop did take some security measures to prevent unwanted access to the running environment. However, it's not perfect, and there may be some vulnerabilities that I'm not aware of. If you find any security issues, please report them to * ModernActiveDesktop did take some security measures to prevent unwanted access to the running environment. However, it's not perfect, and there may be some vulnerabilities that I'm not aware of. If you find any security issues, please report them to the [GitHub Issues page](https://github.com/Ingan121/ModernActiveDesktop/issues), or the email address in my GitHub profile or [www.ingan121.com](https://www.ingan121.com/).
 * The following are examples of a security issue:
     * Bypassing the security checks when importing configuration files and loading unwanted pages and scripts on behalf of the user
     * Unwanted access to the system plugin, bypassing the security measures (token verification, CORS/origin checks, etc.)
     * Arbitrary code execution in the system plugin through network requests
 * The following are not considered security issues (yet):
-    * Pages loaded (by user) in DeskMovers (WPE) and ChannelViewer having access to the top window - the former is because Wallpaper Engine disables the same-origin policy, and for the latter, sandboxing the iframe is not implemented yet (see the todo list)
+    * Pages loaded (by user) in DeskMovers (WPE) and ChannelViewer having access to the top window - the former is because Wallpaper Engine disables the same-origin policy, and for the latter, sandboxing the ChannelViewer iframe is not implemented yet (see the todo list)
     * The system plugin being accessed by external software that is not a web page in a normal browser environment with web security
 * ModernActiveDesktop is not responsible for any security issues caused by unverified pages not part of the official distribution. Please be cautious when importing configuration files/presets and loading external pages.
 
@@ -201,6 +201,7 @@
     * Textboxes not automatically scrolling when using the arrow keys with the system plugin input or the on-screen keyboard
     * Background right-click menu (browser only) not being clickable when context menu animations are disabled
     * Fallback text input not working properly when the system plugin is enabled, but it's not running
+    * Pressing backspace when the cursor is on before the first character with the system plugin input duplicating the whole text
 * Refactored the codebase
     * Minimize the usage of global variables and export only necessary functions
     * Split the main script into multiple files for better maintainability

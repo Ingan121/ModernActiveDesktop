@@ -252,10 +252,15 @@
     // Get the base URL of ModernActiveDesktop
     // Don't assume it to be in the web root; MAD is designed to run well in fileurl too (if CORS is allowed)
     function getMadBase() {
+        const thisScript = document.querySelector('script[src$="functions.js"]');
         if (window.madMainWindow) {
             return location.href.split('/').slice(0, -1).join('/') + '/';
         } else if (frameElement && top.madMainWindow) {
             return top.location.href.split('/').slice(0, -1).join('/') + '/';
+        } else if (thisScript) {
+            const src = thisScript.getAttribute('src');
+            const slashCnt = src.split("/").length - 1;
+            return location.href.split('/').slice(0, -slashCnt).join('/') + '/';
         // Easy handling is done; now for the hard part
         } else if (location.href.includes("/apps/")) {
             const appsSplit = location.pathname.split('/apps/');
@@ -295,6 +300,8 @@
         return Math.round((top.vHeight || window.innerHeight) * percent / 100);
     }
 
+    // showOpenFilePicker polyfill for browsers that don't support it / insecure contexts
+    // Note: accept works differently; no multiple file type selection
     // https://stackoverflow.com/a/69118077
     function showOpenFilePicker(options = {}) {
         return new Promise((resolve) => {

@@ -91,7 +91,7 @@
 * Please read [Translating.md](?src=Translating.md&showbackbtn=1) for information on translating ModernActiveDesktop.
 
 ## Security
-* ModernActiveDesktop did take some security measures to prevent unwanted access to the running environment. However, it's not perfect, and there may be some vulnerabilities that I'm not aware of. If you find any security issues, please report them to the [GitHub Issues page](https://github.com/Ingan121/ModernActiveDesktop/issues).
+* ModernActiveDesktop did take some security measures to prevent unwanted access to the running environment. However, it's not perfect, and there may be some vulnerabilities that I'm not aware of. If you find any security issues, please report them to the [GitHub Issues page](https://github.com/Ingan121/ModernActiveDesktop/issues), or the email address in my GitHub profile or [www.ingan121.com](https://www.ingan121.com/).
 * The following are examples of a security issue:
     * Bypassing the security checks when importing configuration files and loading unwanted pages and scripts on behalf of the user
     * Unwanted access to the system plugin, bypassing the security measures (token verification, CORS/origin checks, etc.)
@@ -182,6 +182,7 @@
     * Textboxes not automatically scrolling when using the arrow keys with the system plugin input or the on-screen keyboard
     * Background right-click menu (browser only) not being clickable when context menu animations are disabled
     * Fallback text input not working properly when the system plugin is enabled, but it's not running
+    * Pressing backspace when the cursor is on before the first character with the system plugin input duplicating the whole text
 * Refactored the codebase
     * Minimize the usage of global variables and export only necessary functions
     * Split the main script into multiple files for better maintainability

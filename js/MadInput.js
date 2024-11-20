@@ -38,15 +38,17 @@ document.addEventListener('madinput', async (event) => {
             document.dispatchEvent(keyEvent);
             break;
         case "Backspace":
-            if (textbox.selectionStart === textbox.value.length) {
-                textbox.value = textbox.value.slice(0, -1);
-            } else if (textbox.selectionStart !== textbox.selectionEnd) {
-                textbox.value = textbox.value.slice(0, textbox.selectionStart) + textbox.value.slice(textbox.selectionEnd);
-            } else {
-                textbox.value = textbox.value.slice(0, textbox.selectionStart - 1) + textbox.value.slice(textbox.selectionStart);
+            if (textbox.selectionStart !== 0) {
+                if (textbox.selectionStart === textbox.value.length) {
+                    textbox.value = textbox.value.slice(0, -1);
+                } else if (textbox.selectionStart !== textbox.selectionEnd) {
+                    textbox.value = textbox.value.slice(0, textbox.selectionStart) + textbox.value.slice(textbox.selectionEnd);
+                } else {
+                    textbox.value = textbox.value.slice(0, textbox.selectionStart - 1) + textbox.value.slice(textbox.selectionStart);
+                }
+                textbox.selectionStart = textbox.selectionEnd = origCursorPos - 1;
+                changed = true;
             }
-            textbox.selectionStart = textbox.selectionEnd = origCursorPos - 1;
-            changed = true;
             break;
         case "Delete":
             if (textbox.selectionStart === textbox.value.length) {

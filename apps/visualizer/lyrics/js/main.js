@@ -155,7 +155,7 @@ lrcMenuItems[7].addEventListener('click', function () { // Options button
     const left = parseInt(madDeskMover.config.xPos) + 25 + 'px';
     const top = parseInt(madDeskMover.config.yPos) + 50 + 'px';
     const options = {
-        left, top, width: '400px', height: '412px',
+        left, top, width: '400px', height: '380px',
         aot: true, unresizable: true, noIcon: true
     }
     const confDeskMover = madOpenWindow('apps/visualizer/lyrics/config.html', true, options);
@@ -894,6 +894,7 @@ async function loadLyrics(idOrLrc, addOverride) {
                         id: lyrics.id
                     };
                     madIdb.setItem('lyricsOverrides', overrides);
+                    await lrcCache.delete(hash);
                     lrcCache.add(hash, lyrics, preferUnsynced);
                 }
             } else if (!lyrics.cachedAt) {
@@ -965,16 +966,16 @@ async function processProperties(force, simulating) {
                             }
                         }
                         const visDeskMover = top.visDeskMover;
-                        const current = visDeskMover.visStatus.lastAlbumArt;
+                        const current = visStatus.lastAlbumArt;
                         visDeskMover.windowElement.contentWindow.wallpaperMediaThumbnailListener({
                             thumbnail: closest.url,
                             width: closest.width,
                             height: closest.height,
-                            primaryColor: current.primaryColor,
-                            secondaryColor: current.secondaryColor,
-                            tertiaryColor: current.tertiaryColor,
-                            textColor: current.textColor,
-                            highContrastColor: current.highContrastColor,
+                            primaryColor: current?.primaryColor,
+                            secondaryColor: current?.secondaryColor,
+                            tertiaryColor: current?.tertiaryColor,
+                            textColor: current?.textColor,
+                            highContrastColor: current?.highContrastColor,
                             fromSpotify: true
                         });
                     }
@@ -1403,7 +1404,7 @@ function showDebugInfo() {
                 const expiryDays = parseInt(localStorage.madesktopVisLyricsCacheExpiry) || 21;
                 const expiryTime = expiryDays * 24 * 60 * 60 * 1000;
                 const expiryDate = new Date(lastLyrics.cachedAt + expiryTime).toLocaleString(window.madLang);
-                msg += 'Cached at: ' + cachedAtDate + '<br>';
+                msg += 'Cache created at: ' + cachedAtDate + '<br>';
                 msg += 'Cache expiry: ' + expiryDate + '<br>';
                 if (lastLyrics.preferredUnsynced) {
                     msg += 'Cached while preferring unsynced lyrics<br>';

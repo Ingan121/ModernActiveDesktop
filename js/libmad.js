@@ -100,6 +100,19 @@
                 )
             }
 
+            new MutationObserver((mutations) => {
+                if (mutations[0].addedNodes[0]?.tagName === "SELECT") {
+                    return;
+                }
+                if (this.altSelect) {
+                    this.altSelect.remove();
+                    delete this.altSelect;
+                }
+            }).observe(
+                this,
+                { characterData: false, attributes: false, childList: true, subtree: true }
+            );
+
             if (this.getAttribute('disabled') !== null) {
                 this.dataset.disabled = true;
             }
@@ -340,7 +353,7 @@
     Object.defineProperties(window, {
         madScaleFactor: {
             get: function () {
-                if (config.unscaled || top.isIframeAutoScaled || navigator.userAgent.includes("Firefox")) {
+                if (config.unscaled || top.isIframeAutoScaled) {
                     return 1;
                 } else {
                     return parseFloat(top.scaleFactor);

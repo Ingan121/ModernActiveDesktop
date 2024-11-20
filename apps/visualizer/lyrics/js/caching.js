@@ -21,8 +21,10 @@
         clear: clearCache
     };
 
+    const UNIX_1DAY = 86400000; // 24 * 60 * 60 * 1000
+
     async function addCache(hash, lyrics, preferUnsynced) {
-        if (localStorage.madesktopVisLyricsNoCache) {
+        if (!hash || localStorage.madesktopVisLyricsNoCache) {
             return;
         }
         const max = parseInt(localStorage.madesktopVisLyricsCacheMax) || 500;
@@ -72,6 +74,9 @@
     }
 
     async function getCache(hash) {
+        if (!hash || localStorage.madesktopVisLyricsNoCache) {
+            return null;
+        }
         const db = await madIdb.init();
         if (!db.objectStoreNames.contains("lrccache")) {
             // Not gonna handle this case more than this, versions with old DB structure did not officially release (existed for pretty long time though)
@@ -81,7 +86,7 @@
             return null;
         }
         const expiryDays = parseInt(localStorage.madesktopVisLyricsCacheExpiry) || 21;
-        const expiryTime = expiryDays * 24 * 60 * 60 * 1000;
+        const expiryTime = expiryDays * UNIX_1DAY;
         return new Promise((resolve, reject) => {
             const transaction = db.transaction("lrccache", "readwrite");
             const store = transaction.objectStore("lrccache");
@@ -104,6 +109,9 @@
     }
 
     async function deleteCache(hash) {
+        if (!hash) {
+            return;
+        }
         const db = await madIdb.init();
         if (!db.objectStoreNames.contains("lrccache")) {
             return;
@@ -123,6 +131,9 @@
     }
 
     async function cacheExists(hash) {
+        if (!hash) {
+            return false;
+        }
         const db = await madIdb.init();
         return new Promise((resolve, reject) => {
             const transaction = db.transaction("lrccache", "readonly");
@@ -171,7 +182,7 @@
     async function cleanExpiredCache() {
         const db = await madIdb.init();
         const expiryDays = parseInt(localStorage.madesktopVisLyricsCacheExpiry) || 21;
-        const expiryTime = expiryDays * 24 * 60 * 60 * 1000;
+        const expiryTime = expiryDays * UNIX_1DAY;
         return new Promise((resolve, reject) => {
             const transaction = db.transaction("lrccache", "readwrite");
             const store = transaction.objectStore("lrccache");
@@ -232,7 +243,7 @@
 
     if (localStorage.madesktopVisLyricsLastCacheClean) {
         const lastClean = parseInt(localStorage.madesktopVisLyricsLastCacheClean);
-        if (Date.now() - lastClean >= 86400000) {
+        if (Date.now() - lastClean >= UNIX_1DAY) {
             cleanExpiredCache();
             localStorage.madesktopVisLyricsLastCacheClean = Date.now();
         }

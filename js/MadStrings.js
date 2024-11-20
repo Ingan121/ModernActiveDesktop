@@ -103,6 +103,9 @@
                         }
                     }
                     function showAlert() {
+                        if (window.madFileUriRestricted) {
+                            return;
+                        }
                         const msg = "ModernActiveDesktop failed to load the language file for en-US. Expect things to be broken. Check the console for more information.<br><br>Click OK to retry, or Cancel to ignore and continue running ModernActiveDesktop.";
                         if (window.madMainWindow) {
                             madConfirm(msg, res => {

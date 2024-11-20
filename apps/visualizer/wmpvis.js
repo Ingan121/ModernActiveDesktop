@@ -68,7 +68,7 @@ function wallpaperAudioListener(audioArray) {
 
     visBarCtx.fillStyle = visConfig.barColor;
     visTopCtx.fillStyle = visConfig.topColor;
-    if (visConfig.followAlbumArt && visStatus.lastAlbumArt) {
+    if (visConfig.followAlbumArt && visStatus.lastAlbumArt?.textColor && visStatus.lastAlbumArt?.highContrastColor) {
         visBarCtx.fillStyle = visStatus.lastAlbumArt.textColor;
         visTopCtx.fillStyle = visStatus.lastAlbumArt.highContrastColor;
     } else if (visConfig.useSchemeColors) {

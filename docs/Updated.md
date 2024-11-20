@@ -58,6 +58,7 @@
     * Textboxes not automatically scrolling when using the arrow keys with the system plugin input or the on-screen keyboard
     * Background right-click menu (browser only) not being clickable when context menu animations are disabled
     * Fallback text input not working properly when the system plugin is enabled, but it's not running
+    * Pressing backspace when the cursor is on before the first character with the system plugin input duplicating the whole text
 * Refactored the codebase
     * Minimize the usage of global variables and export only necessary functions
     * Split the main script into multiple files for better maintainability

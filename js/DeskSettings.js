@@ -151,7 +151,7 @@
     }
 
     function changeColorScheme(scheme) {
-        if (scheme === "98") {
+        if (!scheme || scheme === "98") {
             schemeElement.href = "data:text/css,";
             delete localStorage.madesktopCustomColor;
             delete localStorage.madesktopSysColorCache;

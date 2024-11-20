@@ -68,6 +68,11 @@
     window.scaleFactor = "1";
     window.vWidth = window.innerWidth;
     window.vHeight = window.innerHeight;
+
+    // Latest browsers auto-scale iframes according to the new spec
+    // https://github.com/w3c/csswg-drafts/issues/9644
+    // So don't scale iframes ourselves if the browser supports it
+    // Initiialize with user agent check for Chromium 128+; feature detection is performed at updateIframeScale
     window.isIframeAutoScaled = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./)?.[2] >= 128;
 
     // Every DeskMover instance is stored in this object
@@ -158,10 +163,11 @@
     // Migrate old configs
     // 2.0-2.1 to 2.2
     if (localStorage.madesktopNonADStyle) {
-        for (let i = 0; i < localStorage.madesktopItemCount; i++) localStorage.setItem("madesktopItemStyle" + (i || ""), "nonad");
+        for (let i = 0; i < localStorage.madesktopItemCount; i++) {
+            localStorage.setItem("madesktopItemStyle" + (i || ""), "nonad");
+        }
         delete localStorage.madesktopNonADStyle;
-        location.reload();
-        throw new Error("Refreshing...");
+        deskMovers[0]?.changeWndStyle("nonad"); // Only DeskMover 0 is initialized at this point (if it's visible)
     }
     // 2.x to 3.0: Convert destryoedItems to openWindows
     // Only save open windows instead of all destroyed windows
@@ -204,7 +210,7 @@
             changeBgType("image");
         }
     }
-    // 3.0-3.1.2 to 3.2: Mistake that I made in previous versions
+    // 3.0-3.1.2 to 3.2: Mistake that I made in previous versions (fixed in commit 66e03e5)
     if (localStorage.madesktopCustomColor) {
         if (localStorage.madesktopCustomColor.includes("--menu-highlight")) {
             localStorage.madesktopCustomColor = localStorage.madesktopCustomColor.replace("--menu-highlight", "--menu-hilight");
@@ -297,14 +303,14 @@
     // #region Event listeners
     // Change the scale on load
     bgHtmlView.addEventListener('load', function () {
-        if (!isIframeAutoScaled && this.contentDocument) {
+        if (!window.isIframeAutoScaled && this.contentDocument) {
             this.contentDocument.body.style.zoom = scaleFactor;
         }
         hookIframeSize(bgHtmlView);
         bgHtmlView.contentDocument?.addEventListener("contextmenu", openMainMenu, false);
     });
     oskWindow.addEventListener('load', function () {
-        if (!isIframeAutoScaled) {
+        if (!window.isIframeAutoScaled) {
             this.contentDocument.body.style.zoom = scaleFactor;
         }
         hookIframeSize(oskWindow);
@@ -591,10 +597,7 @@
     // Change the scaleFactor of all iframes
     function updateIframeScale() {
         let scaleFactor = window.scaleFactor;
-        // Latest browsers auto-scale iframes according to the new spec
-        // https://github.com/w3c/csswg-drafts/issues/9644
-        // So don't scale iframes ourselves if the browser supports it
-        if (isIframeAutoScaled) {
+        if (window.isIframeAutoScaled) {
             scaleFactor = 1;
         }
         try {
@@ -617,12 +620,12 @@
                     iframe.contentWindow.dispatchEvent(new Event("resize"));
                     setTimeout(() => {
                         if (parseFloat(scaleFactor) !== 1 && window.devicePixelRatio !== iframe.contentWindow.devicePixelRatio) {
-                            isIframeAutoScaled = true;
+                            window.isIframeAutoScaled = true;
                             updateIframeScale();
                             stopLoop = true;
                         }
                     }, 1); // Apparently CSS changes are not applied immediately
-                } else if (isIframeAutoScaled) {
+                } else if (window.isIframeAutoScaled) {
                     // Delete the unscaled flag if the browser supports auto-scaling
                     // Otherwise unexpected behavior may occur
                     deskMovers[i].config.unscaled = false;
@@ -1009,7 +1012,7 @@
                         if (!oskWindow.src) {
                             oskWindow.src = "apps/osk/index.html";
                         }
-                        if (!isIframeAutoScaled) {
+                        if (!window.isIframeAutoScaled) {
                             oskWindow.contentDocument.body.style.zoom = scaleFactor;
                         }
                         osk.style.display = "block";
@@ -1433,14 +1436,14 @@
         }
         startup();
         if (location.href.startsWith("file:///") && runningMode === 0) {
-            fetch("js/DeskSettings.js").catch(() => {
+            fetch("js/main.js").catch(() => {
+                window.madFileUriRestricted = true;
                 // Not really localizable cuz AJAX fails when running as a local file due to CORS
                 let localCorsMsg = "restart your browser with the --allow-file-access-from-files argument.";
                 if (navigator.userAgent.includes("Firefox")) {
                     localCorsMsg = "go to about:config and set security.fileuri.strict_origin_policy to false.";
                 }
-                madAlert("You are running ModernActiveDesktop as a local file. For the full functionality, please use a web server to host it or " + localCorsMsg, null, "warning");
-                window.madFileUriRestricted = true;
+                madAlert("You are running ModernActiveDesktop as a local file. For the full functionality, please use a web server to host it or " + localCorsMsg, null, "error");
             });
         }
     }

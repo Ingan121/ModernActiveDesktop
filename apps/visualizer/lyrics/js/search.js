@@ -75,14 +75,17 @@ for (const textbox of textboxes) {
     });
 }
 
-document.addEventListener('madinput', function (e) {
+document.addEventListener('keypress', function (e) {
     if (e.key === 'Enter') {
         if (advancedMode) {
             advancedSearch();
         } else {
             search();
         }
-    } else if (e.key === 'Escape') {
+    }
+});
+document.addEventListener('keyup', function (e) {
+    if (e.key === 'Escape') {
         madCloseWindow();
     }
 });
