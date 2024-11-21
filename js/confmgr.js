@@ -98,6 +98,7 @@ const keys = Object.keys(localStorage);
 let urlAppend = "";
 
 (async function () {
+    let presetImport = false;
     switch (action) {
         case 'reset':
             await reset();
@@ -112,6 +113,7 @@ let urlAppend = "";
         case 'importpreset':
             keysToNotDelete.push(...keysToIgnoreOnPreset);
             keysToNotImport.push(...keysToIgnoreOnPreset);
+            presetImport = true;
         case 'import':
             const file = await madIdb.configToImport;
             if (!file) {
@@ -153,7 +155,7 @@ let urlAppend = "";
                         urlAppend = "#cmfail_invconf";
                         break;
                     }
-                    await reset(true);
+                    await reset(true, presetImport);
                     for (const key in parsed) {
                         if (keysToNotImport.includes(key)) {
                             continue;
@@ -239,7 +241,7 @@ let urlAppend = "";
     location.replace('index.html' + urlAppend);
 })();
 
-async function reset(softIdbReset = false) {
+async function reset(softIdbReset = false, presetImport = false) {
     for (const key of keys) {
         if ((key.startsWith('madesktop') || key === 'sysplugIntegration' ||
             key.startsWith('image#') || key.startsWith('jspaint ')) &&
@@ -253,10 +255,12 @@ async function reset(softIdbReset = false) {
     }
     if (softIdbReset) {
         await madIdb.deleteItem("bgImg");
-        await madIdb.deleteItem("cvFavorites");
-        await madIdb.deleteItem("configToImport");
-        await madIdb.deleteItem("lyricsOverrides");
-        await clearCache();
+        if (!presetImport) {
+            await madIdb.deleteItem("cvFavorites");
+            await madIdb.deleteItem("configToImport");
+            await madIdb.deleteItem("lyricsOverrides");
+            await clearCache();
+        }
     } else {
         // This causes further IDB operations to take a long time
         indexedDB.deleteDatabase('madesktop');

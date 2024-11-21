@@ -49,7 +49,9 @@ if (!localStorage.madesktopUserPatterns) {
 loadPatterns();
 
 if (localStorage.madesktopBgPattern) {
-    patternPreview.style.backgroundImage = `url(${genPatternImage(base64ToPattern(localStorage.madesktopBgPattern))})`;
+    window.addEventListener("load", () => {
+        patternPreview.style.backgroundImage = `url(${genPatternImage(base64ToPattern(localStorage.madesktopBgPattern))})`;
+    });
     patternData = localStorage.madesktopBgPattern;
     editPatternBtn.disabled = false;
 }

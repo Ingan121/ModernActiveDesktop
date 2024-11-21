@@ -510,7 +510,9 @@ function onRequest(req, res) {
   console.log('serve: ' + req.url);
   const cors = args.cors || 'https://madesktop.ingan121.com';
   res.setHeader('Access-Control-Allow-Origin', cors);
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Use-ChannelViewer, X-Fullscreen, X-Format-Name, X-Format-Extension, X-MADSP-Token, X-No-Timeout, X-File-Name, X-File-Path');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Use-ChannelViewer, X-Fullscreen, X-Format-Name, X-Format-Extension, X-MADSP-Token, X-No-Timeout, X-File-Name, X-File-Path, X-MAD-Version');
+
+  let extraVerified = false;
 
   if (req.headers.origin && req.headers.origin !== 'null') {
     console.log('Origin: ' + req.headers.origin);
@@ -546,6 +548,8 @@ function onRequest(req, res) {
         } else {
           ignoreToken = true;
         }
+      } else {
+        extraVerified = true;
       }
     }
   }
@@ -728,6 +732,38 @@ function onRequest(req, res) {
     case '/spotify/callback':
       spotifyCallback(req, res);
       break;
+    
+    // Update the system plugin
+    // (Not used yet, for future use after 3.5)
+    case '/update':
+      if (!extraVerified && req.headers.origin) {
+        // Mandate token verification for /update (except for non-AJAX requests/direct access from browsers by the user)
+        // Only for WPE Workshop distributions
+        res.writeHead(403);
+        res.end('403 Forbidden', 'utf-8');
+        return;
+      }
+      const version = req.headers['x-mad-version'];
+      let updateConfirmMsg = 'ModernActiveDesktop has been updated. Do you want to update the system plugin as well?';
+      if (version) {
+        updateConfirmMsg += `\n\nVersion: ${app.getVersion()} -> ${version}`;
+      }
+      const result = dialog.showMessageBoxSync(null, {
+        message: updateConfirmMsg,
+        type: 'question',
+        title: 'ModernActiveDesktop System Plugin',
+        buttons: ['Yes', 'No']
+      });
+
+      if (result === 0) {
+        res.end('OK');
+        const updateScript = path.join(__dirname, '../../../Install System Plugin.bat');
+        execSync(`start cmd /c "${updateScript}" 1`);
+        app.quit();
+      } else {
+        res.end('Canceled');
+      }
+      break;
 
     // Connection test, returns the version of the plugin
     case '/connecttest':
@@ -779,6 +815,7 @@ function onRequest(req, res) {
               <a href="/spotify/auth">/spotify/auth</a><br>
               <a href="/spotify/callback">/spotify/callback</a><br>
               <br>
+              <a href="/update">/update</a><br>
               <a href="/connecttest">/connecttest</a><br>
               <a href="/debugger">/debugger</a>
             </p>

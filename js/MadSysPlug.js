@@ -50,6 +50,7 @@
         if (token) {
             headers["X-MADSP-Token"] = token;
         }
+        headers["X-MAD-Version"] = top.madVersion.toString();
         if (data) {
             if (typeof data !== "string" && !(data instanceof FormData) && !(data instanceof Blob)) {
                 data = JSON.stringify(data);

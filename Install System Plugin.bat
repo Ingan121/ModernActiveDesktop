@@ -19,6 +19,11 @@ if not "%winver%" == "10.0" (
     exit /b
 )
 
+if "%1"=="" goto choiceMenu
+set choice=%1
+goto main
+
+:choiceMenu
 echo ----------------------------------------------------------
 echo.
 echo Please select an action:
@@ -35,6 +40,7 @@ echo.
 set /p choice=Choice: 
 echo.
 
+:main
 if %choice% == 1 (
     if exist systemplugin (
         call :kill

@@ -668,7 +668,7 @@
     "VISLRCCONF_CACHE_CLEAR_SUCCESS": "Lyrics cache cleared successfully.",
     "VISLRCCONF_FORCE_UNSYNCED": "Force &unsynced lyrics",
     "VISLRCCONF_FORCE_UNSYNCED_INFO": "<li>Enable this option if your media player does not provide timeline information.</li><li>Enable Visualizer -> View -> Estimate Timeline if your media player provides timeline information but it's inaccurate or not updated frequently.</li>",
-    "VISLRCCONF_SYNCED_UNAVAILABLE": "<li?Synced lyrics are not available on this platform.</li>",
+    "VISLRCCONF_SYNCED_UNAVAILABLE": "<li>Synced lyrics are not available on this platform.</li>",
     "VISLRCCONF_SMOOTH_SCROLL": "Smooth s&crolling",
     "VISLRCCONF_SMOOTH_SCROLL_DISABLED": "Smooth s&crolling (system animations are disabled)",
     "VISLRCCONF_SHOW_1STRUN": "Show first run &questions",
