@@ -43,6 +43,8 @@
 * Arc-Dark
 * Blur
     * My own experimental customization of the Windows Classic theme with a blur effect
+* VGUI
+    * A color scheme based on the old Steam/Half-Life 1 VGUI look
 * Windows 1-3 schemes
 * Windows 11 high contrast schemes
 * Three schemes found in the JSPaint source files
@@ -109,7 +111,7 @@
 * Please read [Translating.md](docs/Translating.md) for information on translating ModernActiveDesktop.
 
 ## Security
-* ModernActiveDesktop did take some security measures to prevent unwanted access to the running environment. However, it's not perfect, and there may be some vulnerabilities that I'm not aware of. If you find any security issues, please report them to * ModernActiveDesktop did take some security measures to prevent unwanted access to the running environment. However, it's not perfect, and there may be some vulnerabilities that I'm not aware of. If you find any security issues, please report them to the [GitHub Issues page](https://github.com/Ingan121/ModernActiveDesktop/issues), or the email address in my GitHub profile or [www.ingan121.com](https://www.ingan121.com/).
+* ModernActiveDesktop did take some security measures to prevent unwanted access to the running environment. However, it's not perfect, and there may be some vulnerabilities that I'm not aware of. If you find any security issues, please report them to the [GitHub Issues page](https://github.com/Ingan121/ModernActiveDesktop/issues), or the email address in my GitHub profile or [www.ingan121.com](https://www.ingan121.com/).
 * The following are examples of a security issue:
     * Bypassing the security checks when importing configuration files and loading unwanted pages and scripts on behalf of the user
     * Unwanted access to the system plugin, bypassing the security measures (token verification, CORS/origin checks, etc.)
@@ -137,7 +139,7 @@
 * [minimist](https://github.com/minimistjs/minimist) - A Node.js library for parsing command line arguments
 * [WindowsMediaController](https://github.com/DubyaDude/WindowsMediaController) - Used by [MediaControlCLI](https://github.com/Ingan121/MediaControlCLI) for media controls
 * And many assets from Microsoft Windows
-* And various codes snippets from Stack Overflow
+* And various code snippets from Stack Overflow
 * Some color schemes are from various sources. See comments in the CSS files for more information
 
 ## Changelog
