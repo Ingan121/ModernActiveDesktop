@@ -122,7 +122,7 @@
 * ModernActiveDesktop is not responsible for any security issues caused by unverified pages not part of the official distribution. Please be cautious when importing configuration files/presets and loading external pages.
 
 ## License
-* ModernActiveDesktop is licensed under the MIT license. Please read the [license file](?src=../license.txt&showbackbtn=1) for more information.
+* ModernActiveDesktop is licensed under the MIT license. Please read the [license file](license.txt) for more information.
 
 `Copyright (c) 2024 Ingan121. Licensed under the MIT license.`
 * Some Microsoft assets are used in ModernActiveDesktop. MIT license does not apply to these assets.
