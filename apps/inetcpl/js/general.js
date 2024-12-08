@@ -81,7 +81,12 @@ if (localStorage.madesktopChanViewHome) {
 }
 
 if (localStorage.madesktopLinkOpenMode) {
-    openOptSelector.selectedIndex = localStorage.madesktopLinkOpenMode;
+    if (localStorage.madesktopLinkOpenMode === "2") {
+        // Deprecated and removed SysPlug ChannelViewer mode effectively works as mode 3 (system default browser) now
+        openOptSelector.selectedIndex = 3;
+    } else {
+        openOptSelector.selectedIndex = localStorage.madesktopLinkOpenMode;
+    }
 }
 
 if (localStorage.madesktopChanViewShowFavicon) {

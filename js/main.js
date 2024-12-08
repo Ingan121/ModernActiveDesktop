@@ -529,15 +529,8 @@
         if (runningMode === 0 && (!localStorage.madesktopLinkOpenMode || localStorage.madesktopLinkOpenMode === "0")) {
             window.open(url, "_blank");
         } else if (localStorage.sysplugIntegration) {
-            const headers = {};
-            if (fullscreen) {
-                headers["X-Fullscreen"] = "true";
-            }
-            if (localStorage.madesktopLinkOpenMode === "2") {
-                headers["X-Use-ChannelViewer"] = "true";
-            }
             try {
-                const response = await madSysPlug.openExternal(url, headers);
+                const response = await madSysPlug.openExternal(url);
                 if (response !== "OK") {
                     await madAlert(madGetString("UI_MSG_SYSPLUG_ERROR", response), null, "error");
                     copyPrompt(url);
