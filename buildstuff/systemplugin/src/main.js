@@ -36,6 +36,7 @@ if (args.help) {
   console.log("--spotify: Custom Spotify Client ID for Spotify API integration");
   console.log("--spotify-callback-url: Custom Spotify callback URL for Spotify API integration");
   console.log("--spotify-aux-port: Custom port for Spotify API callback");
+  console.log("--no-smtc: Disable System Media Transport Controls and use WM_APPCOMMAND / media keys for media control");
   console.log("--metrics: Get window metrics (border size, title height), for internal use only");
   console.log("--help: Show this help message\n");
   console.log("Warning: Using --cors=*, --listen=0.0.0.0, or --ignore-token is considered insecure. Please use these options only for testing.\n");
@@ -59,6 +60,8 @@ let mcc = null;
 let pendingRes = null;
 let ignoreToken = args['ignore-token'];
 let denyUnknown = false;
+let smtcUnavailable = args['no-smtc'];
+let lastMediaControl = null;
 
 // Spotify API
 // Only for fetching currently playing track in MADVis Lyrics, to comply with Spotify's ToS and design guidelines
@@ -862,6 +865,7 @@ function processMediaControl(command, req, res) {
     runMccCmd(command);
     res.end('OK');
   }
+  lastMediaControl = command;
 }
 
 function initMcc() {
@@ -879,14 +883,25 @@ function initMcc() {
 
   mcc.on('exit', (code) => {
     console.log(`Media control helper exited with code ${code}`);
-    if (code === 2) {
-      showErrorMsg(null, "Media controls are not supported on this system.", "error");
+    if (code === 2 || code === 3) {
+      smtcUnavailable = true;
+      if (lastMediaControl) {
+        runMccCmd(lastMediaControl);
+      }
     }
     mcc = null;
   });
 }
 
 function runMccCmd(command, title = "") {
+  if (smtcUnavailable) {
+    if (command === "play" || command === "pause") {
+      command = "playpause";
+    }
+    console.log(`Running MediaKeys.exe with command ${command}`);
+    spawn(path.join(__dirname, '../MediaKeys.exe'), [command]);
+    return;
+  }
   const args = command + " " + title;
   console.log(args);
   if (!mcc) {
