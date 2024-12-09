@@ -3,6 +3,7 @@
   "version": "3.4.0",
   "description": "ModernActiveDesktop System Plugin",
   "main": "src/main.js",
+  "type": "module",
   "scripts": {
     "start": "electron .",
     "build": "electron-builder --win --x64"

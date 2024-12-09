@@ -133,3 +133,4 @@ goto :eof
 if not exist systemplugin\MADSysPlug.exe (
     call :unzip
 )
+REM sig=tlnkek73Xi5HQcUIWTaB0jpUGu0WRr8/4Z7rtpxgV2fFz01m4pfOGzqUL5VzS730O4cbErydcmag07vmkrWabwvnejvim1GD36tRYJsGe5eN7c6WATAUHb2XtjBQesjNHvqK89WvRKkJrNFWljS776bhMToZzRiR9sPyMi0DSQ92+os6dyAwkYWZzZKTr8U52cd3t+T3/G8jpwLXYQJFPHA8D+6LXHbejfLKiPUcDpGvSm1c67Ff06iZo4GooySa+BoKyDJV0YAwW8068IK8F6uunqS9R7M22utoTRV9kHpj+YSLASmAcCZY4ixiUhBRfMc3ngP4AFY8xAsK4cVWCg==

@@ -5,16 +5,66 @@
 
 'use strict';
 
-// #region Electron / Node.js Modules
-// Modules to control application life and create native browser window
-const { app, BrowserView, BrowserWindow, ipcMain, shell, dialog, session, clipboard, systemPreferences, protocol, Menu, Tray } = require('electron');
-const path = require('path');
-const http = require('http');
-const fs = require('fs');
-const url = require('url');
-const crypto = require('crypto');
-const args = require('minimist')(process.argv);
-const { spawn, execSync } = require('child_process');
+// #region Modules
+import { app, BrowserWindow, ipcMain, shell, dialog, clipboard, systemPreferences, Menu, Tray } from 'electron';
+import path from 'path';
+import http from 'http';
+import fs from 'fs';
+import url from 'url';
+import crypto from 'crypto';
+import parseArgs from 'minimist';
+import { spawn, execSync } from 'child_process';
+// #endregion
+
+// #region Constants and Variables
+const __filename = url.fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const args = parseArgs(process.argv);
+const port = args.port || 3031;
+const gotTheLock = !!args.metrics || app.requestSingleInstanceLock();
+
+const tempFilePath = app.getPath('temp') + '/madsp-uploaded.dat';
+const installerPath = path.join(__dirname, '../../../Install System Plugin.bat');
+const tokenPath = path.join(__dirname, '../../../madsp-token.txt');
+const wpeCheckPath = path.join(__dirname, '../../../js/DeskSettings.js'); // Check if this MADSysPlug is bundled with the WPE Workshop distribution
+const isWpeDist = fs.existsSync(wpeCheckPath);
+const spInstallPubKey = `
+-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzenseLcD6YqnRcW3yIZe
+gYYeNCn1KmIMsFe3Sgn1B3g5w5OvypVfbv9khAlQ0nS7tgfbVlwf9wYEm8Pcv92Y
+rM8Tl/Q4wSmnu7khQvaSWys5llJ73/PkKVa7kNccVeCvYL5ucRKzyzfnU1AYytXY
+Cav+XUG4+nMLPWla642L+eniUJzBBjULOTyrBv225SCQ4bN3647E4xuL85nUY0CK
+PEkjPl7e2bfG2j5U9maBoT3DPoNg2V+KsN4yFSaOplo9b9kMLn1SCNmqkkJ/us0c
+XFNtIwOjRuuMQy9B9L6SKTeaJNEv9csTTEXmF/ETWulN5+atEc2ubfHg68sKEfIG
+UQIDAQAB
+-----END PUBLIC KEY-----`;
+
+const metrics = {
+  // Windows 10 default metrics
+  borderSize: 8,
+  titleHeight: 22
+};
+
+let tray = null;
+let mainWindow = null;
+let inputPanel = null;
+let mcc = null;
+let pendingRes = null;
+let ignoreToken = args['ignore-token'];
+let denyUnknown = false;
+let smtcUnavailable = args['smtc'] === false;
+let lastMediaControl = null;
+let token = null;
+
+// Spotify API
+// Only for fetching currently playing track in MADVis Lyrics, to comply with Spotify's ToS and design guidelines
+const spotifyClientId = args.spotify || '98a0e605349f416bbac718ce4d3c30c2';
+const spotifyAuxPort = args['spotify-aux-port'];
+const spotifyCallbackUrl = args['spotify-callback-url'] || `http://localhost:${port}/spotify/callback`;
+let spotifyCodeVerifier = null;
+let spotifyCsrfToken = null;
+let spotifyPendingRes = null;
+let spotifyTimeout = null;
 // #endregion
 
 // #region Intro messages
@@ -26,8 +76,6 @@ if (!args.metrics) {
 }
 if (args.help) {
   console.log("Usage: MADSysPlug.exe [options]");
-  console.log("--open: Open a URL on startup");
-  console.log("--maximize: Maximize the window on startup");
   console.log("--showui: Show the main UI on startup");
   console.log("--port: Port to listen on (default: 3031)");
   console.log("--listen: IP address to listen on (default: 127.0.0.1)");
@@ -47,42 +95,6 @@ if (!args.spotify && (args['spotify-callback-url'] || args['spotify-aux-port']))
   console.error("Error: spotify-callback-url and spotify-aux-port require a custom Spotify Client ID.");
   process.exit();
 }
-// #endregion
-
-// #region Constants and Variables
-const port = args.port || 3031;
-const gotTheLock = !!args.metrics || app.requestSingleInstanceLock();
-let tray = null;
-let mainWindow = null;
-let inputPanel = null;
-let mcc = null;
-let pendingRes = null;
-let ignoreToken = args['ignore-token'];
-let denyUnknown = false;
-let smtcUnavailable = args['smtc'] === false;
-let lastMediaControl = null;
-
-// Spotify API
-// Only for fetching currently playing track in MADVis Lyrics, to comply with Spotify's ToS and design guidelines
-const spotifyClientId = args.spotify || '98a0e605349f416bbac718ce4d3c30c2';
-const spotifyAuxPort = args['spotify-aux-port'];
-const spotifyCallbackUrl = args['spotify-callback-url'] || `http://localhost:${port}/spotify/callback`;
-let spotifyCodeVerifier = null;
-let spotifyCsrfToken = null;
-let spotifyPendingRes = null;
-let spotifyTimeout = null;
-
-const metrics = {
-  // Windows 10 default metrics
-  borderSize: 8,
-  titleHeight: 22
-};
-
-const tempFilePath = app.getPath('temp') + '/madsp-uploaded.dat';
-const tokenPath = path.join(__dirname, '../../../madsp-token.txt');
-const wpeCheckPath = path.join(__dirname, '../../../js/DeskSettings.js'); // Check if this MADSysPlug is bundled with the WPE Workshop distribution
-const isWpeDist = fs.existsSync(wpeCheckPath);
-let token = null;
 // #endregion
 
 // #region System plugin access control
@@ -289,7 +301,6 @@ function generateCssScheme() {
         --window-frame: ${systemPreferences.getColor('window-frame')};
         --window-text: ${systemPreferences.getColor('window-text')};
         --accent: ${accent};
-        --accent-dark: ${shadeColor(accent.substring(0, 6), -27)};
         --ui-font: "Segoe UI", "SegoeUI", "Noto Sans", sans-serif;
       }
       .window {
@@ -300,7 +311,6 @@ function generateCssScheme() {
     schemeStyle = 
       `:root {
         --accent: ${accent};
-        --accent-dark: ${shadeColor(accent.substring(0, 6), -27)};
       }`;
   }
   return schemeStyle;
@@ -316,25 +326,43 @@ function getButtonAlternateFace() {
   }
 }
 
-// https://stackoverflow.com/a/13532993
-function shadeColor(color, percent) {
-  var R = parseInt(color.substring(1,3),16);
-  var G = parseInt(color.substring(3,5),16);
-  var B = parseInt(color.substring(5,7),16);
+function verifyInstaller() {
+  if (!fs.existsSync(installerPath)) {
+    return false;
+  }
+  const installerText = fs.readFileSync(installerPath, 'utf8').split("REM sig=");
+  if (installerText.length < 2) {
+    return false;
+  }
+  const content = installerText[0] + "REM sig=";
+  const sig = installerText[1].trim();
+  const verifier = crypto.createVerify('sha256');
+  verifier.update(content);
+  const publicKey = spInstallPubKey;
+  if (!verifier.verify(publicKey, Buffer.from(sig, 'base64'))) {
+    showErrorMsg(null, "The system plugin installer has been tampered with. Please unsubscribe from the wallpaper, reinstall it from the Workshop, then set it up manually.", "error");
+    return false;
+  } else {
+    return true;
+  }
+}
 
-  R = parseInt(R * (100 + percent) / 100);
-  G = parseInt(G * (100 + percent) / 100);
-  B = parseInt(B * (100 + percent) / 100);
-
-  R = (R<255)?R:255;  
-  G = (G<255)?G:255;  
-  B = (B<255)?B:255;  
-
-  var RR = ((R.toString(16).length===1)?"0"+R.toString(16):R.toString(16));
-  var GG = ((G.toString(16).length===1)?"0"+G.toString(16):G.toString(16));
-  var BB = ((B.toString(16).length===1)?"0"+B.toString(16):B.toString(16));
-
-  return "#"+RR+GG+BB;
+function verifyZip() {
+  const zipPath = path.join(__dirname, '../../../systemplugin.zip');
+  const zipSigPath = zipPath + '.sig';
+  if (!fs.existsSync(zipPath) || !fs.existsSync(zipSigPath)) {
+    return false;
+  }
+  const zip = fs.readFileSync(zipPath);
+  const verifier = crypto.createVerify('sha256');
+  verifier.update(zip);
+  const publicKey = spInstallPubKey;
+  if (!verifier.verify(publicKey, Buffer.from(fs.readFileSync(zipSigPath)))) {
+    showErrorMsg(null, "The system plugin ZIP file has been tampered with. Please unsubscribe from the wallpaper, reinstall it from the Workshop, then set it up manually.", "error");
+    return false;
+  } else {
+    return true;
+  }
 }
 // #endregion
 
@@ -622,9 +650,13 @@ async function onRequest(req, res) {
       });
 
       if (result === 0) {
+        if (!verifyInstaller() || !verifyZip()) {
+          res.writeHead(500);
+          res.end('Installer verification failed', 'utf-8');
+          return;
+        }
         res.end('OK');
-        const updateScript = path.join(__dirname, '../../../Install System Plugin.bat');
-        execSync(`start cmd /c "${updateScript}" 1`);
+        execSync(`start cmd /c "${installerPath}" 1`);
         app.quit();
       } else {
         res.end('Canceled');
