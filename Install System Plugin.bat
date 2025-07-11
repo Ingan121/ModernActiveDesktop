@@ -1,12 +1,12 @@
 @echo off
 setlocal
 
-set ver=3.4.0
+set ver=3.4.1
 set title=ModernActiveDesktop System Plugin %ver% Installer
 title %title%
 echo %title%
 echo.
-echo Copyright (c) 2024 Ingan121
+echo Copyright (c) 2025 Ingan121
 echo Licensed under the MIT License
 echo.
 cd /d "%~dp0"
@@ -133,4 +133,4 @@ goto :eof
 if not exist systemplugin\MADSysPlug.exe (
     call :unzip
 )
-REM sig=tlnkek73Xi5HQcUIWTaB0jpUGu0WRr8/4Z7rtpxgV2fFz01m4pfOGzqUL5VzS730O4cbErydcmag07vmkrWabwvnejvim1GD36tRYJsGe5eN7c6WATAUHb2XtjBQesjNHvqK89WvRKkJrNFWljS776bhMToZzRiR9sPyMi0DSQ92+os6dyAwkYWZzZKTr8U52cd3t+T3/G8jpwLXYQJFPHA8D+6LXHbejfLKiPUcDpGvSm1c67Ff06iZo4GooySa+BoKyDJV0YAwW8068IK8F6uunqS9R7M22utoTRV9kHpj+YSLASmAcCZY4ixiUhBRfMc3ngP4AFY8xAsK4cVWCg==
+REM sig=sNIuU6zJ+E8HjAeyBsWKPhFedVquLsuciWi5nUyTG5iFzd24MyS6P8W4FG9yZD6If3Hf9QbrbUhgYlA4q/RE/VEtEX/qPQViriu+KPwECfGBreeOfcRDoYXj6heKlCTwChhVORv9ZSRbGSLchvTrv0X6uom/VCerKWip6icEu0IJGWkHwk+kkR0yAd5xQBne2sVbXz5MPnH19UUx6d/ni7JVOEQ6Hj0WChK4+GPJMveNt5jxxc7ui8N79NBuSWAVxgIHAb83CbFm3doXme1FQFw67aQ1ro8K5I4AJvnxBZkEafjefW6lDc89bVeQgUeaE2qqBHRsSLDtcwFgnXsWKw==

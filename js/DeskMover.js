@@ -91,7 +91,7 @@
             this.firstLoadSuccess = false;
             this.isFullscreen = false;
 
-            this.contextMenuOpening = false;
+            this.contextMenuOpening = null;
             this.shouldNotCloseConfMenu = false;
 
             this.prevOffsetRight, this.prevOffsetBottom;
@@ -179,8 +179,9 @@
             document.addEventListener('pointermove', this.boundDocMouseMove);
 
             // Window menu button click & title bar right click
-            this.windowMenuBtn.addEventListener('click', this.openContextMenu.bind(this));
-            this.windowIcon.addEventListener('click', this.openContextMenu.bind(this));
+            this.windowMenuBtn.addEventListener('pointerdown', this.openContextMenu.bind(this));
+            this.windowIcon.addEventListener('pointerdown', this.openContextMenu.bind(this));
+            this.windowIcon.addEventListener('click', this.customDblClickHandler.bind(this));
             this.windowIcon.addEventListener('dblclick', this.closeWindow.bind(this));
             this.windowTitlebar.addEventListener('contextmenu', this.openContextMenuFromRightClick.bind(this));
 
@@ -213,7 +214,7 @@
             }
 
             // Context menu button listeners
-            this.contextMenuItems[0].addEventListener('click', this.openConfMenu.bind(this)); // Configure button
+            this.contextMenuItems[0].addEventListener('pointerup', this.openConfMenu.bind(this)); // Configure button
 
             this.contextMenuItems[0].addEventListener('pointerover', () => { // Configure button mouseover
                 this.timeout2 = setTimeout(() => {
@@ -225,7 +226,7 @@
                 clearTimeout(this.timeout2);
             });
 
-            this.contextMenuItems[1].addEventListener('click', () => { // Debug button
+            this.contextMenuItems[1].addEventListener('pointerup', () => { // Debug button
                 // Open DevTools first then click this button
                 // This allows you to debug current DeskMover
                 // Can call its functions in the console
@@ -233,9 +234,9 @@
             });
             // Don't hide any menu on debug mouseover because it's better for debugging
 
-            this.contextMenuItems[2].addEventListener('click', this.#reset.bind(this)); // Reset button
+            this.contextMenuItems[2].addEventListener('pointerup', this.#reset.bind(this)); // Reset button
 
-            this.contextMenuItems[3].addEventListener('click', () => { // Reload button
+            this.contextMenuItems[3].addEventListener('pointerup', () => { // Reload button
                 this.closeContextMenu();
                 if (this.config.src.startsWith('apps/channelviewer/') && !localStorage.madesktopDebugMode) {
                     this.windowElement.contentDocument.getElementById('refresh-button').click();
@@ -246,7 +247,7 @@
                 }
             });
 
-            this.contextMenuItems[4].addEventListener('click', () => { // Close button
+            this.contextMenuItems[4].addEventListener('pointerup', () => { // Close button
                 this.closeContextMenu();
                 this.closeWindow();
             });
@@ -269,44 +270,44 @@
                 this.shouldNotCloseConfMenu = false;
             });
 
-            this.confMenuItems[0].addEventListener('click', () => { // Active Desktop style button
+            this.confMenuItems[0].addEventListener('pointerup', () => { // Active Desktop style button
                 this.closeContextMenu();
                 this.changeWndStyle("ad");
             });
 
-            this.confMenuItems[1].addEventListener('click', () => { // Non-Active Desktop style button
+            this.confMenuItems[1].addEventListener('pointerup', () => { // Non-Active Desktop style button
                 this.closeContextMenu();
                 this.changeWndStyle("nonad");
             });
 
-            this.confMenuItems[2].addEventListener('click', () => { // Window style button
+            this.confMenuItems[2].addEventListener('pointerup', () => { // Window style button
                 this.closeContextMenu();
                 this.changeWndStyle("wnd");
             });
 
-            this.confMenuItems[3].addEventListener('click', this.#toggleScale.bind(this)); // Scale contents button
-            this.confMenuItems[4].addEventListener('click', this.#toggleAoT.bind(this)); // Always on top button
-            this.confMenuItems[5].addEventListener('click', this.toggleResizable.bind(this)); // Resizable button
-            this.confMenuItems[6].addEventListener('click', this.#changeUrl.bind(this)); // Change URL button
-            this.confMenuItems[7].addEventListener('click', this.#changeTitle.bind(this)); // Change title button
+            this.confMenuItems[3].addEventListener('pointerup', this.#toggleScale.bind(this)); // Scale contents button
+            this.confMenuItems[4].addEventListener('pointerup', this.#toggleAoT.bind(this)); // Always on top button
+            this.confMenuItems[5].addEventListener('pointerup', this.toggleResizable.bind(this)); // Resizable button
+            this.confMenuItems[6].addEventListener('pointerup', this.#changeUrl.bind(this)); // Change URL button
+            this.confMenuItems[7].addEventListener('pointerup', this.#changeTitle.bind(this)); // Change title button
 
-            this.confMenuItems[8].addEventListener('click', () => { // New window button
+            this.confMenuItems[8].addEventListener('pointerup', () => { // New window button
                 this.closeContextMenu();
                 openWindow();
             });
 
-            this.confMenuItems[9].addEventListener('click', () => { // Reload wallpaper button
+            this.confMenuItems[9].addEventListener('pointerup', () => { // Reload wallpaper button
                 this.closeContextMenu();
                 location.reload();
             });
 
-            this.confMenuItems[10].addEventListener('click', () => { // Properties button
+            this.confMenuItems[10].addEventListener('pointerup', () => { // Properties button
                 this.closeContextMenu();
                 openConfig();
             });
 
-            this.windowCloseBtn.addEventListener('click', this.closeWindow.bind(this));
-            this.windowCloseBtnAlt.addEventListener('click', this.closeWindow.bind(this));
+            this.windowCloseBtn.addEventListener('pointerup', this.closeWindow.bind(this));
+            this.windowCloseBtnAlt.addEventListener('pointerup', this.closeWindow.bind(this));
         
             this.windowMenuBtn.addEventListener('pointerover', () => {
                 this.mouseOverWndBtns = true;
@@ -529,7 +530,7 @@
             }
         }
 
-        openContextMenu() {
+        openContextMenu(event) {
             this.contextMenuBg.style.left = '';
             this.contextMenuBg.style.top = '';
 
@@ -566,18 +567,13 @@
             this.contextMenu.style.width = width + " - 2px)";
             this.contextMenuBg.style.height = this.calcMenuHeight("window") + "px";
 
-            // For handling window icon double click
-            // Note: dblclick doesn't fire in WPE
-            this.contextMenuOpening = this.posInContainer;
-            setTimeout(() => {
-                this.contextMenuOpening = null;
-            }, 500);
-
             iframeClickEventCtrl(false);
             window.isContextMenuOpen = true;
             this.contextMenuBg.focus();
             window.openedMenu = this.contextMenuBg;
             document.addEventListener('keydown', menuNavigationHandler);
+            event.preventDefault();
+            event.stopPropagation();
         }
 
         openContextMenuFromRightClick(event) {
@@ -628,6 +624,15 @@
             window.openedMenu = this.contextMenuBg;
             document.addEventListener('keydown', menuNavigationHandler);
             event.preventDefault();
+        }
+
+        customDblClickHandler() {
+            // For handling window icon double click
+            // Note: dblclick doesn't fire in WPE
+            this.contextMenuOpening = this.posInContainer;
+            setTimeout(() => {
+                this.contextMenuOpening = null;
+            }, 500);
         }
 
         closeContextMenu(event) {

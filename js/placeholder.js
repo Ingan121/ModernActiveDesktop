@@ -90,6 +90,8 @@ function openApp(app) {
 }
 
 function openYoutube() {
+    const leftMargin = parseInt(localStorage.madesktopChanViewLeftMargin) || 75;
+    const topMargin = parseInt(localStorage.madesktopChanViewTopMargin) || 0;
     madPrompt(madGetString("PH_PROMPT_YT_URL"), function (url) {
         if (url == null) return;
         const id = parseVideoId(url);

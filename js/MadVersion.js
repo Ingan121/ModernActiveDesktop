@@ -60,4 +60,4 @@ class MadVersion {
     }
 }
 window.MadVersion = MadVersion;
-window.madVersion = new MadVersion("3.4.0");
+window.madVersion = new MadVersion("3.4.1 Pre-release");

@@ -30,8 +30,8 @@ class MadMenu {
         this.submenuCloseTimer = null;
         this.shouldNotCloseSubmenu = false;
         this.menuHierarchy = {};
-        this.beforeMenuOpenEvent = new Event('beforemenuopen');
-        this.afterMenuCloseEvent = new Event('aftermenuclose');
+        this.beforeMenuOpenEvent = new CustomEvent('beforemenuopen');
+        this.afterMenuCloseEvent = new CustomEvent('aftermenuclose');
 
         for (const menuName of menuOrder) {
             this.menuHierarchy[menuName] = [];
@@ -66,7 +66,7 @@ class MadMenu {
                         }
                     }
                 });
-                elem.addEventListener('click', () => {
+                elem.addEventListener('pointerup', () => {
                     if (elem.dataset.submenu && !elem.classList.contains('disabled')) {
                         if (this.openedMenu.id !== elem.dataset.submenu + 'MenuBg') {
                             this.openMenu(elem.dataset.submenu);
@@ -76,6 +76,7 @@ class MadMenu {
                     } else if (!elem.dataset.noClose) {
                         this.closeMenu(menuName);
                     }
+                    elem.dispatchEvent(new MouseEvent('click'));
                 });
             }
 
@@ -152,7 +153,8 @@ class MadMenu {
                 elem.addEventListener('pointerleave', () => {
                     delete elem.dataset.active;
                 });
-                elem.addEventListener('click', () => {
+                elem.addEventListener('pointerup', () => {
+                    elem.dispatchEvent(new MouseEvent('click'));
                     this.shouldNotCloseSubmenu = false;
                     this.closeMenu(submenu);
                     this.closeMenu(menuBg.dataset.submenuOf);

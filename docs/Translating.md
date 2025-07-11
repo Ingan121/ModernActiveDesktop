@@ -70,8 +70,8 @@ The localization files are located in the `lang/` directory. Each language is re
 * Use ampersands (&) for hotkeys. For example, "&File" will be displayed as "<ins>F</ins>ile" in the application.
     * Use `\&` to display an actual ampersand.
 * Format characters:
-    * `%0v`: Full version number (e.g., 3.4.0 Pre-release)
-    * `%1v`: Numbers only (e.g., 3.4.0)
+    * `%0v`: Full version number (e.g., 3.4.1 Pre-release)
+    * `%1v`: Numbers only (e.g., 3.4.1)
     * `%2v`: Medium version number (e.g., 3.4)
     * `%3v`: Short version number (e.g., 3)
     * `%s`: Extra strings provided by the application; make sure to include them in your translation. (e.g., `Loading page %s...`)

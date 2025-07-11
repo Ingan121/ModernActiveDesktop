@@ -106,7 +106,7 @@
 ## License
 * ModernActiveDesktop is licensed under the MIT license. Please read the [license file](?src=../license.txt&showbackbtn=1) for more information.
 
-`Copyright (c) 2024 Ingan121. Licensed under the MIT license.`
+`Copyright (c) 2025 Ingan121. Licensed under the MIT license.`
 * Some Microsoft assets are used in ModernActiveDesktop. MIT license does not apply to these assets.
 
 ### Credits

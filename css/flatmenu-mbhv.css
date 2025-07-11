@@ -1,4 +1,5 @@
-/* Flat menus for menu bars */
+/* Flat menus for menu bars, with menu bar button hover effects */
+.menu-button:hover,
 .menu-button.active {
     border: none !important;
     border-radius: 0 !important;
@@ -20,7 +21,7 @@
     background-color: transparent;
 }
 
-body:not(#madconf-preview),
+body:not(#madconf-preview) .menuBtn:hover,
 .menuBtn[data-active] {
     border-color: var(--hilight) !important;
     border-radius: 0 !important;
@@ -29,6 +30,7 @@ body:not(#madconf-preview),
     background: var(--menu-hilight) !important;
 }
 
+.menuBtn:hover u,
 .menuBtn:active u,
 .menuBtn[data-active] u {
     border-bottom-color: var(--underline-hilight);

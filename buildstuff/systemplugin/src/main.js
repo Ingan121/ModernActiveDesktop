@@ -140,6 +140,9 @@ function createWindow () {
     show: false
   });
 
+  // Remove the menu bar
+  mainWindow.removeMenu();
+
   if (args.cors === "*") {
     showErrorMsg(null, "WARNING: You're running ModernActiveDesktop System Plugin with a wildcard CORS option. This is considered insecure, as any webpage can access your system with this plugin. Please only use this option for testing.", "warning");
   }
