@@ -20,7 +20,6 @@
     background-color: transparent;
 }
 
-body:not(#madconf-preview),
 .menuBtn[data-active] {
     border-color: var(--hilight) !important;
     border-radius: 0 !important;
